@@ -1,2 +1,4 @@
-# ???!/bin/mono
-mono /fcmd.exe
+#/bin/bash
+
+xbuild fcmd-Mac.sln
+# mono bin/fcmd.exe
