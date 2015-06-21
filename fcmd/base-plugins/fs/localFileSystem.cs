@@ -32,7 +32,7 @@ namespace fcmd.base_plugins.fs
         public IEnumerable<pluginner.DirItem> DirectoryContent { get { return DirContent; } } //возврат директории в FC
         public event pluginner.TypedEvent<string> StatusChanged;
         public event pluginner.TypedEvent<double> ProgressChanged;
-        public event pluginner.TypedEvent<object[]> APICallHost;
+        public event pluginner.TypedEvent<object[]> APICallHost = null;
 
         protected void RaiseProgressChanged(double data)
         {

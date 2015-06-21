@@ -20,7 +20,7 @@ namespace fcmd.base_plugins.ve
 		public string Author { get { return "Alexander Tauenis"; } }
 		public System.Configuration.Configuration FCConfig { set { } } //it can be a placeholder because the PT can use the fcmd.Properties.Settings...
 
-		public event pluginner.TypedEvent<object[]> APICallHost;
+		public event pluginner.TypedEvent<object[]> APICallHost = null;
 		#endregion
 
 		Xwt.Menu mnuFormat = new Xwt.Menu();

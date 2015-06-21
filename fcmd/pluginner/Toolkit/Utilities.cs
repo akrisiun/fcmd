@@ -27,9 +27,11 @@ namespace pluginner.Toolkit
 		static Dictionary<string, Image> cached_images = new Dictionary<string, Image>();
 
 		static Image GetLocalIcon(string path) {
-			if (!cached_images.ContainsKey(path)) {
-				cached_images[path] = Image.FromResource(path);
-			}
+            try {
+                if (!cached_images.ContainsKey(path)) {
+                    cached_images[path] = Image.FromResource(path);
+                }
+            } catch (Exception) { return null; }
 			return cached_images[path];
 		}
 
@@ -146,15 +148,23 @@ namespace pluginner.Toolkit
 		/// <returns></returns>
 		public static Image GetIconForMIME(string MIME)
 		{
-			if (MIME == "x-fcmd/directory")
-				return GetLocalIcon("pluginner.Resources.x-fcmd-directory.png");
-			
-			if (MIME == "x-fcmd/up")
-				return GetLocalIcon("pluginner.Resources.x-fcmd-up.png");
+            try
+            {
+                if (MIME == "x-fcmd/directory")
+                    return GetLocalIcon("pluginner.Resources.x-fcmd-directory.png");
 
-			if (CheckForIcon(MIME.Replace("/","-"))){
-				return GetIconFromCache(MIME.Replace("/", "-"));
-			}
+                if (MIME == "x-fcmd/up")
+                    return GetLocalIcon("pluginner.Resources.x-fcmd-up.png");
+
+                if (CheckForIcon(MIME.Replace("/", "-")))
+                {
+                    return GetIconFromCache(MIME.Replace("/", "-"));
+                }
+            }
+            catch (Exception)
+            {
+                return null;
+            }
 
 			//подбор иконки по миме типу
 

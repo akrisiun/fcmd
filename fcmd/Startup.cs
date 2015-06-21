@@ -74,7 +74,7 @@ namespace fcmd
 #endif
             //new vmtest().Show();
             new MainWindow(Commands).Show();
-			//todo: add splash screen
+
 			Application.Run();
 #if !DEBUG
 			}

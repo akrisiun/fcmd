@@ -47,7 +47,7 @@ namespace pluginner.Widgets
 
 		//For virtual mode
 		int VisibleItemsByY = -1;
-		int VisibleItemsByX = -1;
+		// int VisibleItemsByX = -1;
 
 		/// <summary>List of items. Please do not edit directly! Please use the AddItem and RemoveItem functions.</summary>
 		public List<ListView2Item> Items = new List<ListView2Item>();
@@ -107,7 +107,7 @@ namespace pluginner.Widgets
 						VisibleItemsByY++;
 					}
 
-					VisibleItemsByX = 0;
+					// VisibleItemsByX = 0;
 				}
 			}
 		}

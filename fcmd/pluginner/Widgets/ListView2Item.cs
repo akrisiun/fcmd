@@ -269,6 +269,6 @@ namespace pluginner.Widgets
 		}
 
 		// [Obsolete("Not obsolete, but not implemented yet, do not use at now!")]
-		public event TypedEvent<EditableLabel> EditComplete;
+		public event TypedEvent<EditableLabel> EditComplete = null;
 	}
 }
