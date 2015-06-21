@@ -16,6 +16,7 @@
 	"command": "xbuild",
 	"args": [
 		// Ask msbuild to generate full paths for file names.
+		"fcmd-Mac.sln",
 		"/property:GenerateFullPaths=true"
 	],
 	"taskSelector": "/t:",
