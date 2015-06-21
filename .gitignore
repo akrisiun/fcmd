@@ -5,3 +5,4 @@ xwt/
 *.zip
 obj/
 fcmd/stolen-opensource-libs/
+release/

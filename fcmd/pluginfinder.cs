@@ -43,7 +43,8 @@ namespace fcmd
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 // ftps before ftp
                 FSPlugins.Add("ftps;fcmd.ftps.dll;ftps-plugin");
-            FSPlugins.Add("ftp;(internal)FTPFS;FTP");
+            else
+                FSPlugins.Add("ftp;(internal)FTPFS;FTP");
 
             //load the list of VE plugins
             if (File.Exists(Environment.CurrentDirectory + "/veplugins.conf"))
@@ -103,8 +104,10 @@ namespace fcmd
 						{
 							case "(internal)LocalFS":
 								return new fcmd.base_plugins.fs.localFileSystem { FCConfig = conf };
-							case "(internal)FTPFS":
-								return new FTPFileSystem {FCConfig = conf};
+
+                            // Environment.OSVersion.Platform != PlatformID.Win32NT)
+							//case "(internal)FTPFS":
+							//	return new FTPFileSystem {FCConfig = conf};
 							default:
 								throw new PluginNotFoundException("The filesystem plugin "
                                     + Parts[1] + " is not embedded into FC Commander");

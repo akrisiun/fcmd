@@ -237,7 +237,12 @@ namespace pluginner
 		 /// The file's big icon
 		 /// </summary>
 		 public Image IconBig;
-	}
+
+        public override string ToString()
+        {
+            return URL; // debugger friendly
+        }
+    }
 
 	/// <summary>
 	/// Filesystem entry's metadata (like system.io.fileinfo/directoryinfo)

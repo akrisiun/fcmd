@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using fcmd.ftps;
 
 namespace fcmd.test
 {
@@ -7,8 +8,13 @@ namespace fcmd.test
     public class UnitTest1
     {
         [TestMethod]
-        public void TestMethod1()
+        public void Ftp_SSL_ReadDir()
         {
+            var ssl = new FtpSecure();
+            // ssl.Connect()
+            ssl.CurrentDirectory = "ftp://localhost";
+
+            var list = ssl.DirectoryContent;
         }
     }
 }
