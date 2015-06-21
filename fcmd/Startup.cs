@@ -13,10 +13,10 @@ using pluginner.Toolkit;
 
 namespace fcmd
 {
-	static class Startup
+	public static class Startup
 	{
 		[STAThread] //it's required due to WPF restrictions (without this, the Xwt.Wpf.dll backend is unable to start)
-		static void Main(string[] Commands)
+		public static void Main(string[] Commands)
 		{
 // ReSharper disable LocalizableElement
 			string product_version = Assembly.GetExecutingAssembly().GetName().Version.ToString();

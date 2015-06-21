@@ -6,3 +6,7 @@ xwt/
 obj/
 fcmd/stolen-opensource-libs/
 release/
+bin/
+*.exe
+*.dll
+*.exe.config
