@@ -361,7 +361,7 @@ namespace fcmd
         /// <param name="ShortenKB">How kilobyte sizes should be humanized</param>
         /// <param name="ShortenMB">How megabyte sizes should be humanized</param>
         /// <param name="ShortenGB">How gigabyte sizes should be humanized</param> //плохой перевод? "так nбайтные размеры должны очеловечиваться"
-        public void LoadDir(string URL, dynamic Shorten)
+        public void LoadDir(string URL, Shorten Shorten)
         {
             // new { kb = ShortenKB, mb = ShortenMB, gb = ShortenGB }
             CurShortenKB = Shorten.KB; CurShortenMB = Shorten.MB; CurShortenGB = Shorten.GB;
@@ -461,7 +461,7 @@ namespace fcmd
             ListingView.Cursor = CursorType.Arrow;
         }
 
-        public void LoadFs(string URL, dynamic Shorten)
+        public void LoadFs(string URL, Shorten Shorten)
         {
             // string URL, SizeDisplayPolicy ShortenKB, SizeDisplayPolicy ShortenMB, SizeDisplayPolicy ShortenGB)
             // new { KB = ShortenKB, MB = ShortenMB, GB
@@ -585,7 +585,7 @@ namespace fcmd
         public void LoadDir(string URL)
         {
             LoadDir(URL,
-                new
+                new Shorten
                 {
                     KB = CurShortenKB,
                     MB = CurShortenMB,

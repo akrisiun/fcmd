@@ -179,7 +179,7 @@ namespace fcmd
 					);*/
                 ActivePanel.LoadDir(
                     ActivePanel.FS.CurrentDirectory,
-                    new 
+                    new Shorten
                     {
                         KB = ActivePanel.CurShortenKB,
                         MB = ActivePanel.CurShortenMB,
@@ -325,7 +325,7 @@ namespace fcmd
             string PanelName = (NewPanel == p1) ? "LEFT" : "RIGHT";
             Console.WriteLine("FOCUS DEBUG: The " + PanelName + " panel (" + NewPanel.FS.CurrentDirectory + ") got focus");
 #endif
-            AssemblyName an = Assembly.GetExecutingAssembly().GetName();
+            // AssemblyName an = Assembly.GetExecutingAssembly().GetName();
             this.Title = string.Format(
                 "{0} - {1}",
                 "FC",//System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, //todo: add the ProductName w/o WinForms usage
@@ -493,7 +493,7 @@ namespace fcmd
         {
             //file size display policy
             char[] Policies = fcmd.Properties.Settings.Default.SizeShorteningPolicy.ToCharArray();
-            dynamic Shorten = new
+            var Shorten = new Shorten
             {
                 KB = ConvertSDP(Policies[0]),
                 MB = ConvertSDP(Policies[1]),
@@ -544,5 +544,12 @@ namespace fcmd
         }
 
         #endregion
+    }
+
+    public struct Shorten
+    {
+        public FileListPanel.SizeDisplayPolicy KB { get; set; }
+        public FileListPanel.SizeDisplayPolicy MB { get; set; }
+        public FileListPanel.SizeDisplayPolicy GB { get; set; }
     }
 }
