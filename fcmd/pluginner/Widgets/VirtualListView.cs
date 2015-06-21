@@ -36,14 +36,14 @@ namespace pluginner.Widgets
 		private List<ListView2.ColumnInfo> _columns = new List<ListView2.ColumnInfo>();
 
         // private bool Color2; //для обеспечения чередования цветов строк
-		private DateTime PointedItemLastClickTime = DateTime.Now.AddDays(-1); //for double click detecting
+		// private DateTime PointedItemLastClickTime = DateTime.Now.AddDays(-1); //for double click detecting
 
 		public static double MillisecondsForDoubleClick = SysInfo.DoubleClickTime; //Depends on user settings
 
 		public event TypedEvent<ListView2Item> PointerMoved;
 		public event TypedEvent<List<ListView2Item>> SelectionChanged;
-		public event TypedEvent<ListView2Item> PointedItemDoubleClicked;
-		public event TypedEvent<EditableLabel, ListView2> EditComplete;
+		public event TypedEvent<ListView2Item> PointedItemDoubleClicked = null;
+		public event TypedEvent<EditableLabel, ListView2> EditComplete = null;
 
 		//Color sheme
 		public Color NormalBgColor1 = Colors.White;

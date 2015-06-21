@@ -139,12 +139,13 @@ namespace fcmd.theme
             { URL1 = null; }
             pluginner.IFSPlugin FS1 = ActivePanel.FS;
 
-            string URL2;
+            /* string URL2;
             if (PassivePanel.ListingView.SelectedRow > -1)
             { URL2 = PassivePanel.GetValue(PassivePanel.dfURL); }
             else
             { URL2 = null; }
             pluginner.IFSPlugin FS2 = PassivePanel.FS;
+			*/
 
             switch (e.Key)
             {

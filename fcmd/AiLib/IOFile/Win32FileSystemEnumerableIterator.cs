@@ -242,7 +242,7 @@ namespace AiLib.IOFile
         {
             try
             {
-                if (_hnd != null)
+				if (_hnd != IntPtr.Zero)
                 {
                     Dispose(_hnd);
                 }
@@ -332,7 +332,7 @@ namespace AiLib.IOFile
                     }
                 case STATE_FIND_NEXT_FILE:
                     {
-                        if (_searchData != null && _hnd != null)
+					if (_searchData != null && _hnd != IntPtr.Zero)
                         {
                             // Keep asking for more matching files/dirs, add it to the list 
                             while (Win32FindFile.FindNextFile(_hnd, ref data))
@@ -348,7 +348,7 @@ namespace AiLib.IOFile
                             // Make sure we quit with a sensible error.
                             int errorCode = Marshal.GetLastWin32Error();
 
-                            if (_hnd != null)
+							if (_hnd != IntPtr.Zero)
                                 Dispose(_hnd);
 
                             // ERROR_FILE_NOT_FOUND is valid here because if the top level
@@ -456,7 +456,7 @@ namespace AiLib.IOFile
             }
             finally
             {
-                if (hnd != null)
+				if (hnd != IntPtr.Zero)
                     Dispose(hnd);
             }
         }

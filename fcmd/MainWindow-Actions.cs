@@ -44,7 +44,8 @@ namespace fcmd
                 Xwt.MessageDialog.ShowError(string.Format(Localizator.GetString("FileNotFound"), ActivePanel.GetValue(ActivePanel.dfDisplayName)));
                 return;
             }
-            string FileContent = Encoding.ASCII.GetString(fs.GetFileContent(url));
+            
+			// string FileContent = Encoding.ASCII.GetString(fs.GetFileContent(url));
             fcv.LoadFile(url, ActivePanel.FS, false);
             fcv.Show();
         }
