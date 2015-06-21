@@ -11,6 +11,7 @@ using System.IO;
 using System.Reflection;
 using fcmd.base_plugins;
 using fcmd.base_plugins.fs;
+using pluginner.Toolkit;
 
 namespace fcmd
 {
@@ -19,7 +20,9 @@ namespace fcmd
 		public List<string> FSPlugins = new List<string>();
 		public List<string> VEPlugins = new List<string>();
 
-		public pluginfinder()
+        public object OSVersionEx { get; private set; }
+
+        public pluginfinder()
 		{//конструктор
 			//загрузка списка плагинов ФС из файла
 			if (File.Exists(Environment.CurrentDirectory + "/fsplugins.conf"))
@@ -29,15 +32,21 @@ namespace fcmd
 				foreach (string fsp in fsplist)
 				{
 					rowCounter++;
-					if (fsp.Split(";".ToCharArray()).Length != 3) { Console.WriteLine("Ошибка в файле fsplugins.conf на строке " + rowCounter); break; }
+					if (fsp.Split(";".ToCharArray()).Length != 3)
+                    { Console.WriteLine("Ошибка в файле fsplugins.conf на строке " + rowCounter);
+                        break; }
 					FSPlugins.Add(fsp);
 				}
 			}
-			FSPlugins.Add("ftp;(internal)FTPFS;FTP");
 			FSPlugins.Add("file;(internal)LocalFS;" + Localizator.GetString("LocalFSVer"));
 
-			//load the list of VE plugins
-			if (File.Exists(Environment.CurrentDirectory + "/veplugins.conf"))
+            if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+                // ftps before ftp
+                FSPlugins.Add("ftps;fcmd.ftps.dll;ftps-plugin");
+            FSPlugins.Add("ftp;(internal)FTPFS;FTP");
+
+            //load the list of VE plugins
+            if (File.Exists(Environment.CurrentDirectory + "/veplugins.conf"))
 			{
 				string[] vplist = File.ReadAllLines(Environment.CurrentDirectory + "/veplugins.conf");
 				int rowCounter = 0;
@@ -50,7 +59,8 @@ namespace fcmd
 			}
 			VEPlugins.Add(
 			@"<?xml ;(internal)PlainXml;XML\n"+
-			".*;(internal)PlainText;" + Localizator.GetString("FCVViewModeText")); //зырилки по-умолчанию в конец списка
+			".*;(internal)PlainText;"
+            + Localizator.GetString("FCVViewModeText")); //зырилки по-умолчанию в конец списка
 
 		}
 
@@ -83,8 +93,9 @@ namespace fcmd
 				if (System.Text.RegularExpressions.Regex.IsMatch(UrlParts[0], Parts[0]))
 				{
 					//оно!
-
-					System.Configuration.Configuration conf = System.Configuration.ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal);
+					System.Configuration.Configuration conf = 
+                        System.Configuration.ConfigurationManager.OpenExeConfiguration(
+                            System.Configuration.ConfigurationUserLevel.PerUserRoamingAndLocal);
 
 					if (Parts[1].StartsWith("(internal)"))
 					{//плагин встроенный
@@ -95,13 +106,18 @@ namespace fcmd
 							case "(internal)FTPFS":
 								return new FTPFileSystem {FCConfig = conf};
 							default:
-								throw new PluginNotFoundException("The filesystem plugin " + Parts[1] + " is not embedded into FC Commander");
+								throw new PluginNotFoundException("The filesystem plugin "
+                                    + Parts[1] + " is not embedded into FC Commander");
 						}
 					}
 					else
 					{//плагин внешний
 						string file = Parts[1];
-						Assembly assembly = Assembly.LoadFile(file);
+                        if (System.Environment.OSVersion.Platform == PlatformID.Win32NT
+                            && !file.Contains("\\")) // for  System.IO.FileSystemInfo..Br))
+                            file = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, file);
+
+                        Assembly assembly = Assembly.LoadFile(file);
 
 						foreach (Type type in assembly.GetTypes())
 						{
@@ -109,14 +125,17 @@ namespace fcmd
 
 							if (iface != null)
 							{
-								pluginner.IFSPlugin plugin = (pluginner.IFSPlugin)Activator.CreateInstance(type);
+								pluginner.IFSPlugin plugin 
+                                    = (pluginner.IFSPlugin)Activator.CreateInstance(type);
 								return plugin;
 							}
 						}
 					}
 				}
 			}
-			throw new PluginNotFoundException("Не найден плагин ФС для протокола " + UrlParts[0]);
+			throw new PluginNotFoundException(
+                "No plugin for protoco " // "Не найден плагин ФС для протокола "
+                + UrlParts[0]);
 		}
 
 		/// <summary>

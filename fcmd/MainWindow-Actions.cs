@@ -168,7 +168,10 @@ namespace fcmd
                 if (SourceFS.FileExists(SourceURL))
                 {
                     string SourceName = SourceFS.GetMetadata(SourceURL).Name;
-                    InputBox ibx = new InputBox(String.Format(Localizator.GetString("CopyTo"), SourceName), PassivePanel.FS.CurrentDirectory + PassivePanel.FS.DirSeparator + SourceName);
+                    InputBox ibx = new InputBox(
+                        String.Format(Localizator.GetString("CopyTo"), SourceName), 
+                        PassivePanel.FS.CurrentDirectory + PassivePanel.FS.DirSeparator + SourceName);
+
                     if (ibx.ShowDialog(this))
                     {
                         String DestinationFilePath = ibx.Result;

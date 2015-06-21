@@ -78,8 +78,9 @@ namespace fcmd
 			#endif
 
 			IPAddress addr;
+            // https://msdn.microsoft.com/en-us/library/system.net.ftpwebrequest.enablessl.aspx
 
-			try
+            try
 			{
 				CommandSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				addr = Dns.GetHostEntry(Server).AddressList[0];

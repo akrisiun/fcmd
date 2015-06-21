@@ -29,7 +29,9 @@ namespace fcmd.base_plugins.fs
 		{
 			if (url == null) throw new ArgumentNullException("url");
 			//проверка на то, чтобы нечаянно через ftpfs не попытались зайти в локальную ФС, webdav, реестр и т.п. :-)
-			if (!url.ToLowerInvariant().StartsWith("ftp:")) throw new PleaseSwitchPluginException();
+			if (!url.ToLowerInvariant().StartsWith("ftp:")
+                && !url.ToLowerInvariant().StartsWith("ftps:"))
+                throw new PleaseSwitchPluginException();
 
 			Uri URI = new Uri(url);
 			if (URI.Host != hostname) Connect(url);

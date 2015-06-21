@@ -179,9 +179,12 @@ namespace fcmd
 					);*/
                 ActivePanel.LoadDir(
                     ActivePanel.FS.CurrentDirectory,
-                    ActivePanel.CurShortenKB,
-                    ActivePanel.CurShortenMB,
-                    ActivePanel.CurShortenGB
+                    new 
+                    {
+                        KB = ActivePanel.CurShortenKB,
+                        MB = ActivePanel.CurShortenMB,
+                        GB = ActivePanel.CurShortenGB
+                    }
                     );  //undone!
 
                 ActivePanel.StatusBar.Text = string.Format(Localizator.GetString("NameFilterFound"), Filter, GoodItems.Count);
@@ -490,24 +493,33 @@ namespace fcmd
         {
             //file size display policy
             char[] Policies = fcmd.Properties.Settings.Default.SizeShorteningPolicy.ToCharArray();
+            dynamic Shorten = new
+            {
+                KB = ConvertSDP(Policies[0]),
+                MB = ConvertSDP(Policies[1]),
+                GB = ConvertSDP(Policies[2])
+            };
 
             //load last directory or the current directory if the last directory hasn't remembered
             if (Properties.Settings.Default.Panel1URL.Length != 0)
             {
-                p1.LoadDir(Properties.Settings.Default.Panel1URL, ConvertSDP(Policies[0]), ConvertSDP(Policies[1]), ConvertSDP(Policies[2]));
+                p1.LoadDir(Properties.Settings.Default.Panel1URL, Shorten);
             }
             else
             {
-                p1.LoadDir("file://" + System.IO.Directory.GetCurrentDirectory(), ConvertSDP(Policies[0]), ConvertSDP(Policies[1]), ConvertSDP(Policies[2]));
+                p1.LoadDir("file://" + System.IO.Directory.GetCurrentDirectory(), Shorten);
+                // ConvertSDP(Policies[0]), ConvertSDP(Policies[1]), ConvertSDP(Policies[2]));
             }
 
             if (Properties.Settings.Default.Panel2URL.Length != 0)
             {
-                p2.LoadDir(Properties.Settings.Default.Panel2URL, ConvertSDP(Policies[0]), ConvertSDP(Policies[1]), ConvertSDP(Policies[2]));
+                p2.LoadDir(Properties.Settings.Default.Panel2URL,
+                    Shorten); // ConvertSDP(Policies[0]), ConvertSDP(Policies[1]), ConvertSDP(Policies[2]));
             }
             else
             {
-                p2.LoadDir("file://" + System.IO.Directory.GetCurrentDirectory(), ConvertSDP(Policies[0]), ConvertSDP(Policies[1]), ConvertSDP(Policies[2]));
+                p2.LoadDir("file://" + System.IO.Directory.GetCurrentDirectory(),
+                    Shorten); // ConvertSDP(Policies[0]), ConvertSDP(Policies[1]), ConvertSDP(Policies[2]));
             }
 
             //default panel
