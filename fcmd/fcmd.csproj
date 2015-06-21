@@ -123,23 +123,21 @@
     <Reference Include="Microsoft.CSharp">
       <Private>True</Private>
     </Reference>
+
     <Reference Include="System" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
     <Reference Include="mucss">
       <HintPath>stolen-opensource-libs\mucss.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="Xwt">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\Xwt.dll</HintPath>
     </Reference>
-    <Reference Include="System.Configuration" />
-    <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Mono.Cairo" />
-    <Reference Include="FSharp.Core" />
-    <Reference Include="gtk-dotnet, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -196,10 +194,6 @@
     <ProjectReference Include="pluginner\pluginner.csproj">
       <Project>{88785B26-D617-4BE9-B449-F7CE77444794}</Project>
       <Name>pluginner</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\xwt\Xwt\Xwt.csproj">
-      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
-      <Name>Xwt</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
