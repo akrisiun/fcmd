@@ -136,11 +136,6 @@
     <Reference Include="mucss">
       <HintPath>stolen-opensource-libs\mucss.dll</HintPath>
     </Reference>
-
-    <Reference Include="Xwt">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\bin\Xwt.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -194,6 +189,14 @@
     <EmbeddedResource Include="Resources\emblem-system.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\xwt\Xwt.WPF\Xwt.WPF.csproj">
+      <Project>{c93d746e-1586-4d4f-b411-bf5a966e6a08}</Project>
+      <Name>Xwt.WPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xwt\Xwt\Xwt.csproj">
+      <Project>{92494904-35fa-4dc9-bde9-3a3e87ac49d3}</Project>
+      <Name>Xwt</Name>
+    </ProjectReference>
     <ProjectReference Include="pluginner\pluginner.csproj">
       <Project>{88785B26-D617-4BE9-B449-F7CE77444794}</Project>
       <Name>pluginner</Name>

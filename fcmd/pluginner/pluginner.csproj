@@ -7,9 +7,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>pluginner</RootNamespace>
     <AssemblyName>pluginner</AssemblyName>
-    <TargetFrameworkVersion 
-        Condition=" '$(OS)' == 'Unix' "
-        >v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion Condition=" '$(OS)' == 'Unix' ">v4.5</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -40,7 +38,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="mucss">
-      <HintPath>..\stolen-opensource-libs\mucss.dll</HintPath>
+      <HintPath>..\..\bin\mucss.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

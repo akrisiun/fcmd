@@ -1,4 +1,4 @@
 
-@REM del /S obj\*.*
+DEL /S *.bak;*.tmp;*.err
 
 @PAUSE

@@ -1,6 +1,5 @@
 [Aa]pp.config
 [Ww]eb.config
-xwt/
 .arch/
 *.zip
 obj/
@@ -10,3 +9,5 @@ bin/
 *.exe
 *.dll
 *.exe.config
+xwt/Testing/
+*.nuspec

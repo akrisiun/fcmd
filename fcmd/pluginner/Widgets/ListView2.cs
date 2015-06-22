@@ -21,6 +21,7 @@ namespace pluginner.Widgets
 		private HBox ColumnRow = new HBox();
 		public HeavyScroller ScrollerIn = new HeavyScroller(); //vertical scroller
 		private ScrollView ScrollerOut = new ScrollView(); //horizontal scroller
+
 		private List<Label> ColumnTitles = new List<Label>();
 		private Table Grid = new Table();
 		private int LastRow;
@@ -80,11 +81,13 @@ namespace pluginner.Widgets
 
 			ScrollerIn.BackgroundColor = Colors.White;
 
-			//tests for custom pointing edge setup
-			/*AllowedToPoint.Add(5);
+            //tests for custom pointing edge setup
+            /*AllowedToPoint.Add(5);
 			AllowedToPoint.Add(6);
 			AllowedToPoint.Add(9);*/
-		}
+
+            // ScrollerOut.Visible = false;
+        }
 
 		//EVENT HANDLERS
 

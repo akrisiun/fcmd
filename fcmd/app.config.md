@@ -15,7 +15,7 @@
         <value>True</value>
       </setting>
       <setting name="Language" serializeAs="String">
-        <value>(internal)en_Us</value>
+        <value>(internal)en_US</value>
         <!--<value>(internal)ru_RU</value>-->
       </setting>
       <setting name="ShowHidedFiles" serializeAs="String">

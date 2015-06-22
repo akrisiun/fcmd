@@ -104,15 +104,18 @@ namespace fcmd
 
         #endregion
 
+        protected theme.ITheme ThemeInstance { get { return theme.Control.Theme; } } // as theme.wpf;
+        public string[] argv;
+
         public MainWindow(string[] argv)
         {
+            this.argv = argv;
             this.Title = "File Commander";
             this.MainMenu = WindowMenu;
             this.PaddingLeft = PaddingRight = PaddingTop = 0;
             PaddingBottom = PaddingBottom / 3;
 
-            var themeInstance = theme.Control.Theme as theme.wpf;
-            themeInstance.Init(this);
+            ThemeInstance.Init(this);
 
             TranslateMenu(MainMenu);
             BindMenu();
@@ -127,9 +130,15 @@ namespace fcmd
             this.Width = fcmd.Properties.Settings.Default.WinWidth;
             this.Height = fcmd.Properties.Settings.Default.WinHeight;
 
-            LoadDir(argv);
-            // this.PassivePanel.Visible = false;
+#if DEBUG
+            Console.WriteLine(@"DEBUG: MainWindow initialization has been completed.");
+#endif
+        }
 
+        protected override void OnShown()
+        {
+            (ThemeInstance as theme.wpf).Shown(this);
+            // LoadDir(argv);
 #if DEBUG
             Console.WriteLine(@"DEBUG: MainWindow initialization has been completed.");
 #endif
@@ -462,9 +471,11 @@ namespace fcmd
             for (int i = 1; i < 11; i++)
             {
                 KeybHelpButtons[i] = new KeyboardHelpButton { CanGetFocus = false };
-                KeyBoardHelp.PackStart(KeybHelpButtons[i],
-                    true, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, -6, 0, -3);
+                //KeyBoardHelp.PackStart(KeybHelpButtons[i],
+                //    true, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, -6, 0, -3);
             }
+
+            return;
 
             KeybHelpButtons[1].Clicked += (o, ea) =>
             { this.PanelLayout_KeyReleased(this, new Xwt.KeyEventArgs(Xwt.Key.F1, Xwt.ModifierKeys.None, false, 0)); };
@@ -489,7 +500,7 @@ namespace fcmd
             //todo: replace this shit-code with huge using of KeybHelpButtons[n].Tag property (note that it's difficult to be realized due to c# restrictions)
         }
 
-        private void LoadDir(string[] argv)
+        public void LoadDir(string[] argv)
         {
             //file size display policy
             char[] Policies = fcmd.Properties.Settings.Default.SizeShorteningPolicy.ToCharArray();

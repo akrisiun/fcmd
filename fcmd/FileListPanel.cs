@@ -36,11 +36,13 @@ namespace fcmd
         public LightScroller DiskBox = new LightScroller();
         public HBox DiskList = new HBox();
         public List<Button> DiskButtons = new List<Button>();
+
         public Button GoRoot = new Button("/");
         EventHandler goRootDelegate = null;
         public Button GoUp = new Button("..");
         EventHandler goUpDelegate = null;
         public TextEntry UrlBox = new TextEntry();
+
         public MenuButton BookmarksButton = new MenuButton(Image.FromResource("fcmd.Resources.bookmarks.png"));
         public MenuButton HistoryButton = new MenuButton(Image.FromResource("fcmd.Resources.history.png"));
         public ListView2 ListingView = new ListView2();
@@ -66,7 +68,8 @@ namespace fcmd
         /// <param name="CSS">The user theme (or null if it's need to use internal theme)</param>
         /// <param name="InfobarText1">The mask for infobar text when a file is selected</param>
         /// <param name="InfobarText2">The mask for infobar text when no files are selected</param>
-        public FileListPanel(string BookmarkXML = null, string CSS = null, string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
+        public FileListPanel(string BookmarkXML = null, string CSS = null, 
+            string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
         {
             s = new Stylist(CSS);
             SBtext1 = InfobarText1;

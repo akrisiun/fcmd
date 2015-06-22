@@ -1,16 +1,27 @@
 ﻿using pluginner.Widgets;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace fcmd.theme
 {
+    // Window extension for WPF
+
     public class wpf : ITheme
     {
         public void Init(MainWindow @this)
         {
             InitMenu(@this);
+
+        }
+
+        public void Shown(MainWindow @this)
+        {
+            @this.p2.Visible = false;
+
+            @this.LoadDir(@this.argv);
+
+            var listing = @this.ActivePanel.ListingView;
+            // .ScrollerIn.Visible = false;
+            // ScrollerOut.Visible = false;
         }
 
         public void InitMenu(MainWindow @this)
