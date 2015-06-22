@@ -11,3 +11,15 @@ bin/
 *.exe.config
 xwt/Testing/
 *.nuspec
+obj
+*~
+*.sln.cache
+*.suo
+*.user
+*.dotCover
+*.pidb
+*.userprefs
+*.usertasks
+*.mdb
+.DS_Store
+test-results 
