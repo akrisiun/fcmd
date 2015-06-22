@@ -104,11 +104,11 @@ namespace Xwt.Mac
 		static NSAttributedString GetAttributedString (string text)
 		{
 			var attrStr = new NSMutableAttributedString (text);
-			var range = new NSRange (0, attrStr.Length);
+			// var range = new NSRange (0, attrStr.Length);
 
-			var singleUnderlineStyle = NSNumber.FromInt32 ((int)NSUnderlineStyle.Single);
-			attrStr.AddAttribute (NSStringAttributeKey.ForegroundColor, NSColor.Blue, range);
-			attrStr.AddAttribute (NSStringAttributeKey.UnderlineStyle, singleUnderlineStyle, range);
+			// var singleUnderlineStyle = NSNumber.FromInt32 ((int)NSUnderlineStyle.Single);
+			// attrStr.AddAttribute (NSStringAttributeKey.ForegroundColor, NSColor.Blue, range);
+			// attrStr.AddAttribute (NSStringAttributeKey.UnderlineStyle, singleUnderlineStyle, range);
 
 			return attrStr;
 		}

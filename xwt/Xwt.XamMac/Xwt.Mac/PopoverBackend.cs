@@ -47,7 +47,7 @@ namespace Xwt.Mac
 	public class PopoverBackend : IPopoverBackend
 	{
 		NSPopover popover;
-		public event EventHandler Closed;
+		public event EventHandler Closed = null;
 
 		class FactoryViewController : NSViewController
 		{
@@ -106,7 +106,7 @@ namespace Xwt.Mac
 
 		public Color BackgroundColor { get; set; }
 
-		IPopoverEventSink sink;
+		IPopoverEventSink sink = null;
 		
 		public void Initialize (IPopoverEventSink sink)
 		{

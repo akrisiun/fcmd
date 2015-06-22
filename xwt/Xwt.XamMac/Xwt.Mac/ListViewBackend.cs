@@ -162,8 +162,7 @@ namespace Xwt.Mac
 		}
 
 		// TODO
-		public bool BorderVisible { get; set; }
-
+		// public bool BorderVisible { get; set; }
 
 		public int GetRowAtPosition (Point p)
 		{

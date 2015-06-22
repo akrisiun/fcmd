@@ -48,11 +48,11 @@ namespace Xwt.Mac
 {
 	public class DialogBackend: WindowBackend, IDialogBackend
 	{
-		NSView mainBox;
+		// NSView mainBox = null;
 		HBox buttonBox;
 		NSView buttonBoxView;
-		Widget dialogChild;
-		Size minSize;
+		// Widget dialogChild = null;
+		Size minSize = Size.Zero;
 		Dictionary<DialogButton,Button> buttons = new Dictionary<DialogButton, Button> ();
 		WidgetSpacing buttonBoxPadding = new WidgetSpacing (12, 6, 12, 12);
 

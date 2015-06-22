@@ -51,6 +51,48 @@ using ObjCRuntime;
 using RectangleF = System.Drawing.RectangleF;
 using SizeF = System.Drawing.SizeF;
 
+#if MONOMAC 
+
+namespace MonoMac.Foundation
+{
+	public static class NSStringAttributeKey {
+		// properties
+		public static MonoMac.Foundation.NSString Attachment { get { return (NSString)"Attachment"; } }
+
+		public static MonoMac.Foundation.NSString BackgroundColor { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString BaselineOffset { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString CharacterShape { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString Cursor { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString Expansion { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString Font { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString ForegroundColor { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString GlyphInfo { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString KerningAdjustment { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString Ligature { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString Link { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString MarkedClauseSegment { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString Obliqueness { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString ParagraphStyle { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString Shadow { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString SpellingState { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString StrikethroughColor { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString StrikethroughStyle { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString StrokeColor { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString StrokeWidth { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString Superscript { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString TextAlternatives { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString TextEffect { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString ToolTip { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString UnderlineColor { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString UnderlineStyle { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString VerticalGlyphForm { get { return (NSString)"";} }
+		public static MonoMac.Foundation.NSString WritingDirection { get { return (NSString)"";} }
+	}
+
+}
+
+#endif 
+
 namespace Xwt.Mac
 {
 	public static class Util
@@ -213,6 +255,8 @@ namespace Xwt.Mac
 		static Selector selCopyWithZone = new Selector ("copyWithZone:");
 		static DateTime lastCopyPoolDrain = DateTime.Now;
 		static List<object> copyPool = new List<object> ();
+
+		// MonoMac.Foundation.NsString NSStringAttributeKey 
 
 		/// <summary>
 		/// Implements the NSCopying protocol in a class. The class must implement ICopiableObject.

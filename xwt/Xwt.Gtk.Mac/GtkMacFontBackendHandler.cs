@@ -1,6 +1,6 @@
 ﻿using System;
-using CoreText;
-using Foundation;
+using MonoMac.CoreText;
+using MonoMac.Foundation;
 
 namespace Xwt.Gtk.Mac
 {

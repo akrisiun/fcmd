@@ -209,7 +209,8 @@ namespace Xwt.Mac
 		public bool GetDropTargetRow (double x, double y, out RowDropPosition pos, out TreePosition nodePosition)
 		{
 			// Get row
-			nint row = Tree.GetRow(new CGPoint ((nfloat)x, (nfloat)y));
+			nint row = Tree.GetRow(new CGPoint((float)x, (float)y)); //  ((nfloat)x, (nfloat)y));
+				 // Tree.GetRow(new CGPoint ((nfloat)x, (nfloat)y));
 			pos = RowDropPosition.Into;
 			nodePosition = null;
 			if (row >= 0) {

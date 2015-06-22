@@ -40,10 +40,12 @@ namespace Xwt.Mac
 {
 	public class ComboBoxEntryBackend: ViewBackend<NSComboBox,IComboBoxEventSink>, IComboBoxEntryBackend
 	{
-		IListDataSource source;
+		IListDataSource source = null;
 		ComboDataSource tsource;
 		TextEntryBackend entryBackend;
 		int textColumn;
+		
+		public object DataObject { get { return source; } }
 		
 		public ComboBoxEntryBackend ()
 		{

@@ -280,7 +280,7 @@ namespace Xwt.Mac
 	{
 		ITextEntryEventSink eventSink;
 		ApplicationContext context;
-		CustomCell cell;
+		CustomCell cell = null;
 
 		public CustomTextField (ITextEntryEventSink eventSink, ApplicationContext context)
 		{

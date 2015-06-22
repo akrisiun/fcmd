@@ -56,7 +56,7 @@ namespace Xwt.GtkBackend
 		public event EventHandler<ListRowEventArgs> RowInserted;
 		public event EventHandler<ListRowEventArgs> RowDeleted;
 		public event EventHandler<ListRowEventArgs> RowChanged;
-		public event EventHandler<ListRowOrderEventArgs> RowsReordered;
+		public event EventHandler<ListRowOrderEventArgs> RowsReordered = null;
 
 		public Gtk.ListStore List {
 			get { return (Gtk.ListStore) Store; }

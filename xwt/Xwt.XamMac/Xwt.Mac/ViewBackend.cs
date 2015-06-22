@@ -492,7 +492,7 @@ namespace Xwt.Mac
 			Widget.SetFrameSize (new CGSize ((nfloat)s.Width, (nfloat)s.Height));
 		}
 
-		NSObject gotFocusObserver;
+		// NSObject gotFocusObserver = null;
 		
 		public virtual void EnableEvent (object eventId)
 		{

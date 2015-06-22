@@ -25,11 +25,11 @@
 // THE SOFTWARE.
 using System;
 using Xwt.GtkBackend;
-using AppKit;
+using MonoMac.AppKit;
 using System.Drawing;
 using System.IO;
 using GTK = global::Gtk;
-using CoreGraphics;
+using MonoMac.CoreGraphics;
 
 namespace Xwt.Gtk.Mac
 {
@@ -46,7 +46,8 @@ namespace Xwt.Gtk.Mac
 
 		public static Gdk.Pixbuf GetPixbufFromNSImage (NSImage icon, int width, int height)
 		{
-			var rect = new CGRect (0, 0, width, height);
+			// var rect = new  CGRect (0, 0, width, height);
+			var rect = new RectangleF (0, 0, width, height);
 
 			var rep = icon.BestRepresentation (rect, null, null);
 			var bitmap = rep as NSBitmapImageRep;

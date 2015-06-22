@@ -31,8 +31,16 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="glib-sharp">
+      <HintPath>..\glib-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="gtk-sharp">
+      <HintPath>..\gtk-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMac">
+      <HintPath>..\MonoMac.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
-    <Reference Include="MonoMac, Version=0.0.0.0, Culture=neutral" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
   </ItemGroup>

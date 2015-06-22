@@ -27,6 +27,8 @@
 using System;
 using Xwt.GtkBackend;
 using Xwt.Backends;
+
+/*
 using Foundation;
 
 namespace Xwt.Gtk.Mac
@@ -175,3 +177,4 @@ namespace Xwt.Gtk.Mac
 	}
 }
 
+*/

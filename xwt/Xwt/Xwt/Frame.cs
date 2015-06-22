@@ -38,7 +38,7 @@ namespace Xwt
 		Widget child;
 		WidgetSpacing borderWidth;
 		WidgetSpacing padding;
-		FrameType type;
+		// FrameType type;
 		
 		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IFrameEventSink
 		{
@@ -60,7 +60,7 @@ namespace Xwt
 		public Frame (FrameType frameType)
 		{
 			VerifyConstructorCall (this);
-			Type = frameType;
+            // Type = frameType;
 		}
 		
 		public Frame (Widget content)
@@ -69,20 +69,20 @@ namespace Xwt
 			Content = content;
 		}
 
-		[Obsolete ("Use Xwt.FrameBox")]
-		public Frame (Widget content, FrameType frameType)
-		{
-			VerifyConstructorCall (this);
-			Type = frameType;
-			Content = content;
-		}
+		//[Obsolete ("Use Xwt.FrameBox")]
+		//public Frame (Widget content, FrameType frameType)
+		//{
+		//	VerifyConstructorCall (this);
+		//	Type = frameType;
+		//	Content = content;
+		//}
 		
-		[Obsolete ("Use Xwt.FrameBox")]
-		[DefaultValue (FrameType.WidgetBox)]
-		public FrameType Type {
-			get { return type; }
-			set { type = value; Backend.SetFrameType (type); }
-		}
+		//[Obsolete ("Use Xwt.FrameBox")]
+		//[DefaultValue (FrameType.WidgetBox)]
+		//public FrameType Type {
+		//	get { return type; }
+		//	set { type = value; Backend.SetFrameType (type); }
+		//}
 		
 		[DefaultValue (null)]
 		public string Label {
@@ -149,7 +149,7 @@ namespace Xwt
 			}
 		}
 
-		[Obsolete ("Use Xwt.FrameBox")]
+		// [Obsolete ("Use Xwt.FrameBox")]
 		[DefaultValue (0d)]
 		public double BorderWidthLeft {
 			get { return borderWidth.Left; }
@@ -159,7 +159,7 @@ namespace Xwt
 			}
 		}
 
-		[Obsolete ("Use Xwt.FrameBox")]
+		// [Obsolete ("Use Xwt.FrameBox")]
 		[DefaultValue (0d)]
 		public double BorderWidthRight {
 			get { return borderWidth.Right; }
@@ -169,7 +169,7 @@ namespace Xwt
 			}
 		}
 
-		[Obsolete ("Use Xwt.FrameBox")]
+		// [Obsolete ("Use Xwt.FrameBox")]
 		[DefaultValue (0d)]
 		public double BorderWidthTop {
 			get { return borderWidth.Top; }
@@ -179,7 +179,7 @@ namespace Xwt
 			}
 		}
 
-		[Obsolete ("Use Xwt.FrameBox")]
+		// [Obsolete ("Use Xwt.FrameBox")]
 		[DefaultValue (0d)]
 		public double BorderWidthBottom {
 			get { return borderWidth.Bottom; }
