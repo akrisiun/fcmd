@@ -35,9 +35,10 @@ namespace fcmd
         public MenuItemWithKey mnuFileEdit = new MenuItemWithKey { Tag = "mnuFileEdit" };
         public MenuItemWithKey mnuFileCompare = new MenuItemWithKey { Tag = "mnuFileCompare" };
         public MenuItemWithKey mnuFileCopy = new MenuItemWithKey { Tag = "mnuFileCopy", Key="F5", Label = "Copy F5" };
-        public MenuItemWithKey mnuFileMove = new MenuItemWithKey { Tag = "mnuFileMove" };
-        public MenuItemWithKey mnuFileNewDir = new MenuItemWithKey { Tag = "mnuFileNewDir" };
-        public MenuItemWithKey mnuFileRemove = new MenuItemWithKey { Tag = "mnuFileRemove" };
+        public MenuItemWithKey mnuFileMove = new MenuItemWithKey { Tag = "mnuFileMove", Key="F6" };
+        public MenuItemWithKey mnuFileNewDir = new MenuItemWithKey { Tag = "mnuFileNewDir", Key = "F7" };
+        public MenuItemWithKey mnuFileRemove = new MenuItemWithKey { Tag = "mnuFileRemove", Key = "F8" };
+
         public MenuItemWithKey mnuFileAtributes = new MenuItemWithKey { Tag = "mnuFileAtributes" };
         public MenuItemWithKey mnuFileQuickSelect = new MenuItemWithKey { Tag = "mnuFileQuickSelect" };
         public MenuItemWithKey mnuFileQuickUnselect = new MenuItemWithKey { Tag = "mnuFileQuickUnselect" };
@@ -111,6 +112,7 @@ namespace fcmd
         {
             this.argv = argv;
             this.Title = "File Commander";
+            // this.Icon = Images
             this.MainMenu = WindowMenu;
             this.PaddingLeft = PaddingRight = PaddingTop = 0;
             PaddingBottom = PaddingBottom / 3;
@@ -471,11 +473,9 @@ namespace fcmd
             for (int i = 1; i < 11; i++)
             {
                 KeybHelpButtons[i] = new KeyboardHelpButton { CanGetFocus = false };
-                //KeyBoardHelp.PackStart(KeybHelpButtons[i],
-                //    true, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, -6, 0, -3);
+                KeyBoardHelp.PackStart(KeybHelpButtons[i],
+                   true, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, -6, 0, -3);
             }
-
-            return;
 
             KeybHelpButtons[1].Clicked += (o, ea) =>
             { this.PanelLayout_KeyReleased(this, new Xwt.KeyEventArgs(Xwt.Key.F1, Xwt.ModifierKeys.None, false, 0)); };

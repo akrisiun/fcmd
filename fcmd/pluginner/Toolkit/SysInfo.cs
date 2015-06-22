@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using WinForms = System.Windows.Forms;
+// using WinForms = System.Windows.Forms;
 
 namespace pluginner.Toolkit
 {
@@ -32,7 +32,7 @@ namespace pluginner.Toolkit
 					case PlatformID.Win32NT:
 					case PlatformID.WinCE:
 					case PlatformID.Xbox:
-						return WinForms.SystemInformation.DoubleClickTime;
+						// return WinForms.SystemInformation.DoubleClickTime;
 					case PlatformID.Unix:
 						//in the future, here should be returned a value from GTK+ settings
 					case PlatformID.MacOSX:

@@ -14,7 +14,7 @@ using Microsoft.Win32;
 using Xwt;
 using Xwt.Drawing;
 using System.Collections.Generic;
-using Application = System.Windows.Forms.Application;
+// using Application = System.Windows.Forms.Application;
 using Color = Xwt.Drawing.Color;
 using Image = Xwt.Drawing.Image;
 
@@ -22,7 +22,8 @@ namespace pluginner.Toolkit
 {
 	public static class Utilities
 	{
-		static string PathToIcons = Application.StartupPath + Path.DirectorySeparatorChar + "icons";
+		static string PathToIcons = //  Application.StartupPath 
+            System.AppDomain.CurrentDomain.BaseDirectory + Path.DirectorySeparatorChar + "icons";
 
 		static Dictionary<string, Image> cached_images = new Dictionary<string, Image>();
 

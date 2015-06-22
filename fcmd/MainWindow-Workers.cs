@@ -12,6 +12,7 @@ using System.Text;
 using System.IO;
 using pluginner;
 using pluginner.Toolkit;
+using System.Threading;
 
 namespace fcmd
 {
@@ -109,15 +110,19 @@ namespace fcmd
 				DestinationFS.Touch(md);
 				System.IO.Stream DestStream = DestinationFS.GetFileStream(DestinationURL,true);
 
-				if(AC == null) AC = new AsyncCopy();
-				bool CpComplete = false;
+                EventWaitHandle wh = new EventWaitHandle(true, EventResetMode.ManualReset);
 
-				AC.OnComplete += result => CpComplete = true;
+                    if (AC == null) AC = new AsyncCopy();
+				    bool CpComplete = false;
 
-				//warning: due to some GTK# bugs, buffer sizes lesser than 128KB may cause
-				//an StackOverflowException at UI update code
-				AC.CopyFile(SrcStream, DestStream, 131072); //buffer is 1/8 megabyte or 128KB
+				    AC.OnComplete += result => CpComplete = true;
 
+				    //warning: due to some GTK# bugs, buffer sizes lesser than 128KB may cause
+				    //an StackOverflowException at UI update code
+				    AC.CopyFile(SrcStream, DestStream, 131072); //buffer is 1/8 megabyte or 128KB
+
+                wh.WaitOne();
+                wh.Close();
 				do{ } while(!CpComplete); //don't stop this thread until the copy is finished
 			}
 			catch (Exception ex)

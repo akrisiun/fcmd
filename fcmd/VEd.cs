@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using fcmd.base_plugins.ve;
 using fcmd.Properties;
-using mucss;
+// using mucss;
 using pluginner;
 using pluginner.Toolkit;
 using Xwt;
@@ -427,20 +427,20 @@ namespace fcmd
 
             Resizable = true; //fix for some stupid xwt toolkits.
 
-            Selector sel = s.CSS["VE"];
-            try
-            {
-                Height = (sel.Declarations["height"].Value == "auto" ? Settings.Default.VEWinHeight : Convert.ToDouble(sel.Declarations["height"].Value));
-                Width = (sel.Declarations["width"].Value == "auto" ? Settings.Default.VEWinWidth : Convert.ToDouble(sel.Declarations["width"].Value));
-            }
-            catch { } //a dirty workaround for a Xwt.WPF bug (""-1" не является допустимым значением для свойства "Width"." (System.ArgumentException))
-            if (sel.Declarations["background-color"].Value != "inherit")
-            {
-                Layout.BackgroundColor =
-                Utilities.GetXwtColor(
-                    sel.Declarations["background-color"].Value
-                );
-            }
+            //Selector sel = s.CSS["VE"];
+            //try
+            //{
+            //    Height = (sel.Declarations["height"].Value == "auto" ? Settings.Default.VEWinHeight : Convert.ToDouble(sel.Declarations["height"].Value));
+            //    Width = (sel.Declarations["width"].Value == "auto" ? Settings.Default.VEWinWidth : Convert.ToDouble(sel.Declarations["width"].Value));
+            //}
+            //catch { } //a dirty workaround for a Xwt.WPF bug (""-1" не является допустимым значением для свойства "Width"." (System.ArgumentException))
+            //if (sel.Declarations["background-color"].Value != "inherit")
+            //{
+            //    Layout.BackgroundColor =
+            //    Utilities.GetXwtColor(
+            //        sel.Declarations["background-color"].Value
+            //    );
+            //}
         }
 
 

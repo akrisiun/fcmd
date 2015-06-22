@@ -20,17 +20,17 @@ namespace fcmd.Menu
             get { return null; } // TODO: base.Items as Collection<MenuItemWithKey>; }
         }
 
-        public IMenuBackend Backend
-        {
-            get { return (IMenuBackend)BackendHost.Backend; }
-        }
+        //public IMenuBackend Backend
+        //{
+        //    get { return (IMenuBackend)BackendHost.Backend; }
+        //}
 
-        protected void InsertItem(int n, MenuItem item)
+        protected new void InsertItem(int n, MenuItem item)
         {
             Backend.InsertItem(n, (IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend(item));
         }
 
-        protected void RemoveItem(MenuItem item)
+        protected new void RemoveItem(MenuItem item)
         {
             Backend.RemoveItem((IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend(item));
         }

@@ -41,8 +41,12 @@ namespace fcmd
 			FSPlugins.Add("file;(internal)LocalFS;" + Localizator.GetString("LocalFSVer"));
 
             if (Environment.OSVersion.Platform == PlatformID.Win32NT)
+            {
                 // ftps before ftp
                 FSPlugins.Add("ftps;fcmd.ftps.dll;ftps-plugin");
+                // ftp with Proxy support
+                FSPlugins.Add("ftp;fcmd.ftps.dll;ftps-plugin");
+            }
             else
                 FSPlugins.Add("ftp;(internal)FTPFS;FTP");
 
