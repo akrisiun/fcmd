@@ -8,7 +8,12 @@ namespace fcmd.theme
     public interface ITheme
     {
         void Init(MainWindow window);
-        void Key(MainWindow window, Xwt.KeyEventArgs key);
+
+#if WPF
+        void KeyEvent(MainWindow window, System.Windows.Input.KeyEventArgs key);
+#else
+        void KeyEvent(MainWindow window, Xwt.KeyEventArgs key);
+#endif
     }
 
     public class Control

@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{40506FF6-CD02-40FF-BF9F-D9702BAEDE5B}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>fcmd</RootNamespace>
+    <AssemblyName>fcmdp</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\bin\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;WPF;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>FavIcon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>xwt.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="AiLib\IOFile\DirectoryEnum.cs" />
+    <Compile Include="AiLib\IOFile\Iterator.cs" />
+    <Compile Include="AiLib\IOFile\PathHelpers.cs" />
+    <Compile Include="AiLib\IOFile\Win32FileSystemEnumerableIterator.cs" />
+    <Compile Include="AiLib\IOFile\Win32FindFile.cs" />
+    <Compile Include="base-plugins\fs\FTPFileSystem.cs" />
+    <Compile Include="base-plugins\fs\localFileSystem-CLI.cs" />
+    <Compile Include="base-plugins\fs\localFileSystem.cs" />
+    <Compile Include="base-plugins\ve\PlainText.cs" />
+    <Compile Include="base-plugins\ve\PlainXml.cs" />
+    <Compile Include="FileList\AsyncCopy.cs" />
+    <Compile Include="FileList\FileListPanel.cs" />
+    <Compile Include="FileList\FileProcessDialog.cs" />
+    <Compile Include="FileList\FLPDataSource.cs" />
+    <Compile Include="FileList\FTPClient.cs" />
+    <Compile Include="FileList\InputBox.cs" />
+    <Compile Include="FileList\KeyboardHelpButton.cs" />
+    <Compile Include="FileList\Localizator.cs" />
+    <Compile Include="FileList\MainWindow-Actions.cs" />
+    <Compile Include="FileList\MainWindow-Workers.cs" />
+    <Compile Include="FileList\ReplaceQuestionDialog.cs" />
+    <Compile Include="FileList\Settings.cs" />
+    <Compile Include="FileList\SettingsWindow.cs" />
+    <Compile Include="FileList\VEd.cs" />
+    <Compile Include="FileList\VEsettings.cs" />
+    <Compile Include="FileList\XmlDisplay.cs" />
+    <Compile Include="Menu\Menu.cs" />
+    <Compile Include="Menu\MenuItemWIthKey.cs" />
+    <Compile Include="pluginfinder.cs" />
+    <Compile Include="Properties\Resources.Designer.cs" />
+    <Compile Include="SettingsWindowTabs\ISettingsWindowTab.cs" />
+    <Compile Include="SettingsWindowTabs\swtMainWindow.cs" />
+    <Compile Include="SettingsWindowTabs\swtMainWindowColumns.cs" />
+    <Compile Include="SettingsWindowTabs\swtMainWindowFonts.cs" />
+    <Compile Include="SettingsWindowTabs\swtMainWindowInfobar.cs" />
+    <Compile Include="SettingsWindowTabs\swtMainWindowThemes.cs" />
+    <Compile Include="SettingsWindowTabs\swtViewerEditor.cs" />
+    <Compile Include="theme\Control.cs" />
+    <Compile Include="theme\PanelCmd.xaml.cs">
+      <DependentUpon>PanelCmd.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="theme\PanelWpf.xaml.cs">
+      <DependentUpon>PanelWpf.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="theme\WindowData.cs" />
+    <Compile Include="theme\wpf.cs" />
+    <Compile Include="theme\WpfMenu.cs" />
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="theme\PanelCmd.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="theme\PanelWpf.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <None Include="xwt.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FavIcon.ico" />
+    <EmbeddedResource Include="Properties\Resources.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xwt\Xwt.WPF\Xwt.WPF.csproj">
+      <Project>{C93D746E-1586-4D4F-B411-BF5A966E6A08}</Project>
+      <Name>Xwt.WPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xwt\Xwt\Xwt.csproj">
+      <Project>{92494904-35fa-4dc9-bde9-3a3e87ac49d3}</Project>
+      <Name>Xwt</Name>
+    </ProjectReference>
+    <ProjectReference Include="pluginner\pluginner.csproj">
+      <Project>{88785b26-d617-4be9-b449-f7ce77444794}</Project>
+      <Name>pluginner</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\lang_RusUI.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\lang_EngUI.txt" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

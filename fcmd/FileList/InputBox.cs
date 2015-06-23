@@ -39,6 +39,11 @@ namespace fcmd
             this.Buttons.Add(Buttons);
         }
 
+        public bool ShowDialog(System.Windows.Window parent)
+        {
+            return false;
+        }
+
         /// <summary>Shows dialog</summary>
         /// <returns><value>True</value> if user want to proceed current operation, and <value>False</value> if user don't.</returns>
         public bool ShowDialog(Xwt.WindowFrame parent = null)

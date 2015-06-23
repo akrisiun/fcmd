@@ -44,8 +44,8 @@ namespace fcmd
                 Xwt.MessageDialog.ShowError(string.Format(Localizator.GetString("FileNotFound"), ActivePanel.GetValue(ActivePanel.dfDisplayName)));
                 return;
             }
-            
-			// string FileContent = Encoding.ASCII.GetString(fs.GetFileContent(url));
+
+            // string FileContent = Encoding.ASCII.GetString(fs.GetFileContent(url));
             fcv.LoadFile(url, ActivePanel.FS, false);
             fcv.Show();
         }
@@ -170,7 +170,7 @@ namespace fcmd
                 {
                     string SourceName = SourceFS.GetMetadata(SourceURL).Name;
                     InputBox ibx = new InputBox(
-                        String.Format(Localizator.GetString("CopyTo"), SourceName), 
+                        String.Format(Localizator.GetString("CopyTo"), SourceName),
                         PassivePanel.FS.CurrentDirectory + PassivePanel.FS.DirSeparator + SourceName);
 
                     if (ibx.ShowDialog(this))

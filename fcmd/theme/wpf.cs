@@ -1,5 +1,6 @@
 ﻿using pluginner.Widgets;
 using System;
+using System.Windows.Input;
 
 namespace fcmd.theme
 {
@@ -9,136 +10,141 @@ namespace fcmd.theme
     {
         public void Init(MainWindow @this)
         {
+#if !WPF
             InitMenu(@this);
-
+#endif
         }
 
         public void Shown(MainWindow @this)
         {
+#if !WPF
             @this.p2.Visible = false;
 
             @this.LoadDir(@this.argv);
 
             var listing = @this.ActivePanel.ListingView;
+#endif
             // .ScrollerIn.Visible = false;
             // ScrollerOut.Visible = false;
         }
 
         public void InitMenu(MainWindow @this)
         {
-            @this.KeyBoardHelp.Visible = false;
+            //    @this.KeyBoardHelp.Visible = false;
 
-            //build user interface
-            @this.MainMenu.Items.Add(@this.mnuFile);
-            @this.MainMenu.Items.Add(@this.mnuView);
-            @this.MainMenu.Items.Add(@this.mnuNavigate);
-            @this.MainMenu.Items.Add(@this.mnuTools);
-            @this.MainMenu.Items.Add(@this.mnuHelp);
+            //    //build user interface
+            //    @this.MainMenu.Items.Add(@this.mnuFile);
+            //    @this.MainMenu.Items.Add(@this.mnuView);
+            //    @this.MainMenu.Items.Add(@this.mnuNavigate);
+            //    @this.MainMenu.Items.Add(@this.mnuTools);
+            //    @this.MainMenu.Items.Add(@this.mnuHelp);
 
-            var mnuFile = @this.mnuFile;
-            mnuFile.SubMenu = new Xwt.Menu();
-            mnuFile.SubMenu.Items.Add(@this.mnuFileUserMenu);
-            mnuFile.SubMenu.Items.Add(@this.mnuFileView);
-            mnuFile.SubMenu.Items.Add(@this.mnuFileEdit);
-            mnuFile.SubMenu.Items.Add(@this.mnuFileCompare);
-            mnuFile.SubMenu.Items.Add(@this.mnuFileCopy);
-            mnuFile.SubMenu.Items.Add(@this.mnuFileMove);
-            mnuFile.SubMenu.Items.Add(@this.mnuFileNewDir);
-            mnuFile.SubMenu.Items.Add(@this.mnuFileRemove);
+            //    var mnuFile = @this.mnuFile;
+            //    mnuFile.SubMenu = new Xwt.Menu();
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileUserMenu);
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileView);
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileEdit);
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileCompare);
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileCopy);
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileMove);
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileNewDir);
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileRemove);
 
-            mnuFile.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
-            mnuFile.SubMenu.Items.Add(@this.mnuFileAtributes);
-            mnuFile.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
-            mnuFile.SubMenu.Items.Add(@this.mnuFileQuickSelect);
-            mnuFile.SubMenu.Items.Add(@this.mnuFileQuickUnselect);
-            mnuFile.SubMenu.Items.Add(@this.mnuFileSelectAll);
-            mnuFile.SubMenu.Items.Add(@this.mnuFileUnselect);
-            mnuFile.SubMenu.Items.Add(@this.mnuFileInvertSelection);
-            mnuFile.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
-            mnuFile.SubMenu.Items.Add(@this.mnuFileExit);
+            //    mnuFile.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileAtributes);
+            //    mnuFile.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileQuickSelect);
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileQuickUnselect);
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileSelectAll);
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileUnselect);
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileInvertSelection);
+            //    mnuFile.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
+            //    mnuFile.SubMenu.Items.Add(@this.mnuFileExit);
 
-            var mnuView = @this.mnuView;
-            mnuView.SubMenu = new Xwt.Menu();
-            mnuView.SubMenu.Items.Add(@this.mnuViewShort);
-            mnuView.SubMenu.Items.Add(@this.mnuViewDetails);
-            mnuView.SubMenu.Items.Add(@this.mnuViewIcons);
-            mnuView.SubMenu.Items.Add(@this.mnuViewThumbs);
-            mnuView.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
-            mnuView.SubMenu.Items.Add(@this.mnuViewQuickView);
-            mnuView.SubMenu.Items.Add(@this.mnuViewTree);
-            mnuView.SubMenu.Items.Add(@this.mnuViewPCPCconnect);
-            mnuView.SubMenu.Items.Add(@this.mnuViewPCNETPCconnect);
-            mnuView.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
-            mnuView.SubMenu.Items.Add(@this.mnuViewByName);
-            mnuView.SubMenu.Items.Add(@this.mnuViewByType);
-            mnuView.SubMenu.Items.Add(@this.mnuViewByDate);
-            mnuView.SubMenu.Items.Add(@this.mnuViewBySize);
-            mnuView.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
-            mnuView.SubMenu.Items.Add(@this.mnuViewNoFilter);
-            mnuView.SubMenu.Items.Add(@this.mnuViewWithFilter);
-            mnuView.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
-            mnuView.SubMenu.Items.Add(@this.mnuViewKeybrdHelp); //these checkboxes don't work, because no code was written
-            mnuView.SubMenu.Items.Add(@this.mnuViewInfobar);
-            mnuView.SubMenu.Items.Add(@this.mnuViewDiskButtons);
+            //    var mnuView = @this.mnuView;
+            //    mnuView.SubMenu = new Xwt.Menu();
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewShort);
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewDetails);
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewIcons);
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewThumbs);
+            //    mnuView.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewQuickView);
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewTree);
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewPCPCconnect);
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewPCNETPCconnect);
+            //    mnuView.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewByName);
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewByType);
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewByDate);
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewBySize);
+            //    mnuView.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewNoFilter);
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewWithFilter);
+            //    mnuView.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewKeybrdHelp); //these checkboxes don't work, because no code was written
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewInfobar);
+            //    mnuView.SubMenu.Items.Add(@this.mnuViewDiskButtons);
 
-            var mnuNavigate = @this.mnuNavigate;
-            mnuNavigate.SubMenu = new Xwt.Menu();
-            mnuNavigate.SubMenu.Items.Add(@this.mnuNavigateTree);
-            mnuNavigate.SubMenu.Items.Add(@this.mnuNavigateHistory);
-            mnuNavigate.SubMenu.Items.Add(@this.mnuNavigateFind);
-            mnuNavigate.SubMenu.Items.Add(@this.mnuNavigateReload);
+            //    var mnuNavigate = @this.mnuNavigate;
+            //    mnuNavigate.SubMenu = new Xwt.Menu();
+            //    mnuNavigate.SubMenu.Items.Add(@this.mnuNavigateTree);
+            //    mnuNavigate.SubMenu.Items.Add(@this.mnuNavigateHistory);
+            //    mnuNavigate.SubMenu.Items.Add(@this.mnuNavigateFind);
+            //    mnuNavigate.SubMenu.Items.Add(@this.mnuNavigateReload);
 
-            var mnuTools = @this.mnuTools;
-            mnuTools.SubMenu = new Xwt.Menu();
-            mnuTools.SubMenu.Items.Add(@this.mnuToolsOptions);
-            mnuTools.SubMenu.Items.Add(@this.mnuToolsPluginManager);
-            mnuTools.SubMenu.Items.Add(@this.mnuToolsEditUserMenu);
-            mnuTools.SubMenu.Items.Add(@this.mnuToolsKeychains);
-            mnuTools.SubMenu.Items.Add(@this.mnuToolsConfigEdit);
-            mnuTools.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
-            mnuTools.SubMenu.Items.Add(@this.mnuToolsDiskLabel);
-            mnuTools.SubMenu.Items.Add(@this.mnuToolsFormat);
-            mnuTools.SubMenu.Items.Add(@this.mnuToolsSysInfo);
+            //    var mnuTools = @this.mnuTools;
+            //    mnuTools.SubMenu = new Xwt.Menu();
+            //    mnuTools.SubMenu.Items.Add(@this.mnuToolsOptions);
+            //    mnuTools.SubMenu.Items.Add(@this.mnuToolsPluginManager);
+            //    mnuTools.SubMenu.Items.Add(@this.mnuToolsEditUserMenu);
+            //    mnuTools.SubMenu.Items.Add(@this.mnuToolsKeychains);
+            //    mnuTools.SubMenu.Items.Add(@this.mnuToolsConfigEdit);
+            //    mnuTools.SubMenu.Items.Add(new Xwt.SeparatorMenuItem());
+            //    mnuTools.SubMenu.Items.Add(@this.mnuToolsDiskLabel);
+            //    mnuTools.SubMenu.Items.Add(@this.mnuToolsFormat);
+            //    mnuTools.SubMenu.Items.Add(@this.mnuToolsSysInfo);
 
-            var mnuHelp = @this.mnuHelp;
-            mnuHelp.SubMenu = new Xwt.Menu();
-            mnuHelp.SubMenu.Items.Add(@this.mnuHelpHelpMe);
-            mnuHelp.SubMenu.Items.Add(@this.mnuHelpDebug);
-            mnuHelp.SubMenu.Items.Add(@this.mnuHelpAbout);
+            //    var mnuHelp = @this.mnuHelp;
+            //    mnuHelp.SubMenu = new Xwt.Menu();
+            //    mnuHelp.SubMenu.Items.Add(@this.mnuHelpHelpMe);
+            //    mnuHelp.SubMenu.Items.Add(@this.mnuHelpDebug);
+            //    mnuHelp.SubMenu.Items.Add(@this.mnuHelpAbout);
 
         }
 
         public void Localize(MainWindow @this)
         {
-            @this.TranslateMenu(@this.MainMenu);
 
-            for (int i = 1; i < 11; i++)
-            {
-                @this.KeybHelpButtons[i].FKey = "F" + i;
-                @this.KeybHelpButtons[i].Text = Localizator.GetString("FCF" + i);
-            }
+            //    @this.TranslateMenu(@this.MainMenu);
 
-            var LVCols = @this.LVCols;
-            LVCols.Clear();
-            LVCols.Add(new ListView2.ColumnInfo
-            { Title = "", Tag = "Icon", Width = 16, Visible = true });
-            LVCols.Add(new ListView2.ColumnInfo
-            { Title = "URL", Tag = "Path", Width = 0, Visible = false });
-            LVCols.Add(new ListView2.ColumnInfo
-            { Title = Localizator.GetString("FName"), Tag = "FName", Width = 200, Visible = true });
-            LVCols.Add(new ListView2.ColumnInfo
-            { Title = Localizator.GetString("FSize"), Tag = "FSize", Width = 50, Visible = true });
-            LVCols.Add(new ListView2.ColumnInfo
-            { Title = Localizator.GetString("FDate"), Tag = "FDate", Width = 170, // 50,
-                Visible = true });
-            LVCols.Add(new ListView2.ColumnInfo
-            { Title = "Directory item info", Tag = "DirItem", Width = 0, Visible = false });
+            //    for (int i = 1; i < 11; i++)
+            //    {
+            //        @this.KeybHelpButtons[i].FKey = "F" + i;
+            //        @this.KeybHelpButtons[i].Text = Localizator.GetString("FCF" + i);
+            //    }
 
-            @this.p1.ListingView.SetColumns(LVCols);
-            @this.p2.ListingView.SetColumns(LVCols);
+            //    var LVCols = @this.LVCols;
+            //    LVCols.Clear();
+            //    LVCols.Add(new ListView2.ColumnInfo
+            //    { Title = "", Tag = "Icon", Width = 16, Visible = true });
+            //    LVCols.Add(new ListView2.ColumnInfo
+            //    { Title = "URL", Tag = "Path", Width = 0, Visible = false });
+            //    LVCols.Add(new ListView2.ColumnInfo
+            //    { Title = Localizator.GetString("FName"), Tag = "FName", Width = 200, Visible = true });
+            //    LVCols.Add(new ListView2.ColumnInfo
+            //    { Title = Localizator.GetString("FSize"), Tag = "FSize", Width = 50, Visible = true });
+            //    LVCols.Add(new ListView2.ColumnInfo
+            //    { Title = Localizator.GetString("FDate"), Tag = "FDate", Width = 170, // 50,
+            //        Visible = true });
+            //    LVCols.Add(new ListView2.ColumnInfo
+            //    { Title = "Directory item info", Tag = "DirItem", Width = 0, Visible = false });
+
+            //    @this.p1.ListingView.SetColumns(LVCols);
+            //    @this.p2.ListingView.SetColumns(LVCols);
         }
 
-        public void Key(MainWindow @this, Xwt.KeyEventArgs e)
+        // public void Key(MainWindow @this, Xwt.KeyEventArgs e)
+        public void KeyEvent(MainWindow @this, System.Windows.Input.KeyEventArgs e)
         {
             var ActivePanel = @this.ActivePanel;
             var PassivePanel = @this.PassivePanel;
@@ -160,7 +166,8 @@ namespace fcmd.theme
 
             switch (e.Key)
             {
-                case Xwt.Key.NumPadAdd: //[+] gray - add selection
+                // case Xwt.Key.NumPadAdd: //[+] gray - add selection
+                case Key.OemPlus:
                     string Filter = @"*.*";
 
                     InputBox ibx_qs = new InputBox(Localizator.GetString("QuickSelect"), Filter);
@@ -196,7 +203,8 @@ namespace fcmd.theme
                     }
                     return;
 
-                case Xwt.Key.NumPadSubtract: //[-] gray - add selection
+                // case Xwt.Key.NumPadSubtract: //[-] gray - add selection
+                case Key.OemMinus:
                     string Filter_qus = @"*.*";
 
                     InputBox ibx_qus = new InputBox(Localizator.GetString("QuickUnselect"), Filter_qus);
@@ -231,7 +239,7 @@ namespace fcmd.theme
                     return;
 
                 //F KEYS
-                case Xwt.Key.F3: //F3: View. Shift+F3: View as text.
+                case Key.F3: //F3: View. Shift+F3: View as text.
                     if (URL1 == null)
                         return;
 
@@ -242,14 +250,23 @@ namespace fcmd.theme
                     }
 
                     VEd V = new VEd();
-                    if (e.Modifiers == Xwt.ModifierKeys.None)
-                    { V.LoadFile(URL1, FS1, false); V.Show(); }
-                    else if (e.Modifiers == Xwt.ModifierKeys.Shift)
-                    { V.LoadFile(URL1, FS1, new base_plugins.ve.PlainText(), false); V.Show(); }
+                    //if (e.Modifiers == Xwt.ModifierKeys.None)
+                    //{
+                    //    V.LoadFile(URL1, FS1, false);
+                    //    V.Show();
+                    //}
+                    //else if (e.Modifiers == Xwt.ModifierKeys.Shift)
+                    //{
+                    //    V.LoadFile(URL1, FS1, new base_plugins.ve.PlainText(), false);
+                    //    V.Show();
+                    //}
+
                     //todo: handle Ctrl+F3 (Sort by name).
                     return;
 
-                case Xwt.Key.F4: //F4: Edit. Shift+F4: Edit as txt.
+                // case Xwt.Key.F4: //F4: Edit. Shift+F4: Edit as txt.
+                case Key.F4:
+
                     if (URL1 == null)
                         return;
 
@@ -260,42 +277,43 @@ namespace fcmd.theme
                     }
 
                     VEd E = new VEd();
-                    if (e.Modifiers == Xwt.ModifierKeys.None)
-                    { E.LoadFile(URL1, FS1, true); E.Show(); }
-                    else if (e.Modifiers == Xwt.ModifierKeys.Shift)
-                    { E.LoadFile(URL1, FS1, new base_plugins.ve.PlainText(), true); E.Show(); }
+                    //if (e.Modifiers == Xwt.ModifierKeys.None)
+                    //{ E.LoadFile(URL1, FS1, true); E.Show(); }
+                    //else if (e.Modifiers == Xwt.ModifierKeys.Shift)
+                    //{ E.LoadFile(URL1, FS1, new base_plugins.ve.PlainText(), true); E.Show(); }
                     //todo: handle Ctrl+F4 (Sort by extension).
                     return;
 
-                case Xwt.Key.F5: //F5: Copy.
+                case Key.F5: //F5: Copy.
                     if (URL1 == null)
                         return;
                     @this.Cp();
                     //todo: handle Ctrl+F5 (Sort by timestamp).
                     return;
 
-                case Xwt.Key.F6: //F6: Move/Rename.
+                case Key.F6: //F6: Move/Rename.
                     if (URL1 == null)
                         return;
                     @this.Mv();
                     //todo: handle Ctrl+F6 (Sort by size).
                     return;
-                case Xwt.Key.F7: //F7: New directory.
+                case Key.F7: //F7: New directory.
                     InputBox ibx = new InputBox(Localizator.GetString("NewDirURL"), ActivePanel.FS.CurrentDirectory + Localizator.GetString("NewDirTemplate"));
                     if (ibx.ShowDialog())
                         @this.MkDir(ibx.Result);
                     return;
 
-                case Xwt.Key.F8: //F8: delete
+                case Key.F8: //F8: delete
                     if (URL1 == null)
                         return;
                     @this.Rm();
                     //todo: move to trash can/recycle bin & handle Shit+F8 (remove completely)
                     return;
 
-                case Xwt.Key.F10: //F10: Exit
-                                  //todo: ask user, are it really want to close FC?
-                    Xwt.Application.Exit();
+                case Key.F10: //F10: Exit
+                              //todo: ask user, are it really want to close FC?
+                              // Xwt.Application.Exit();
+                    System.Windows.Application.Current.Shutdown();
                     //todo: handle Alt+F10 (directory tree)
                     return;
             }
