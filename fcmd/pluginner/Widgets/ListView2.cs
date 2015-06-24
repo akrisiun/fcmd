@@ -16,6 +16,9 @@ using System.Collections;
 
 namespace pluginner.Widgets
 {
+
+    // File
+
 #if XWT
     /// <summary>Modern listview widget</summary>
     public class ListView2 : Widget, IListView2
@@ -30,11 +33,13 @@ namespace pluginner.Widgets
         private Table Grid = new Table();
 #else 
 
-    public abstract class ListView2<T> : ListView2, IListView2<T>, ICollection<T>, IDisposable  where T : class, IListView2Item
+    public abstract class ListView2<T> : ListView2, IListView2<T>, ICollection<T>, IDisposable  where T : class, IListView2Visual
         // IListingView  , -> ListView2Widget
     {
         public abstract object Content { get; set; }
         public abstract IList<T> DataItems { get; } // protected set
+
+        // public abstract void SetupColumns();
         public abstract void Dispose();
 
         public IUIListingView<T> Parent { get; protected set; }
@@ -53,10 +58,24 @@ namespace pluginner.Widgets
         public bool Sensitive { get; set; }
         public System.Windows.Input.CursorType Cursor { get; set; }
 
+        /// <summary>Add a new item</summary>
+        /// <param name="Data">The item's content</param>
+        /// <param name="EditableFields">List of editable fields</param>
+        /// <param name="ItemTag">The tag for the new item (optional)</param>
+        public void AddItem(IEnumerable<Object> Data, IEnumerable<Boolean> EditableFields, string ItemTag = null)
+        {
+            T lvi = Activator.CreateInstance<T>();
+            if (lvi == null)
+                return;
+            lvi.Content = Data;
+            AddItem(lvi);
+        }
+
+        #region T type implement
+
         /// <summary>The pointed item</summary>
         public IPointedItem<T> PointedItem { get; set; }
-        //public IPointedItem // IListView2<T>.
-        //    PointedItem {[DebuggerStepThrough] get { return PointedItem; } set { PointedItem = value as T; } }
+        //public IPointedItem // IListView2<T> // PointedItem {[DebuggerStepThrough] get { return PointedItem; } set { PointedItem = value as T; } }
 
         /// <summary>The list of selected DataItems</summary>
         public List<T> SelectedItems = new List<T>();
@@ -86,36 +105,14 @@ namespace pluginner.Widgets
         public abstract void CopyTo(T[] item, int arrayIndex);
         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
         public IEnumerator<T> GetEnumerator() { return DataItems.GetEnumerator(); }
-        // public abstract IEnumerable.IEnumerator<T> GetEnumerator();
 
-        /// <summary>Add a new item</summary>
-        /// <param name="Data">The item's content</param>
-        /// <param name="EditableFields">List of editable fields</param>
-        /// <param name="ItemTag">The tag for the new item (optional)</param>
-        public void AddItem(IEnumerable<Object> Data, IEnumerable<Boolean> EditableFields, string ItemTag = null)
-        {
-            // T lvi = new T(
-            //    LastRow,
-            //    LastCol,
-            //    ItemTag,
-            //    _columns.ToArray(),
-            //    Data,
-            //    FontForFileNames)
-            //{
-            //    Font = Font.SystemSansSerifFont.WithWeight(FontWeight.Heavy),
-            //    PointerBgColor = PointedBgColor,
-            //    PointerFgColor = PointedFgColor,
-            //    SelectionBgColor = SelectedBgColor,
-            //    SelectionFgColor = SelectedFgColor,
-            //    State = ItemStates.Default
-            //};
-            //AddItem(lvi);
-        }
 
         /// <summary>Add a new T into this ListView2</summary>
         /// <param name="Item">The new T</param>
         private void AddItem(T Item)
         {
+            Add(Item);
+#if XWT
             //if (Color2)
             //{
             //    Item.NormalBgColor = NormalBgColor2;
@@ -128,7 +125,8 @@ namespace pluginner.Widgets
             //}
 
             //Color2 = !Color2;
-            // DataItems.Add(Item);
+
+
             //Grid.Add(Item, LastCol, LastRow, 1, 1, true);
             //Item.ButtonPressed += Item_ButtonPressed;
             //Item.EditComplete += sender =>
@@ -139,6 +137,7 @@ namespace pluginner.Widgets
             //        handler(sender, this);
             //    }
             //};
+#endif 
             //Item.CanGetFocus = true;
             //if (LastRow == 0) _SetPoint(Item);
             //LastRow++;
@@ -169,6 +168,10 @@ namespace pluginner.Widgets
             // LastRow = LastCol = 0;
             PointedItem = null;
         }
+
+#endregion
+
+            #region Selection methods
 
         /// <summary>Clear selection of row</summary>
         /// <param name="Item">The row or null if need to unselect all</param>
@@ -240,7 +243,9 @@ namespace pluginner.Widgets
             //ScrollerIn.ScrollTo(Y);
         }
 
-        // PUBLIC EVENTS
+            #endregion
+
+            #region PUBLIC EVENTS
 
         public event TypedEvent<T> PointerMoved;
         public event TypedEvent<List<T>> SelectionChanged;
@@ -256,7 +261,8 @@ namespace pluginner.Widgets
             }
         }
 
-        #region PUBLIC PROPERTIES
+            #endregion
+            #region PUBLIC PROPERTIES
 
         /// <summary>Sets column configuration</summary>
         public void SetColumns(IEnumerable<ColumnInfo> columns)
@@ -289,9 +295,8 @@ namespace pluginner.Widgets
         // TODO: int MaxRow (для переноса при режиме Small Icons)
         private List<ColumnInfo> _columns = new List<ColumnInfo>();
 
-        #endregion
-
-        #region SUB-PROGRAMS
+            #endregion
+            #region SUB-PROGRAMS
 
         /// <summary>
         /// Sets the pointer to an item by defined condition.
@@ -374,7 +379,7 @@ namespace pluginner.Widgets
             RaiseSelectionChanged(SelectedItems);
         }
 
-        #endregion
+            #endregion
     }
 
 #endif
@@ -382,7 +387,10 @@ namespace pluginner.Widgets
     public abstract class ListView2 : IListView2
     {
         public abstract System.Drawing.Font FontForFileNames { get; set; }
+        
+        // abstract GUI events
         public abstract void SetFocus();
+        public abstract void SetupColumns();
 
         // private int LastRow;
         // private int LastCol;
@@ -393,15 +401,15 @@ namespace pluginner.Widgets
 
         public static double MillisecondsForDoubleClick = SysInfo.DoubleClickTime; //Depends on user settings
 
-        //Color sheme
-        public Color NormalBgColor1 = Colors.White;
-        public Color NormalBgColor2 = Colors.WhiteSmoke;
-        public Color NormalFgColor1 = Colors.Black;
-        public Color NormalFgColor2 = Colors.Black;
-        public Color PointedBgColor = Colors.LightGray;
-        public Color PointedFgColor = Colors.Black;
-        public Color SelectedBgColor = Colors.White;
-        public Color SelectedFgColor = Colors.Red;
+        ////Color sheme
+        //public Color NormalBgColor1 = Colors.White;
+        //public Color NormalBgColor2 = Colors.WhiteSmoke;
+        //public Color NormalFgColor1 = Colors.Black;
+        //public Color NormalFgColor2 = Colors.Black;
+        //public Color PointedBgColor = Colors.LightGray;
+        //public Color PointedFgColor = Colors.Black;
+        //public Color SelectedBgColor = Colors.White;
+        //public Color SelectedFgColor = Colors.Red;
 
         // public Font FontForFileNames = Font.SystemFont;
 
@@ -633,8 +641,23 @@ namespace pluginner.Widgets
             public object Tag;
             public double Width;
             public bool Visible;
+            public int Index;
         }
 
         #endregion
+
+        public virtual ColumnInfo[] DefineColumns(DataFieldNumbers df)
+        {
+            //public int DisplayName = 2;      // dfDisplayName
+            //public int Size = 3;
+            //public int Changed = 4;
+
+            return new ColumnInfo[] {
+                new ColumnInfo { Index = 0, Tag = "fdlFile", Title= "File", Width=190, Visible=true },
+                new ColumnInfo { Index = 1, Tag = "fdlSize", Title= "Size", Width=190, Visible=true },
+                new ColumnInfo { Index = 2, Tag = "fdlModifield", Title= "Modified ", Width=190, Visible=true }
+            };
+        }
+
     }
 }

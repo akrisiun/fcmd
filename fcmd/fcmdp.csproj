@@ -99,8 +99,6 @@
     <Compile Include="FileList\VEd.cs" />
     <Compile Include="FileList\VEsettings.cs" />
     <Compile Include="FileList\XmlDisplay.cs" />
-    <Compile Include="Menu\Menu.cs" />
-    <Compile Include="Menu\MenuItemWIthKey.cs" />
     <Compile Include="Menu\MenuWpf.cs" />
     <Compile Include="pluginfinder.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />
@@ -113,6 +111,7 @@
     <Compile Include="SettingsWindowTabs\swtViewerEditor.cs" />
     <Compile Include="theme\Control.cs" />
     <Compile Include="theme\ctrl\ButtonWidget.cs" />
+    <Compile Include="theme\ctrl\DataGridBackend.cs" />
     <Compile Include="theme\ctrl\FontWpf.cs" />
     <Compile Include="theme\ctrl\LabelWidget.cs" />
     <Compile Include="theme\ListView2ItemWpf.cs" />

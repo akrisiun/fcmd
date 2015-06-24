@@ -17,9 +17,8 @@ namespace fcmd.theme.ctrl
     {
         // public object[] Data { get; set; }
 
-        public PointedItem() : base(0, 0, "", null, null, null)
+        public PointedItem() : base(0, 0, "", null, null) // , null)
         {
-
         }
 
     }
@@ -42,7 +41,7 @@ namespace fcmd.theme.ctrl
             return default(System.Windows.Media.Brush);
         }
     }
-   
+
     public class ListView2Widget : DataGrid, IListView2<ListView2ItemWpf>, IUIListingView<ListView2ItemWpf>
                , IAddChild, IContainItemStorage  // WPF
     {
@@ -53,7 +52,6 @@ namespace fcmd.theme.ctrl
         {
             DataObj = new ListView2Data(this);
             // TODO: DataObj.PointedItem = new PointedItem(); // <ListView2Item>();
-
             DataContext = DataObj;
         }
 
@@ -65,30 +63,20 @@ namespace fcmd.theme.ctrl
 
         public DrawingColor BackgroundColor { get { return (Background as SolidColorBrush).Color.To(); } set { Background = value.From(); } }
 
-        //public PointedItem PointedItem {[DebuggerStepThrough] get { return DataObj.PointedItem as PointedItem; } set { DataObj.PointedItem = value; } }
-        //IPointedItem IListView2.PointedItem { get { return PointedItem; } set { PointedItem = value as PointedItem; } }
-
         public int SelectedRow { get; set; }
 
-        IList<ListView2ItemWpf> IListView2<ListView2ItemWpf>.DataItems {  get { return DataObj.DataItems; } }
-        // ICollection IListView2.Items { get { return base.Items; } }
-
-        // IEnumerable<pluginner.Widgets.ListView2Item> IUIListingView.ChoosedRows
+        IList<ListView2ItemWpf> IListView2<ListView2ItemWpf>.DataItems { get { return DataObj.DataItems; } }
 
         // Enumerable ItemsSource -> ItemsControl
         public IEnumerable<ListView2ItemWpf> ChoosedRows { get; set; }
 
-        public bool? isLeftSide { get; set; }
+        public PanelSide Side  { get; set; }
 
         // public FS {get; set;}
 
         public TextBlock StatusBar { get; }
 
         public Font FontForFileNames { get; set; }
-
-        // public CursorType Cursor {  get { return base.Cursor } } 
-        // object Content { get; set; }
-        // public bool Sensitive { get; set; }
 
         public IPointedItem<ListView2ItemWpf> PointedItem
         {
@@ -103,16 +91,10 @@ namespace fcmd.theme.ctrl
             }
         }
 
-        public int Count { get { return Items == null ? 0 : Items.Count; } } // DataObj.DataItems.Count; } }
+        public int Count { get { return Items == null ? 0 : Items.Count; } }
 
-     
-        public void AddItem(params object[] data) // Data, EditableFileds, di.URL);
+        public void Clear()
         {
-            ;
-        }
-
-        public void SetFocus() {; }
-        public void Clear() {
             if (DataObj != null && DataObj.Count > 0)
             {
                 Items.Clear();
@@ -120,44 +102,68 @@ namespace fcmd.theme.ctrl
             }
         }
 
+        public void SetFocus() { }
+
         public void Select(ListView2ItemWpf item)
         {
             throw new NotImplementedException();
         }
 
+        public void SetupColumns()
+        {
+            if (this.Columns.Count == 0)
+            {
+                ListView2.ColumnInfo[] definitions = DataObj.DefineColumns(null);
+                this.ToDataSource<ListView2ItemWpf>(DataObj.DataItems, definitions);
+            }
+        }
+
+        // TODO
+        public ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df)
+        { return null; }
+
+        #region ICollection
+
         public void AddItem(IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag = null)
         {
-            throw new NotImplementedException();
+            DataObj.AddItem(Data, EditableFields, ItemTag);
         }
 
         public void Add(ListView2ItemWpf item)
         {
-            throw new NotImplementedException();
+            DataObj.Add(item);
         }
 
         public bool Contains(ListView2ItemWpf item)
         {
-            throw new NotImplementedException();
+            return DataObj.Contains(item);
         }
 
         public void CopyTo(ListView2ItemWpf[] array, int arrayIndex)
         {
-            throw new NotImplementedException();
+            DataObj.CopyTo(array, arrayIndex);
         }
 
         public bool Remove(ListView2ItemWpf item)
         {
-            throw new NotImplementedException();
+            return DataObj.Remove(item);
         }
 
         public IEnumerator<ListView2ItemWpf> GetEnumerator()
         {
-            throw new NotImplementedException();
+            return DataObj.GetEnumerator();
         }
+        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
+
     }
+
+    public enum PanelSide
+    {
+        Undefined = 0,
+        Left = 1,
+        Right = 2
+    }
+
 }

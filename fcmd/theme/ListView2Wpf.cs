@@ -2,31 +2,20 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace fcmd.theme.ctrl
 {
+    // FilePanel non Visual
+
     public class ListView2List : ListView2<ListView2ItemWpf>
     {
         public ListView2List(IUIListingView<ListView2ItemWpf> parent) : base(parent) {
             _Items = new List<ListView2ItemWpf>();
         }
 
-        public override object Content
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
+        #region Items array
 
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
+        public override object Content { get { return null; } set {; } }
         public override Font FontForFileNames { get; set; }
 
         protected List<ListView2ItemWpf> _Items;
@@ -34,12 +23,13 @@ namespace fcmd.theme.ctrl
 
         public override void Add(ListView2ItemWpf item)
         {
-            throw new NotImplementedException();
+            item.RowIndex = _Items.Count;
+            _Items.Add(item);
         }
 
         public override bool Contains(ListView2ItemWpf item)
         {
-            throw new NotImplementedException();
+            return _Items.Contains(item);
         }
 
         public override void CopyTo(ListView2ItemWpf[] item, int arrayIndex)
@@ -47,19 +37,21 @@ namespace fcmd.theme.ctrl
             throw new NotImplementedException();
         }
 
-        public override void Dispose()
-        {
-            throw new NotImplementedException();
-        }
-
         public override bool Remove(ListView2ItemWpf item)
         {
-            throw new NotImplementedException();
+            return _Items.Remove(item);
         }
 
-        public override void SetFocus()
+        #endregion
+
+        // Route Events to Parent
+
+        public override void SetFocus() { Parent.SetFocus(); }
+        public override void SetupColumns() { (Parent as ListView2Widget).SetupColumns(); }
+
+        public override void Dispose()
         {
-            throw new NotImplementedException();
+            _Items = null;
         }
     }
 

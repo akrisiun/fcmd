@@ -33,7 +33,7 @@ namespace pluginner.Widgets
         event EventHandler GotFocus; // += (o, ea) => SwitchPanel(p1);
     }
 
-    public interface IFileListPanel<T> : IFileListPanel where T : class, IListView2Item
+    public interface IFileListPanel<T> : IFileListPanel where T : class, IListView2Visual
     {
         IListView2<T> ListingView { get; }
         IUIListingView ListingWidget { get; }
@@ -72,7 +72,7 @@ namespace pluginner.Widgets
     public interface IPointedItem
     {
         object[] Data { get; set; }
-        IEnumerable<object> DataL { get; set; }
+        // IEnumerable<object> DataL { get; set; }
         object Content { get; }
     }
 
@@ -80,33 +80,42 @@ namespace pluginner.Widgets
     {
         Font FontForFileNames { get; set; }
         void SetFocus();
+        void SetupColumns();
+
+        ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df);
     }
 
     // no visual data container
-    public interface IListView2<T> : IListView2, ICollection<T> where T : IListView2Item
+    public interface IListView2<T> : IListView2, ICollection<T> where T : IListView2Visual
     {
         IPointedItem<T> PointedItem { get; set; }
         int SelectedRow { get; set; }
+
         void Select(T item);
-        IEnumerable<T> ChoosedRows { get; } // set; }
+        IEnumerable<T> ChoosedRows { get; }
 
         IList<T> DataItems { get; }
-        // void Clear();
-
-        // void AddItem(params object[] data); // Data, EditableFileds, di.URL);
         void AddItem(IEnumerable<Object> Data, IEnumerable<Boolean> EditableFields, string ItemTag = null);
         // void AddItem(T item); -> Add()
     }
 
     // Visible FileItem abstraction for WPF or XWT
-    public interface IListView2Item
+    public interface IListView2Visual
     {
         object Content { get; set; }
+        object[] Data { get; set; }
+        int? RowIndex { get; set; }
+
         bool CanGetFocus { get; set; }
 
         ListView2.ColumnInfo[] ColumnData { get; set; }
         ListView2.ItemStates State { get; set; }
         bool Visible { get; set; }
+
+        string fdlFile { get; } // { get { return Data[0]; } }
+        string fdlSize { get; } //{ get { return Data[1]; } }
+        string fdlModifield { get; } // { get { return Data[2]; } }
+
     }
 
     public interface IColumnInfo
@@ -148,7 +157,6 @@ namespace pluginner.Widgets
     }
 
 }
-
 
 namespace fcmd
 {

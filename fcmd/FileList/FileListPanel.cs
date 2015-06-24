@@ -4,6 +4,7 @@
  * (C) 2013-15, Alexander Tauenis (atauenis@yandex.ru)
  * (C) 2014, Zhigunov Andrew (breakneck11@gmail.com)
  * (C) 2014, Evgeny Akhtimirov (wilbit@me.com)
+ * (C) 2015, Andrius Krisiunas (akrisiun@gmail.com)
  * Contributors should place own signs here.
  */
 
@@ -13,13 +14,12 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading;
 using pluginner;
-using pluginner.Toolkit;
+//using pluginner.Toolkit;
 using pluginner.Widgets;
-using System.Windows.Input;
-using System.Drawing;
+// using System.Drawing;
 using fcmd.theme;
-using fcmd;
-using System.Windows.Controls;
+// using System.Windows.Controls;
+using System.Collections.ObjectModel;
 
 #if WPF
 // no mono Backend
@@ -42,7 +42,7 @@ namespace fcmd
 
 #else
 
-    public abstract class FileListPanel<T> : IFileListPanel<T>, IFileListPanel where T : class, IListView2Item
+    public abstract class FileListPanel<T> : IFileListPanel<T>, IFileListPanel where T : class, IListView2Visual
     {
         #region Properties 
 
@@ -50,11 +50,9 @@ namespace fcmd
         //they aren't const because they may change when the columns are reordered
         public DataFieldNumbers df { get; set; }
         // public int dfDirItem = 5;
-        public IFSPlugin FS { get; set; }
 
-        //public LightScroller DiskBox = new LightScroller();
-        //public HBox DiskList = new HBox();
-        //public List<Button> DiskButtons = new List<Button>();
+        public IFSPlugin FS { get; set; }
+        public PanelWpf PanelWpf { get; set; }
 
         public IButton GoRoot { get; set; }
         public IButton GoUp { get; set; }
@@ -64,25 +62,28 @@ namespace fcmd
         public abstract IUIListingView ListingWidget { get; }
         public abstract event EventHandler GotFocus;
 
-        public PanelWpf PanelWpf { get; set; }
-        // IListingView ListingView { get; }
-
-        protected abstract void Initialize();
+        public abstract void Initialize(PanelSide side);
 
         EventHandler goRootDelegate = null;
         EventHandler goUpDelegate = null;
 
+#if XWT
         //public MenuButton BookmarksButton = new MenuButton(Image.FromResource("fcmd.Resources.bookmarks.png"));
         //public MenuButton HistoryButton = new MenuButton(Image.FromResource("fcmd.Resources.history.png"));
 
+        //public LightScroller DiskBox = new LightScroller();
+        //public HBox DiskList = new HBox();
+        //public List<Button> DiskButtons = new List<Button>();
+
         //public HBox QuickSearchBox = new HBox();
         //public TextEntry QuickSearchText = new TextEntry();//по возможность заменить на SearchTextEntry (не раб. на wpf, see xwt bug 330)
-        public LabelWidget StatusBar;
         //public Table StatusTable = new Table();
 
         //public ProgressBar StatusProgressbar = new ProgressBar();
         //TextEntry CLIoutput = new TextEntry { MultiLine = true, ShowFrame = true, Visible = false, HeightRequest = 50 };
         //TextEntry CLIprompt = new TextEntry();
+#endif
+        public LabelWidget StatusBar;
 
         /// <summary>User navigates into another directory</summary>
         public event TypedEvent<string> Navigate;
@@ -117,45 +118,14 @@ namespace fcmd
 
         protected string BookmarkXML;
         protected void PostInitialize()
-        { 
-            // System.Diagnostics.Debug.Assert(Parent != null)
-
+        {
             // s = new Stylist(CSS);
             BuildUI(BookmarkXML);
-            //DiskBox.Content = DiskList;
-            //DiskBox.CanScrollByY = false;
 
-            //GoRoot.ExpandHorizontal = GoUp.ExpandHorizontal = BookmarksButton.ExpandHorizontal = HistoryButton.ExpandHorizontal = false;
-            //GoRoot.Style = GoUp.Style = BookmarksButton.Style = HistoryButton.Style = ButtonStyle.Flat;
             GoRoot.CanGetFocus = true; // TODO: GoUp.CanGetFocus = BookmarksButton.CanGetFocus = HistoryButton.CanGetFocus = false;
-            // HistoryButton.Menu = new Xwt.Menu();
-
-            //DefaultColumnSpacing = 0;
-            //DefaultRowSpacing = 0;
-
             string fontFamily = fcmd.Properties.Settings.Default.UserFileListFontFamily;
             ListingView.FontForFileNames = String.IsNullOrWhiteSpace(fontFamily) ? FontWpf.SystemFont : FontWpf.FromName(fontFamily);
-
-            //Add(DiskBox, 0, 0, 1, 1, true, false, WidgetPlacement.Fill);
-            //Add(GoRoot, 1, 0, 1, 1, false, false, WidgetPlacement.Fill);
-            //Add(GoUp, 2, 0, 1, 1, false, false, WidgetPlacement.Fill);
-            //Add(UrlBox, 0, 1, 1, 1, true, false, WidgetPlacement.Fill);
-            //Add(BookmarksButton, 1, 1, 1, 1, false, false, WidgetPlacement.Start);
-            //Add(HistoryButton, 2, 1, 1, 1, false, false, WidgetPlacement.Start);
-            //Add(ListingView, 0, 2, 1, 3, false, true); //hexpand will be = 'true' without seeing to this 'false'
-            //Add(QuickSearchBox, 0, 3, 1, 3);
-            //Add(StatusBar, 0, 4, 1, 3);
-            //Add(StatusProgressbar, 0, 5, 1, 3);
-            //Add(CLIoutput, 0, 6, 1, 3);
-            //Add(CLIprompt, 0, 7, 1, 3);
-
-            //WriteDefaultStatusLabel();
-            //CLIprompt.KeyReleased += CLIprompt_KeyReleased;
-
-            //QuickSearchText.GotFocus += (o, ea) => { OnGotFocus(ea); };
-            //QuickSearchText.KeyPressed += QuickSearchText_KeyPressed;
-            //QuickSearchBox.PackStart(QuickSearchText, true, true);
-            //QuickSearchBox.Visible = false;
+            // DiskBox.Add ...
         }
 
         #endregion
@@ -439,13 +409,12 @@ namespace fcmd
         /// <param name="ShortenGB">How gigabyte sizes should be humanized</param> //плохой перевод? "так nбайтные размеры должны очеловечиваться"
         public void LoadDir(string URL, ShortenPolicies? Shorten = null)
         {
-            // new { kb = ShortenKB, mb = ShortenMB, gb = ShortenGB }
-            // CurShortenKB = Shorten.KB; CurShortenMB = Shorten.MB; CurShortenGB = Shorten.GB;
             CurShorten = Shorten ?? CurShorten;
 
             if (FS == null) throw new InvalidOperationException("No filesystem is binded to this FileListPanel");
 
-            //неспешное TODO:придумать, куда лучше закорячить; не забываем, что во время работы FS может меняться полностью
+            //неспешное TODO:придумать, куда лучше закорячить; не забываем, что во время работы 
+            //FS может меняться полностью
             //FS.CLIstdoutDataReceived += FS_CLIstdoutDataReceived;
             //FS.CLIstderrDataReceived += (stderr) => { CLIoutput.Text += "\n" + stderr; Utilities.ShowWarning(stderr); };
             //FS.CLIpromptChanged += FS_CLIpromptChanged;
@@ -475,15 +444,14 @@ namespace fcmd
 
             // ListingWidget.Cursor = CursorType.Wait;
             ListingWidget.Sensitive = false;
-
             string oldCurDir = FS.CurrentDirectory;
 
             bool loadPlugin = false;
             try
             {
                 FS.CurrentDirectory = URL;
+                // first try
                 LoadFs(URL, Shorten.Value);
-
             }
             catch (Exception ex)
             {
@@ -495,22 +463,21 @@ namespace fcmd
                 {
                     MessageDialog.ShowWarning(ex.Message,
                         ex.StackTrace + "\nInner exception: " + ex.InnerException.Message ?? "none");
-                    //LoadDir(oldCurDir, Shorten); // ShortenKB, ShortenMB, ShortenGB);
                 }
                 else
                 {
                     MessageDialog.ShowWarning(ex.Message);
-                    //LoadDir(oldCurDir, Shorten); // ShortenKB, ShortenMB, ShortenGB);
                 }
             }
 
             if (loadPlugin)
             {
+                // second chance: with plugin
                 try
                 {
                     pluginfinder pf = new pluginfinder();
                     FS = pf.GetFSplugin(URL);
-                    LoadDir(URL, Shorten); // ShortenKB, ShortenMB, ShortenGB);
+                    LoadDir(URL, Shorten);
                 }
                 catch (Exception ex)
                 {
@@ -518,18 +485,17 @@ namespace fcmd
                     {
                         MessageDialog.ShowWarning(ex.Message,
                             ex.StackTrace + "\nInner exception: " + ex.InnerException.Message ?? "none");
-                        //LoadDir(oldCurDir, Shorten); // ShortenKB, ShortenMB, ShortenGB);
                     }
                     else
                     {
                         MessageDialog.ShowWarning(ex.Message);
-                        //LoadDir(oldCurDir, Shorten); // KB, ShortenMB, ShortenGB);
                     }
                 }
             }
 
             if (ListingView.DataItems.Count > 0)
             {
+                ListingView.SetupColumns();
                 ListingView.SelectedRow = 0;
                 // ListingView.ScrollerIn.ScrollTo(0, 0);
             }
@@ -557,16 +523,24 @@ namespace fcmd
             List<DirItem> dis = new List<DirItem>();
             //dis = FS.DirectoryContent;
 
+            var resetHandle = new AutoResetEvent(false);
             Thread DirLoadingThread =
                 new Thread(delegate ()
-                { FS.GetDirectoryContent(ref dis, new FileSystemOperationStatus()); });
+                {
+                    FS.GetDirectoryContent(ref dis, new FileSystemOperationStatus());
+                    resetHandle.Set();
+                });
 
             DirLoadingThread.Start();
-            do { } while (DirLoadingThread.ThreadState == ThreadState.Running);
+            var sucess = resetHandle.WaitOne(timeout: TimeSpan.FromSeconds(10)); // 10 secs
+            // wait loop: do { } while (DirLoadingThread.ThreadState == ThreadState.Running);
+            if (dis.Count == 0)
+                return;
 
             foreach (DirItem di in dis)
             {
-                List<Object> Data = new List<Object>();
+                // 
+                var Data = new Collection<Object>();
                 List<Boolean> EditableFileds = new List<bool>();
                 //Data.Add(di.IconSmall ??
                 //    Image.FromResource("fcmd.Resources.image-missing.png"));
@@ -717,7 +691,7 @@ namespace fcmd
                 //{
                 //    NewBtn.TooltipText = di.VolumeLabel + " (" + di.DriveFormat + ")";
                 //}
-                
+
                 /* todo: rewrite the code; possibly change the XWT to allow
 				 * change the internal padding of the button.
 				 */
@@ -842,4 +816,38 @@ namespace fcmd
         }
 
     }
+
+    // TODO:
+    //public static class DiskBoxPopulate
+
+        //DiskBox.Content = DiskList;
+        //DiskBox.CanScrollByY = false;
+
+        //GoRoot.ExpandHorizontal = GoUp.ExpandHorizontal = BookmarksButton.ExpandHorizontal = HistoryButton.ExpandHorizontal = false;
+        //GoRoot.Style = GoUp.Style = BookmarksButton.Style = HistoryButton.Style = ButtonStyle.Flat;
+        // HistoryButton.Menu = new Xwt.Menu();
+        //DefaultColumnSpacing = 0;
+        //DefaultRowSpacing = 0;
+
+        //Add(DiskBox, 0, 0, 1, 1, true, false, WidgetPlacement.Fill);
+        //Add(GoRoot, 1, 0, 1, 1, false, false, WidgetPlacement.Fill);
+        //Add(GoUp, 2, 0, 1, 1, false, false, WidgetPlacement.Fill);
+        //Add(UrlBox, 0, 1, 1, 1, true, false, WidgetPlacement.Fill);
+        //Add(BookmarksButton, 1, 1, 1, 1, false, false, WidgetPlacement.Start);
+        //Add(HistoryButton, 2, 1, 1, 1, false, false, WidgetPlacement.Start);
+        //Add(ListingView, 0, 2, 1, 3, false, true); //hexpand will be = 'true' without seeing to this 'false'
+        //Add(QuickSearchBox, 0, 3, 1, 3);
+        //Add(StatusBar, 0, 4, 1, 3);
+        //Add(StatusProgressbar, 0, 5, 1, 3);
+        //Add(CLIoutput, 0, 6, 1, 3);
+        //Add(CLIprompt, 0, 7, 1, 3);
+
+        //WriteDefaultStatusLabel();
+        //CLIprompt.KeyReleased += CLIprompt_KeyReleased;
+
+        //QuickSearchText.GotFocus += (o, ea) => { OnGotFocus(ea); };
+        //QuickSearchText.KeyPressed += QuickSearchText_KeyPressed;
+        //QuickSearchBox.PackStart(QuickSearchText, true, true);
+        //QuickSearchBox.Visible = false;
+
 }

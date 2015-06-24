@@ -10,13 +10,8 @@ using System.Drawing;
 
 namespace fcmd.theme
 {
-    public class ListView2ItemWpf : pluginner.Widgets.ListView2ItemWpf
-    {
-        public ListView2ItemWpf(int rowNumber, int colNumber, string rowTag, ListView2.ColumnInfo[] columns, List<object> data, Font font) 
-             : base(rowNumber, colNumber, rowTag, columns, data, font)
-        {
-        }
-    }
+    // pluginner.Widgets.ListView2ItemWpf
+    //    public ListView2ItemWpf(int rowNumber, int colNumber, string rowTag, ListView2.ColumnInfo[] columns, List<object> data, Font font) 
 
     public class FileListPanelWpf : FileListPanel<ListView2ItemWpf>
     {
@@ -25,14 +20,13 @@ namespace fcmd.theme
         public FileListPanelWpf(PanelWpf parent) 
         {
             Parent = parent;
-            Initialize();
         }
 
         public ListView2Widget ListingViewWpf { get; protected set; }
         public override IListView2<ListView2ItemWpf> ListingView { get { return ListingViewWpf; } }
         public override IUIListingView ListingWidget { get { return ListingViewWpf; } }
 
-        protected override void Initialize()
+        public override void Initialize(PanelSide side)
         {
             onFocus = new EventHandler(OnFocus);
             df = DataFieldNumbers.Default();
@@ -43,6 +37,7 @@ namespace fcmd.theme
             UrlBox = Parent.path;
 
             ListingViewWpf = Parent.data;
+            ListingViewWpf.Side = side;
             PostInitialize();
         }
 

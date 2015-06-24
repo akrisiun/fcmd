@@ -61,7 +61,7 @@ namespace pluginner.Toolkit
 
 		/// <summary>Add a new ListView2Item into this ListView2</summary>
 		/// <param name="Item">The new ListView2Item</param>
-		private void AddItem(IListView2Item Item)
+		private void AddItem(IListView2Visual Item)
 		{
 			/*if (Color2)
 			{

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Windows.Input;
 using pluginner.Toolkit;
 using pluginner.Widgets;
-using fcmd;
-using fcmd.theme.ctrl;
+//using fcmd;
+//using fcmd.theme.ctrl;
 using ColorDrawing = System.Drawing.Color;
 using fcmd.theme;
 
@@ -19,11 +20,15 @@ namespace fcmd
         IFileListPanel ActivePanel { get; }
         IFileListPanel PassivePanel { get; }
         IList<IColumnInfo> LVCols { get; set; } // = new List<ListView2.ColumnInfo>();
+
+        WindowData WindowData { get; }
     }
 
     public partial class MainWindow : ICommanderWindow
     {
         public string ProductVersion = "v 0.1a";
+
+        public WindowData WindowData { [DebuggerStepThrough] get { return DataContext as WindowData;} }
 
         public IFileListPanel p1 { get; set; }
         public IFileListPanel p2 { get; set; }
@@ -35,8 +40,8 @@ namespace fcmd
         /// <summary>The current inactive panel</summary>
         public FileListPanelWpf PassivePanelWpf { get; set; }
 
-        IFileListPanel ICommanderWindow.ActivePanel { get { return ActivePanelWpf; } }   // set { ActivePanelWpf = value as FileListPanelWpf; } }
-        IFileListPanel ICommanderWindow.PassivePanel { get { return PassivePanelWpf; } } // set { PassivePanelWpf = value as FileListPanelWpf; } }
+        IFileListPanel ICommanderWindow.ActivePanel { get { return ActivePanelWpf; } }
+        IFileListPanel ICommanderWindow.PassivePanel { get { return PassivePanelWpf; } }
     }
 }
 
@@ -56,15 +61,6 @@ namespace fcmd.theme
             main.Loaded += (s, e) => data.OnShown();
         }
 
-        //InitializeComponent();
-        //    EventManager.RegisterClassHandler(typeof(Button), MouseDownEvent, new RoutedEventHandler(OnMouseDown));
-        //private void OnMouseDown(object sender, RoutedEventArgs e) {
-        //    var element = sender as ContentControl;
-        //    if (element != null)
-        //        ShowLocation(element);
-        //private void ShowLocation(ContentControl element) {
-        //    var location = element.PointToScreen(new Point(0, 0));
-        //MessageBox.Show(string.Format("{2}'s location is ({0}, {1})", location.X, location.Y, element.Content));
     }
 
 
@@ -74,6 +70,14 @@ namespace fcmd.theme
         {
             public PanelWpf Panel1 { get; protected set; }
             public PanelWpf Panel2 { get; protected set; }
+
+            public static PanelLayoutClass Create(MainWindow w)
+            {
+                // Initialize Undefined sides
+                w.LeftPanel.PanelData.Initialize(ctrl.PanelSide.Left);
+                w.RightPanel.PanelData.Initialize(ctrl.PanelSide.Right);
+                return new PanelLayoutClass { Panel1 = w.LeftPanel, Panel2 = w.RightPanel };
+            }
         }
 
         public MainWindow Window { get; set; }
@@ -103,6 +107,7 @@ namespace fcmd.theme
             // PanelLayout = new PanelLayout { Panel1 = Window.LeftPanel, Panel2 = Window.RightPanel };
 
             Window.LVCols = new List<IColumnInfo>();
+            PanelLayout = PanelLayoutClass.Create(Window);
 
             // this.MainMenu = WindowMenu;
             //this.PaddingLeft = PaddingRight = PaddingTop = 0;
@@ -445,19 +450,12 @@ namespace fcmd.theme
             //}
 
             ////build panels
-            //PanelLayout.Panel1.Content = new FileListPanel(BookmarksStore, fcmd.Properties.Settings.Default.UserTheme,
-            //    Properties.Settings.Default.InfoBarContent1, Properties.Settings.Default.InfoBarContent2); //Левая, правая где сторона? Улица, улица, ты, брат, пьяна!
-            //PanelLayout.Panel2.Content = new FileListPanel(BookmarksStore, fcmd.Properties.Settings.Default.UserTheme, 
-            //    Properties.Settings.Default.InfoBarContent1, Properties.Settings.Default.InfoBarContent2);
-
             Window.p1 = PanelLayout.Panel1.Content as FileListPanelWpf;
             Window.p2 = PanelLayout.Panel2.Content as FileListPanelWpf;
-
-            var openFileHandler = new pluginner.TypedEvent<string>(Panel_OpenFile);
-
             var p1 = Window.p1 as FileListPanelWpf;
             var p2 = Window.p2 as FileListPanelWpf;
 
+            var openFileHandler = new pluginner.TypedEvent<string>(Panel_OpenFile);
             p1.OpenFile += openFileHandler;
             p2.OpenFile += openFileHandler;
 
@@ -473,11 +471,9 @@ namespace fcmd.theme
             //{ Title = Localizator.GetString("FDate"), Tag = "FDate", Width = 50, Visible = true });
             //LVCols.Add(new ListView2.ColumnInfo
             //{ Title = "Directory item info", Tag = "DirItem", Width = 0, Visible = false });
-            // */
 
             p1.FS = new base_plugins.fs.localFileSystem();
             p2.FS = new base_plugins.fs.localFileSystem();
-
             p1.GotFocus += (o, ea) => SwitchPanel(p1);
             p2.GotFocus += (o, ea) => SwitchPanel(p2);
         }

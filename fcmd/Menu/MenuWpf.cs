@@ -21,13 +21,34 @@ namespace fcmd.Menu
             var bar = menu.menuBar;
             var edit = new MenuItem { Header = "_Edit" };
             bar.Items.Insert(1, edit);
+            foreach (Control item in EditItems())
+            {
+                item.Width = 140;
+                edit.Items.Add(item);
+            }
+        }
 
-            //var resort = new ObservableCollection<MenuItem>(bar.ItemsSource as IEnumerable<MenuItem>);
-            //resort.Insert(1, edit);
+        public static IEnumerable<Control> EditItems()
+        {
+            /* TODO: Edit: 
+                Cut Copy Paste Delete
+                SelectAll Mark.. UnMark
+                Properties Find Replace
+                New Open Edit PrintPreview Save SaveAs
+            */
 
-            edit.Items.Add(new MenuItem { Width = 140, Header = "_Cut", InputGestureText = "Ctrl+X", Command = ApplicationCommands.Cut });
-            edit.Items.Add(new MenuItem { Width = 140, Header = "_Copy", InputGestureText = "Ctrl+C", Command = ApplicationCommands.Copy });
-            edit.Items.Add(new MenuItem { Width = 140, Header = "_Paste", InputGestureText = "Ctrl+P", Command = ApplicationCommands.Paste });
+            yield return new MenuItem { Header = "_Cut", InputGestureText = "Ctrl+X", Command = ApplicationCommands.Cut };
+            yield return new MenuItem { Header = "_Copy", InputGestureText = "Ctrl+C", Command = ApplicationCommands.Copy };
+            yield return new MenuItem { Header = "_Paste", InputGestureText = "Ctrl+P", Command = ApplicationCommands.Paste };
+            yield return new Separator();
+
+            yield return new MenuItem { Header = "Select all", Command = ApplicationCommands.SelectAll };
+            yield return new MenuItem { Header = "Unselect .." };
+            yield return new Separator();
+
+            yield return new MenuItem { Header = "Find", InputGestureText = "Ctrl+F", Command = ApplicationCommands.Find };
+            yield return new MenuItem { Header = "Replace", InputGestureText = "Ctrl+H", Command = ApplicationCommands.Replace };
+            yield return new MenuItem { Header = "Properties", InputGestureText = "Shift+F10", Command = ApplicationCommands.Properties };
         }
 
         private static MainWindow MainWindow {  get { return Application.Current.MainWindow as MainWindow; } }
@@ -68,34 +89,17 @@ namespace fcmd.Menu
 //        <CommandBinding Command = "Exit" Executed="ExitExecuted" />
 //</Window.CommandBindings>
 
+
+//InitializeComponent();
+//    EventManager.RegisterClassHandler(typeof(Button), MouseDownEvent, new RoutedEventHandler(OnMouseDown));
+//private void OnMouseDown(object sender, RoutedEventArgs e) {
+//    var element = sender as ContentControl;
+//    if (element != null)
+//        ShowLocation(element);
+//private void ShowLocation(ContentControl element) {
+//    var location = element.PointToScreen(new Point(0, 0));
+//MessageBox.Show(string.Format("{2}'s location is ({0}, {1})", location.X, location.Y, element.Content));
+
 //mia = new MenuItem();
 //mia.Header = "_Cut";
 //mia.InputGestureText = "Ctrl+X";
-//mi.Items.Add(mia);
-
-/* TODO
-
-public static RoutedUICommand Cut { get; }
-public static RoutedUICommand Copy { get; }
-public static RoutedUICommand Delete { get; }
-public static RoutedUICommand Paste { get; }
-
-//     The command.Default ValuesKey GestureF4UI TextProperties
-public static RoutedUICommand Select ..
-public static RoutedUICommand Mark..
-public static RoutedUICommand UnMark..
-public static RoutedUICommand SelectAll { get; }
-
-public static RoutedUICommand Properties { get; }
-public static RoutedUICommand Find { get; }
-public static RoutedUICommand Replace { get; }
-
-public static RoutedUICommand New { get; }
-public static RoutedUICommand Open { get; }
-public static RoutedUICommand PrintPreview { get; }
-
-public static RoutedUICommand Save { get; }
-public static RoutedUICommand SaveAs { get; }
-
-*/
-  

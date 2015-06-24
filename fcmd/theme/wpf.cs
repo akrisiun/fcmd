@@ -10,9 +10,7 @@ namespace fcmd.theme
     {
         public void Init(MainWindow @this)
         {
-#if !WPF
             InitMenu(@this);
-#endif
         }
 
         public void Shown(MainWindow @this)
@@ -23,9 +21,9 @@ namespace fcmd.theme
             @this.LoadDir(@this.argv);
 
             var listing = @this.ActivePanel.ListingView;
+#else 
+            @this.WindowData.LoadDir(Environment.GetCommandLineArgs());
 #endif
-            // .ScrollerIn.Visible = false;
-            // ScrollerOut.Visible = false;
         }
 
         public void InitMenu(MainWindow @this)
