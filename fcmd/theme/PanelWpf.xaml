@@ -3,14 +3,29 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:fcmd.theme"
+             xmlns:local="clr-namespace:fcmd.theme.ctrl"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
+    
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="WhiteSmoke">
-        <StackPanel>
-            <TextBlock>
-                <Run>Side X</Run>
-            </TextBlock>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="24" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="24" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Horizontal" Background="Gray">
+            <local:TextEntry x:Name="path" 
+                Background="Transparent" Foreground="White"  
+                HorizontalAlignment="Stretch" Text="Directory ...">
+            </local:TextEntry>
         </StackPanel>
+        <local:ButtonWidget x:Name="cdUp" Grid.Column="1" Text=".." />
+
+        <local:ListView2Widget x:Name="data" Grid.Row="1" Grid.ColumnSpan="2">
+            <ItemsControl />
+        </local:ListView2Widget>
     </Grid>
 </UserControl>

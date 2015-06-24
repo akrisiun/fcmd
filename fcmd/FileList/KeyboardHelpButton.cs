@@ -48,7 +48,7 @@ namespace fcmd
         HBox hb = new HBox();
         Label lblF = new Label(); //F key
         Label lblD = new Label(); //Description
-        Stylist s = new Stylist(fcmd.Properties.Settings.Default.UserTheme);
+        // Stylist s = new Stylist(fcmd.Properties.Settings.Default.UserTheme);
 
         string fkey = "", text = "";
 
@@ -61,9 +61,9 @@ namespace fcmd
             lblF.Text = FKey;
             lblD.Text = Text;
 
-            s.Stylize(this, Style);
-            s.Stylize(lblF, Style + "F");
-            s.Stylize(lblD, Style + "Descr");
+            //s.Stylize(this, Style);
+            //s.Stylize(lblF, Style + "F");
+            //s.Stylize(lblD, Style + "Descr");
 
             var eventHandler = new EventHandler<ButtonEventArgs>((o, ea) =>
             {

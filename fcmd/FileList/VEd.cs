@@ -23,7 +23,7 @@ namespace fcmd
     /// <summary>Viewer-Editor</summary>
     class VEd : Window
     {
-        Stylist s = new Stylist(Settings.Default.UserTheme);
+        // Stylist s = new Stylist(Settings.Default.UserTheme);
         IVEPlugin Plugin;
         IFSPlugin FSPlugin;
         bool CanBeShowed = true; //if any errors occur, this variable prevents broken VE window to show
@@ -382,7 +382,7 @@ namespace fcmd
                 Plugin.ReadOnly = !AllowEdit;
                 Plugin.OpenFile(URL, FS);
                 Plugin.ShowToolbar = Settings.Default.VE_ShowToolbar;
-                Plugin.Stylist = s;
+                //Plugin.Stylist = s;
                 mnuFormat.SubMenu = Plugin.FormatMenu;
 
                 bool Mode = AllowEdit;

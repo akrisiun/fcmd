@@ -20,9 +20,14 @@ namespace fcmd.theme
     /// </summary>
     public partial class PanelWpf : UserControl
     {
+        public FileListPanelWpf PanelData { get; private set; }
+
         public PanelWpf()
         {
             InitializeComponent();
+
+            PanelData = new FileListPanelWpf(this);
+            Content = PanelData;
         }
     }
 }

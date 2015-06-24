@@ -146,19 +146,19 @@ namespace fcmd.theme
         // public void Key(MainWindow @this, Xwt.KeyEventArgs e)
         public void KeyEvent(MainWindow @this, System.Windows.Input.KeyEventArgs e)
         {
-            var ActivePanel = @this.ActivePanel;
-            var PassivePanel = @this.PassivePanel;
+            var ActivePanel = @this.ActivePanelWpf;
+            var PassivePanel = @this.PassivePanelWpf;
 
             string URL1;
             if (ActivePanel.ListingView.SelectedRow > -1)
-            { URL1 = ActivePanel.GetValue(ActivePanel.dfURL); }
+            { URL1 = ActivePanel.GetValue(ActivePanel.df.URL); }
             else
             { URL1 = null; }
             pluginner.IFSPlugin FS1 = ActivePanel.FS;
 
             /* string URL2;
             if (PassivePanel.ListingView.SelectedRow > -1)
-            { URL2 = PassivePanel.GetValue(PassivePanel.dfURL); }
+            { URL2 = PassivePanel.GetValue(PassivePanel.df.URL); }
             else
             { URL2 = null; }
             pluginner.IFSPlugin FS2 = PassivePanel.FS;
@@ -186,14 +186,14 @@ namespace fcmd.theme
                         System.Text.RegularExpressions.Regex re = new System.Text.RegularExpressions.Regex(Filter);
 
                         int Count = 0;
-                        foreach (ListView2Item lvi in ActivePanel.ListingView.Items)
-                        {
-                            if (re.IsMatch(lvi.Data[1].ToString()))
-                            {
-                                ActivePanel.ListingView.Select(lvi);
-                                Count++;
-                            }
-                        }
+                        //foreach (ListView2Item lvi in ActivePanel.ListingView.Items)
+                        //{
+                        //    if (re.IsMatch(lvi.Data[1].ToString()))
+                        //    {
+                        //        ActivePanel.ListingView.Select(lvi);
+                        //        Count++;
+                        //    }
+                        //}
 
                         ActivePanel.StatusBar.Text = string.Format(Localizator.GetString("NameFilterFound"), Filter, Count);
                     }
@@ -222,15 +222,15 @@ namespace fcmd.theme
                     {
                         System.Text.RegularExpressions.Regex re = new System.Text.RegularExpressions.Regex(Filter_qus);
 
-                        int Count_qus = 0;
-                        foreach (ListView2Item lvi in ActivePanel.ListingView.Items)
-                        {
-                            if (re.IsMatch(lvi.Data[1].ToString()))
-                            {
-                                ActivePanel.ListingView.Unselect(lvi);
-                                Count_qus++;
-                            }
-                        }
+                        //int Count_qus = 0;
+                        //foreach (ListView2Item lvi in ActivePanel.ListingView.Items)
+                        //{
+                        //    if (re.IsMatch(lvi.Data[1].ToString()))
+                        //    {
+                        //        ActivePanel.ListingView.Unselect(lvi);
+                        //        Count_qus++;
+                        //    }
+                        //}
                     }
                     catch (Exception ex)
                     {
@@ -245,7 +245,7 @@ namespace fcmd.theme
 
                     if (!FS1.FileExists(URL1))
                     {
-                        Xwt.MessageDialog.ShowWarning(string.Format(Localizator.GetString("FileNotFound"), ActivePanel.GetValue(ActivePanel.dfDisplayName)));
+                        Xwt.MessageDialog.ShowWarning(string.Format(Localizator.GetString("FileNotFound"), ActivePanel.GetValue(ActivePanel.df.DisplayName)));
                         return;
                     }
 
@@ -272,7 +272,7 @@ namespace fcmd.theme
 
                     if (!FS1.FileExists(URL1))
                     {
-                        Xwt.MessageDialog.ShowWarning(string.Format(Localizator.GetString("FileNotFound"), ActivePanel.GetValue(ActivePanel.dfDisplayName)));
+                        Xwt.MessageDialog.ShowWarning(string.Format(Localizator.GetString("FileNotFound"), ActivePanel.GetValue(ActivePanel.df.DisplayName)));
                         return;
                     }
 

@@ -1,31 +1,42 @@
-﻿using pluginner.Toolkit;
-using pluginner.Widgets;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
+using pluginner.Toolkit;
+using pluginner.Widgets;
+using fcmd;
+using fcmd.theme.ctrl;
+using ColorDrawing = System.Drawing.Color;
+using fcmd.theme;
 
 namespace fcmd
 {
-    public partial class MainWindow
+    public interface ICommanderWindow
     {
-        public string ProductVersion = "v 0.1B";
+        IFileListPanel p1 { get; set; }
+        IFileListPanel p2 { get; set; }
 
-        public FileListPanel p1;
-        public FileListPanel p2;
+        IFileListPanel ActivePanel { get; }
+        IFileListPanel PassivePanel { get; }
+        IList<IColumnInfo> LVCols { get; set; } // = new List<ListView2.ColumnInfo>();
+    }
 
-        public List<ListView2.ColumnInfo> LVCols = new List<ListView2.ColumnInfo>();
+    public partial class MainWindow : ICommanderWindow
+    {
+        public string ProductVersion = "v 0.1a";
+
+        public IFileListPanel p1 { get; set; }
+        public IFileListPanel p2 { get; set; }
+
+        public IList<IColumnInfo> LVCols { get; set; }
 
         /// <summary>The current active panel</summary>
-        public FileListPanel ActivePanel;
+        public FileListPanelWpf ActivePanelWpf { get; set; }
         /// <summary>The current inactive panel</summary>
-        public FileListPanel PassivePanel;
+        public FileListPanelWpf PassivePanelWpf { get; set; }
 
+        IFileListPanel ICommanderWindow.ActivePanel { get { return ActivePanelWpf; } }   // set { ActivePanelWpf = value as FileListPanelWpf; } }
+        IFileListPanel ICommanderWindow.PassivePanel { get { return PassivePanelWpf; } } // set { PassivePanelWpf = value as FileListPanelWpf; } }
     }
 }
 
@@ -59,18 +70,27 @@ namespace fcmd.theme
 
     public class WindowData
     {
+        public class PanelLayoutClass
+        {
+            public PanelWpf Panel1 { get; protected set; }
+            public PanelWpf Panel2 { get; protected set; }
+        }
+
         public MainWindow Window { get; set; }
-        public FileListPanel ActivePanel { get { return Window.ActivePanel; } }
-        public FileListPanel PassivePanel { get { return Window.PassivePanel; } }
+        public MenuWpf MainMenu { get { return Window.Menu; } }
+
+        public FileListPanelWpf ActivePanel { get { return Window.ActivePanelWpf as FileListPanelWpf; } }
+        public FileListPanelWpf PassivePanel { get { return Window.PassivePanelWpf as FileListPanelWpf; } }
 
         public int Height { get { return (int)Window.Height; } }
         public int Width { get { return (int)Window.Width; } }
 
-        public Xwt.HBox KeyBoardHelp = new Xwt.HBox();
+        // public Xwt.HBox KeyBoardHelp = new Xwt.HBox();
         // public KeyboardHelpButton[] KeybHelpButtons = new KeyboardHelpButton[11];//одна лишняя, которая нумбер [0]
-
-        public Xwt.VBox Layout = new Xwt.VBox();
-        public Xwt.HPaned PanelLayout = new Xwt.HPaned();
+        // public Xwt.VBox Layout = new Xwt.VBox();
+        // public Xwt.HPaned PanelLayout = new Xwt.HPaned();
+        public PanelLayoutClass PanelLayout { get; protected set; }
+        // StatusBar 
 
         protected theme.ITheme ThemeInstance { get { return theme.Control.Theme; } } // as theme.wpf;
 
@@ -80,17 +100,23 @@ namespace fcmd.theme
         {
             // argv = System.Environment.GetCommandLineArgs();
             Window.Title = "File Commander";
+            // PanelLayout = new PanelLayout { Panel1 = Window.LeftPanel, Panel2 = Window.RightPanel };
 
-            //this.MainMenu = WindowMenu;
+            Window.LVCols = new List<IColumnInfo>();
+
+            // this.MainMenu = WindowMenu;
             //this.PaddingLeft = PaddingRight = PaddingTop = 0;
             //PaddingBottom = PaddingBottom / 3;
 
             ThemeInstance.Init(Window);
 
-            //TranslateMenu(MainMenu);
-            //BindMenu();
-            //LayoutInit();
-            //KeyBoardHelpInit();
+            TranslateMenu(MainMenu);
+            BindMenu();
+            Window.Menu.itemAbout.Click += (s, e) 
+                => mnuHelpAbout_Clicked(s, e);
+
+            LayoutInit();
+            KeyBoardHelpInit();
 
             Localizator.LocalizationChanged += (o, ea) => Localize();
             Localize();
@@ -126,7 +152,7 @@ namespace fcmd.theme
         private void mnuViewWithFilter_Clicked(object sender, EventArgs e)
         {
             string Filter = @"*.*";
-            var ActivePanel = Window.ActivePanel;
+            var ActivePanel = Window.ActivePanelWpf as FileListPanelWpf;
 
             InputBox ibx = new InputBox(Localizator.GetString("NameFilterQuestion"), Filter);
             Xwt.CheckBox chkRegExp = new Xwt.CheckBox(Localizator.GetString("NameFilterUseRegExp"));
@@ -156,16 +182,17 @@ namespace fcmd.theme
 					ActivePanel.CurShortenKB,
 					ActivePanel.CurShortenMB,
 					ActivePanel.CurShortenGB
-					);*/
+					);
+                */
                 ActivePanel.LoadDir(
-                    ActivePanel.FS.CurrentDirectory,
-                    new Shorten
-                    {
-                        KB = ActivePanel.CurShortenKB,
-                        MB = ActivePanel.CurShortenMB,
-                        GB = ActivePanel.CurShortenGB
-                    }
-                    );  //undone!
+                    ActivePanel.FS.CurrentDirectory, ActivePanel.CurShorten);
+                //new Shorten
+                //{
+                //    KB = ActivePanel.CurShortenKB,
+                //    MB = ActivePanel.CurShortenMB,
+                //    GB = ActivePanel.CurShortenGB
+                //}
+                //);  //undone!
 
                 ActivePanel.StatusBar.Text = string.Format(Localizator.GetString("NameFilterFound"), Filter, GoodItems.Count);
             }
@@ -204,8 +231,8 @@ namespace fcmd.theme
             var confR = ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.PerUserRoaming);
             var confEXE = ConfigurationManager.OpenExeConfiguration(System.Configuration.ConfigurationUserLevel.None);
 
-            var ActivePanel = Window.ActivePanel;
-            var PassivePanel = Window.PassivePanel;
+            var ActivePanel = Window.ActivePanelWpf;
+            var PassivePanel = Window.PassivePanelWpf;
             var p1 = Window.p1;
             var p2 = Window.p2;
 
@@ -231,7 +258,7 @@ namespace fcmd.theme
                 "Filesystems are identically? " + b2s(p1.FS == p2.FS) + " (should be no).\n" +
                 "\nTheme debug:\n---------\n" +
                 "Using external theme? " + b2s(!string.IsNullOrEmpty(fcmd.Properties.Settings.Default.UserTheme)) + "\n" +
-                "Theme's cascade style sheet file: \"" + fcmd.Properties.Settings.Default.UserTheme 
+                "Theme's cascade style sheet file: \"" + fcmd.Properties.Settings.Default.UserTheme
                 + "\"\n\nIf you having some troubles, please report this to https://github.com/atauenis/fcmd bug tracker or http://atauenis.ru/phpBB3/viewtopic.php?f=4&t=211 topic. \nThe End.";
 
             Xwt.RichTextView rtv = new Xwt.RichTextView();
@@ -251,8 +278,8 @@ namespace fcmd.theme
         private void mnuToolsOptions_Clicked(object sender, EventArgs e)
         {
             new SettingsWindow().Run();
-            Window.ActivePanel.LoadDir();
-            Window.PassivePanel.LoadDir();
+            Window.ActivePanelWpf.LoadDir();
+            Window.PassivePanelWpf.LoadDir();
         }
 
         private void mnuHelpAbout_Clicked(object sender, EventArgs e)
@@ -286,8 +313,8 @@ namespace fcmd.theme
         private void PanelLayout_KeyReleased(object sender, KeyEventArgs e) // Xwt.KeyEventArgs e)
         {
 #if DEBUG
-            FileListPanel p1 = (PanelLayout.Panel1.Content as FileListPanel);
-            FileListPanel p2 = (PanelLayout.Panel2.Content as FileListPanel);
+            FileListPanelWpf p1 = (PanelLayout.Panel1.Content as FileListPanelWpf);
+            FileListPanelWpf p2 = (PanelLayout.Panel2.Content as FileListPanelWpf);
             // Console.WriteLine("KEYBOARD DEBUG: " + e.Modifiers + "+" + e.Key + " was pressed. Panels focuses: " + (ActivePanel == p1) + " | " + (ActivePanel == p2));
 #endif
             if (e.Key == Key.Return) return;//ENTER presses are handled by other event
@@ -303,12 +330,12 @@ namespace fcmd.theme
 
         /// <summary>Switches the active panel</summary>
         /// <param name="NewPanel">The new active panel</param>
-        private void SwitchPanel(FileListPanel NewPanel)
+        private void SwitchPanel(FileListPanelWpf NewPanel)
         {
             if (NewPanel == ActivePanel) return;
 
-            Window.PassivePanel = Window.ActivePanel;
-            Window.ActivePanel = NewPanel;
+            Window.PassivePanelWpf = Window.ActivePanelWpf;
+            Window.ActivePanelWpf = NewPanel as FileListPanelWpf;
 #if DEBUG
             string PanelName = (NewPanel == Window.p1) ? "LEFT" : "RIGHT";
             Console.WriteLine("FOCUS DEBUG: The " + PanelName + " panel (" + NewPanel.FS.CurrentDirectory + ") got focus");
@@ -320,41 +347,42 @@ namespace fcmd.theme
                 NewPanel.FS.CurrentDirectory
             );
 
-            Window.PassivePanel.UrlBox.BackgroundColor = Xwt.Drawing.Colors.LightBlue;
-            Window.ActivePanel.UrlBox.BackgroundColor = Xwt.Drawing.Colors.DodgerBlue;
+            Window.PassivePanelWpf.UrlBox.BackgroundColor = ColorDrawing.LightBlue;
+            Window.ActivePanelWpf.UrlBox.BackgroundColor = ColorDrawing.DodgerBlue;
         }
 
         /// <summary>Converts size display policy (as string) to FLP.SizeDisplayPolicy</summary>
-        private FileListPanel.SizeDisplayPolicy ConvertSDP(char SizeDisplayPolicy)
+        private SizeDisplayPolicy ConvertSDP(char sizeDisplayPolicy)
         {
-            switch (SizeDisplayPolicy.ToString())
+            switch (sizeDisplayPolicy.ToString())
             {
                 case "0":
-                    return FileListPanel.SizeDisplayPolicy.DontShorten;
+                    return SizeDisplayPolicy.DontShorten;
                 case "1":
-                    return FileListPanel.SizeDisplayPolicy.OneNumeral;
+                    return SizeDisplayPolicy.OneNumeral;
                 case "2":
-                    return FileListPanel.SizeDisplayPolicy.TwoNumeral;
+                    return SizeDisplayPolicy.TwoNumeral;
                 default:
-                    return FileListPanel.SizeDisplayPolicy.OneNumeral;
+                    return SizeDisplayPolicy.OneNumeral;
             }
         }
 
         /// <summary>Translates the <paramref name="mnu"/> into the current UI language</summary>
-        public void TranslateMenu(Xwt.Menu mnu)
+        public void TranslateMenu(object mnu)
         {
-            try
-            {   //dirty hack...i don't know why, but "if(mnu.Items == null) return;" raises NullReferenceException...
-                foreach (Xwt.MenuItem currentMenuItem in mnu.Items)
-                {
-                    if (currentMenuItem.GetType() != typeof(Xwt.SeparatorMenuItem))
-                    { //skip separators
-                        currentMenuItem.Label = Localizator.GetString("FC" + currentMenuItem.Tag);
-                        TranslateMenu(currentMenuItem.SubMenu);
-                    }
-                }
-            }
-            catch { }
+            // if (mnu is Xwt.Menu) // mnu)
+            //try
+            //{   //dirty hack...i don't know why, but "if(mnu.Items == null) return;" raises NullReferenceException...
+            //    foreach (Xwt.MenuItem currentMenuItem in mnu.Items)
+            //    {
+            //        if (currentMenuItem.GetType() != typeof(Xwt.SeparatorMenuItem))
+            //        { //skip separators
+            //            currentMenuItem.Label = Localizator.GetString("FC" + currentMenuItem.Tag);
+            //            TranslateMenu(currentMenuItem.SubMenu);
+            //        }
+            //    }
+            //}
+            //catch { }
         }
 
         #endregion
@@ -363,6 +391,9 @@ namespace fcmd.theme
 
         private void BindMenu()
         {
+            Menu.MenuWpf.Bind(Window);
+
+
             //this.CloseRequested += MainWindow_CloseRequested;
             //PanelLayout.KeyReleased += PanelLayout_KeyReleased;
             //mnuFileView.Clicked += (o, ea) => { PanelLayout_KeyReleased(o, new KeyEventArgs(Key.F3, Xwt.ModifierKeys.None, false, 0)); };
@@ -389,48 +420,49 @@ namespace fcmd.theme
         {
             //Layout.PackStart(PanelLayout, true, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, 0, 0, 0);
             //Layout.PackStart(KeyBoardHelp, false, Xwt.WidgetPlacement.End, Xwt.WidgetPlacement.Fill, 1, 3, 1, 2);
-
             //this.Content = Layout;
 
             //check settings
-            if (fcmd.Properties.Settings.Default.UserTheme != null)
-            {
-                if (fcmd.Properties.Settings.Default.UserTheme != "")
-                {
-                    //if (File.Exists(fcmd.Properties.Settings.Default.UserTheme))
-                    //    stylist = new Stylist(fcmd.Properties.Settings.Default.UserTheme);
-                    //else
-                    //{
-                    //    Xwt.MessageDialog.ShowError(Localizator.GetString("ThemeNotFound"), fcmd.Properties.Settings.Default.UserTheme);
-                    //    Xwt.Application.Exit();
-                    //}
-                }
-            }
+            //if (fcmd.Properties.Settings.Default.UserTheme != null)
+            //{
+            //    if (fcmd.Properties.Settings.Default.UserTheme != "")
+            //    {
+            //        //if (File.Exists(fcmd.Properties.Settings.Default.UserTheme))
+            //        //    stylist = new Stylist(fcmd.Properties.Settings.Default.UserTheme);
+            //        //else
+            //        //{
+            //        //    Xwt.MessageDialog.ShowError(Localizator.GetString("ThemeNotFound"), fcmd.Properties.Settings.Default.UserTheme);
+            //        //    Xwt.Application.Exit();
+            //        //}
+            //    }
+            //}
 
-            //load bookmarks
-            string BookmarksStore = null;
-            if (fcmd.Properties.Settings.Default.BookmarksFile != null && fcmd.Properties.Settings.Default.BookmarksFile.Length > 0)
-            {
-                BookmarksStore = File.ReadAllText(fcmd.Properties.Settings.Default.BookmarksFile, Encoding.UTF8);
-            }
+            ////load bookmarks
+            //string BookmarksStore = null;
+            //if (fcmd.Properties.Settings.Default.BookmarksFile != null && fcmd.Properties.Settings.Default.BookmarksFile.Length > 0)
+            //{
+            //    BookmarksStore = File.ReadAllText(fcmd.Properties.Settings.Default.BookmarksFile, Encoding.UTF8);
+            //}
 
-            //build panels
-            PanelLayout.Panel1.Content = new FileListPanel(BookmarksStore, fcmd.Properties.Settings.Default.UserTheme,
-                Properties.Settings.Default.InfoBarContent1, Properties.Settings.Default.InfoBarContent2); //Левая, правая где сторона? Улица, улица, ты, брат, пьяна!
-            PanelLayout.Panel2.Content = new FileListPanel(BookmarksStore, fcmd.Properties.Settings.Default.UserTheme, 
-                Properties.Settings.Default.InfoBarContent1, Properties.Settings.Default.InfoBarContent2);
+            ////build panels
+            //PanelLayout.Panel1.Content = new FileListPanel(BookmarksStore, fcmd.Properties.Settings.Default.UserTheme,
+            //    Properties.Settings.Default.InfoBarContent1, Properties.Settings.Default.InfoBarContent2); //Левая, правая где сторона? Улица, улица, ты, брат, пьяна!
+            //PanelLayout.Panel2.Content = new FileListPanel(BookmarksStore, fcmd.Properties.Settings.Default.UserTheme, 
+            //    Properties.Settings.Default.InfoBarContent1, Properties.Settings.Default.InfoBarContent2);
 
-            Window.p1 = PanelLayout.Panel1.Content as FileListPanel;
-            Window.p2 = PanelLayout.Panel2.Content as FileListPanel;
+            Window.p1 = PanelLayout.Panel1.Content as FileListPanelWpf;
+            Window.p2 = PanelLayout.Panel2.Content as FileListPanelWpf;
+
             var openFileHandler = new pluginner.TypedEvent<string>(Panel_OpenFile);
 
-            var p1 = Window.p1;
-            var p2 = Window.p2;
+            var p1 = Window.p1 as FileListPanelWpf;
+            var p2 = Window.p2 as FileListPanelWpf;
 
             p1.OpenFile += openFileHandler;
             p2.OpenFile += openFileHandler;
 
             // Ankr
+            var LVCols = Window.LVCols;
             //LVCols.Add(new ListView2.ColumnInfo { Title = "", Tag = "Icon", Width = 16, Visible = true });
             //LVCols.Add(new ListView2.ColumnInfo { Title = "URL", Tag = "Path", Width = 0, Visible = false });
             //LVCols.Add(new ListView2.ColumnInfo
@@ -487,15 +519,15 @@ namespace fcmd.theme
         {
             //file size display policy
             char[] Policies = fcmd.Properties.Settings.Default.SizeShorteningPolicy.ToCharArray();
-            var Shorten = new Shorten
+            var Shorten = new ShortenPolicies
             {
                 KB = ConvertSDP(Policies[0]),
                 MB = ConvertSDP(Policies[1]),
                 GB = ConvertSDP(Policies[2])
             };
 
-            var p1 = Window.p1;
-            var p2 = Window.p2;
+            var p1 = Window.p1 as FileListPanelWpf;
+            var p2 = Window.p2 as FileListPanelWpf;
 
             //load last directory or the current directory if the last directory hasn't remembered
             if (Properties.Settings.Default.Panel1URL.Length != 0)
@@ -524,38 +556,26 @@ namespace fcmd.theme
             {
                 case 1:
                     p1.ListingView.SetFocus();
-                    Window.ActivePanel = p1;
-                    Window.PassivePanel = p2;
+                    Window.ActivePanelWpf = p1;
+                    Window.PassivePanelWpf = p2;
                     if (argv.Length == 1) p1.LoadDir(argv[0]);
                     break;
                 case 2:
                     p2.ListingView.SetFocus();
-                    Window.ActivePanel = p2;
-                    Window.PassivePanel = p1;
+                    Window.ActivePanelWpf = p2;
+                    Window.PassivePanelWpf = p1;
                     if (argv.Length == 1) p2.LoadDir(argv[0]);
                     break;
                 default:
                     p1.ListingView.SetFocus();
-                    Window.ActivePanel = p1;
-                    Window.PassivePanel = p2;
+                    Window.ActivePanelWpf = p1;
+                    Window.PassivePanelWpf = p2;
                     if (argv.Length == 1) p1.LoadDir(argv[0]);
                     break;
             }
         }
 
         #endregion
-    }
-
-}
-
-namespace fcmd
-{
-
-    public struct Shorten
-    {
-        public FileListPanel.SizeDisplayPolicy KB { get; set; }
-        public FileListPanel.SizeDisplayPolicy MB { get; set; }
-        public FileListPanel.SizeDisplayPolicy GB { get; set; }
     }
 
 }

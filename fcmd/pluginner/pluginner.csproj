@@ -29,8 +29,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\x86\</OutputPath>
-    <DefineConstants>DEBUG;</DefineConstants>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;WPF;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -43,10 +43,13 @@
     <AssemblyOriginatorKeyFile>xwt.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
+    <Reference Include="WindowsBase" />
     <Reference Include="Xwt">
       <HintPath>..\..\bin\Xwt.dll</HintPath>
     </Reference>
@@ -56,19 +59,14 @@
     <Compile Include="Toolkit\OSAbstraction.cs" />
     <Compile Include="Toolkit\SysInfo.cs" />
     <Compile Include="Toolkit\VLVDataSource.cs" />
-    <Compile Include="Widgets\EditableLabel.cs" />
-    <Compile Include="Widgets\HeavyScroller.cs" />
     <Compile Include="Toolkit\OSVersionEx.cs" />
     <Compile Include="IFSPlugin.cs" />
     <Compile Include="IVEPlugin.cs" />
-    <Compile Include="Widgets\ListView2.cs" />
-    <Compile Include="Widgets\ListView2Item.cs" />
     <Compile Include="IPlugin.cs" />
-    <Compile Include="Toolkit\Stylist.cs" />
     <Compile Include="Toolkit\Utilities.cs" />
-    <Compile Include="Widgets\LightScroller.cs" />
     <Compile Include="Resources\AssemblyInfo.cs" />
-    <Compile Include="Widgets\VirtualListView.cs" />
+    <Compile Include="Widgets\IFileListPanel.cs" />
+    <Compile Include="Widgets\ListView2.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DefaultBookmarks.xml">

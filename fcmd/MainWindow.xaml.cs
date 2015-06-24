@@ -12,6 +12,9 @@ namespace fcmd
         public MainWindow()
         {
             Xwt.Application.Initialize(Xwt.ToolkitType.Wpf);
+            Xwt.Toolkit.Load(Xwt.ToolkitType.Wpf).Invoke(() => InitializeXwt());
+                // Initialize() being your own custom method.This is actually what the MixedGtkMacTest does.
+
             InitializeComponent();
 
             Title = "FC loading .. " + Environment.CurrentDirectory;
@@ -26,6 +29,11 @@ namespace fcmd
 
             this.Closed += (s, e) => 
                 Application.Current.Shutdown();
+        }
+
+        void InitializeXwt()
+        {
+
         }
     }
 }

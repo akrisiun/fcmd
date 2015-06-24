@@ -113,10 +113,10 @@ namespace fcmd.base_plugins.ve
 			set { /*UNDONE!!!*/ }
 		}
 
-		public Stylist Stylist
-		{
-			set { /*UNDONE*/ }
-		}
+		//public Stylist Stylist
+		//{
+		//	set { /*UNDONE*/ }
+		//}
 
 
 		public object APICallPlugin(string call, params object[] arguments)

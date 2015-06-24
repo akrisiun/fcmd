@@ -105,6 +105,7 @@ namespace pluginner.Toolkit
             }
         }
 
+#if XWT
         /// <summary>Display bookmark list to the XWT Box as an array of Buttons</summary>
         /// <param name="box">The XWT box</param>
         /// <param name="OnClick">What should happen if user clicks the bookmark</param>
@@ -152,7 +153,7 @@ namespace pluginner.Toolkit
                 mnu.Items.Add(mi);
             }
         }
-
+#endif
         private Menu GetBookmarkSubmenu(Bookmark bookmark, Action<string> OnClick)
         {
             Menu mnu = new Menu();

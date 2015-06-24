@@ -7,30 +7,388 @@
  */
 
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using pluginner.Toolkit;
 using Xwt;
 using Xwt.Drawing;
+using System.Collections;
 
 namespace pluginner.Widgets
 {
+#if XWT
     /// <summary>Modern listview widget</summary>
-    public class ListView2 : Widget
+    public class ListView2 : Widget, IListView2
     {
+
         private VBox Layout = new VBox();
         private HBox ColumnRow = new HBox();
 
         public HeavyScroller ScrollerIn = new HeavyScroller(); //vertical scroller
         public ScrollView ScrollerOut = new ScrollView();   //horizontal scroller
-
         private List<Label> ColumnTitles = new List<Label>();
         private Table Grid = new Table();
-        private int LastRow;
-        private int LastCol;
-        private Views _View = Views.Details;
-        //todo: int MaxRow (для переноса при режиме Small Icons)
+#else 
+
+    public abstract class ListView2<T> : ListView2, IListView2<T>, ICollection<T>, IDisposable  where T : class, IListView2Item
+        // IListingView  , -> ListView2Widget
+    {
+        public abstract object Content { get; set; }
+        public abstract IList<T> DataItems { get; } // protected set
+        public abstract void Dispose();
+
+        public IUIListingView<T> Parent { get; protected set; }
+
+        public ListView2(IUIListingView<T> parent) : base()
+        {
+            Parent = parent;
+        }
+
+        public int Count { get { return DataItems.Count; } }
+        public bool IsReadOnly { get { return DataItems.IsReadOnly; } }
+
+        public object Tag { get; set; }
+        public int SelectedRow { get { new NotImplementedException("no SelectedRow"); return -1; } set {; } }
+
+        public bool Sensitive { get; set; }
+        public System.Windows.Input.CursorType Cursor { get; set; }
+
+        /// <summary>The pointed item</summary>
+        public IPointedItem<T> PointedItem { get; set; }
+        //public IPointedItem // IListView2<T>.
+        //    PointedItem {[DebuggerStepThrough] get { return PointedItem; } set { PointedItem = value as T; } }
+
+        /// <summary>The list of selected DataItems</summary>
+        public List<T> SelectedItems = new List<T>();
+
+        /// <summary>The rows that are allowed to be pointed by keyboard OR null if all rows are allowed</summary>
+        /// <summary>Gets the list of the rows that currently are choosed by the user</summary>
+        public IEnumerable<T> ChoosedRows
+        {
+            get
+            {
+                if (SelectedItems.Count == 0)
+                {
+                    List<T> list_one = new List<T>(PointedItem.Pointed); // { PointedItem.Item };
+                    return list_one;
+                }
+                // ReSharper disable once RedundantIfElseBlock //to ease readability
+                else
+                {
+                    return SelectedItems;
+                }
+            }
+        }
+
+        public abstract bool Contains(T item);
+        public abstract void Add(T item);
+        public abstract bool Remove(T item);
+        public abstract void CopyTo(T[] item, int arrayIndex);
+        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+        public IEnumerator<T> GetEnumerator() { return DataItems.GetEnumerator(); }
+        // public abstract IEnumerable.IEnumerator<T> GetEnumerator();
+
+        /// <summary>Add a new item</summary>
+        /// <param name="Data">The item's content</param>
+        /// <param name="EditableFields">List of editable fields</param>
+        /// <param name="ItemTag">The tag for the new item (optional)</param>
+        public void AddItem(IEnumerable<Object> Data, IEnumerable<Boolean> EditableFields, string ItemTag = null)
+        {
+            // T lvi = new T(
+            //    LastRow,
+            //    LastCol,
+            //    ItemTag,
+            //    _columns.ToArray(),
+            //    Data,
+            //    FontForFileNames)
+            //{
+            //    Font = Font.SystemSansSerifFont.WithWeight(FontWeight.Heavy),
+            //    PointerBgColor = PointedBgColor,
+            //    PointerFgColor = PointedFgColor,
+            //    SelectionBgColor = SelectedBgColor,
+            //    SelectionFgColor = SelectedFgColor,
+            //    State = ItemStates.Default
+            //};
+            //AddItem(lvi);
+        }
+
+        /// <summary>Add a new T into this ListView2</summary>
+        /// <param name="Item">The new T</param>
+        private void AddItem(T Item)
+        {
+            //if (Color2)
+            //{
+            //    Item.NormalBgColor = NormalBgColor2;
+            //    Item.NormalFgColor = NormalFgColor1;
+            //}
+            //else
+            //{
+            //    Item.NormalBgColor = NormalBgColor1;
+            //    Item.NormalFgColor = NormalFgColor1;
+            //}
+
+            //Color2 = !Color2;
+            // DataItems.Add(Item);
+            //Grid.Add(Item, LastCol, LastRow, 1, 1, true);
+            //Item.ButtonPressed += Item_ButtonPressed;
+            //Item.EditComplete += sender =>
+            //{
+            //    var handler = EditComplete;
+            //    if (handler != null)
+            //    {
+            //        handler(sender, this);
+            //    }
+            //};
+            //Item.CanGetFocus = true;
+            //if (LastRow == 0) _SetPoint(Item);
+            //LastRow++;
+        }
+
+        /// <summary>Removes the specifed item from the list</summary>
+        /// <param name="Item">The item</param>
+        public void RemoveItem(T Item)
+        {
+            //Note that the removing item is simply hided.
+            //To remove it completely, call Clear() sub-programm. But all other rows will be also removed.
+            Item.Visible = false;
+        }
+
+        /// <summary>Gets pointer for the T at specifed row №</summary>
+        /// <param name="Row">The row's number</param>
+        /// <returns>A pointer to the ListView2 Item</returns>
+        public T GetItem(int Row)
+        {
+            return DataItems[Row];
+        }
+
+        /// <summary>Purges the ListView2 (deletes all DataItems from display and memory). Useful when memory leaks are happen.</summary>
+        public virtual void Clear()
+        {
+            //Grid.Clear();
+            DataItems.Clear();
+            // LastRow = LastCol = 0;
+            PointedItem = null;
+        }
+
+        /// <summary>Clear selection of row</summary>
+        /// <param name="Item">The row or null if need to unselect all</param>
+        public void Unselect(T Item = null)
+        {
+            if (Item == null)
+            {
+                foreach (T lvi in SelectedItems)
+                {
+                    lvi.State = ItemStates.Default;
+                }
+                SelectedItems.Clear();
+            }
+            else
+            {
+                Item.State = ItemStates.Default;
+                SelectedItems.Remove(Item);
+            }
+
+            RaiseSelectionChanged(SelectedItems);
+        }
+
+        /// <summary>Selects an row</summary>
+        /// <param name="Item">The row or null if need to select all rows</param>
+        public void Select(T Item = null)
+        {
+            if (Item != null)
+            {
+                _SelectItem(Item);
+                return;
+            }
+
+            SelectedItems.Clear();
+            foreach (T lvi in DataItems)
+            {
+                if (lvi.State == ItemStates.Pointed || lvi.State == ItemStates.PointedAndSelected)
+                    lvi.State = ItemStates.PointedAndSelected;
+                else
+                    lvi.State = ItemStates.Selected;
+
+                SelectedItems.Add(lvi);
+            }
+
+            RaiseSelectionChanged(SelectedItems);
+        }
+
+        /// <summary>Inverts selection of items (like the "[*] gray" key)</summary>
+        public void InvertSelection()
+        {
+            foreach (T lvi in DataItems)
+            {
+                if ((int)lvi.State >= 2)
+                {
+                    _UnselectItem(lvi);
+                }
+                else
+                {
+                    _SelectItem(lvi);
+                }
+            }
+            RaiseSelectionChanged(SelectedItems);
+        }
+
+        /// <summary>Scrolls the internal scroll view to the specifed row</summary>
+        /// <param name="rowno">The row's number</param>
+        public void ScrollToRow(int rowno)
+        {
+            //double Y = DataItems[0].Surface.GetPreferredSize().Height * rowno;
+            //ScrollerIn.ScrollTo(Y);
+        }
+
+        // PUBLIC EVENTS
+
+        public event TypedEvent<T> PointerMoved;
+        public event TypedEvent<List<T>> SelectionChanged;
+        public event TypedEvent<T> PointedItemDoubleClicked;
+        // public event TypedEvent<EditableLabel, ListView2> EditComplete;
+
+        protected void RaiseSelectionChanged(List<T> data)
+        {
+            var handler = SelectionChanged;
+            if (handler != null)
+            {
+                handler(data);
+            }
+        }
+
+        #region PUBLIC PROPERTIES
+
+        /// <summary>Sets column configuration</summary>
+        public void SetColumns(IEnumerable<ColumnInfo> columns)
+        {
+            _columns.Clear();
+            //ColumnTitles.Clear();
+            //ColumnRow.Clear();
+            //foreach (ColumnInfo ci in columns)
+            //{
+            //    _columns.Add(ci);
+            //    ColumnTitles.Add(new Label(ci.Title) { WidthRequest = ci.Width, Visible = ci.Visible });
+            //    ColumnRow.PackStart(ColumnTitles[ColumnTitles.Count - 1]);
+            //}
+        }
+
+        /// <summary>Defines visiblity of the widget's border</summary>
+        //public bool BorderVisible
+        //{
+        //    get { return ScrollerOut.BorderVisible; }
+        //    set { ScrollerOut.BorderVisible = value; }
+        //}
+
+        /// <summary>Selected row's number</summary>
+        //public int SelectedRow
+        //{
+        //    get { return PointedItem.RowNo; }
+        //    set { _SetPoint(DataItems[value]); }
+        //}
+
+        // TODO: int MaxRow (для переноса при режиме Small Icons)
         private List<ColumnInfo> _columns = new List<ColumnInfo>();
-        private bool Color2; //для обеспечения чередования цветов строк
+
+        #endregion
+
+        #region SUB-PROGRAMS
+
+        /// <summary>
+        /// Sets the pointer to an item by defined condition.
+        /// </summary>
+        /// <param name='Condition'>
+        /// Условие (на сколько строк переместиться)
+        /// </param>
+        private void _SetPointerByCondition(int Condition)
+        {
+            /*ОПИСАНИЕ: Перенос курсора выше или ниже.
+			  ПРИНЦИП: При наличии списка допущенных к выбору строк (массив номеров строк AllowedToPoint),
+			  курсор прыгает в ближайшую допущенную строку в прямом направлении. При выходе из сего списка,
+			  курсор может идти в том же направлении дальше без ограничений.
+			  */
+            //int NewRow;
+
+            //if (Condition > 0)
+            //{
+            //    //move bottom
+            //    NewRow = PointedItem.RowNo + Condition;
+            //    foreach (int r in AllowedToPoint)
+            //    {
+            //        if (r > NewRow - 1)
+            //        {
+            //            NewRow = r; break;
+            //        }
+            //    }
+
+            //    if (NewRow < LastRow)
+            //        _SetPoint(DataItems[NewRow]);
+            //}
+            //else if (Condition < 0)
+            //{
+            //    //move up
+            //    NewRow = PointedItem.RowNo - -Condition;
+            //    for (int i = AllowedToPoint.Count - 1; i > 0; i--)
+            //    {
+            //        int r = AllowedToPoint[i];
+            //        if (r < NewRow)
+            //        {
+            //            NewRow = r; break;
+            //        }
+            //    }
+            //    if (NewRow >= 0)
+            //        _SetPoint(DataItems[NewRow]);
+            //}
+        }
+
+        /// <summary>Inverts selection of an item</summary>
+        /// <param name="lvi">The requested T</param>
+        private void _SelectItem(T lvi)
+        {
+            switch (lvi.State)
+            {
+                case ItemStates.Default:
+                    lvi.State = ItemStates.Selected;
+                    SelectedItems.Add(lvi);
+                    break;
+                case ItemStates.Pointed:
+                    lvi.State = ItemStates.PointedAndSelected;
+                    SelectedItems.Add(lvi);
+                    break;
+                case ItemStates.Selected:
+                case ItemStates.PointedAndSelected:
+                    _UnselectItem(lvi);
+                    break;
+            }
+            RaiseSelectionChanged(SelectedItems);
+        }
+
+        /// <summary>Removes selection of an item</summary>
+        /// <param name="lvi">The requested T</param>
+        private void _UnselectItem(T lvi)
+        {
+            SelectedItems.Remove(lvi);
+            //if (lvi.State == ItemStates.PointedAndSelected)
+            //    lvi.State = ItemStates.Pointed;
+            //else
+            //    lvi.State = ItemStates.Default;
+            RaiseSelectionChanged(SelectedItems);
+        }
+
+        #endregion
+    }
+
+#endif
+
+    public abstract class ListView2 : IListView2
+    {
+        public abstract System.Drawing.Font FontForFileNames { get; set; }
+        public abstract void SetFocus();
+
+        // private int LastRow;
+        // private int LastCol;
+        private Views _View = Views.Details;
+
+        // private bool Color2; //для обеспечения чередования цветов строк
         private DateTime PointedItemLastClickTime = DateTime.Now.AddDays(-1); //for double click detecting
 
         public static double MillisecondsForDoubleClick = SysInfo.DoubleClickTime; //Depends on user settings
@@ -45,23 +403,20 @@ namespace pluginner.Widgets
         public Color SelectedBgColor = Colors.White;
         public Color SelectedFgColor = Colors.Red;
 
-        public Font FontForFileNames = Font.SystemFont;
+        // public Font FontForFileNames = Font.SystemFont;
 
         //For virtual mode
         int VisibleItemsByY = -1;
         // int VisibleItemsByX = -1;
 
         /// <summary>List of items. Please do not edit directly! Please use the AddItem and RemoveItem functions.</summary>
-        public List<ListView2Item> Items = new List<ListView2Item>();
-        /// <summary>The pointed item</summary>
-        public ListView2Item PointedItem;
-        /// <summary>The list of selected items</summary>
-        public List<ListView2Item> SelectedItems = new List<ListView2Item>();
-        /// <summary>The rows that are allowed to be pointed by keyboard OR null if all rows are allowed</summary>
+        // List<T> IListView2.DataItems = new List<T>();
+
         public List<int> AllowedToPoint = new List<int>();
 
         public ListView2()
         {
+#if XWT
             Layout.Spacing = 0;
             Grid.DefaultRowSpacing = 0;
             Content = ScrollerOut;
@@ -73,9 +428,6 @@ namespace pluginner.Widgets
             ScrollerIn.Content = Grid;
             ScrollerIn.CanScrollByX = false;// ScrollPolicy.Never;
             Layout.PackStart(ColumnRow);
-            // ankr
-            // Layout.PackStart(ScrollerIn, true, true);
-            // Layout.PackStart(ScrollerOut, true, true);
 
             Layout.KeyPressed += Layout_KeyPressed;
             Layout.CanGetFocus = true;
@@ -85,12 +437,10 @@ namespace pluginner.Widgets
             BoundsChanged += ListView2_BoundsChanged;
 
             ScrollerIn.BackgroundColor = Colors.White;
-
-            //tests for custom pointing edge setup
-            /*AllowedToPoint.Add(5);
-			AllowedToPoint.Add(6);
-			AllowedToPoint.Add(9);*/
+#endif
         }
+
+#if XWT
 
         //EVENT HANDLERS
 
@@ -121,7 +471,7 @@ namespace pluginner.Widgets
         private void Item_ButtonPressed(object sender, ButtonEventArgs e)
         {
             SetFocus();
-            ListView2Item lvi = sender as ListView2Item;
+            T lvi = sender as T;
             //currently, the mouse click policy is same as in Total and Norton Commander
             if (e.Button == PointerButton.Right)//right click - select & do nothing
             {
@@ -192,91 +542,11 @@ namespace pluginner.Widgets
             }
         }
 
-        //SUB-PROGRAMS
-
-        /// <summary>
-        /// Sets the pointer to an item by defined condition.
-        /// </summary>
-        /// <param name='Condition'>
-        /// Условие (на сколько строк переместиться)
-        /// </param>
-        private void _SetPointerByCondition(int Condition)
-        {
-            /*ОПИСАНИЕ: Перенос курсора выше или ниже.
-			  ПРИНЦИП: При наличии списка допущенных к выбору строк (массив номеров строк AllowedToPoint),
-			  курсор прыгает в ближайшую допущенную строку в прямом направлении. При выходе из сего списка,
-			  курсор может идти в том же направлении дальше без ограничений.
-			  */
-            int NewRow;
-            if (Condition > 0)
-            {
-                //move bottom
-                NewRow = PointedItem.RowNo + Condition;
-                foreach (int r in AllowedToPoint)
-                {
-                    if (r > NewRow - 1)
-                    {
-                        NewRow = r; break;
-                    }
-                }
-
-                if (NewRow < LastRow)
-                    _SetPoint(Items[NewRow]);
-            }
-            else if (Condition < 0)
-            {
-                //move up
-                NewRow = PointedItem.RowNo - -Condition;
-                for (int i = AllowedToPoint.Count - 1; i > 0; i--)
-                {
-                    int r = AllowedToPoint[i];
-                    if (r < NewRow)
-                    {
-                        NewRow = r; break;
-                    }
-                }
-                if (NewRow >= 0)
-                    _SetPoint(Items[NewRow]);
-            }
-        }
-
-        /// <summary>Inverts selection of an item</summary>
-        /// <param name="lvi">The requested ListView2Item</param>
-        private void _SelectItem(ListView2Item lvi)
-        {
-            switch (lvi.State)
-            {
-                case ItemStates.Default:
-                    lvi.State = ItemStates.Selected;
-                    SelectedItems.Add(lvi);
-                    break;
-                case ItemStates.Pointed:
-                    lvi.State = ItemStates.PointedAndSelected;
-                    SelectedItems.Add(lvi);
-                    break;
-                case ItemStates.Selected:
-                case ItemStates.PointedAndSelected:
-                    _UnselectItem(lvi);
-                    break;
-            }
-            RaiseSelectionChanged(SelectedItems);
-        }
-
-        /// <summary>Removes selection of an item</summary>
-        /// <param name="lvi">The requested ListView2Item</param>
-        private void _UnselectItem(ListView2Item lvi)
-        {
-            SelectedItems.Remove(lvi);
-            if (lvi.State == ItemStates.PointedAndSelected)
-                lvi.State = ItemStates.Pointed;
-            else
-                lvi.State = ItemStates.Default;
-            RaiseSelectionChanged(SelectedItems);
-        }
+    
 
         /// <summary>Sets the pointer to an item</summary>
-        /// <param name="lvi">The requested ListView2Item</param>
-        private void _SetPoint(ListView2Item lvi)
+        /// <param name="lvi">The requested T</param>
+        private void _SetPoint(T lvi)
         {
             //unpoint current
             if (PointedItem != null)
@@ -327,224 +597,9 @@ namespace pluginner.Widgets
         {
             base.OnKeyPressed(kea);
         }
+#endif
 
-        /// <summary>Add a new item</summary>
-        /// <param name="Data">The item's content</param>
-        /// <param name="EditableFields">List of editable fields</param>
-        /// <param name="ItemTag">The tag for the new item (optional)</param>
-        public void AddItem(List<Object> Data, List<Boolean> EditableFields, string ItemTag = null)
-        {
-            ListView2Item lvi = new ListView2Item(
-                LastRow,
-                LastCol,
-                ItemTag,
-                _columns.ToArray(),
-                Data,
-                FontForFileNames)
-            {
-                Font = Font.SystemSansSerifFont.WithWeight(FontWeight.Heavy),
-                PointerBgColor = PointedBgColor,
-                PointerFgColor = PointedFgColor,
-                SelectionBgColor = SelectedBgColor,
-                SelectionFgColor = SelectedFgColor,
-                State = ItemStates.Default
-            };
-            AddItem(lvi);
-        }
-
-        /// <summary>Add a new ListView2Item into this ListView2</summary>
-        /// <param name="Item">The new ListView2Item</param>
-        private void AddItem(ListView2Item Item)
-        {
-            if (Color2)
-            {
-                Item.NormalBgColor = NormalBgColor2;
-                Item.NormalFgColor = NormalFgColor1;
-            }
-            else
-            {
-                Item.NormalBgColor = NormalBgColor1;
-                Item.NormalFgColor = NormalFgColor1;
-            }
-
-            Color2 = !Color2;
-            Items.Add(Item);
-            Grid.Add(Item, LastCol, LastRow, 1, 1, true);
-            Item.ButtonPressed += Item_ButtonPressed;
-            Item.EditComplete += sender =>
-            {
-                var handler = EditComplete;
-                if (handler != null)
-                {
-                    handler(sender, this);
-                }
-            };
-            Item.CanGetFocus = true;
-            if (LastRow == 0) _SetPoint(Item);
-            LastRow++;
-        }
-
-        /// <summary>Removes the specifed item from the list</summary>
-        /// <param name="Item">The item</param>
-        public void RemoveItem(ListView2Item Item)
-        {
-            //Note that the removing item is simply hided.
-            //To remove it completely, call Clear() sub-programm. But all other rows will be also removed.
-            Item.Visible = false;
-        }
-
-        /// <summary>Gets pointer for the ListView2Item at specifed row №</summary>
-        /// <param name="Row">The row's number</param>
-        /// <returns>A pointer to the ListView2 Item</returns>
-        public ListView2Item GetItem(int Row)
-        {
-            return Items[Row];
-        }
-
-        /// <summary>Purges the ListView2 (deletes all items from display and memory). Useful when memory leaks are happen.</summary>
-        public void Clear()
-        {
-            Grid.Clear();
-            Items.Clear();
-            LastRow = LastCol = 0;
-            PointedItem = null;
-        }
-
-        /// <summary>Clear selection of row</summary>
-        /// <param name="Item">The row or null if need to unselect all</param>
-        public void Unselect(ListView2Item Item = null)
-        {
-            if (Item == null)
-            {
-                foreach (ListView2Item lvi in SelectedItems)
-                {
-                    lvi.State = ItemStates.Default;
-                }
-                SelectedItems.Clear();
-            }
-            else
-            {
-                Item.State = ItemStates.Default;
-                SelectedItems.Remove(Item);
-            }
-
-            RaiseSelectionChanged(SelectedItems);
-        }
-
-        /// <summary>Selects an row</summary>
-        /// <param name="Item">The row or null if need to select all rows</param>
-        public void Select(ListView2Item Item = null)
-        {
-            if (Item != null)
-            {
-                _SelectItem(Item);
-                return;
-            }
-
-            SelectedItems.Clear();
-            foreach (ListView2Item lvi in Items)
-            {
-                if (lvi.State == ItemStates.Pointed || lvi.State == ItemStates.PointedAndSelected)
-                    lvi.State = ItemStates.PointedAndSelected;
-                else
-                    lvi.State = ItemStates.Selected;
-
-                SelectedItems.Add(lvi);
-            }
-
-            RaiseSelectionChanged(SelectedItems);
-        }
-
-        /// <summary>Inverts selection of items (like the "[*] gray" key)</summary>
-        public void InvertSelection()
-        {
-            foreach (ListView2Item lvi in Items)
-            {
-                if ((int)lvi.State >= 2)
-                {
-                    _UnselectItem(lvi);
-                }
-                else
-                {
-                    _SelectItem(lvi);
-                }
-            }
-            RaiseSelectionChanged(SelectedItems);
-        }
-
-        /// <summary>Scrolls the internal scroll view to the specifed row</summary>
-        /// <param name="rowno">The row's number</param>
-        public void ScrollToRow(int rowno)
-        {
-            double Y = Items[0].Surface.GetPreferredSize().Height * rowno;
-            ScrollerIn.ScrollTo(Y);
-        }
-
-        //PUBLIC EVENTS
-
-        public event TypedEvent<ListView2Item> PointerMoved;
-        public event TypedEvent<List<ListView2Item>> SelectionChanged;
-        public event TypedEvent<ListView2Item> PointedItemDoubleClicked;
-        public event TypedEvent<EditableLabel, ListView2> EditComplete;
-
-        protected void RaiseSelectionChanged(List<ListView2Item> data)
-        {
-            var handler = SelectionChanged;
-            if (handler != null)
-            {
-                handler(data);
-            }
-        }
-
-        //PUBLIC PROPERTIES
-
-        /// <summary>Sets column configuration</summary>
-        public void SetColumns(IEnumerable<ColumnInfo> columns)
-        {
-            _columns.Clear();
-            ColumnTitles.Clear();
-            ColumnRow.Clear();
-            foreach (ColumnInfo ci in columns)
-            {
-                _columns.Add(ci);
-                ColumnTitles.Add(new Label(ci.Title) { WidthRequest = ci.Width, Visible = ci.Visible });
-                ColumnRow.PackStart(ColumnTitles[ColumnTitles.Count - 1]);
-            }
-        }
-
-        /// <summary>Defines visiblity of the widget's border</summary>
-        public bool BorderVisible
-        {
-            get { return ScrollerOut.BorderVisible; }
-            set { ScrollerOut.BorderVisible = value; }
-        }
-
-        /// <summary>Selected row's number</summary>
-        public int SelectedRow
-        {
-            get { return PointedItem.RowNo; }
-            set { _SetPoint(Items[value]); }
-        }
-
-        /// <summary>Gets the list of the rows that currently are choosed by the user</summary>
-        public List<ListView2Item> ChoosedRows
-        {
-            get
-            {
-                if (SelectedItems.Count == 0)
-                {
-                    List<ListView2Item> list_one = new List<ListView2Item> { PointedItem };
-                    return list_one;
-                }
-                // ReSharper disable once RedundantIfElseBlock //to ease readability
-                else
-                {
-                    return SelectedItems;
-                }
-            }
-        }
-
-        //ENUMS & STRUCTS
+        #region ENUMS & STRUCTS
 
         /// <summary>
         /// Defines how the items are displayed in the control.
@@ -579,5 +634,7 @@ namespace pluginner.Widgets
             public double Width;
             public bool Visible;
         }
+
+        #endregion
     }
 }

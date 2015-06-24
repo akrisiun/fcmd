@@ -73,6 +73,10 @@
     <Compile Include="AiLib\IOFile\PathHelpers.cs" />
     <Compile Include="AiLib\IOFile\Win32FileSystemEnumerableIterator.cs" />
     <Compile Include="AiLib\IOFile\Win32FindFile.cs" />
+    <Compile Include="AiLib\Reflection\ExpandoUtils.cs" />
+    <Compile Include="AiLib\Reflection\StringConvert.cs" />
+    <Compile Include="AiLib\Wpf\GridDataSource.cs" />
+    <Compile Include="AiLib\Wpf\WpfTitleHelper.cs" />
     <Compile Include="base-plugins\fs\FTPFileSystem.cs" />
     <Compile Include="base-plugins\fs\localFileSystem-CLI.cs" />
     <Compile Include="base-plugins\fs\localFileSystem.cs" />
@@ -88,6 +92,7 @@
     <Compile Include="FileList\Localizator.cs" />
     <Compile Include="FileList\MainWindow-Actions.cs" />
     <Compile Include="FileList\MainWindow-Workers.cs" />
+    <Compile Include="FileList\MenuButton.cs" />
     <Compile Include="FileList\ReplaceQuestionDialog.cs" />
     <Compile Include="FileList\Settings.cs" />
     <Compile Include="FileList\SettingsWindow.cs" />
@@ -96,6 +101,7 @@
     <Compile Include="FileList\XmlDisplay.cs" />
     <Compile Include="Menu\Menu.cs" />
     <Compile Include="Menu\MenuItemWIthKey.cs" />
+    <Compile Include="Menu\MenuWpf.cs" />
     <Compile Include="pluginfinder.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />
     <Compile Include="SettingsWindowTabs\ISettingsWindowTab.cs" />
@@ -106,6 +112,18 @@
     <Compile Include="SettingsWindowTabs\swtMainWindowThemes.cs" />
     <Compile Include="SettingsWindowTabs\swtViewerEditor.cs" />
     <Compile Include="theme\Control.cs" />
+    <Compile Include="theme\ctrl\ButtonWidget.cs" />
+    <Compile Include="theme\ctrl\FontWpf.cs" />
+    <Compile Include="theme\ctrl\LabelWidget.cs" />
+    <Compile Include="theme\ListView2ItemWpf.cs" />
+    <Compile Include="theme\ctrl\ListView2Widget.cs" />
+    <Compile Include="theme\ListView2Wpf.cs" />
+    <Compile Include="theme\ctrl\TextEntry.cs" />
+    <Compile Include="theme\FileListPanelWpf.cs" />
+    <Compile Include="theme\MenuWpf.xaml.cs">
+      <DependentUpon>MenuWpf.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="theme\MessageDialog.cs" />
     <Compile Include="theme\PanelCmd.xaml.cs">
       <DependentUpon>PanelCmd.xaml</DependentUpon>
     </Compile>
@@ -127,6 +145,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="theme\MenuWpf.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="theme\PanelCmd.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

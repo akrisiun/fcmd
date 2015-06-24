@@ -9,36 +9,39 @@
         xmlns:WPFBackend="clr-namespace:Xwt.WPFBackend;assembly=Xwt.WPF" 
         
         Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <Style TargetType="MenuItem" x:Key="font">
+        </Style>
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
+            <RowDefinition Height="21"/>
             <RowDefinition Height="*" />
             <RowDefinition Height="28"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="5" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
-        <Menu x:Name="menu" Grid.ColumnSpan="3" Height="30" Background="Gray" IsMainMenu="True"
-              VerticalAlignment="Top" HorizontalAlignment="Stretch">
-            <MenuItem Command="" Foreground="Red">Left</MenuItem>
-            <MenuItem>Command</MenuItem>
-            <MenuItem>Right</MenuItem>
-        </Menu>
+
+        <local:MenuWpf x:Name="Menu" Grid.ColumnSpan="2" Height="48"
+            />
+
+        <local:PanelCmd x:Name="Cmd" Margin="0,4,0,0"
+            Grid.Row="2" Grid.ColumnSpan="2" />
 
         <local:PanelWpf x:Name="LeftPanel" 
-			Grid.Row="1" Grid.Column="0" />
+			Grid.Row="1" Grid.Column="0" Margin="0,0,2,0" />
 
-        <local:PanelCmd x:Name="cmd" Margin="0,4,0,0"
-            Grid.Row="2" Grid.ColumnSpan="3" />
+        <local:PanelWpf x:Name="RightPanel" 
+			Grid.Row="1" Grid.Column="1" Margin="2,0,0,0" />
 
-        <local:PanelWpf x:Name="RightPanel"
-			Grid.Row="1" Grid.Column="2" />
-        <GridSplitter x:Name="gridSplitter" Grid.Column="1" Grid.Row="1"
-                      HorizontalAlignment="Left" ResizeDirection="Columns" ShowsPreview="True" />
+        <GridSplitter x:Name="panelSplitter"
+            Grid.Column="1" Grid.Row="1"
+            HorizontalAlignment="Left" VerticalAlignment="Stretch" 
+            Background="Silver" Width="4" Margin="-2,0,0,0"
+            ResizeDirection="Columns" ShowsPreview="True" 
+            />
 
-        <!--<WPFBackend:ExScrollViewer/>
-        <WPFBackend:ExGrid/>-->
     </Grid>
 </Window>

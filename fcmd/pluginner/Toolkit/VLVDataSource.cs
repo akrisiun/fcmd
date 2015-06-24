@@ -6,11 +6,9 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using pluginner.Widgets;
 using Xwt;
-using Xwt.Drawing;
+// using Xwt.Drawing;
 
 namespace pluginner.Toolkit
 {
@@ -63,7 +61,7 @@ namespace pluginner.Toolkit
 
 		/// <summary>Add a new ListView2Item into this ListView2</summary>
 		/// <param name="Item">The new ListView2Item</param>
-		private void AddItem(ListView2Item Item)
+		private void AddItem(IListView2Item Item)
 		{
 			/*if (Color2)
 			{

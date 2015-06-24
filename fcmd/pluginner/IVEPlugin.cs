@@ -38,8 +38,10 @@ namespace pluginner
 		/// <summary>Defines, should this plugin display a toolbar at the top of the box or not</summary>
 		bool ShowToolbar { set; }
 
-		/// <summary>UI theme applicator.</summary>
-		Stylist Stylist { set; }
+#if XWT
+        /// <summary>UI theme applicator.</summary>
+        Stylist Stylist { set; }
 		//note that the plugin color scheme must rely on VEWorkingArea selector
+#endif
 	}
 }
