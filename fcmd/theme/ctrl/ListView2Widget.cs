@@ -97,9 +97,15 @@ namespace fcmd.theme.ctrl
         {
             if (DataObj != null && DataObj.Count > 0)
             {
-                Items.Clear();
-                DataObj.Clear();
+                // Items.Clear();
+                // DataObj.Clear();
             }
+        }
+
+        public void Dispose()
+        {
+            if (DataObj != null)
+                DataObj.Clear();
         }
 
         public void SetFocus() { }

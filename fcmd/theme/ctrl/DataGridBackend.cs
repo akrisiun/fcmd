@@ -21,7 +21,7 @@ namespace fcmd.theme.ctrl
                 var item = new DataGridTextColumn()
                 {
                     Header = c.Title,
-                    Binding = new Binding(string.Format("Data[{0}]", c.Tag))  // .ToString())  // ++idx))
+                    Binding = new Binding(c.Tag.ToString())  // string.Format("Data[{0}]", c.Tag))  // .ToString())  // ++idx))
                 };
                 columns.Add(item);
             }
@@ -29,8 +29,12 @@ namespace fcmd.theme.ctrl
             // ItemsControl
             IEnumerable result = list as IEnumerable;
 
-            grid.ItemsSource = result;
             grid.IsReadOnly = grid.IsReadOnly;
+            try
+            {
+                grid.ItemsSource = result;
+            }
+            catch (Exception) {; } // Invalid Operation in PresentationFramework.dll
             return result;
         }
 

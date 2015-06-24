@@ -23,7 +23,7 @@ namespace fcmd.Menu
             bar.Items.Insert(1, edit);
             foreach (Control item in EditItems())
             {
-                item.Width = 140;
+                item.Width = 200;
                 edit.Items.Add(item);
             }
         }
