@@ -109,6 +109,7 @@
     <Compile Include="SettingsWindowTabs\swtMainWindowInfobar.cs" />
     <Compile Include="SettingsWindowTabs\swtMainWindowThemes.cs" />
     <Compile Include="SettingsWindowTabs\swtViewerEditor.cs" />
+    <Compile Include="theme\Commands.cs" />
     <Compile Include="theme\Control.cs" />
     <Compile Include="theme\ctrl\ButtonWidget.cs" />
     <Compile Include="theme\ctrl\DataGridBackend.cs" />

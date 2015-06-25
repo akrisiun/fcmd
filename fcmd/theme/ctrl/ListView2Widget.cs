@@ -51,14 +51,14 @@ namespace fcmd.theme.ctrl
                , IAddChild, IContainItemStorage
     {
         // no visual data container
-        public ListView2Data DataObj { get; protected set; }
+        public ListView2List DataObj { get; protected set; }
         public PanelWpf Panel { get; set; }
         public FileListPanelWpf FileList { get; set; }
 
         public ListView2Widget()
         {
-            DataObj = new ListView2Data(this);
-            // TODO: DataObj.PointedItem = new PointedItem(); // <ListView2Item>();
+            DataObj = new ListView2List(this);
+            DataObj.PointedItem = new PointedItem() { Index = - 1, Item = null }; // <ListView2Item>();
             DataContext = DataObj;
         }
 
@@ -165,7 +165,7 @@ namespace fcmd.theme.ctrl
             {
                 BindGridEvents();
 
-                ListView2.ColumnInfo[] definitions = DataObj.DefineColumns(null);
+                ListView2.ColumnInfo[] definitions = DefineColumns(null);
                 this.ToDataSource<object>(items, definitions);
             }
             else
@@ -178,46 +178,9 @@ namespace fcmd.theme.ctrl
             }
         }
 
-        public void BindGridEvents()
-        {
-            this.SelectionChanged += (s, e) =>
-                {
-                    var list = e.AddedItems;
-                    foreach (ListView2ItemWpf item in list)
-                        Select(item);
-                };
-
-            this.PreviewMouseDoubleClick += (s, e) =>
-                {
-                    if (SelectEnter(this.SelectedItem as ListView2ItemWpf))
-                        e.Handled = true;
-                };
-
-            this.Panel.path.KeyDown += (s, e) =>
-                {
-                    if (e.Key == Key.Enter)
-                    {
-                        var path = (e.Source as TextEntry).Text.Replace(fileProcol, "");
-                        LoadDir(path);
-                        e.Handled = true;
-                    }
-                };
-            this.Panel.cdUp.PreviewMouseDown += (s, e) =>
-                {
-                    if (e.LeftButton == MouseButtonState.Pressed)
-                    {
-                        var FS = FileList.FS;
-                        var path = FS.CurrentDirectory + FS.DirSeparator + "..";
-                        LoadDir(path);
-                        e.Handled = true;
-                    }
-                };
-        }
-
-        // TODO
         public ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df)
         {
-            return null;
+            return DataObj.DefineColumns(df);
         }
 
         #region ICollection
@@ -255,13 +218,6 @@ namespace fcmd.theme.ctrl
 
         #endregion
 
-    }
-
-    public enum PanelSide
-    {
-        Undefined = 0,
-        Left = 1,
-        Right = 2
     }
 
 }

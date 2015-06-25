@@ -155,7 +155,7 @@ namespace fcmd.base_plugins.fs
                 else
                     tmpVar.MIMEType = "application/octet-stream";
 
-                tmpVar.IconSmall = Utilities.GetIconForMIME(tmpVar.MIMEType);
+                // tmpVar.IconSmall = Utilities.GetIconForMIME(tmpVar.MIMEType);
 
                 output.Add(tmpVar);
                 // Progress += FileWeight;

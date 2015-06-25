@@ -10,7 +10,7 @@ namespace fcmd.theme.ctrl
     public static class DataGridBackend
     {
         public static IEnumerable ToDataSource<T>(this DataGrid grid,
-               IEnumerable<T> list, ListView2Data.ColumnInfo[] columnInfo)
+               IEnumerable<T> list, ListView2List.ColumnInfo[] columnInfo)
         {
             ObservableCollection<DataGridColumn> columns = grid.Columns;
             if (columns.Count > 0)

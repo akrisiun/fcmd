@@ -67,16 +67,4 @@ namespace fcmd.theme.ctrl
         }
     }
 
-
-    public class ListView2Data : ListView2List
-    {
-
-        public ListView2Data(ListView2Widget parent) : base(parent)
-        {
-            if (Parent == null)
-                throw new NullReferenceException("check parent");
-        }
-
-    }
-
 }
