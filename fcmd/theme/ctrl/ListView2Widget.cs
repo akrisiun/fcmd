@@ -115,7 +115,7 @@ namespace fcmd.theme.ctrl
             Focus();
         }
 
-        const string fileProcol = "file://";
+        public const string fileProcol = "file://";
 
         public void Select(ListView2ItemWpf item)
         {
@@ -140,7 +140,7 @@ namespace fcmd.theme.ctrl
             return false;
         }
 
-        void LoadDir(string path)
+        public void LoadDir(string path)
         {
             try
             {
@@ -163,7 +163,7 @@ namespace fcmd.theme.ctrl
             var items = DataObj.DataItems;  // .ItemsForGrid();
             if (this.Columns.Count == 0)
             {
-                BindGridEvents();
+                this.BindGridEvents();
 
                 ListView2.ColumnInfo[] definitions = DefineColumns(null);
                 this.ToDataSource<object>(items, definitions);

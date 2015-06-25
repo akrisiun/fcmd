@@ -1,8 +1,11 @@
-﻿using System;
+﻿using fcmd.theme.ctrl;
+using pluginner.Widgets;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace fcmd.theme
 {
@@ -22,12 +25,12 @@ namespace fcmd.theme
             {
                 var list = e.AddedItems;
                 foreach (ListView2ItemWpf item in list)
-                    Select(item);
+                    @this.Select(item);
             };
 
             @this.PreviewMouseDoubleClick += (s, e) =>
             {
-                if (SelectEnter(this.SelectedItem as ListView2ItemWpf))
+                if (@this.SelectEnter(@this.SelectedItem as ListView2ItemWpf))
                     e.Handled = true;
             };
 
@@ -35,8 +38,8 @@ namespace fcmd.theme
             {
                 if (e.Key == Key.Enter)
                 {
-                    var path = (e.Source as TextEntry).Text.Replace(fileProcol, "");
-                    LoadDir(path);
+                    var path = (e.Source as TextEntry).Text.Replace(ListView2Widget.fileProcol, "");
+                    @this.LoadDir(path);
                     e.Handled = true;
                 }
             };
@@ -45,9 +48,9 @@ namespace fcmd.theme
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
-                    var FS = FileList.FS;
+                    var FS = @this.FileList.FS;
                     var path = FS.CurrentDirectory + FS.DirSeparator + "..";
-                    LoadDir(path);
+                    @this.LoadDir(path);
                     e.Handled = true;
                 }
             };

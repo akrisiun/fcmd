@@ -74,8 +74,8 @@ namespace fcmd.theme
             public static PanelLayoutClass Create(MainWindow w)
             {
                 // Initialize Undefined sides
-                w.LeftPanel.PanelData.Initialize(ctrl.PanelSide.Left);
-                w.RightPanel.PanelData.Initialize(ctrl.PanelSide.Right);
+                w.LeftPanel.PanelData.Initialize(PanelSide.Left);
+                w.RightPanel.PanelData.Initialize(PanelSide.Right);
                 return new PanelLayoutClass { Panel1 = w.LeftPanel, Panel2 = w.RightPanel };
             }
         }
