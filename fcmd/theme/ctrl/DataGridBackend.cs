@@ -13,15 +13,14 @@ namespace fcmd.theme.ctrl
                IEnumerable<T> list, ListView2Data.ColumnInfo[] columnInfo)
         {
             ObservableCollection<DataGridColumn> columns = grid.Columns;
-            // columns.Clear();
-
-            // int idx = -1;
+            if (columns.Count > 0)
+                columns.Clear();
             foreach (var c in columnInfo)
             {
                 var item = new DataGridTextColumn()
                 {
                     Header = c.Title,
-                    Binding = new Binding(c.Tag.ToString())  // string.Format("Data[{0}]", c.Tag))  // .ToString())  // ++idx))
+                    Binding = new Binding(c.Tag.ToString())
                 };
                 columns.Add(item);
             }
@@ -29,12 +28,14 @@ namespace fcmd.theme.ctrl
             // ItemsControl
             IEnumerable result = list as IEnumerable;
 
+            grid.AutoGenerateColumns = false;
             grid.IsReadOnly = grid.IsReadOnly;
             try
             {
                 grid.ItemsSource = result;
             }
             catch (Exception) {; } // Invalid Operation in PresentationFramework.dll
+
             return result;
         }
 

@@ -450,8 +450,8 @@ namespace fcmd.theme
             //}
 
             ////build panels
-            Window.p1 = PanelLayout.Panel1.Content as FileListPanelWpf;
-            Window.p2 = PanelLayout.Panel2.Content as FileListPanelWpf;
+            Window.p1 = PanelLayout.Panel1.DataContext as FileListPanelWpf;
+            Window.p2 = PanelLayout.Panel2.DataContext as FileListPanelWpf;
             var p1 = Window.p1 as FileListPanelWpf;
             var p2 = Window.p2 as FileListPanelWpf;
 
@@ -554,7 +554,8 @@ namespace fcmd.theme
                     p1.ListingView.SetFocus();
                     Window.ActivePanelWpf = p1;
                     Window.PassivePanelWpf = p2;
-                    if (argv.Length == 1) p1.LoadDir(argv[0]);
+                    if (argv.Length == 1 && !argv[0].EndsWith(".exe"))
+                        p1.LoadDir(argv[0]);
                     break;
                 case 2:
                     p2.ListingView.SetFocus();

@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Diagnostics;
 // using Xwt.Drawing;
 
 namespace fcmd.theme
@@ -23,7 +24,7 @@ namespace fcmd.theme
         }
 
         public ListView2Widget ListingViewWpf { get; protected set; }
-        public override IListView2<ListView2ItemWpf> ListingView { get { return ListingViewWpf; } }
+        public override IListView2<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj; } }
         public override IUIListingView ListingWidget { get { return ListingViewWpf; } }
 
         public override void Initialize(PanelSide side)
@@ -37,6 +38,9 @@ namespace fcmd.theme
             UrlBox = Parent.path;
 
             ListingViewWpf = Parent.data;
+            ListingViewWpf.Panel = Parent as PanelWpf;
+            ListingViewWpf.FileList = this;
+            Debug.Assert(ListingViewWpf.DataObj.Parent == ListingViewWpf);
             ListingViewWpf.Side = side;
             PostInitialize();
         }

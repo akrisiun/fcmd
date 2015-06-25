@@ -15,6 +15,7 @@ using System.Linq;
 using System.Drawing;
 using System.Collections;
 using pluginner.Widgets;
+using System.IO;
 
 namespace pluginner.Widgets
 {
@@ -30,9 +31,12 @@ namespace pluginner.Widgets
         /// <summary>Data store</summary>
         protected Object[] _Values;
 
-        public string fdlFile { get { return Data[2] as string; } }
-        public string fdlSize { get { return Data[3].ToString(); } }
-        public string fdlModifield { get { return Data[4] as string; } }
+        public string FullPath { get { return fldFile != ".." ? fldPath : Path.Combine(fldPath, fldFile); } }
+        public string fldPath { get { return Data[0] as string; } }
+
+        public string fldFile { get { return Data[1] as string; } }
+        public string fldSize { get { return Data[2].ToString(); } }
+        public string fldModified { get { return Data[3].ToString(); } }
         // df.
 
         /// <summary>Column info store</summary>

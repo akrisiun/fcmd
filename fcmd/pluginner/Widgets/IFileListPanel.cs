@@ -55,9 +55,10 @@ namespace pluginner.Widgets
     }
 
     public interface IUIListingView<T> : IUIListingView
-    { 
+    {
         // IEnumerable<T> ChoosedRows { get; set; }
         // object[]
+        IList<T> DataItems { get; }
     }
 
     public interface IPointedItem<T> : IPointedItem
@@ -73,7 +74,7 @@ namespace pluginner.Widgets
     {
         object[] Data { get; set; }
         // IEnumerable<object> DataL { get; set; }
-        object Content { get; }
+        // object Content { get; }
     }
 
     public interface IListView2
@@ -112,9 +113,9 @@ namespace pluginner.Widgets
         ListView2.ItemStates State { get; set; }
         bool Visible { get; set; }
 
-        string fdlFile { get; } // { get { return Data[0]; } }
-        string fdlSize { get; } //{ get { return Data[1]; } }
-        string fdlModifield { get; } // { get { return Data[2]; } }
+        string fldFile { get; }
+        string fldSize { get; }
+        string fldModified { get; }
 
     }
 

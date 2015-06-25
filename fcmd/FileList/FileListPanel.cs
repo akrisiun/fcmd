@@ -64,10 +64,11 @@ namespace fcmd
 
         public abstract void Initialize(PanelSide side);
 
+
+#if XWT
         EventHandler goRootDelegate = null;
         EventHandler goUpDelegate = null;
 
-#if XWT
         //public MenuButton BookmarksButton = new MenuButton(Image.FromResource("fcmd.Resources.bookmarks.png"));
         //public MenuButton HistoryButton = new MenuButton(Image.FromResource("fcmd.Resources.history.png"));
 
@@ -444,6 +445,7 @@ namespace fcmd
 
             // ListingWidget.Cursor = CursorType.Wait;
             ListingWidget.Sensitive = false;
+           
             string oldCurDir = FS.CurrentDirectory;
 
             bool loadPlugin = false;
@@ -451,7 +453,7 @@ namespace fcmd
             {
                 FS.CurrentDirectory = URL;
                 // first try
-                LoadFs(URL, Shorten.Value);
+                LoadFs(URL, CurShorten);
             }
             catch (Exception ex)
             {
@@ -503,6 +505,8 @@ namespace fcmd
             ListingWidget.Sensitive = true;
             // ListingWidget.Cursor = CursorType.Arrow;
         }
+
+        #region FS
 
         public void LoadFs(string URL, ShortenPolicies Shorten)
         {
@@ -581,19 +585,30 @@ namespace fcmd
 #endif
                 }
             }
-            if (goUpDelegate != null)
-            {
-                GoUp.Clicked -= goUpDelegate;
-            }
 
-            goUpDelegate = (o, ea) => { LoadDir(updir); };
-            GoUp.Clicked += goUpDelegate;
-            if (goRootDelegate != null)
-            {
-                GoRoot.Clicked -= goRootDelegate;
-            }
-            goRootDelegate = (o, ea) => { LoadDir(rootdir); };
-            GoRoot.Clicked += goRootDelegate;
+            //if (goUpDelegate != null)
+            //{
+            //    GoUp.Clicked -= goUpDelegate;
+            //}
+
+
+            // WPF problem : no UI thread synchornize
+            //goUpDelegate = (o, ea) =>
+            //    {
+            //        LoadDir(updir);
+            //    };
+            
+
+            //GoUp.Clicked += goUpDelegate;
+            //if (goRootDelegate != null)
+            //{
+            //    GoRoot.Clicked -= goRootDelegate;
+            //}
+            //goRootDelegate = (o, ea) =>
+            //    {
+            //        LoadDir(rootdir);
+            //    };
+            //GoRoot.Clicked += goRootDelegate;
 
         }
 
@@ -640,10 +655,9 @@ namespace fcmd
         public void LoadDir(string URL)
         {
             LoadDir(URL, CurShorten);
-            //KB = CurShortenKB,
-            //MB = CurShortenMB,
-            //GB = CurShortenGB
         }
+
+        #endregion
 
 #if !WPF
         /// <summary>
@@ -673,6 +687,7 @@ namespace fcmd
             return (string)ListingView.PointedItem.Data[Field];
         }
 #endif
+        #region Drives, Mounts
 
         /// <summary>Add autobookmark "system disks" onto disk toolbar</summary>
         private void AddSysDrives()
@@ -750,6 +765,8 @@ namespace fcmd
             }
             else AddSysDrives(); //fallback for Windows
         }
+
+        #endregion
 
         /// <summary>
         /// Writes to statusbar the default text

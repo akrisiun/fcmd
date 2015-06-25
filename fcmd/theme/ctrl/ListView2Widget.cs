@@ -10,17 +10,22 @@ using System.Windows.Media;
 using DrawingColor = System.Drawing.Color;
 using System.Windows.Input;
 using System.Collections;
+using fcmd.Menu;
+using System.IO;
 
 namespace fcmd.theme.ctrl
 {
-    public class PointedItem : pluginner.Widgets.ListView2ItemWpf, IPointedItem // <ListView2Item>
+    public class PointedItem : IPointedItem<ListView2ItemWpf> // <ListView2Item>
     {
-        // public object[] Data { get; set; }
+        public int Index { get; set; }
+        public ListView2ItemWpf Item { get; set; }
+        public IEnumerable<ListView2ItemWpf> Pointed { get; set; }
 
-        public PointedItem() : base(0, 0, "", null, null) // , null)
+        public PointedItem() // : base(0, 0, "", null, null) // , null)
         {
         }
 
+        public object[] Data { get { return Item.Data; } set { Item.Data = value; } }
     }
 
     public static class ColorConvert
@@ -42,11 +47,13 @@ namespace fcmd.theme.ctrl
         }
     }
 
-    public class ListView2Widget : DataGrid, IListView2<ListView2ItemWpf>, IUIListingView<ListView2ItemWpf>
-               , IAddChild, IContainItemStorage  // WPF
+    public class ListView2Widget : DataGrid, IUIListingView<ListView2ItemWpf>
+               , IAddChild, IContainItemStorage
     {
         // no visual data container
         public ListView2Data DataObj { get; protected set; }
+        public PanelWpf Panel { get; set; }
+        public FileListPanelWpf FileList { get; set; }
 
         public ListView2Widget()
         {
@@ -59,47 +66,41 @@ namespace fcmd.theme.ctrl
         public object Content { get; set; }
         public bool CanGetFocus { get { return IsEnabled; } set { IsEnabled = value; } }
         public bool Sensitive { get { return DataObj.Sensitive; } set { DataObj.Sensitive = value; } }
-        // public CursorType Cursor { get { return base.Cursor ; set; }
 
-        public DrawingColor BackgroundColor { get { return (Background as SolidColorBrush).Color.To(); } set { Background = value.From(); } }
+        public DrawingColor BackgroundColor
+        {
+            get { return (Background as SolidColorBrush).Color.To(); }
+            set { Background = value.From(); }
+        }
 
         public int SelectedRow { get; set; }
 
-        IList<ListView2ItemWpf> IListView2<ListView2ItemWpf>.DataItems { get { return DataObj.DataItems; } }
+        public IList<ListView2ItemWpf> DataItems { get { return DataObj.DataItems; } }
 
         // Enumerable ItemsSource -> ItemsControl
         public IEnumerable<ListView2ItemWpf> ChoosedRows { get; set; }
+        public IPointedItem<ListView2ItemWpf> PointedItem { get; set; }
 
-        public PanelSide Side  { get; set; }
-
-        // public FS {get; set;}
-
-        public TextBlock StatusBar { get; }
-
-        public Font FontForFileNames { get; set; }
-
-        public IPointedItem<ListView2ItemWpf> PointedItem
+        public PanelSide Side { get; set; }
+        public string urlFull { get { return FileList.FS.CurrentDirectory; } }
+        public string urlDir
         {
             get
             {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
+                var dir = FileList.FS.CurrentDirectory;
+                return (dir.StartsWith(fileProcol)) ? dir.Substring(fileProcol.Length) : null;
             }
         }
+
+        // public FS {get; set;}
+        // public TextBlock StatusBar { get; }
+        public Font FontForFileNames { get; set; }
 
         public int Count { get { return Items == null ? 0 : Items.Count; } }
 
         public void Clear()
         {
-            if (DataObj != null && DataObj.Count > 0)
-            {
-                // Items.Clear();
-                // DataObj.Clear();
-            }
+            // if (DataObj != null && DataObj.Count > 0)
         }
 
         public void Dispose()
@@ -108,25 +109,116 @@ namespace fcmd.theme.ctrl
                 DataObj.Clear();
         }
 
-        public void SetFocus() { }
+        public void SetFocus()
+        {
+            // DataGrid got focus
+            Focus();
+        }
+
+        const string fileProcol = "file://";
 
         public void Select(ListView2ItemWpf item)
         {
-            throw new NotImplementedException();
+            this.SelectedRow = DataItems.IndexOf(item);
+            PointedItem = new PointedItem() { Item = item, Index = this.SelectedRow };
+        }
+
+        public bool SelectEnter(ListView2ItemWpf item)
+        {
+            var fullpath = item.FullPath.StartsWith(fileProcol)
+                    ? Path.GetFullPath(item.FullPath.Substring(fileProcol.Length)) : null;
+            if (fullpath != null && Directory.Exists(fullpath))
+            {
+                LoadDir(fullpath);
+                return true;
+            }
+            else if (item.FullPath.Contains("://"))
+            {
+                LoadDir(item.FullPath);
+                return true;
+            }
+            return false;
+        }
+
+        void LoadDir(string path)
+        {
+            try
+            {
+                this.ItemsSource = null;
+                if (path.Contains("://") && !path.Contains(fileProcol))
+                    this.FileList.LoadDir(path, null);
+                else
+                {
+                    var fullpath = path.StartsWith(fileProcol)
+                        ? Path.GetFullPath(path.Substring(fileProcol.Length)) : Path.GetFullPath(path);
+                    Directory.SetCurrentDirectory(fullpath);
+                    this.FileList.LoadDir(fileProcol + fullpath, null);
+                }
+            }
+            catch (Exception ex) { MessageDialog.ShowError(ex.Message); }
         }
 
         public void SetupColumns()
         {
+            var items = DataObj.DataItems;  // .ItemsForGrid();
             if (this.Columns.Count == 0)
             {
+                BindGridEvents();
+
                 ListView2.ColumnInfo[] definitions = DataObj.DefineColumns(null);
-                this.ToDataSource<ListView2ItemWpf>(DataObj.DataItems, definitions);
+                this.ToDataSource<object>(items, definitions);
             }
+            else
+            {
+                try
+                {
+                    this.ItemsSource = items;
+                }
+                catch (Exception) { }
+            }
+        }
+
+        public void BindGridEvents()
+        {
+            this.SelectionChanged += (s, e) =>
+                {
+                    var list = e.AddedItems;
+                    foreach (ListView2ItemWpf item in list)
+                        Select(item);
+                };
+
+            this.PreviewMouseDoubleClick += (s, e) =>
+                {
+                    if (SelectEnter(this.SelectedItem as ListView2ItemWpf))
+                        e.Handled = true;
+                };
+
+            this.Panel.path.KeyDown += (s, e) =>
+                {
+                    if (e.Key == Key.Enter)
+                    {
+                        var path = (e.Source as TextEntry).Text.Replace(fileProcol, "");
+                        LoadDir(path);
+                        e.Handled = true;
+                    }
+                };
+            this.Panel.cdUp.PreviewMouseDown += (s, e) =>
+                {
+                    if (e.LeftButton == MouseButtonState.Pressed)
+                    {
+                        var FS = FileList.FS;
+                        var path = FS.CurrentDirectory + FS.DirSeparator + "..";
+                        LoadDir(path);
+                        e.Handled = true;
+                    }
+                };
         }
 
         // TODO
         public ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df)
-        { return null; }
+        {
+            return null;
+        }
 
         #region ICollection
 
@@ -155,11 +247,11 @@ namespace fcmd.theme.ctrl
             return DataObj.Remove(item);
         }
 
-        public IEnumerator<ListView2ItemWpf> GetEnumerator()
-        {
-            return DataObj.GetEnumerator();
-        }
-        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+        //public IEnumerator<ListView2ItemWpf> GetEnumerator()
+        //{
+        //    return DataObj.GetEnumerator();
+        //}
+        // IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
 
         #endregion
 

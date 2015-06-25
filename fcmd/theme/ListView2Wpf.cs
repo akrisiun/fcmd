@@ -1,5 +1,6 @@
 ﻿using pluginner.Widgets;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 
@@ -9,7 +10,8 @@ namespace fcmd.theme.ctrl
 
     public class ListView2List : ListView2<ListView2ItemWpf>
     {
-        public ListView2List(IUIListingView<ListView2ItemWpf> parent) : base(parent) {
+        public ListView2List(IUIListingView<ListView2ItemWpf> parent) : base(parent)
+        {
             _Items = new List<ListView2ItemWpf>();
         }
 
@@ -20,6 +22,16 @@ namespace fcmd.theme.ctrl
 
         protected List<ListView2ItemWpf> _Items;
         public override IList<ListView2ItemWpf> DataItems { get { return _Items; } }
+
+        public IEnumerable<object> ItemsForGrid()
+        {
+            var numerator = _Items.GetEnumerator();
+            while (numerator.MoveNext())
+            {
+                ListView2ItemWpf item = numerator.Current;
+                yield return new { fldFile = item.fldFile, fldSize = item.fldSize, fldModified = item.fldModified };
+            }
+        }
 
         public override void Add(ListView2ItemWpf item)
         {
@@ -56,28 +68,14 @@ namespace fcmd.theme.ctrl
     }
 
 
-    // ListView2Widget : DataGrid, IListView2<ListView2ItemWpf>, IUIListingView<ListView2ItemWpf>
-
     public class ListView2Data : ListView2List
     {
 
-        public ListView2Data(ListView2Widget parent) : base(null) {
-            
-            // throw new NullReferenceException("check parent");
-        }
-
-        public override Font FontForFileNames { get; set; }
-
-        // public override object Content { get { return Items; } set { throw new NotImplementedException("no ListView2Data set"); } }
-
-        // public override ICollection<ListView2Item> Items { get { return (Parent as ListView2Widget).Items; } set {; } }
-
-        public override void SetFocus()
+        public ListView2Data(ListView2Widget parent) : base(parent)
         {
-            throw new NotImplementedException();
+            if (Parent == null)
+                throw new NullReferenceException("check parent");
         }
-
-        // public override void Clear() { var items = Items as ItemCollection; items.Clear(); }
 
     }
 

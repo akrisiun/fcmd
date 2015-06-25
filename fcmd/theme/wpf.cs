@@ -21,7 +21,10 @@ namespace fcmd.theme
             @this.LoadDir(@this.argv);
 
             var listing = @this.ActivePanel.ListingView;
-#else 
+#else
+            @this.LeftPanel.data.Columns.Clear();
+            @this.RightPanel.data.Columns.Clear();
+
             @this.WindowData.LoadDir(Environment.GetCommandLineArgs());
 #endif
         }

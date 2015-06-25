@@ -382,9 +382,9 @@ namespace fcmd.ftps
             get { return "/"; }
         }
 
-        public event TypedEvent<string> StatusChanged;
+        public event TypedEvent<string> StatusChanged = null;
 
-        public event TypedEvent<double> ProgressChanged;
+        public event TypedEvent<double> ProgressChanged = null;
 
         public void CLIstdinWriteLine(string StdIn)
         {

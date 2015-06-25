@@ -653,9 +653,9 @@ namespace pluginner.Widgets
             //public int Changed = 4;
 
             return new ColumnInfo[] {
-                new ColumnInfo { Index = 0, Tag = "fdlFile", Title= "File", Width=190, Visible=true },
-                new ColumnInfo { Index = 1, Tag = "fdlSize", Title= "Size", Width=190, Visible=true },
-                new ColumnInfo { Index = 2, Tag = "fdlModifield", Title= "Modified ", Width=190, Visible=true }
+                new ColumnInfo { Index = 0, Tag = "fldFile", Title= "File", Width=200, Visible=true },
+                new ColumnInfo { Index = 1, Tag = "fldSize", Title= "Size", Width=90, Visible=true },
+                new ColumnInfo { Index = 2, Tag = "fldModified", Title= "Modified", Width=110, Visible=true }
             };
         }
 

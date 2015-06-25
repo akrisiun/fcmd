@@ -140,7 +140,7 @@ namespace fcmd
 				}
 			}
 			throw new PluginNotFoundException(
-                "No plugin for protoco " // "Не найден плагин ФС для протокола "
+                "No plugin for protocol " // "Не найден плагин ФС для протокола "
                 + UrlParts[0]);
 		}
 

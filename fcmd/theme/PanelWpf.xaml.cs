@@ -27,7 +27,7 @@ namespace fcmd.theme
             InitializeComponent();
 
             PanelData = new FileListPanelWpf(this);
-            Content = PanelData;
+            DataContext = PanelData;
         }
     }
 }

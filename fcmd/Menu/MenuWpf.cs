@@ -74,13 +74,15 @@ namespace fcmd.Menu
 
     public class EventCommand : ICommand
     {
-        public Action<RoutedEventArgs> ExecuteCmd {get; set;}
+        public Action<object> ExecuteCmd {get; set;}
+        public Object Target { get; set; }
+
         public event EventHandler CanExecuteChanged;
         public bool CanExecute(object parameter) { return true; }
 
         public void Execute(object parameter)
         {
-            ExecuteCmd(parameter as RoutedEventArgs);
+            ExecuteCmd(parameter);
         }
     }
 }
