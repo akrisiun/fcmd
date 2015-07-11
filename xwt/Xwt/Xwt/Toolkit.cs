@@ -47,11 +47,11 @@ namespace Xwt
 		bool exitCallbackRegistered;
 
 		static KnownBackend[] knownBackends = new [] {
-			new KnownBackend { Type = ToolkitType.Gtk3, TypeName = "Xwt.GtkBackend.GtkEngine, Xwt.Gtk3" },
+			new KnownBackend { Type = ToolkitType.Gtk3, TypeName = "Xwt.GtkBackend.GtkEngine, Xwt3.Gtk3" },
 			new KnownBackend { Type = ToolkitType.Gtk, TypeName = "Xwt.GtkBackend.GtkEngine, Xwt.Gtk" },
 			new KnownBackend { Type = ToolkitType.XamMac, TypeName = "Xwt.Mac.MacEngine, Xwt.XamMac" },
 			new KnownBackend { Type = ToolkitType.Cocoa, TypeName = "Xwt.Mac.MacEngine, Xwt.Mac" },
-			new KnownBackend { Type = ToolkitType.Wpf, TypeName = "Xwt.WPFBackend.WPFEngine, Xwt.WPF" },
+			new KnownBackend { Type = ToolkitType.Wpf, TypeName = "Xwt.WPFBackend.WPFEngine, Xwt3.WPF" },
 		};
 
 		class KnownBackend
@@ -161,8 +161,20 @@ namespace Xwt
 			Toolkit t = new Toolkit ();
 
 			if (!string.IsNullOrEmpty (fullTypeName)) {
-				t.LoadBackend (fullTypeName, isGuest, true);
-				var bk = knownBackends.FirstOrDefault (tk => fullTypeName.StartsWith (tk.TypeName));
+
+#if PC
+                // Windows environment
+                System.AppDomain.CurrentDomain.AssemblyResolve +=
+                    (s, e) => ResolveAsm(s, e);
+#endif 
+
+                t.LoadBackend(fullTypeName, isGuest, true);
+
+#if PC
+                System.AppDomain.CurrentDomain.AssemblyResolve -= ResolveAsm;
+#endif
+
+                var bk = knownBackends.FirstOrDefault (tk => fullTypeName.StartsWith (tk.TypeName));
 				if (bk != null)
 					t.Type = bk.Type;
 				return t;
@@ -177,12 +189,20 @@ namespace Xwt
 
 			throw new InvalidOperationException ("Xwt engine not found");
 		}
+        
+        public static Assembly ResolveAsm(object s, ResolveEventArgs args)
+        {
+            var name = args.Name.Split(",".ToCharArray());
 
-		/// <summary>
-		/// Load a toolkit of a specified type.
-		/// </summary>
-		/// <param name="type">The toolkit type.</param>
-		public static Toolkit Load (ToolkitType type)
+            var asm = Assembly.LoadFrom(name[0].Trim() + ".dll");
+            return asm;
+        }
+
+    /// <summary>
+    /// Load a toolkit of a specified type.
+    /// </summary>
+    /// <param name="type">The toolkit type.</param>
+    public static Toolkit Load (ToolkitType type)
 		{
 			var et = toolkits.Values.FirstOrDefault (tk => tk.toolkitType == type);
 			if (et != null)
@@ -232,16 +252,32 @@ namespace Xwt
 			throw new ArgumentException ("Invalid toolkit type");
 		}
 
-		bool LoadBackend (string type, bool isGuest, bool throwIfFails)
+		bool LoadBackend (string typePass, bool isGuest, bool throwIfFails)
 		{
+            var type = typePass;
 			int i = type.IndexOf (',');
-			string assembly = type.Substring (i+1).Trim ();
-			type = type.Substring (0, i).Trim ();
+            var split = type.Split(",".ToCharArray()); // type.Substring (i+1).Trim ();
+            string assembly = split[1].Trim() + ".dll";
+            type = split[0].Trim();  // type.Substring (0, i).Trim ();
 			try {
-				Assembly asm = Assembly.Load (assembly);
-				if (asm != null) {
-					Type t = asm.GetType (type);
-					if (t != null) {
+                // Assembly asmBase = Assembly.LoadFrom("Xwt3.dll");
+                Assembly asm = Assembly.LoadFrom(assembly);
+                // Assembly.Load (assembly);
+                if (asm != null) {
+
+                    //if (assembly.Contains("Xwt3.Gtk3"))
+                    //{
+                    //    Assembly.LoadFrom("cairo3-sharp.dll");
+                    //    Assembly.LoadFrom("glib3-sharp.dll");
+                    //    Assembly.LoadFrom("atk3-sharp.dll");
+                    //    Assembly.LoadFrom("gio3-sharp.dll");
+                    //    Assembly.LoadFrom("CoreGtk3.dll");
+                    //}
+
+                    Type t = asm.GetType (type);
+                    // located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)
+
+                    if (t != null) {
 						backend = (ToolkitEngineBackend) Activator.CreateInstance (t);
 						Initialize (isGuest);
 						return true;

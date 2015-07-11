@@ -34,8 +34,9 @@ namespace Xwt
 		[SetUp]
 		public void SetUp ()
 		{
-			Xwt.Application.Initialize ("Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0");
-		}
+            // Xwt.Application.Initialize ("Xwt.GtkBackend.GtkEngine, Xwt.Gtk, Version=1.0.0.0");
+            Xwt.Application.Initialize(ToolkitType.Gtk3);
+        }
 
 		[TearDown]
 		public void Cleanup ()

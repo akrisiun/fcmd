@@ -31,203 +31,229 @@ using System.Windows.Markup;
 
 namespace Xwt
 {
-	[BackendType (typeof(IFrameBackend))]
-	[ContentProperty("Content")]
-	public class Frame: Widget
-	{
-		Widget child;
-		WidgetSpacing borderWidth;
-		WidgetSpacing padding;
-		// FrameType type;
-		
-		protected new class WidgetBackendHost: Widget.WidgetBackendHost, IFrameEventSink
-		{
-		}
-		
-		protected override BackendHost CreateBackendHost ()
-		{
-			return new WidgetBackendHost ();
-		}
-		
-		IFrameBackend Backend {
-			get { return (IFrameBackend)BackendHost.Backend; }
-		}
-		
-		public Frame ()
-		{
-		}
-		
-		public Frame (FrameType frameType)
-		{
-			VerifyConstructorCall (this);
-            // Type = frameType;
-		}
-		
-		public Frame (Widget content)
-		{
-			VerifyConstructorCall (this);
-			Content = content;
-		}
+    [BackendType(typeof(IFrameBackend))]
+    [ContentProperty("Content")]
+    public class Frame : Widget
+    {
+        Widget child;
+        WidgetSpacing borderWidth;
+        WidgetSpacing padding;
+        FrameType type;
 
-		//[Obsolete ("Use Xwt.FrameBox")]
-		//public Frame (Widget content, FrameType frameType)
-		//{
-		//	VerifyConstructorCall (this);
-		//	Type = frameType;
-		//	Content = content;
-		//}
-		
-		//[Obsolete ("Use Xwt.FrameBox")]
-		//[DefaultValue (FrameType.WidgetBox)]
-		//public FrameType Type {
-		//	get { return type; }
-		//	set { type = value; Backend.SetFrameType (type); }
-		//}
-		
-		[DefaultValue (null)]
-		public string Label {
-			get { return Backend.Label; }
-			set { Backend.Label = value; }
-		}
-		
-		public WidgetSpacing Padding {
-			get { return padding; }
-			set {
-				padding = value;
-				UpdatePadding ();
-			}
-		}
+        protected new class WidgetBackendHost : Widget.WidgetBackendHost, IFrameEventSink
+        {
+        }
 
-		[DefaultValue (0d)]
-		public double PaddingLeft {
-			get { return padding.Left; }
-			set {
-				padding.Left = value;
-				UpdatePadding (); 
-			}
-		}
+        protected override BackendHost CreateBackendHost()
+        {
+            return new WidgetBackendHost();
+        }
 
-		[DefaultValue (0d)]
-		public double PaddingRight {
-			get { return padding.Right; }
-			set {
-				padding.Right = value;
-				UpdatePadding (); 
-			}
-		}
+        IFrameBackend Backend
+        {
+            get { return (IFrameBackend)BackendHost.Backend; }
+        }
 
-		[DefaultValue (0d)]
-		public double PaddingTop {
-			get { return padding.Top; }
-			set {
-				padding.Top = value;
-				UpdatePadding (); 
-			}
-		}
+        public Frame()
+        {
+        }
 
-		[DefaultValue (0d)]
-		public double PaddingBottom {
-			get { return padding.Bottom; }
-			set {
-				padding.Bottom = value;
-				UpdatePadding (); 
-			}
-		}
+        public Frame(FrameType frameType)
+        {
+            VerifyConstructorCall(this);
+            Type = frameType;
+        }
 
-		void UpdatePadding ()
-		{
-			Backend.SetPadding (padding.Left, padding.Right, padding.Top, padding.Bottom);
-			OnPreferredSizeChanged ();
-		}
-		
-		[Obsolete ("Use Xwt.FrameBox")]
-		public WidgetSpacing BorderWidth {
-			get { return borderWidth; }
-			set {
-				borderWidth = value;
-				UpdateBorderWidth ();
-			}
-		}
+        public Frame(Widget content)
+        {
+            VerifyConstructorCall(this);
+            Content = content;
+        }
 
-		// [Obsolete ("Use Xwt.FrameBox")]
-		[DefaultValue (0d)]
-		public double BorderWidthLeft {
-			get { return borderWidth.Left; }
-			set {
-				borderWidth.Left = value;
-				UpdateBorderWidth (); 
-			}
-		}
+        //[Obsolete ("Use Xwt.FrameBox")]
+        public Frame(Widget content, FrameType frameType)
+        {
+            VerifyConstructorCall(this);
+            Type = frameType;
+            Content = content;
+        }
 
-		// [Obsolete ("Use Xwt.FrameBox")]
-		[DefaultValue (0d)]
-		public double BorderWidthRight {
-			get { return borderWidth.Right; }
-			set {
-				borderWidth.Right = value;
-				UpdateBorderWidth (); 
-			}
-		}
+        //[Obsolete ("Use Xwt.FrameBox")]
+        [DefaultValue(FrameType.WidgetBox)]
+        public FrameType Type
+        {
+            get { return type; }
+            set { type = value; Backend.SetFrameType(type); }
+        }
 
-		// [Obsolete ("Use Xwt.FrameBox")]
-		[DefaultValue (0d)]
-		public double BorderWidthTop {
-			get { return borderWidth.Top; }
-			set {
-				borderWidth.Top = value;
-				UpdateBorderWidth (); 
-			}
-		}
+        [DefaultValue(null)]
+        public string Label
+        {
+            get { return Backend.Label; }
+            set { Backend.Label = value; }
+        }
 
-		// [Obsolete ("Use Xwt.FrameBox")]
-		[DefaultValue (0d)]
-		public double BorderWidthBottom {
-			get { return borderWidth.Bottom; }
-			set {
-				borderWidth.Bottom = value;
-				UpdateBorderWidth (); 
-			}
-		}
+        public WidgetSpacing Padding
+        {
+            get { return padding; }
+            set
+            {
+                padding = value;
+                UpdatePadding();
+            }
+        }
 
-		void UpdateBorderWidth ()
-		{
-			Backend.SetBorderSize (borderWidth.Left, borderWidth.Right, borderWidth.Top, borderWidth.Bottom);
-			OnPreferredSizeChanged ();
-		}
+        [DefaultValue(0d)]
+        public double PaddingLeft
+        {
+            get { return padding.Left; }
+            set
+            {
+                padding.Left = value;
+                UpdatePadding();
+            }
+        }
 
-		[Obsolete ("Use Xwt.FrameBox")]
-		public Color BorderColor {
-			get { return Backend.BorderColor; }
-			set { Backend.BorderColor = value; }
-		}
+        [DefaultValue(0d)]
+        public double PaddingRight
+        {
+            get { return padding.Right; }
+            set
+            {
+                padding.Right = value;
+                UpdatePadding();
+            }
+        }
 
-		/// <summary>
-		/// Removes all children of the Frame
-		/// </summary>
-		public void Clear ()
-		{
-			Content = null;
-		}
+        [DefaultValue(0d)]
+        public double PaddingTop
+        {
+            get { return padding.Top; }
+            set
+            {
+                padding.Top = value;
+                UpdatePadding();
+            }
+        }
 
-		[DefaultValue (null)]
-		public new Widget Content {
-			get { return child; }
-			set {
-				if (child != null)
-					UnregisterChild (child);
-				child = value;
-				if (child != null)
-					RegisterChild (child);
-				Backend.SetContent ((IWidgetBackend)GetBackend (child));
-				OnPreferredSizeChanged ();
-			}
-		}
-	}
-	
-	public enum FrameType
-	{
-		Custom,
-		WidgetBox
-	}
+        [DefaultValue(0d)]
+        public double PaddingBottom
+        {
+            get { return padding.Bottom; }
+            set
+            {
+                padding.Bottom = value;
+                UpdatePadding();
+            }
+        }
+
+        void UpdatePadding()
+        {
+            Backend.SetPadding(padding.Left, padding.Right, padding.Top, padding.Bottom);
+            OnPreferredSizeChanged();
+        }
+
+        //[Obsolete ("Use Xwt.FrameBox")]
+        public WidgetSpacing BorderWidth
+        {
+            get { return borderWidth; }
+            set
+            {
+                borderWidth = value;
+                UpdateBorderWidth();
+            }
+        }
+
+        //[Obsolete ("Use Xwt.FrameBox")]
+        [DefaultValue(0d)]
+        public double BorderWidthLeft
+        {
+            get { return borderWidth.Left; }
+            set
+            {
+                borderWidth.Left = value;
+                UpdateBorderWidth();
+            }
+        }
+
+        //[Obsolete ("Use Xwt.FrameBox")]
+        [DefaultValue(0d)]
+        public double BorderWidthRight
+        {
+            get { return borderWidth.Right; }
+            set
+            {
+                borderWidth.Right = value;
+                UpdateBorderWidth();
+            }
+        }
+
+        //[Obsolete ("Use Xwt.FrameBox")]
+        [DefaultValue(0d)]
+        public double BorderWidthTop
+        {
+            get { return borderWidth.Top; }
+            set
+            {
+                borderWidth.Top = value;
+                UpdateBorderWidth();
+            }
+        }
+
+        //[Obsolete ("Use Xwt.FrameBox")]
+        [DefaultValue(0d)]
+        public double BorderWidthBottom
+        {
+            get { return borderWidth.Bottom; }
+            set
+            {
+                borderWidth.Bottom = value;
+                UpdateBorderWidth();
+            }
+        }
+
+        void UpdateBorderWidth()
+        {
+            Backend.SetBorderSize(borderWidth.Left, borderWidth.Right, borderWidth.Top, borderWidth.Bottom);
+            OnPreferredSizeChanged();
+        }
+
+        [Obsolete("Use Xwt.FrameBox")]
+        public Color BorderColor
+        {
+            get { return Backend.BorderColor; }
+            set { Backend.BorderColor = value; }
+        }
+
+        /// <summary>
+        /// Removes all children of the Frame
+        /// </summary>
+        public void Clear()
+        {
+            Content = null;
+        }
+
+        [DefaultValue(null)]
+        public new Widget Content
+        {
+            get { return child; }
+            set
+            {
+                if (child != null)
+                    UnregisterChild(child);
+                child = value;
+                if (child != null)
+                    RegisterChild(child);
+                Backend.SetContent((IWidgetBackend)GetBackend(child));
+                OnPreferredSizeChanged();
+            }
+        }
+    }
+
+    public enum FrameType
+    {
+        Custom,
+        WidgetBox
+    }
 }
 

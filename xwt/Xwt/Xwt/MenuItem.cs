@@ -82,7 +82,7 @@ namespace Xwt
 			Label = label;
 		}
 
-		protected virtual void LoadCommandProperties (Command command)
+		protected void LoadCommandProperties (Command command)
 		{
 			Label = command.Label;
 			Image = command.Icon;

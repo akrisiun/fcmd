@@ -1,0 +1,88 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+VisualStudioVersion = 14.0.22823.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt3", "Xwt\Xwt3.csproj", "{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt3.Gtk3", "Xwt.Gtk\Xwt3.Gtk3.csproj", "{3B25FD1F-CEBA-4450-8893-DC330FDB56A7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GtkLib", "GtkLib", "{D48CA6A8-7397-457B-934F-DE15D254171B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreGtk3", "Xwt.CoreGtk3\CoreGtk3.csproj", "{9E4B0803-5255-43AA-9C68-0CBDF76DB564}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Base", "Base", "{C678987E-E79F-4C6A-8981-006B0D2E4F0E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "atk3", "Xwt.CoreGtk3\Base\atk\atk3.csproj", "{42FE871A-D8CF-4B29-9AFF-B02454E6C976}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cairo3", "Xwt.CoreGtk3\Base\cairo\cairo3.csproj", "{364577DB-9728-4951-AC2C-EDF7A6FCC09D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gio3", "Xwt.CoreGtk3\Base\gio\gio3.csproj", "{1C3BB17B-336D-432A-8952-4E979BC90867}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "glib3", "Xwt.CoreGtk3\Base\glib\glib3.csproj", "{3BF1D531-8840-4F15-8066-A9788D8C398B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{7CABA878-97E3-4288-815A-1CDB8C72CD00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gtk3-sample", "Test\Gtk3-Sample\gtk3-sample.csproj", "{48234565-8E78-462E-ADEC-9AAA81B641B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{3C7623A9-9E16-41F6-BBB2-0B550F28E749}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Linux-Debug|x86 = Linux-Debug|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1C3BB17B-336D-432A-8952-4E979BC90867}.Debug|x86.ActiveCfg = Debug|x86
+		{1C3BB17B-336D-432A-8952-4E979BC90867}.Debug|x86.Build.0 = Debug|x86
+		{1C3BB17B-336D-432A-8952-4E979BC90867}.Linux-Debug|x86.ActiveCfg = Debug|x86
+		{364577DB-9728-4951-AC2C-EDF7A6FCC09D}.Debug|x86.ActiveCfg = Debug|x86
+		{364577DB-9728-4951-AC2C-EDF7A6FCC09D}.Debug|x86.Build.0 = Debug|x86
+		{364577DB-9728-4951-AC2C-EDF7A6FCC09D}.Linux-Debug|x86.ActiveCfg = Debug|x86
+		{3B25FD1F-CEBA-4450-8893-DC330FDB56A7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3B25FD1F-CEBA-4450-8893-DC330FDB56A7}.Debug|x86.Build.0 = Debug|Any CPU
+		{3B25FD1F-CEBA-4450-8893-DC330FDB56A7}.Linux-Debug|x86.ActiveCfg = Debug|Any CPU
+		{3BF1D531-8840-4F15-8066-A9788D8C398B}.Debug|x86.ActiveCfg = Debug|x86
+		{3BF1D531-8840-4F15-8066-A9788D8C398B}.Debug|x86.Build.0 = Debug|x86
+		{3BF1D531-8840-4F15-8066-A9788D8C398B}.Linux-Debug|x86.ActiveCfg = Debug|x86
+		{3C7623A9-9E16-41F6-BBB2-0B550F28E749}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3C7623A9-9E16-41F6-BBB2-0B550F28E749}.Debug|x86.Build.0 = Debug|Any CPU
+		{3C7623A9-9E16-41F6-BBB2-0B550F28E749}.Linux-Debug|x86.ActiveCfg = Debug|Any CPU
+		{42FE871A-D8CF-4B29-9AFF-B02454E6C976}.Debug|x86.ActiveCfg = Debug|x86
+		{42FE871A-D8CF-4B29-9AFF-B02454E6C976}.Debug|x86.Build.0 = Debug|x86
+		{42FE871A-D8CF-4B29-9AFF-B02454E6C976}.Linux-Debug|x86.ActiveCfg = Debug|x86
+		{48234565-8E78-462E-ADEC-9AAA81B641B2}.Debug|x86.ActiveCfg = Debug|x86
+		{48234565-8E78-462E-ADEC-9AAA81B641B2}.Debug|x86.Build.0 = Debug|x86
+		{48234565-8E78-462E-ADEC-9AAA81B641B2}.Linux-Debug|x86.ActiveCfg = Debug|x86
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug|x86.Build.0 = Debug|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Linux-Debug|x86.ActiveCfg = Debug|Any CPU
+		{9E4B0803-5255-43AA-9C68-0CBDF76DB564}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9E4B0803-5255-43AA-9C68-0CBDF76DB564}.Debug|x86.Build.0 = Debug|Any CPU
+		{9E4B0803-5255-43AA-9C68-0CBDF76DB564}.Linux-Debug|x86.ActiveCfg = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9E4B0803-5255-43AA-9C68-0CBDF76DB564} = {D48CA6A8-7397-457B-934F-DE15D254171B}
+		{C678987E-E79F-4C6A-8981-006B0D2E4F0E} = {D48CA6A8-7397-457B-934F-DE15D254171B}
+		{42FE871A-D8CF-4B29-9AFF-B02454E6C976} = {C678987E-E79F-4C6A-8981-006B0D2E4F0E}
+		{364577DB-9728-4951-AC2C-EDF7A6FCC09D} = {C678987E-E79F-4C6A-8981-006B0D2E4F0E}
+		{1C3BB17B-336D-432A-8952-4E979BC90867} = {C678987E-E79F-4C6A-8981-006B0D2E4F0E}
+		{3BF1D531-8840-4F15-8066-A9788D8C398B} = {C678987E-E79F-4C6A-8981-006B0D2E4F0E}
+		{48234565-8E78-462E-ADEC-9AAA81B641B2} = {7CABA878-97E3-4288-815A-1CDB8C72CD00}
+		{3C7623A9-9E16-41F6-BBB2-0B550F28E749} = {7CABA878-97E3-4288-815A-1CDB8C72CD00}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.DotNetNamingPolicy = $1
+		$1.DirectoryNamespaceAssociation = None
+		$1.ResourceNamePolicy = FileFormatDefault
+		$0.VersionControlPolicy = $2
+		$2.inheritsSet = Mono
+		$0.StandardHeader = $3
+		$3.Text = @\n${FileName}\n \nAuthor:\n      ${AuthorName} <${AuthorEmail}>\n\nCopyright (c) ${Year} ${CopyrightHolder}\n\nPermission is hereby granted, free of charge, to any person obtaining a copy\nof this software and associated documentation files (the "Software"), to deal\nin the Software without restriction, including without limitation the rights\nto use, copy, modify, merge, publish, distribute, sublicense, and/or sell\ncopies of the Software, and to permit persons to whom the Software is\nfurnished to do so, subject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in\nall copies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\nFITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\nAUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\nLIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\nOUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\nTHE SOFTWARE.
+		$3.IncludeInNewFiles = True
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

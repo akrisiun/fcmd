@@ -58,491 +58,437 @@ using Xwt.Motion;
 
 namespace Xwt
 {
-    [BackendType(typeof(IWindowFrameBackend))]
-    public class WindowFrame : XwtComponent, IAnimatable
-    {
-        EventHandler boundsChanged;
-        EventHandler shown;
-        EventHandler hidden;
-        CloseRequestedHandler closeRequested;
-        EventHandler closed;
+	[BackendType (typeof(IWindowFrameBackend))]
+	public class WindowFrame: XwtComponent, IAnimatable
+	{
+		EventHandler boundsChanged;
+		EventHandler shown;
+		EventHandler hidden;
+		CloseRequestedHandler closeRequested;
+		EventHandler closed;
 
-        Point location;
-        Size size;
-        bool pendingReallocation;
-        Image icon;
-        WindowFrame transientFor;
+		Point location;
+		Size size;
+		bool pendingReallocation;
+		Image icon;
+		WindowFrame transientFor;
+		
+		protected class WindowBackendHost: BackendHost<WindowFrame,IWindowFrameBackend>, IWindowFrameEventSink
+		{
+			protected override void OnBackendCreated ()
+			{
+				Backend.Initialize (this);
+				base.OnBackendCreated ();
+				Parent.location = Backend.Bounds.Location;
+				Parent.size = Backend.Bounds.Size;
+				Backend.EnableEvent (WindowFrameEvent.BoundsChanged);
+			}
+			
+			public void OnBoundsChanged (Rectangle bounds)
+			{
+				Parent.OnBoundsChanged (new BoundsChangedEventArgs () { Bounds = bounds });
+			}
 
-        protected class WindowBackendHost : BackendHost<WindowFrame, IWindowFrameBackend>, IWindowFrameEventSink
-        {
-            protected override void OnBackendCreated()
-            {
-                Backend.Initialize(this);
-                base.OnBackendCreated();
-                Parent.location = Backend.Bounds.Location;
-                Parent.size = Backend.Bounds.Size;
-                Backend.EnableEvent(WindowFrameEvent.BoundsChanged);
-            }
+			public virtual void OnShown ()
+			{
+				Parent.OnShown ();
+			}
 
-            public void OnBoundsChanged(Rectangle bounds)
-            {
-                Parent.OnBoundsChanged(new BoundsChangedEventArgs() { Bounds = bounds });
-            }
+			public virtual void OnHidden ()
+			{
+				Parent.OnHidden ();
+			}
 
-            public virtual void OnShown()
-            {
-                Parent.OnShown();
-            }
+			public virtual bool OnCloseRequested ()
+			{
+				return Parent.OnCloseRequested ();
+			}
 
-            public virtual void OnHidden()
-            {
-                Parent.OnHidden();
-            }
+			public virtual void OnClosed ()
+			{
+				Parent.OnClosed ();
+			}
+		}
 
-            public virtual bool OnCloseRequested()
-            {
-                return Parent.OnCloseRequested();
-            }
+		static WindowFrame ()
+		{
+			MapEvent (WindowFrameEvent.Shown, typeof(WindowFrame), "OnShown");
+			MapEvent (WindowFrameEvent.Hidden, typeof(WindowFrame), "OnHidden");
+			MapEvent (WindowFrameEvent.CloseRequested, typeof(WindowFrame), "OnCloseRequested");
+			MapEvent (WindowFrameEvent.Closed, typeof(WindowFrame), "OnClosed");
+		}
 
-            public virtual void OnClosed()
-            {
-                Parent.OnClosed();
-            }
-        }
+		public WindowFrame ()
+		{
+			if (!(base.BackendHost is WindowBackendHost))
+				throw new InvalidOperationException ("CreateBackendHost for WindowFrame did not return a WindowBackendHost instance");
+		}
+		
+		public WindowFrame (string title): this ()
+		{
+			Backend.Title = title;
+		}
+		
+		protected override void Dispose (bool disposing)
+		{
+			base.Dispose (disposing);
+			
+			// Don't dispose the backend if this object is being finalized
+			// The backend has to handle the finalizing on its own
+			if (disposing && BackendHost.BackendCreated)
+				Backend.Dispose ();
+		}
+		
+		IWindowFrameBackend Backend {
+			get { return (IWindowFrameBackend) BackendHost.Backend; } 
+		}
+		
+		protected override BackendHost CreateBackendHost ()
+		{
+			return new WindowBackendHost ();
+		}
+		
+		protected new WindowBackendHost BackendHost {
+			get { return (WindowBackendHost) base.BackendHost; }
+		}
+		
+		public Rectangle ScreenBounds {
+			get {
+				return BackendBounds;
+			}
+			set {
+				if (value.Width < 0)
+					value.Width = 0;
+				if (value.Height < 0)
+					value.Height = 0;
+				BackendBounds = value;
+				if (Visible)
+					AdjustSize ();
+			}
+		}
 
-        static WindowFrame()
-        {
-            MapEvent(WindowFrameEvent.Shown, typeof(WindowFrame), "OnShown");
-            MapEvent(WindowFrameEvent.Hidden, typeof(WindowFrame), "OnHidden");
-            MapEvent(WindowFrameEvent.CloseRequested, typeof(WindowFrame), "OnCloseRequested");
-            MapEvent(WindowFrameEvent.Closed, typeof(WindowFrame), "OnClosed");
-        }
+		public double X {
+			get { return BackendBounds.X; }
+			set { SetBackendLocation (value, Y); }
+		}
+		
+		public double Y {
+			get { return BackendBounds.Y; }
+			set { SetBackendLocation (X, value); }
+		}
+		
+		public double Width {
+			get { return BackendBounds.Width; }
+			set {
+				if (value < 0)
+					value = 0;
+				SetBackendSize (value, -1);
+				if (Visible)
+					AdjustSize ();
+			}
+		}
+		
+		public double Height {
+			get { return BackendBounds.Height; }
+			set {
+				if (value < 0)
+					value = 0;
+				SetBackendSize (-1, value);
+				if (Visible)
+					AdjustSize ();
+			}
+		}
 
-        public WindowFrame()
-        {
-            if (!(base.BackendHost is WindowBackendHost))
-                throw new InvalidOperationException("CreateBackendHost for WindowFrame did not return a WindowBackendHost instance");
-        }
+		/// <summary>
+		/// Size of the window, not including the decorations
+		/// </summary>
+		/// <value>The size.</value>
+		public Size Size {
+			get { return BackendBounds.Size; }
+			set {
+				if (value.Width < 0)
+					value.Width = 0;
+				if (value.Height < 0)
+					value.Height = 0;
+				SetBackendSize (value.Width, value.Height);
+				if (Visible)
+					AdjustSize ();
+			}
+		}
+		
+		public Point Location {
+			get { return BackendBounds.Location; }
+			set { SetBackendLocation (value.X, value.Y); }
+		}
+		
+		public string Title {
+			get { return Backend.Title; }
+			set { Backend.Title = value; }
+		}
 
-        public WindowFrame(string title) : this()
-        {
-            Backend.Title = title;
-        }
+		public Image Icon {
+			get { return icon; }
+			set { icon = value; Backend.SetIcon (icon != null ? icon.GetImageDescription (BackendHost.ToolkitEngine) : ImageDescription.Null); }
+		}
+		
+		public bool Decorated {
+			get { return Backend.Decorated; }
+			set { Backend.Decorated = value; }
+		}
+		
+		public bool ShowInTaskbar {
+			get { return Backend.ShowInTaskbar; }
+			set { Backend.ShowInTaskbar = value; }
+		}
 
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
+		public WindowFrame TransientFor {
+			get { return transientFor; }
+			set {
+				transientFor = value;
+				Backend.SetTransientFor ((IWindowFrameBackend)(value as IFrontend).Backend);
+			}
+		}
 
-            // Don't dispose the backend if this object is being finalized
-            // The backend has to handle the finalizing on its own
-            if (disposing && BackendHost.BackendCreated)
-                Backend.Dispose();
-        }
+		public bool Resizable {
+			get { return Backend.Resizable; }
+			set { Backend.Resizable = value; }
+		}
+		
+		public bool Visible {
+			get { return Backend.Visible; }
+			set { Backend.Visible = value; }
+		}
 
-        IWindowFrameBackend Backend
-        {
-            get { return (IWindowFrameBackend)BackendHost.Backend; }
-        }
+		[DefaultValue (true)]
+		public bool Sensitive {
+			get { return Backend.Sensitive; }
+			set { Backend.Sensitive = value; }
+		}
 
-        protected override BackendHost CreateBackendHost()
-        {
-            return new WindowBackendHost();
-        }
+		public double Opacity {
+			get { return Backend.Opacity; }
+			set { Backend.Opacity = value; }
+		}
+		
+		/// <summary>
+		/// Gets or sets a value indicating whether this window is in full screen mode
+		/// </summary>
+		/// <value><c>true</c> if the window is in full screen mode; otherwise, <c>false</c>.</value>
+		public bool FullScreen {
+			get { return Backend.FullScreen; }
+			set { Backend.FullScreen = value; }
+		}
 
-        protected new WindowBackendHost BackendHost
-        {
-            get { return (WindowBackendHost)base.BackendHost; }
-        }
+		/// <summary>
+		/// Gets the screen on which most of the area of this window is placed
+		/// </summary>
+		/// <value>The screen.</value>
+		public Screen Screen {
+			get {
+				if (!Visible)
+					throw new InvalidOperationException ("The window is not visible");
+				return Desktop.GetScreen (Backend.Screen);
+			}
+		}
 
-        public Rectangle ScreenBounds
-        {
-            get
-            {
-                return BackendBounds;
-            }
-            set
-            {
-                if (value.Width < 0)
-                    value.Width = 0;
-                if (value.Height < 0)
-                    value.Height = 0;
-                BackendBounds = value;
-                if (Visible)
-                    AdjustSize();
-            }
-        }
+		public void Show ()
+		{
+			if (!Visible) {
+				AdjustSize ();
+				Visible = true;
+			}
+		}
+		
+		internal virtual void AdjustSize ()
+		{
+		}
 
-        public double X
-        {
-            get { return BackendBounds.X; }
-            set { SetBackendLocation(value, Y); }
-        }
+		/// <summary>
+		/// Presents a window to the user. This may mean raising the window in the stacking order,
+		/// deiconifying it, moving it to the current desktop, and/or giving it the keyboard focus
+		/// </summary>
+		public void Present ()
+		{
+			Backend.Present ();
+		}
 
-        public double Y
-        {
-            get { return BackendBounds.Y; }
-            set { SetBackendLocation(X, value); }
-        }
+		protected virtual void OnShown ()
+		{
+			if(shown != null)
+				shown (this, EventArgs.Empty);
+		}
+		
+		public void Hide ()
+		{
+			Visible = false;
+		}
 
-        public double Width
-        {
-            get { return BackendBounds.Width; }
-            set
-            {
-                if (value < 0)
-                    value = 0;
-                SetBackendSize(value, -1);
-                if (Visible)
-                    AdjustSize();
-            }
-        }
+		protected virtual void OnHidden ()
+		{
+			if (hidden != null)
+				hidden (this, EventArgs.Empty);
+		}
 
-        public double Height
-        {
-            get { return BackendBounds.Height; }
-            set
-            {
-                if (value < 0)
-                    value = 0;
-                SetBackendSize(-1, value);
-                if (Visible)
-                    AdjustSize();
-            }
-        }
+		/// <summary>
+		/// Closes the window
+		/// </summary>
+		/// <remarks>>
+		/// Closes the window like if the user clicked on the close window button.
+		/// The CloseRequested event is fired and subscribers can cancel the closing,
+		/// so there is no guarantee that the window will actually close.
+		/// This method doesn't dispose the window. The Dispose method has to be called.
+		/// </remarks>
+		public bool Close ()
+		{
+			return Backend.Close ();
+		}
 
-        /// <summary>
-        /// Size of the window, not including the decorations
-        /// </summary>
-        /// <value>The size.</value>
-        public Size Size
-        {
-            get { return BackendBounds.Size; }
-            set
-            {
-                if (value.Width < 0)
-                    value.Width = 0;
-                if (value.Height < 0)
-                    value.Height = 0;
-                SetBackendSize(value.Width, value.Height);
-                if (Visible)
-                    AdjustSize();
-            }
-        }
+		/// <summary>
+		/// Called to check if the window can be closed
+		/// </summary>
+		/// <returns><c>true</c> if the window can be closed, <c>false</c> otherwise</returns>
+		protected virtual bool OnCloseRequested ()
+		{
+			if (closeRequested == null)
+				return true;
+			var eventArgs = new CloseRequestedEventArgs();
+			closeRequested (this, eventArgs);
+			return eventArgs.AllowClose;
+		}
 
-        public Point Location
-        {
-            get { return BackendBounds.Location; }
-            set { SetBackendLocation(value.X, value.Y); }
-        }
+		/// <summary>
+		/// Called when the window has been closed by the user, or by a call to Close
+		/// </summary>
+		/// <remarks>
+		/// This method is not called when the window is disposed, only when explicitly closed (either by code or by the user)
+		/// </remarks>
+		protected virtual void OnClosed ()
+		{
+			if (closed != null)
+				closed (this, EventArgs.Empty);
+		}
 
-        public string Title
-        {
-            get { return Backend.Title; }
-            set { Backend.Title = value; }
-        }
+		internal virtual void SetBackendSize (double width, double height)
+		{
+			Backend.SetSize (width, height);
+		}
 
-        public Image Icon
-        {
-            get { return icon; }
-            set
-            {
-                icon = value;
-                Backend.SetIcon(icon != null ?
-                    icon.GetImageDescription(BackendHost.ToolkitEngine) : ImageDescription.Null);
-            }
-        }
+		internal virtual void SetBackendLocation (double x, double y)
+		{
+			location = new Point (x, y);
+			Backend.Move (x, y);
+		}
 
-        public bool Decorated
-        {
-            get { return Backend.Decorated; }
-            set { Backend.Decorated = value; }
-        }
+		internal virtual Rectangle BackendBounds {
+			get {
+				BackendHost.EnsureBackendLoaded ();
+				return new Rectangle (location, size);
+			}
+			set {
+				size = value.Size;
+				location = value.Location;
+				Backend.Bounds = value;
+			}
+		}
+		
+		protected virtual void OnBoundsChanged (BoundsChangedEventArgs a)
+		{
+			var bounds = new Rectangle (location, size);
+			if (bounds != a.Bounds) {
+				size = a.Bounds.Size;
+				location = a.Bounds.Location;
+				Reallocate ();
+				if (boundsChanged != null)
+					boundsChanged (this, a);
+			}
+		}
+		
+		internal void Reallocate ()
+		{
+			if (!pendingReallocation) {
+				pendingReallocation = true;
+				BackendHost.ToolkitEngine.QueueExitAction (delegate {
+					pendingReallocation = false;
+					OnReallocate ();
+				});
+			}
+		}
+		
+		protected virtual void OnReallocate ()
+		{
+		}
+		
+		void IAnimatable.BatchBegin ()
+		{
+		}
 
-        public bool ShowInTaskbar
-        {
-            get { return Backend.ShowInTaskbar; }
-            set { Backend.ShowInTaskbar = value; }
-        }
+		void IAnimatable.BatchCommit ()
+		{
+		}
 
-        public WindowFrame TransientFor
-        {
-            get { return transientFor; }
-            set
-            {
-                transientFor = value;
-                Backend.SetTransientFor((IWindowFrameBackend)(value as IFrontend).Backend);
-            }
-        }
+		public event EventHandler BoundsChanged {
+			add {
+				boundsChanged += value;
+			}
+			remove {
+				boundsChanged -= value;
+			}
+		}
 
-        public bool Resizable
-        {
-            get { return Backend.Resizable; }
-            set { Backend.Resizable = value; }
-        }
+		public event EventHandler Shown {
+			add {
+				BackendHost.OnBeforeEventAdd (WindowFrameEvent.Shown, shown);
+				shown += value;
+			}
+			remove {
+				shown -= value;
+				BackendHost.OnAfterEventRemove (WindowFrameEvent.Shown, shown);
+			}
+		}
 
-        public bool Visible
-        {
-            get { return Backend.Visible; }
-            set { Backend.Visible = value; }
-        }
+		public event EventHandler Hidden {
+			add {
+				BackendHost.OnBeforeEventAdd (WindowFrameEvent.Hidden, hidden);
+				hidden += value;
+			}
+			remove {
+				hidden -= value;
+				BackendHost.OnAfterEventRemove (WindowFrameEvent.Hidden, hidden);
+			}
+		}
 
-        [DefaultValue(true)]
-        public bool Sensitive
-        {
-            get { return Backend.Sensitive; }
-            set { Backend.Sensitive = value; }
-        }
+		public event CloseRequestedHandler CloseRequested {
+			add {
+				BackendHost.OnBeforeEventAdd (WindowFrameEvent.CloseRequested, closeRequested);
+				closeRequested += value;
+			}
+			remove {
+				closeRequested -= value;
+				BackendHost.OnAfterEventRemove (WindowFrameEvent.CloseRequested, closeRequested);
+			}
+		}
 
-        public double Opacity
-        {
-            get { return Backend.Opacity; }
-            set { Backend.Opacity = value; }
-        }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether this window is in full screen mode
-        /// </summary>
-        /// <value><c>true</c> if the window is in full screen mode; otherwise, <c>false</c>.</value>
-        public bool FullScreen
-        {
-            get { return Backend.FullScreen; }
-            set { Backend.FullScreen = value; }
-        }
-
-        /// <summary>
-        /// Gets the screen on which most of the area of this window is placed
-        /// </summary>
-        /// <value>The screen.</value>
-        public Screen Screen
-        {
-            get
-            {
-                if (!Visible)
-                    throw new InvalidOperationException("The window is not visible");
-                return Desktop.GetScreen(Backend.Screen);
-            }
-        }
-
-        public void Show()
-        {
-            if (!Visible)
-            {
-                AdjustSize();
-                Visible = true;
-            }
-        }
-
-        internal virtual void AdjustSize()
-        {
-        }
-
-        /// <summary>
-        /// Presents a window to the user. This may mean raising the window in the stacking order,
-        /// deiconifying it, moving it to the current desktop, and/or giving it the keyboard focus
-        /// </summary>
-        public void Present()
-        {
-            Backend.Present();
-        }
-
-        protected virtual void OnShown()
-        {
-            if (shown != null)
-                shown(this, EventArgs.Empty);
-        }
-
-        public void Hide()
-        {
-            Visible = false;
-        }
-
-        protected virtual void OnHidden()
-        {
-            if (hidden != null)
-                hidden(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// Closes the window
-        /// </summary>
-        /// <remarks>>
-        /// Closes the window like if the user clicked on the close window button.
-        /// The CloseRequested event is fired and subscribers can cancel the closing,
-        /// so there is no guarantee that the window will actually close.
-        /// This method doesn't dispose the window. The Dispose method has to be called.
-        /// </remarks>
-        public bool Close()
-        {
-            return Backend.Close();
-        }
-
-        /// <summary>
-        /// Called to check if the window can be closed
-        /// </summary>
-        /// <returns><c>true</c> if the window can be closed, <c>false</c> otherwise</returns>
-        protected virtual bool OnCloseRequested()
-        {
-            if (closeRequested == null)
-                return true;
-            var eventArgs = new CloseRequestedEventArgs();
-            closeRequested(this, eventArgs);
-            return eventArgs.AllowClose;
-        }
-
-        /// <summary>
-        /// Called when the window has been closed by the user, or by a call to Close
-        /// </summary>
-        /// <remarks>
-        /// This method is not called when the window is disposed, only when explicitly closed (either by code or by the user)
-        /// </remarks>
-        protected virtual void OnClosed()
-        {
-            if (closed != null)
-                closed(this, EventArgs.Empty);
-        }
-
-        internal virtual void SetBackendSize(double width, double height)
-        {
-            Backend.SetSize(width, height);
-        }
-
-        internal virtual void SetBackendLocation(double x, double y)
-        {
-            location = new Point(x, y);
-            Backend.Move(x, y);
-        }
-
-        internal virtual Rectangle BackendBounds
-        {
-            get
-            {
-                BackendHost.EnsureBackendLoaded();
-                return new Rectangle(location, size);
-            }
-            set
-            {
-                size = value.Size;
-                location = value.Location;
-                Backend.Bounds = value;
-            }
-        }
-
-        protected virtual void OnBoundsChanged(BoundsChangedEventArgs a)
-        {
-            var bounds = new Rectangle(location, size);
-            if (bounds != a.Bounds)
-            {
-                size = a.Bounds.Size;
-                location = a.Bounds.Location;
-                Reallocate();
-                if (boundsChanged != null)
-                    boundsChanged(this, a);
-            }
-        }
-
-        internal void Reallocate()
-        {
-            if (!pendingReallocation)
-            {
-                pendingReallocation = true;
-                BackendHost.ToolkitEngine.QueueExitAction(delegate
-                {
-                    pendingReallocation = false;
-                    OnReallocate();
-                });
-            }
-        }
-
-        protected virtual void OnReallocate()
-        {
-        }
-
-        void IAnimatable.BatchBegin()
-        {
-        }
-
-        void IAnimatable.BatchCommit()
-        {
-        }
-
-        public event EventHandler BoundsChanged
-        {
-            add
-            {
-                boundsChanged += value;
-            }
-            remove
-            {
-                boundsChanged -= value;
-            }
-        }
-
-        public event EventHandler Shown
-        {
-            add
-            {
-                BackendHost.OnBeforeEventAdd(WindowFrameEvent.Shown, shown);
-                shown += value;
-            }
-            remove
-            {
-                shown -= value;
-                BackendHost.OnAfterEventRemove(WindowFrameEvent.Shown, shown);
-            }
-        }
-
-        public event EventHandler Hidden
-        {
-            add
-            {
-                BackendHost.OnBeforeEventAdd(WindowFrameEvent.Hidden, hidden);
-                hidden += value;
-            }
-            remove
-            {
-                hidden -= value;
-                BackendHost.OnAfterEventRemove(WindowFrameEvent.Hidden, hidden);
-            }
-        }
-
-        public event CloseRequestedHandler CloseRequested
-        {
-            add
-            {
-                BackendHost.OnBeforeEventAdd(WindowFrameEvent.CloseRequested, closeRequested);
-                closeRequested += value;
-            }
-            remove
-            {
-                closeRequested -= value;
-                BackendHost.OnAfterEventRemove(WindowFrameEvent.CloseRequested, closeRequested);
-            }
-        }
-
-        /// <summary>
-        /// Raised when the window has been closed by the user, or by a call to Close
-        /// </summary>
-        /// <remarks>
-        /// This event is not raised when the window is disposed, only when explicitly closed (either by code or by the user)
-        /// </remarks>
-        public event EventHandler Closed
-        {
-            add
-            {
-                BackendHost.OnBeforeEventAdd(WindowFrameEvent.Closed, closed);
-                closed += value;
-            }
-            remove
-            {
-                closed -= value;
-                BackendHost.OnAfterEventRemove(WindowFrameEvent.Closed, closed);
-            }
-        }
-    }
-
-    public class BoundsChangedEventArgs : EventArgs
-    {
-        public Rectangle Bounds { get; set; }
-    }
+		/// <summary>
+		/// Raised when the window has been closed by the user, or by a call to Close
+		/// </summary>
+		/// <remarks>
+		/// This event is not raised when the window is disposed, only when explicitly closed (either by code or by the user)
+		/// </remarks>
+		public event EventHandler Closed {
+			add {
+				BackendHost.OnBeforeEventAdd (WindowFrameEvent.Closed, closed);
+				closed += value;
+			}
+			remove {
+				closed -= value;
+				BackendHost.OnAfterEventRemove (WindowFrameEvent.Closed, closed);
+			}
+		}
+	}
+	
+	public class BoundsChangedEventArgs: EventArgs
+	{
+		public Rectangle Bounds { get; set; }
+	}
 }
 

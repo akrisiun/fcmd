@@ -168,9 +168,6 @@ namespace Xwt
 			if (message.ApplyToAllButton != null)
 				return message.ApplyToAllButton;
 
-            if (Toolkit.CurrentEngine == null)
-                return null;
-
 			IAlertDialogBackend backend = Toolkit.CurrentEngine.Backend.CreateBackend<IAlertDialogBackend> ();
 			backend.Initialize (Toolkit.CurrentEngine.Context);
 			if (message.Icon != null)

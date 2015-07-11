@@ -28,212 +28,221 @@ using NUnit.Framework;
 
 namespace Xwt
 {
-	[TestFixture]
-	public abstract class WidgetTests
-	{
-		public abstract Widget CreateWidget ();
+    [TestFixture]
+    public abstract class WidgetTests
+    {
+        public abstract Widget CreateWidget();
 
-		[TestFixtureSetUp]
-		public void Init ()
-		{
-		}
+        [TestFixtureSetUp]
+        public void Init()
+        {
+        }
 
-		[TestFixtureTearDown]
-		public void Cleanup ()
-		{
-		}
+        [TestFixtureTearDown]
+        public void Cleanup()
+        {
+        }
 
-		public void Run (Action a)
-		{
-			Exception ex = null;
-			Application.Invoke (delegate {
-				try {
-					a ();
-				} catch (Exception e) {
-					ex = e;
-				}
-				Application.Exit ();
-			});
-			Application.Run ();
-			if (ex != null)
-				throw new Exception ("Exception in gui event loop", ex);
-		}
+        public void Run(Action a)
+        {
+            Exception ex = null;
+            Application.Invoke(delegate
+            {
+                try
+                {
+                    a();
+                }
+                catch (Exception e)
+                {
+                    ex = e;
+                }
+                Application.Exit();
+            });
+            Application.Run();
 
-		[Test]
-		public void Visibility ()
-		{
-			var w = CreateWidget ();
-			Assert.IsTrue (w.Visible, "Not visible by default");
-			w.Hide ();
-			Assert.IsFalse (w.Visible);
-			w.Show ();
-			Assert.IsTrue (w.Visible);
-			w.Visible = false;
-			Assert.IsFalse (w.Visible);
-			w.Visible = true;
-			Assert.IsTrue (w.Visible);
-		}
+            if (ex != null)
+                throw new Exception("Exception in gui event loop", ex);
+        }
 
-		[Test]
-		public void Sensitivity ()
-		{
-			var w = CreateWidget ();
-			Assert.IsTrue (w.Sensitive, "Not sensitive by default");
-			w.Sensitive = false;
-			Assert.IsFalse (w.Sensitive);
-			w.Sensitive = true;
-			Assert.IsTrue (w.Sensitive);
-		}
-		
-		[Test]
-		public void ParentWindow ()
-		{
-			var w = CreateWidget ();
-			var win = new Window ();
-			win.Content = w;
-			Assert.AreSame (win, w.ParentWindow);
-			win.Dispose ();
-		}
+        [Test]
+        public void Visibility()
+        {
+            var w = CreateWidget();
+            Assert.IsTrue(w.Visible, "Not visible by default");
+            w.Hide();
+            Assert.IsFalse(w.Visible);
+            w.Show();
+            Assert.IsTrue(w.Visible);
+            w.Visible = false;
+            Assert.IsFalse(w.Visible);
+            w.Visible = true;
+            Assert.IsTrue(w.Visible);
+        }
 
-		[Test]
-		public void Margin ()
-		{
-			var w = CreateWidget ();
-			Assert.AreEqual (0, w.Margin.Left);
-			Assert.AreEqual (0, w.Margin.Top);
-			Assert.AreEqual (0, w.Margin.Right);
-			Assert.AreEqual (0, w.Margin.Bottom);
-			w.Margin.SetAll (4);
-			Assert.AreEqual (4, w.Margin.Left);
-			Assert.AreEqual (4, w.Margin.Top);
-			Assert.AreEqual (4, w.Margin.Right);
-			Assert.AreEqual (4, w.Margin.Bottom);
-			w.Margin.Set (10, 20, 30, 40);
-			Assert.AreEqual (10, w.Margin.Left);
-			Assert.AreEqual (20, w.Margin.Top);
-			Assert.AreEqual (30, w.Margin.Right);
-			Assert.AreEqual (40, w.Margin.Bottom);
-			w.Margin.Left = 1;
-			Assert.AreEqual (1, w.Margin.Left);
-			Assert.AreEqual (20, w.Margin.Top);
-			Assert.AreEqual (30, w.Margin.Right);
-			Assert.AreEqual (40, w.Margin.Bottom);
-			w.Margin.Top = 2;
-			Assert.AreEqual (1, w.Margin.Left);
-			Assert.AreEqual (2, w.Margin.Top);
-			Assert.AreEqual (30, w.Margin.Right);
-			Assert.AreEqual (40, w.Margin.Bottom);
-			w.Margin.Right = 3;
-			Assert.AreEqual (1, w.Margin.Left);
-			Assert.AreEqual (2, w.Margin.Top);
-			Assert.AreEqual (3, w.Margin.Right);
-			Assert.AreEqual (40, w.Margin.Bottom);
-			w.Margin.Bottom = 4;
-			Assert.AreEqual (1, w.Margin.Left);
-			Assert.AreEqual (2, w.Margin.Top);
-			Assert.AreEqual (3, w.Margin.Right);
-			Assert.AreEqual (4, w.Margin.Bottom);
-		}
+        [Test]
+        public void Sensitivity()
+        {
+            var w = CreateWidget();
+            Assert.IsTrue(w.Sensitive, "Not sensitive by default");
+            w.Sensitive = false;
+            Assert.IsFalse(w.Sensitive);
+            w.Sensitive = true;
+            Assert.IsTrue(w.Sensitive);
+        }
 
-		[Test]
-		public void Focus ()
-		{
-			var win = new Window ();
-			var w = CreateWidget ();
+        [Test]
+        public void ParentWindow()
+        {
+            var w = CreateWidget();
+            var win = new Window();
+            win.Content = w;
+            Assert.AreSame(win, w.ParentWindow);
+            win.Dispose();
+        }
 
-			Run (delegate {
-				HBox box = new HBox ();
-				TextEntry e = new TextEntry ();
-				box.PackStart (e);
-				box.PackStart (w);
-				win.Content = box;
-				win.Show ();
-				win.Present ();
+        //[Test]
+        //public void Margin ()
+        //{
+        //	var w = CreateWidget ();
+        //	Assert.AreEqual (0, w.Margin.Left);
+        //	Assert.AreEqual (0, w.Margin.Top);
+        //	Assert.AreEqual (0, w.Margin.Right);
+        //	Assert.AreEqual (0, w.Margin.Bottom);
+        //	w.Margin.SetAll (4);
+        //	Assert.AreEqual (4, w.Margin.Left);
+        //	Assert.AreEqual (4, w.Margin.Top);
+        //	Assert.AreEqual (4, w.Margin.Right);
+        //	Assert.AreEqual (4, w.Margin.Bottom);
+        //	w.Margin.Set (10, 20, 30, 40);
+        //	Assert.AreEqual (10, w.Margin.Left);
+        //	Assert.AreEqual (20, w.Margin.Top);
+        //	Assert.AreEqual (30, w.Margin.Right);
+        //	Assert.AreEqual (40, w.Margin.Bottom);
+        //	w.Margin.Left = 1;
+        //	Assert.AreEqual (1, w.Margin.Left);
+        //	Assert.AreEqual (20, w.Margin.Top);
+        //	Assert.AreEqual (30, w.Margin.Right);
+        //	Assert.AreEqual (40, w.Margin.Bottom);
+        //	w.Margin.Top = 2;
+        //	Assert.AreEqual (1, w.Margin.Left);
+        //	Assert.AreEqual (2, w.Margin.Top);
+        //	Assert.AreEqual (30, w.Margin.Right);
+        //	Assert.AreEqual (40, w.Margin.Bottom);
+        //	w.Margin.Right = 3;
+        //	Assert.AreEqual (1, w.Margin.Left);
+        //	Assert.AreEqual (2, w.Margin.Top);
+        //	Assert.AreEqual (3, w.Margin.Right);
+        //	Assert.AreEqual (40, w.Margin.Bottom);
+        //	w.Margin.Bottom = 4;
+        //	Assert.AreEqual (1, w.Margin.Left);
+        //	Assert.AreEqual (2, w.Margin.Top);
+        //	Assert.AreEqual (3, w.Margin.Right);
+        //	Assert.AreEqual (4, w.Margin.Bottom);
+        //}
 
-//				for (int n=0; n < 500; n++) {
-					Application.DispatchPendingEvents ();
-//					System.Threading.Thread.Sleep (10);
-//				}
+        [Test]
+        public void Focus()
+        {
+            var win = new Window();
+            var w = CreateWidget();
 
-				e.SetFocus ();
+            Run(delegate
+            {
+                HBox box = new HBox();
+                TextEntry e = new TextEntry();
+                box.PackStart(e);
+                box.PackStart(w);
+                win.Content = box;
+                win.Show();
+                win.Present();
 
-				Application.DispatchPendingEvents ();
+                //				for (int n=0; n < 500; n++) {
+                // Application.DispatchPendingEvents ();
+                //					System.Threading.Thread.Sleep (10);
+                //				}
 
-				Assert.IsFalse (w.HasFocus);
-		//		Assert.IsTrue (w.CanGetFocus);
+                e.SetFocus();
 
-				int gotFocus = 0;
-				w.GotFocus += delegate {
-					gotFocus++;
-				};
+                // Application.DispatchPendingEvents ();
 
-				w.SetFocus ();
-				Assert.IsTrue (w.HasFocus);
-				Assert.AreEqual (1, gotFocus);
+                Assert.IsFalse(w.HasFocus);
+                //		Assert.IsTrue (w.CanGetFocus);
 
-				int lostFocus = 0;
-				w.LostFocus += delegate {
-					lostFocus++;
-				};
+                int gotFocus = 0;
+                w.GotFocus += delegate
+                {
+                    gotFocus++;
+                };
 
-				e.SetFocus ();
+                w.SetFocus();
+                Assert.IsTrue(w.HasFocus);
+                Assert.AreEqual(1, gotFocus);
 
-				Assert.IsFalse (w.HasFocus);
-	//			Assert.AreEqual (1, lostFocus);
+                int lostFocus = 0;
+                w.LostFocus += delegate
+                {
+                    lostFocus++;
+                };
 
-				win.Dispose ();
-			});
-		}
+                e.SetFocus();
 
-		[Test]
-		[Ignore]
-		public void MinSize ()
-		{
-			var win = new Window ();
-			var w = CreateWidget ();
+                Assert.IsFalse(w.HasFocus);
+                //			Assert.AreEqual (1, lostFocus);
 
-			win.Content = w;
-			win.Show ();
+                win.Dispose();
+            });
+        }
 
-			Application.DispatchPendingEvents ();
+        [Test]
+        [Ignore]
+        public void MinSize()
+        {
+            var win = new Window();
+            var w = CreateWidget();
 
-			var defw = w.Size.Width;
-			var defh = w.Size.Height;
+            win.Content = w;
+            win.Show();
 
-			w.MinWidth = 300;
-			Assert.AreEqual (300, w.MinWidth);
-			Assert.AreEqual (300, w.Size.Width);
+            //Application.DispatchPendingEvents ();
 
-			w.MinHeight = 400;
-			Assert.AreEqual (400, w.MinHeight);
-			Assert.AreEqual (400, w.Size.Height);
+            var defw = w.Size.Width;
+            var defh = w.Size.Height;
 
-			w.MinWidth = -1;
-			Assert.AreEqual (-1, w.MinWidth);
-			Assert.AreEqual (defw, w.Size.Width);
+            w.MinWidth = 300;
+            Assert.AreEqual(300, w.MinWidth);
+            Assert.AreEqual(300, w.Size.Width);
 
-			w.MinHeight = -1;
-			Assert.AreEqual (-1, w.MinHeight);
-			Assert.AreEqual (defh, w.Size.Height);
+            w.MinHeight = 400;
+            Assert.AreEqual(400, w.MinHeight);
+            Assert.AreEqual(400, w.Size.Height);
 
-			win.Dispose ();
-		}
+            w.MinWidth = -1;
+            Assert.AreEqual(-1, w.MinWidth);
+            Assert.AreEqual(defw, w.Size.Width);
 
-		[Test]
-		[Ignore]
-		public void Coordinates ()
-		{
-			var win = new Window ();
-			var w = CreateWidget ();
-			win.Content = w;
-			win.Show ();
+            w.MinHeight = -1;
+            Assert.AreEqual(-1, w.MinHeight);
+            Assert.AreEqual(defh, w.Size.Height);
 
-			Application.DispatchPendingEvents ();
+            win.Dispose();
+        }
 
-			Assert.AreEqual (w.ScreenBounds, win.ScreenBounds);
+        [Test]
+        [Ignore]
+        public void Coordinates()
+        {
+            var win = new Window();
+            var w = CreateWidget();
+            win.Content = w;
+            win.Show();
 
-			win.Dispose ();
-		}
-	}
+            // Application.DispatchPendingEvents();
+            // System.Windows.Forms.Application.DoEvents();
+
+            Assert.AreEqual(w.ScreenBounds, win.ScreenBounds);
+
+            win.Dispose();
+        }
+    }
 }
 

@@ -182,13 +182,9 @@
     <EmbeddedResource Include="Properties\Resources.resx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\xwt\Xwt.WPF\Xwt.WPF.csproj">
-      <Project>{C93D746E-1586-4D4F-B411-BF5A966E6A08}</Project>
-      <Name>Xwt.WPF</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\xwt\Xwt\Xwt.csproj">
+    <ProjectReference Include="..\..\xwt\Xwt\Xwt3.csproj">
       <Project>{92494904-35fa-4dc9-bde9-3a3e87ac49d3}</Project>
-      <Name>Xwt</Name>
+      <Name>Xwt3</Name>
     </ProjectReference>
     <ProjectReference Include="pluginner\pluginner.csproj">
       <Project>{88785b26-d617-4be9-b449-f7ce77444794}</Project>

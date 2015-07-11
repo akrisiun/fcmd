@@ -1,4 +1,5 @@
-bin
+bin/Debug/
+bin/Release/
 obj
 *~
 *.sln.cache
@@ -11,3 +12,12 @@ obj
 *.mdb
 .DS_Store
 test-results
+
+*.bak
+*.pc
+.libs/
+.arch/
+generated-stamp
+
+lib/*.exe
+packages/
