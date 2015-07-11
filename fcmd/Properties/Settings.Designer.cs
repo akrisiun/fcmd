@@ -49,18 +49,6 @@ namespace fcmd.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("(internal)ru_RU")]
-        public string Language {
-            get {
-                return ((string)(this["Language"]));
-            }
-            set {
-                this["Language"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ShowHidedFiles {
             get {
@@ -278,58 +266,6 @@ namespace fcmd.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool VE_ShowToolbar {
-            get {
-                return ((bool)(this["VE_ShowToolbar"]));
-            }
-            set {
-                this["VE_ShowToolbar"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool VE_ShowCmdBar {
-            get {
-                return ((bool)(this["VE_ShowCmdBar"]));
-            }
-            set {
-                this["VE_ShowCmdBar"] = value;
-            }
-        }
-        
-        /// <summary>
-        /// The text in infobar when &gt;0 files are selected
-        /// </summary>
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Configuration.SettingsDescriptionAttribute("The text in infobar when >0 files are selected")]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Выделено: {SelectedItems}")]
-        public string InfoBarContent2 {
-            get {
-                return ((string)(this["InfoBarContent2"]));
-            }
-            set {
-                this["InfoBarContent2"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("350")]
-        public double VEWinHeight {
-            get {
-                return ((double)(this["VEWinHeight"]));
-            }
-            set {
-                this["VEWinHeight"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("350")]
         public double VEWinWidth {
             get {
@@ -361,6 +297,70 @@ namespace fcmd.Properties {
             }
             set {
                 this["UserFileListFontFamily"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("(internal)en_US")]
+        public string Language {
+            get {
+                return ((string)(this["Language"]));
+            }
+            set {
+                this["Language"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool VE_ShowToolbar {
+            get {
+                return ((bool)(this["VE_ShowToolbar"]));
+            }
+            set {
+                this["VE_ShowToolbar"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool VE_ShowCmdBar {
+            get {
+                return ((bool)(this["VE_ShowCmdBar"]));
+            }
+            set {
+                this["VE_ShowCmdBar"] = value;
+            }
+        }
+        
+        /// <summary>
+        /// The text in infobar when &gt;0 files are selected
+        /// </summary>
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Configuration.SettingsDescriptionAttribute("The text in infobar when >0 files are selected")]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Selected: {SelectedItems}")]
+        public string InfoBarContent2 {
+            get {
+                return ((string)(this["InfoBarContent2"]));
+            }
+            set {
+                this["InfoBarContent2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("5")]
+        public double VEWinHeight {
+            get {
+                return ((double)(this["VEWinHeight"]));
+            }
+            set {
+                this["VEWinHeight"] = value;
             }
         }
     }
