@@ -33,8 +33,9 @@ namespace pluginner.Widgets
         private Table Grid = new Table();
 #else 
 
-    public abstract class ListView2<T> : ListView2, IListView2<T>, ICollection<T>, IDisposable  where T : class, IListView2Visual
-        // IListingView  , -> ListView2Widget
+    public abstract class ListView2<T> : ListView2, IListingView,   // , -> ListView2Widget
+        IListView2<T>, ICollection<T>, IDisposable
+        where T : class, IListView2Visual
     {
         public abstract object Content { get; set; }
         public abstract IList<T> DataItems { get; } // protected set
@@ -56,7 +57,9 @@ namespace pluginner.Widgets
         public int SelectedRow { get { new NotImplementedException("no SelectedRow"); return -1; } set {; } }
 
         public bool Sensitive { get; set; }
+#if WPF
         public System.Windows.Input.CursorType Cursor { get; set; }
+#endif
 
         /// <summary>Add a new item</summary>
         /// <param name="Data">The item's content</param>
@@ -82,7 +85,7 @@ namespace pluginner.Widgets
 
         /// <summary>The rows that are allowed to be pointed by keyboard OR null if all rows are allowed</summary>
         /// <summary>Gets the list of the rows that currently are choosed by the user</summary>
-        public IEnumerable<T> ChoosedRows
+        public IEnumerable<T> ChoosedRowsTyped
         {
             get
             {
@@ -98,6 +101,8 @@ namespace pluginner.Widgets
                 }
             }
         }
+
+        public abstract IEnumerable ChoosedRows { get; }
 
         public abstract bool Contains(T item);
         public abstract void Add(T item);
@@ -137,7 +142,7 @@ namespace pluginner.Widgets
             //        handler(sender, this);
             //    }
             //};
-#endif 
+#endif
             //Item.CanGetFocus = true;
             //if (LastRow == 0) _SetPoint(Item);
             //LastRow++;
@@ -169,9 +174,18 @@ namespace pluginner.Widgets
             PointedItem = null;
         }
 
-#endregion
+        #endregion
 
-            #region Selection methods
+        #region Selection methods
+
+        void IListingView.Unselect() { Unselect(null); }
+        void IListingView.Select(object item)
+        {
+            this.Select(item as T);
+        }
+
+        //             void IListingView.SetFocus()
+
 
         /// <summary>Clear selection of row</summary>
         /// <param name="Item">The row or null if need to unselect all</param>
@@ -243,9 +257,9 @@ namespace pluginner.Widgets
             //ScrollerIn.ScrollTo(Y);
         }
 
-            #endregion
+        #endregion
 
-            #region PUBLIC EVENTS
+        #region PUBLIC EVENTS
 
         public event TypedEvent<T> PointerMoved;
         public event TypedEvent<List<T>> SelectionChanged;
@@ -261,8 +275,8 @@ namespace pluginner.Widgets
             }
         }
 
-            #endregion
-            #region PUBLIC PROPERTIES
+        #endregion
+        #region PUBLIC PROPERTIES
 
         /// <summary>Sets column configuration</summary>
         public void SetColumns(IEnumerable<ColumnInfo> columns)
@@ -295,8 +309,8 @@ namespace pluginner.Widgets
         // TODO: int MaxRow (для переноса при режиме Small Icons)
         private List<ColumnInfo> _columns = new List<ColumnInfo>();
 
-            #endregion
-            #region SUB-PROGRAMS
+        #endregion
+        #region SUB-PROGRAMS
 
         /// <summary>
         /// Sets the pointer to an item by defined condition.
@@ -379,7 +393,7 @@ namespace pluginner.Widgets
             RaiseSelectionChanged(SelectedItems);
         }
 
-            #endregion
+        #endregion
     }
 
 #endif
@@ -387,7 +401,7 @@ namespace pluginner.Widgets
     public abstract class ListView2 : IListView2
     {
         public abstract System.Drawing.Font FontForFileNames { get; set; }
-        
+
         // abstract GUI events
         public abstract void SetFocus();
         public abstract void SetupColumns();

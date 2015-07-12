@@ -29,8 +29,8 @@ using System.Runtime.InteropServices;
 //	  Build Number
 //	  Revision
 //
-[assembly: AssemblyVersion("0.1")]
-[assembly: AssemblyFileVersion("0.1")]
+[assembly: AssemblyVersion("0.5")]
+[assembly: AssemblyFileVersion("0.5")]
 [assembly: AssemblyTitleAttribute("The File Commander")]
 [assembly: AssemblyDescriptionAttribute("Two panel file manager (like Total Commander)")]
 [assembly: AssemblyCompanyAttribute("github.com/atauenis/fcmd")]

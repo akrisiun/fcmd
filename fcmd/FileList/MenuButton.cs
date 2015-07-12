@@ -1,4 +1,6 @@
 ﻿using System;
+
+#if WPF
 using System.Windows.Controls;
 
 namespace fcmd.FileList
@@ -8,3 +10,5 @@ namespace fcmd.FileList
 
     }
 }
+
+#endif

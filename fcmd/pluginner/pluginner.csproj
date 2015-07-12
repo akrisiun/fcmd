@@ -23,7 +23,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -32,7 +32,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\bin\</OutputPath>
-    <DefineConstants>DEBUG;WPF;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;NOWPF;GTK;GTK3;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -46,7 +46,6 @@
     <AssemblyOriginatorKeyFile>xwt.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
@@ -65,7 +64,10 @@
     <Compile Include="IPlugin.cs" />
     <Compile Include="Toolkit\Utilities.cs" />
     <Compile Include="Resources\AssemblyInfo.cs" />
+    <Compile Include="Widgets\IContent.cs" />
     <Compile Include="Widgets\IFileListPanel.cs" />
+    <Compile Include="Widgets\IMainMenu.cs" />
+    <Compile Include="Widgets\IStatusBar.cs" />
     <Compile Include="Widgets\ListView2.cs" />
   </ItemGroup>
   <ItemGroup>

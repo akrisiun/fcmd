@@ -11,19 +11,49 @@ namespace pluginner.Widgets
 {
     // intefaces
 
+    public interface IListingView : IListView2
+    {
+        IEnumerable ChoosedRows { get; }
+
+        void SetFocus();
+
+        void Select(object items); 
+        void Unselect();
+        void InvertSelection();
+
+        void AddItem(IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag = null);
+        // List<Object> Data, List<Boolean> EditableFields, string ItemTag = null)
+        // IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag = null)
+
+        // ActivePanel.LoadDir(); };
+    }
+
+    public interface IListingView<T> : IListingView, IListView2<T>, IEnumerable
+        where T : IListView2Visual
+    {
+        // ListView2ItemWpf
+        // IEnumerable<T> ChoosedRowsTyped { get; }
+
+        // T Empty { get; }
+    }
+
     public interface IFileListPanel
     {
         IButton GoRoot { get; }
         IButton GoUp { get; }
-
         ITextEntry UrlBox { get; set; }
+        IStatusBar StatusBar { get; set; }
 
         IFSPlugin FS { get; }
 
         void LoadDir(string currentDirectory = null, ShortenPolicies? Shorten = null);
-        // void LoadDir();
+        // void LoadDir(string currentDirectory = null, Shorten? shorten);
 
+        IListingView ListingView { get; }
+        ShortenPolicies ShortenPolicy { get; set; }
+        // Shorten Shorten { get; set; }
         DataFieldNumbers df { get; set; }
+
         string GetValue(int index);
         T GetValue<T>(int index);
 
@@ -35,7 +65,7 @@ namespace pluginner.Widgets
 
     public interface IFileListPanel<T> : IFileListPanel where T : class, IListView2Visual
     {
-        IListView2<T> ListingView { get; }
+        // IListView2<T> ListingView { get; }
         IUIListingView ListingWidget { get; }
     }
 
@@ -93,7 +123,7 @@ namespace pluginner.Widgets
         int SelectedRow { get; set; }
 
         void Select(T item);
-        IEnumerable<T> ChoosedRows { get; }
+        IEnumerable<T> ChoosedRowsTyped { get; }
 
         IList<T> DataItems { get; }
         void AddItem(IEnumerable<Object> Data, IEnumerable<Boolean> EditableFields, string ItemTag = null);
@@ -129,6 +159,10 @@ namespace pluginner.Widgets
         string Text { get; set; }
     }
 
+    public interface LabelWidget : IControl
+    {
+    }
+
     public interface IButton // : IRelayCommand  ICommand
     {
         object Content { get; set; }
@@ -139,11 +173,18 @@ namespace pluginner.Widgets
         bool CanGetFocus { get; set; }
     }
 
+#if WPF
     public interface IControl : IInputElement // UIElement, IFrameworkInputElement
     {
         bool CanGetFocus { get; set; }  // -> IsEnabled
         Color BackgroundColor { get; set; }
     }
+#else 
+    public interface IControl
+    {
+
+    }
+#endif
 
     public class DataFieldNumbers
     {
@@ -170,6 +211,7 @@ namespace fcmd
         public SizeDisplayPolicy GB { get; set; }
 
         public static ShortenPolicies Empty { get; private set; }
+
         static ShortenPolicies()
         {
             Empty = new ShortenPolicies { KB = 0, MB = 0, GB = 0 };

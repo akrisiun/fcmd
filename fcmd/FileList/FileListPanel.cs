@@ -11,23 +11,29 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading;
-using pluginner;
-//using pluginner.Toolkit;
-using pluginner.Widgets;
-// using System.Drawing;
-using fcmd.theme;
-// using System.Windows.Controls;
 using System.Collections.ObjectModel;
+using MessageDialog = fcmd.View.MessageDialog;
+using Xwt;
+
+using pluginner;
+using pluginner.Toolkit;
+using pluginner.Widgets;
+
+using fcmd.View;
+using fcmd.Controller;
 
 #if WPF
-// no mono Backend
-using fcmd.theme.ctrl;
+// no mono Backend with Presentation framework (Xaml)
+using fcmd.View.Xaml;
+using fcmd.View.ctrl;
 using ColorDrawing = System.Drawing;
-// using CursorType = System.Windows.Input.Cursor;
+using CursorType = System.Windows.Input.Cursor;
+using System.Windows.Controls;
+using System.Windows;
+using System.Drawing;
 #else
-using Xwt;
+// GTK3 Backend
 using Xwt.Drawing;
 using ColorDrawing = Xwt.Drawing;
 #endif
@@ -35,35 +41,273 @@ using ColorDrawing = Xwt.Drawing;
 namespace fcmd
 {
 
-#if !WPF
-    /// <summary>Filelist panel</summary>
-    public class FileListPanel : Table
+#if WPF
+    public class LabelWidget : System.Windows.Controls.Label, ILabelWidget
     {
+        public bool Visible
+        {
+            get { return Visibility != Visibility.Hidden; }
+            set { Visibility = Visibility.Visible; }
+        }
+
+        public bool Condensed { get; set; }
+
+    }
+
+
+    public class CommanderStatusBar : LabelWidget, IContent
+    {
+    }
 
 #else
+    //public class LabelWidget : Xwt.Label, ILabelWidget
+    //{
+    //    public new object Content
+    //    { get { return base.Content; } set { base.Content = value as Widget; } }
 
-    public abstract class FileListPanel<T> : IFileListPanel<T>, IFileListPanel where T : class, IListView2Visual
+    //}
+
+
+    public class CommanderStatusBar : Xwt.Label //  LabelWidget, IContent
     {
-        #region Properties 
+        //  public object Content { get; set; }
+    }
 
+#endif
+
+
+#if !WPF
+
+    public class ListViewGTK : IListView2Visual
+    {
+        public bool CanGetFocus
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public ListView2.ColumnInfo[] ColumnData
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public object Content
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public object[] Data
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string fldFile
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string fldModified
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public string fldSize
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int? RowIndex
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public ListView2.ItemStates State
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool Visible
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+    }
+
+    public class FileListPanelGTK : FileListPanel<ListViewGTK>
+    {
+        public override IUIListingView ListingWidget
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override void Initialize(PanelSide side)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadDir()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void LoadDir(string Url, Shorten? Shorten)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override string MakeStatusbarText(string Template)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void WriteDefaultStatusLabel()
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public abstract class FileListPanel : Table
+    {
         //Data Field Numbers
         //they aren't const because they may change when the columns are reordered
         public DataFieldNumbers df { get; set; }
         // public int dfDirItem = 5;
 
+        public IStatusBar StatusBar { get; set; }
+        
+        public ShortenPolicies ShortenPolicy { get; set; }
+        public Shorten Shorten { get; set; }
+
+        public IListingView ListingView { get; set; }
         public IFSPlugin FS { get; set; }
+
+        // T GetValue<T>(int Field)
+        public abstract T GetValue<T>(int field);
+        public abstract string GetValue(int field);
+
+        public abstract void LoadDir(string Url, Shorten? Shorten); // string[] args
+        public void LoadDir() { LoadDir(null, null); }
+    }
+
+    /// <summary>Filelist panel</summary>
+    public abstract class FileListPanel<T> : FileListPanel, IFileListPanel<T>, IFileListPanel where T : class, IListView2Visual
+    {
+
+#else
+
+    public abstract class FileListPanel
+    {
+        //Data Field Numbers
+        //they aren't const because they may change when the columns are reordered
+
+        //public DataFieldNumbers df { get; set; }
+        // public int dfDirItem = 5;
+
+        // public object ListingView { get; set; }
+        public IFSPlugin FS { get; set; }
+
         public PanelWpf PanelWpf { get; set; }
+
+        public abstract event EventHandler GotFocus;
+
+    }
+
+    public abstract class FileListPanel<T> : FileListPanel, IFileListPanel<T>, IFileListPanel where T : class, IListView2Visual
+    {
+
+        // public abstract IListView2<T> ListingView { get; }
+
+        public abstract IListingView<T> ListingView { get; }
+
+        //   IStatusBar IFileListPanel.StatusBar
+        public IStatusBar StatusBar { get; set; }
+        public ShortenPolicies ShortenPolicy { get; set; }
+        public DataFieldNumbers df { get; set; }
+
+#endif
+        IListingView IFileListPanel.ListingView { get { return this.ListingView as IListingView; } }
+        // IFileListPanel<T>.ListingView
+
+        #region Properties 
+
+        // public IFSPlugin FS { get; set; }
 
         public IButton GoRoot { get; set; }
         public IButton GoUp { get; set; }
         public ITextEntry UrlBox { get; set; }
 
-        public abstract IListView2<T> ListingView { get; } // protected set; }
         public abstract IUIListingView ListingWidget { get; }
-        public abstract event EventHandler GotFocus;
+
+        // IListView2<T> IFileListPanel<T>.ListingView get 
+        // ShortenPolicies IFileListPanel.ShortenPolicy
 
         public abstract void Initialize(PanelSide side);
-
 
 #if XWT
         EventHandler goRootDelegate = null;
@@ -73,18 +317,20 @@ namespace fcmd
         //public MenuButton HistoryButton = new MenuButton(Image.FromResource("fcmd.Resources.history.png"));
 
         //public LightScroller DiskBox = new LightScroller();
-        //public HBox DiskList = new HBox();
-        //public List<Button> DiskButtons = new List<Button>();
+        public HBox DiskList = new HBox();
+        public List<Button> DiskButtons = new List<Button>();
 
-        //public HBox QuickSearchBox = new HBox();
+        public HBox QuickSearchBox = new HBox();
         //public TextEntry QuickSearchText = new TextEntry();//по возможность заменить на SearchTextEntry (не раб. на wpf, see xwt bug 330)
         //public Table StatusTable = new Table();
 
         //public ProgressBar StatusProgressbar = new ProgressBar();
         //TextEntry CLIoutput = new TextEntry { MultiLine = true, ShowFrame = true, Visible = false, HeightRequest = 50 };
         //TextEntry CLIprompt = new TextEntry();
+
 #endif
-        public LabelWidget StatusBar;
+
+        // public IStatusBar StatusBar;
 
         /// <summary>User navigates into another directory</summary>
         public event TypedEvent<string> Navigate;
@@ -92,7 +338,7 @@ namespace fcmd
         public event TypedEvent<string> OpenFile;
         // public event EventHandler GotFocus;
 
-        public ShortenPolicies CurShorten; // SizeDisplayPolicy CurShortenKB, CurShortenMB, CurShortenGB;
+        // public ShortenPolicies ShortenPolicy; // SizeDisplayPolicy CurShortenKB, CurShortenMB, CurShortenGB;
         private string SBtext1, SBtext2;
         // private Stylist s;
 
@@ -108,8 +354,9 @@ namespace fcmd
         public FileListPanel(string BookmarkXML = null, string CSS = null,
             string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
         {
-            StatusBar = new LabelWidget() { Content = ("Information bar") };
-            StatusBar.Visibility = System.Windows.Visibility.Hidden;
+            //StatusBar = new CommanderStatusBar() { Content = ("Information bar") };
+            //// StatusBar.Visibility = System.Windows.Visibility.Hidden;
+            //StatusBar.Visible = true;
 
             SBtext1 = InfobarText1;
             SBtext2 = InfobarText2;
@@ -125,7 +372,11 @@ namespace fcmd
 
             GoRoot.CanGetFocus = true; // TODO: GoUp.CanGetFocus = BookmarksButton.CanGetFocus = HistoryButton.CanGetFocus = false;
             string fontFamily = fcmd.Properties.Settings.Default.UserFileListFontFamily;
+#if WPF
             ListingView.FontForFileNames = String.IsNullOrWhiteSpace(fontFamily) ? FontWpf.SystemFont : FontWpf.FromName(fontFamily);
+#else
+
+#endif
             // DiskBox.Add ...
         }
 
@@ -142,69 +393,69 @@ namespace fcmd
 
         void QuickSearchText_KeyPressed(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape)
-            {
-                QuickSearchText.Text = "";
-                QuickSearchBox.Visible = false;
-                ListingView.AllowedToPoint.Clear();
-                return;
-            }
+            //if (e.Key == Key.Escape)
+            //{
+            //    QuickSearchText.Text = "";
+            //    QuickSearchBox.Visible = false;
+            //    ListingView.AllowedToPoint.Clear();
+            //    return;
+            //}
 
-            //search for good items
-            ListingView.Sensitive = false;
-            ListingView.AllowedToPoint.Clear();
-            foreach (ListView2Item lvi in ListingView.Items)
-            {
-                if (lvi.Data[1].ToString().StartsWith(QuickSearchText.Text))
-                {
-                    ListingView.AllowedToPoint.Add(lvi.RowNo);
-                }
-            }
-            ListingView.Sensitive = true;
+            ////search for good items
+            //ListingView.Sensitive = false;
+            //ListingView.AllowedToPoint.Clear();
+            //foreach (ListView2Item lvi in ListingView.Items)
+            //{
+            //    if (lvi.Data[1].ToString().StartsWith(QuickSearchText.Text))
+            //    {
+            //        ListingView.AllowedToPoint.Add(lvi.RowNo);
+            //    }
+            //}
+            //ListingView.Sensitive = true;
 
-            //set pointer to the first good item (if need)
-            if (ListingView.AllowedToPoint.Count > 0)
-            {
-                if (ListingView.SelectedRow < ListingView.AllowedToPoint[0]
-                    ||
-                    ListingView.SelectedRow > ListingView.AllowedToPoint[ListingView.AllowedToPoint.Count - 1]
-                    )
-                {
-                    ListingView.SelectedRow = ListingView.AllowedToPoint[0];
-                    ListingView.ScrollToRow(ListingView.AllowedToPoint[0]);
-                }
-            }
+            ////set pointer to the first good item (if need)
+            //if (ListingView.AllowedToPoint.Count > 0)
+            //{
+            //    if (ListingView.SelectedRow < ListingView.AllowedToPoint[0]
+            //        ||
+            //        ListingView.SelectedRow > ListingView.AllowedToPoint[ListingView.AllowedToPoint.Count - 1]
+            //        )
+            //    {
+            //        ListingView.SelectedRow = ListingView.AllowedToPoint[0];
+            //        ListingView.ScrollToRow(ListingView.AllowedToPoint[0]);
+            //    }
+            //}
         }
 
         void CLIprompt_KeyReleased(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
             {
-                if (Regex.Match(CLIprompt.Text, "cd|chdir|md|rd|del|deltree|move|copy|cls").Success)
-                {
-                    CLIprompt.Text = "";
-                    //todo: обработка встроенных комманд
-                    return;
-                }
+                //if (Regex.Match(CLIprompt.Text, "cd|chdir|md|rd|del|deltree|move|copy|cls").Success)
+                //{
+                //    CLIprompt.Text = "";
+                //    //todo: обработка встроенных комманд
+                //    return;
+                //}
 
-                CLIoutput.Visible = true;
-                string stdin = CLIprompt.Text;
-                CLIprompt.Text = "";
-                CLIoutput.Text += stdin;
-                FS.CLIstdinWriteLine(stdin);
+                //CLIoutput.Visible = true;
+                //string stdin = CLIprompt.Text;
+                //CLIprompt.Text = "";
+                //CLIoutput.Text += stdin;
+                //FS.CLIstdinWriteLine(stdin);
             }
         }
 
         void FS_CLIpromptChanged(string data)
         {
-            CLIprompt.PlaceholderText = data;
+            //CLIprompt.PlaceholderText = data;
         }
 
         void FS_CLIstdoutDataReceived(string data)
         {
             Application.Invoke(delegate
             {
-                CLIoutput.Text += "\n" + data;
+                //CLIoutput.Text += "\n" + data;
             });
         }
 #endif
@@ -212,7 +463,7 @@ namespace fcmd
 
         #region ListingView 
 
-#if WPF 
+#if WPF
         public void BuildUI(string BookmarkXML = null)
         {
             // TODO: WindowsNT platform with WPF
@@ -224,7 +475,9 @@ namespace fcmd
         public void BuildUI(string BookmarkXML = null)
         {
             //URL BOX
-            UrlBox.ShowFrame = false;
+
+            //UrlBox.ShowFrame = false;
+
             //UrlBox.GotFocus += (o, ea) => { OnGotFocus(ea); };
             //UrlBox.KeyReleased += UrlBox_KeyReleased;
 
@@ -254,61 +507,62 @@ namespace fcmd
             //s.Stylize(CLIprompt, "TerminalPrompt");
             //s.Stylize(StatusTable);
 
-            ListingView.KeyReleased += ListingView_KeyReleased;
-            ListingView.GotFocus += (o, ea) =>
-                OnGotFocus(ea);
+            //ListingView.KeyReleased += ListingView_KeyReleased;
+            //ListingView.GotFocus += (o, ea) =>
+            //    OnGotFocus(ea);
 
-            ListingView.PointerMoved += ListingView_PointerMoved;
-            ListingView.SelectionChanged += ListingView_SelectionChanged;
-            ListingView.PointedItemDoubleClicked += pointed_item => { OpenPointedItem(); };
-            ListingView.EditComplete += ListingView_EditComplete;
-            StatusBar.Wrap = WrapMode.Word;
+            //ListingView.PointerMoved += ListingView_PointerMoved;
+            //ListingView.SelectionChanged += ListingView_SelectionChanged;
+            //ListingView.PointedItemDoubleClicked += pointed_item => { OpenPointedItem(); };
+            //ListingView.EditComplete += ListingView_EditComplete;
+            //StatusBar.Wrap = WrapMode.Word;
+
         }
 
-        void ListingView_EditComplete(EditableLabel el, ListView2 lv)
-        {
-            string Url1 = FS.CurrentDirectory + FS.DirSeparator + ListingView.PointedItem.Data[df.DisplayName];
-            string Url2 = FS.CurrentDirectory + FS.DirSeparator + el.Text;
-            try
-            {
-                if (FS.DirectoryExists(Url1))
-                    FS.MoveDirectory(Url1, Url2);
-                else
-                    FS.MoveFile(Url1, Url2);
-                StatusBar.Text = ListingView.PointedItem.Data[df.DisplayName] + " → " + el.Text;
-            }
-            catch (Exception ex)
-            {
-                MessageDialog.ShowWarning(ex.Message);
-                el.Text = ListingView.PointedItem.Data[df.DisplayName].ToString();
-            }
-        }
+        //void ListingView_EditComplete(EditableLabel el, ListView2 lv)
+        //{
+        //    string Url1 = FS.CurrentDirectory + FS.DirSeparator + ListingView.PointedItem.Data[df.DisplayName];
+        //    string Url2 = FS.CurrentDirectory + FS.DirSeparator + el.Text;
+        //    try
+        //    {
+        //        if (FS.DirectoryExists(Url1))
+        //            FS.MoveDirectory(Url1, Url2);
+        //        else
+        //            FS.MoveFile(Url1, Url2);
+        //        StatusBar.Text = ListingView.PointedItem.Data[df.DisplayName] + " → " + el.Text;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageDialog.ShowWarning(ex.Message);
+        //        el.Text = ListingView.PointedItem.Data[df.DisplayName].ToString();
+        //    }
+        //}
 
-        void ListingView_SelectionChanged(List<ListView2Item> data)
-        {
-            WriteDefaultStatusLabel();
-        }
+        //void ListingView_SelectionChanged(List<ListView2Item> data)
+        //{
+        //    WriteDefaultStatusLabel();
+        //}
 
-        void ListingView_PointerMoved(ListView2Item data)
-        {
-            WriteDefaultStatusLabel();
-        }
+        //void ListingView_PointerMoved(ListView2Item data)
+        //{
+        //    WriteDefaultStatusLabel();
+        //}
 
         void UrlBox_KeyReleased(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return)
-            {
-                LoadDir(UrlBox.Text);
-            }
+            //if (e.Key == Key.Return)
+            //{
+            //    LoadDir(UrlBox.Text);
+            //}
         }
 
         void ListingView_KeyReleased(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Return && ListingView.SelectedRow > -1)
-            {
-                OpenPointedItem();
-                return;
-            }
+            //if (e.Key == Key.Return && ListingView.SelectedRow > -1)
+            //{
+            //    OpenPointedItem();
+            //    return;
+            //}
 
             //if ((int)e.Key < 65000) //keys before 65000th are characters, numbers & other human stuff
             //{
@@ -320,11 +574,12 @@ namespace fcmd
             //if (Utilities.GetXwtBackendName() == "WPF")
             //    ListingView.OnKeyPressed(e);
         }
+
 #endif
 
         void OpenPointedItem()
         {
-            NavigateTo(ListingView.PointedItem.Data[df.URL].ToString());
+            //NavigateTo(ListingView.PointedItem.Data[df.URL].ToString());
         }
 
         /// <summary>Open the FS item at <paramref name="url"/> (if it's file, load; if it's directory, go to)</summary>
@@ -393,7 +648,7 @@ namespace fcmd
                 ListingWidget.Sensitive = true;
                 // ListingWidget.Cursor = CursorType.Arrow;
 
-                MessageDialog.ShowError(ex.Message);
+                View.MessageDialog.ShowError(ex.Message);
                 Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
                 WriteDefaultStatusLabel();
             }
@@ -410,7 +665,8 @@ namespace fcmd
         /// <param name="ShortenGB">How gigabyte sizes should be humanized</param> //плохой перевод? "так nбайтные размеры должны очеловечиваться"
         public void LoadDir(string URL, ShortenPolicies? Shorten = null)
         {
-            CurShorten = Shorten ?? CurShorten;
+
+            ShortenPolicy = Shorten ?? ShortenPolicy;
 
             if (FS == null) throw new InvalidOperationException("No filesystem is binded to this FileListPanel");
 
@@ -444,8 +700,8 @@ namespace fcmd
             }
 
             // ListingWidget.Cursor = CursorType.Wait;
-            ListingWidget.Sensitive = false;
-           
+            //ListingWidget.Sensitive = false;
+
             string oldCurDir = FS.CurrentDirectory;
 
             bool loadPlugin = false;
@@ -453,7 +709,7 @@ namespace fcmd
             {
                 FS.CurrentDirectory = URL;
                 // first try
-                LoadFs(URL, CurShorten);
+                LoadFs(URL, ShortenPolicy);
             }
             catch (Exception ex)
             {
@@ -495,6 +751,7 @@ namespace fcmd
                 }
             }
 
+#if WPF
             if (ListingView.DataItems.Count > 0)
             {
                 ListingView.SetupColumns();
@@ -502,11 +759,12 @@ namespace fcmd
                 // ListingView.ScrollerIn.ScrollTo(0, 0);
             }
             ListingView.SetFocus();//one fixed bug may make many other bugs...уточнить необходимость!
-            ListingWidget.Sensitive = true;
+                                   //ListingWidget.Sensitive = true;
+#endif
             // ListingWidget.Cursor = CursorType.Arrow;
         }
 
-        #region FS
+#region FS
 
         public void LoadFs(string URL, ShortenPolicies Shorten)
         {
@@ -517,7 +775,7 @@ namespace fcmd
             SizeDisplayPolicy ShortenGB = Shorten.GB;
 
             UrlBox.Text = URL;
-            ListingView.Clear();
+            //ListingView.Clear();
 
             UrlBox.Text = URL;
             string updir = URL + FS.DirSeparator + "..";
@@ -537,14 +795,14 @@ namespace fcmd
 
             DirLoadingThread.Start();
             var sucess = resetHandle.WaitOne(timeout: TimeSpan.FromSeconds(10)); // 10 secs
-            // wait loop: do { } while (DirLoadingThread.ThreadState == ThreadState.Running);
+                                                                                 // wait loop: do { } while (DirLoadingThread.ThreadState == ThreadState.Running);
             if (dis.Count == 0)
                 return;
 
             foreach (DirItem di in dis)
             {
                 // 
-                var Data = new Collection<Object>();
+                ICollection<object> Data = new Collection<Object>();
                 List<Boolean> EditableFileds = new List<bool>();
                 //Data.Add(di.IconSmall ??
                 //    Image.FromResource("fcmd.Resources.image-missing.png"));
@@ -577,13 +835,16 @@ namespace fcmd
                     Data.Add(di.Date); EditableFileds.Add(false);
                 }
                 Data.Add(di);
+
+#if !XWT
+                (ListingView as ListView2List).AddItem(Data, EditableFileds, di.URL);
+#else
                 ListingView.AddItem(Data, EditableFileds, di.URL);
                 if ((++counter & per_number) == 0)
                 {
-#if XWT
                     Application.MainLoop.DispatchPendingEvents();
-#endif
                 }
+#endif
             }
 
             //if (goUpDelegate != null)
@@ -597,7 +858,7 @@ namespace fcmd
             //    {
             //        LoadDir(updir);
             //    };
-            
+
 
             //GoUp.Clicked += goUpDelegate;
             //if (goRootDelegate != null)
@@ -654,10 +915,10 @@ namespace fcmd
         /// <param name="URL">Full path of the directory</param>
         public void LoadDir(string URL)
         {
-            LoadDir(URL, CurShorten);
+            LoadDir(URL, ShortenPolicy);
         }
 
-        #endregion
+#endregion
 
 #if !WPF
         /// <summary>
@@ -666,14 +927,14 @@ namespace fcmd
         /// <typeparam name="T">The type of the data</typeparam>
         /// <param name="Field">The field number</param>
         /// <returns>The value</returns>
-        public T GetValue<T>(int Field)
+        public override TItem GetValue<TItem>(int Field)
         {
-            return (T)ListingView.PointedItem.Data[Field];
+            return default(TItem); //return (T)ListingView.PointedItem.Data[Field];
         }
 
-        public string GetValue(int Field)
+        public override string GetValue(int Field)
         {
-            return (string)ListingView.PointedItem.Data[Field];
+            return string.Empty; //return (string)ListingView.PointedItem.Data[Field];
         }
 #else
         // ExpandoObject data
@@ -687,7 +948,7 @@ namespace fcmd
             return (string)ListingView.PointedItem.Data[Field];
         }
 #endif
-        #region Drives, Mounts
+#region Drives, Mounts
 
         /// <summary>Add autobookmark "system disks" onto disk toolbar</summary>
         private void AddSysDrives()
@@ -695,7 +956,8 @@ namespace fcmd
             foreach (DriveInfo di in DriveInfo.GetDrives())
             {
                 string d = di.Name;
-                ButtonWidget NewBtn = new ButtonWidget(null, d);
+                //Xwt.ButtonWidget NewBtn = new Xwt.ButtonWidget(null, d);
+
                 //NewBtn.Clicked += (o, ea) => { NavigateTo("file://" + d); };
                 //NewBtn.CanGetFocus = false;
                 ////NewBtn.Style = ButtonStyle.Flat;
@@ -708,8 +970,8 @@ namespace fcmd
                 //}
 
                 /* todo: rewrite the code; possibly change the XWT to allow
-				 * change the internal padding of the button.
-				 */
+                 * change the internal padding of the button.
+                 */
                 //switch (di.DriveType)
                 //{
                 //    case DriveType.Fixed:
@@ -751,7 +1013,7 @@ namespace fcmd
             {
                 foreach (string dir in Directory.GetDirectories(@"/mnt/"))
                 {
-                    var NewBtn = new ButtonWidget(null, dir.Replace("/mnt/", ""));
+                    //var NewBtn = new ButtonWidget(null, dir.Replace("/mnt/", ""));
                     //NewBtn.Clicked += (o, ea) => { NavigateTo("file://" + dir); };
                     //NewBtn.CanGetFocus = false;
                     //NewBtn.Style = ButtonStyle.Flat;
@@ -766,7 +1028,7 @@ namespace fcmd
             else AddSysDrives(); //fallback for Windows
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Writes to statusbar the default text
@@ -775,8 +1037,6 @@ namespace fcmd
         protected abstract string MakeStatusbarText(string Template);
 
     }
-
-#endif 
 
     public static class ShortenText
     {
@@ -835,36 +1095,41 @@ namespace fcmd
     }
 
     // TODO:
-    //public static class DiskBoxPopulate
+    public static class DiskBox
+    {
+        public static void Populate(this IBackend view)
+        {
 
-        //DiskBox.Content = DiskList;
-        //DiskBox.CanScrollByY = false;
+            //DiskBox.Content = DiskList;
+            //DiskBox.CanScrollByY = false;
 
-        //GoRoot.ExpandHorizontal = GoUp.ExpandHorizontal = BookmarksButton.ExpandHorizontal = HistoryButton.ExpandHorizontal = false;
-        //GoRoot.Style = GoUp.Style = BookmarksButton.Style = HistoryButton.Style = ButtonStyle.Flat;
-        // HistoryButton.Menu = new Xwt.Menu();
-        //DefaultColumnSpacing = 0;
-        //DefaultRowSpacing = 0;
+            //GoRoot.ExpandHorizontal = GoUp.ExpandHorizontal = BookmarksButton.ExpandHorizontal = HistoryButton.ExpandHorizontal = false;
+            //GoRoot.Style = GoUp.Style = BookmarksButton.Style = HistoryButton.Style = ButtonStyle.Flat;
+            // HistoryButton.Menu = new Xwt.Menu();
+            //DefaultColumnSpacing = 0;
+            //DefaultRowSpacing = 0;
 
-        //Add(DiskBox, 0, 0, 1, 1, true, false, WidgetPlacement.Fill);
-        //Add(GoRoot, 1, 0, 1, 1, false, false, WidgetPlacement.Fill);
-        //Add(GoUp, 2, 0, 1, 1, false, false, WidgetPlacement.Fill);
-        //Add(UrlBox, 0, 1, 1, 1, true, false, WidgetPlacement.Fill);
-        //Add(BookmarksButton, 1, 1, 1, 1, false, false, WidgetPlacement.Start);
-        //Add(HistoryButton, 2, 1, 1, 1, false, false, WidgetPlacement.Start);
-        //Add(ListingView, 0, 2, 1, 3, false, true); //hexpand will be = 'true' without seeing to this 'false'
-        //Add(QuickSearchBox, 0, 3, 1, 3);
-        //Add(StatusBar, 0, 4, 1, 3);
-        //Add(StatusProgressbar, 0, 5, 1, 3);
-        //Add(CLIoutput, 0, 6, 1, 3);
-        //Add(CLIprompt, 0, 7, 1, 3);
+            //Add(DiskBox, 0, 0, 1, 1, true, false, WidgetPlacement.Fill);
+            //Add(GoRoot, 1, 0, 1, 1, false, false, WidgetPlacement.Fill);
+            //Add(GoUp, 2, 0, 1, 1, false, false, WidgetPlacement.Fill);
+            //Add(UrlBox, 0, 1, 1, 1, true, false, WidgetPlacement.Fill);
+            //Add(BookmarksButton, 1, 1, 1, 1, false, false, WidgetPlacement.Start);
+            //Add(HistoryButton, 2, 1, 1, 1, false, false, WidgetPlacement.Start);
+            //Add(ListingView, 0, 2, 1, 3, false, true); //hexpand will be = 'true' without seeing to this 'false'
+            //Add(QuickSearchBox, 0, 3, 1, 3);
+            //Add(StatusBar, 0, 4, 1, 3);
+            //Add(StatusProgressbar, 0, 5, 1, 3);
+            //Add(CLIoutput, 0, 6, 1, 3);
+            //Add(CLIprompt, 0, 7, 1, 3);
 
-        //WriteDefaultStatusLabel();
-        //CLIprompt.KeyReleased += CLIprompt_KeyReleased;
+            //WriteDefaultStatusLabel();
+            //CLIprompt.KeyReleased += CLIprompt_KeyReleased;
 
-        //QuickSearchText.GotFocus += (o, ea) => { OnGotFocus(ea); };
-        //QuickSearchText.KeyPressed += QuickSearchText_KeyPressed;
-        //QuickSearchBox.PackStart(QuickSearchText, true, true);
-        //QuickSearchBox.Visible = false;
+            //QuickSearchText.GotFocus += (o, ea) => { OnGotFocus(ea); };
+            //QuickSearchText.KeyPressed += QuickSearchText_KeyPressed;
+            //QuickSearchBox.PackStart(QuickSearchText, true, true);
+            //QuickSearchBox.Visible = false;
+        }
+    }
 
 }

@@ -1,6 +1,8 @@
-﻿using System;
+﻿using fcmd.Platform;
+using System;
 using System.Windows;
 using System.Windows.Media.Imaging;
+using fcmd.Model;
 
 namespace fcmd
 {
@@ -25,15 +27,15 @@ namespace fcmd
             }
             catch { }
 
-            theme.WindowDataStatic.Init(this);
+            this.Init();    // View.WindowDataStatic.Init(this);
 
             this.Closed += (s, e) => 
-                Application.Current.Shutdown();
+                 Platform.Application.Current.Shutdown();
         }
 
         void InitializeXwt()
         {
-
+            // Xwt init success
         }
     }
 }

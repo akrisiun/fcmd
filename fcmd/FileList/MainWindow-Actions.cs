@@ -12,6 +12,11 @@ using System.Text;
 using System.Threading;
 using pluginner.Widgets;
 using Xwt;
+#if WPF
+using ListView2Canvas = pluginner.Widgets.ListView2ItemWpf;
+#else 
+using ListView2Canvas = fcmd.View.GTK.ListView2Canvas;
+#endif
 
 namespace fcmd
 {
@@ -37,18 +42,18 @@ namespace fcmd
         public void FCView(string url)
         {
             VEd fcv = new VEd();
-            pluginner.IFSPlugin fs = ActivePanelWpf.FS;
-            if (!fs.FileExists(url))
-            {
-                //MessageBox.Show(string.Format(locale.GetString("FileNotFound"), ActivePanel.list.SelectedItems[0].Text), "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Xwt.MessageDialog.ShowError(string.Format(Localizator.GetString("FileNotFound")
-                    , ActivePanelWpf.GetValue(ActivePanelWpf.df.DisplayName)));
-                return;
-            }
+            //pluginner.IFSPlugin fs = ActivePanel.FS;
+            //if (!fs.FileExists(url))
+            //{
+            //    //MessageBox.Show(string.Format(locale.GetString("FileNotFound"), ActivePanel.list.SelectedItems[0].Text), "", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            //    Xwt.MessageDialog.ShowError(string.Format(Localizator.GetString("FileNotFound")
+            //        , ActivePanel.GetValue(ActivePanel.df.DisplayName)));
+            //    return;
+            //}
 
-            // string FileContent = Encoding.ASCII.GetString(fs.GetFileContent(url));
-            fcv.LoadFile(url, ActivePanelWpf.FS, false);
-            fcv.Show();
+            //// string FileContent = Encoding.ASCII.GetString(fs.GetFileContent(url));
+            //fcv.LoadFile(url, ActivePanel.FS, false);
+            //fcv.Show();
         }
 
         /// <summary>
@@ -59,7 +64,7 @@ namespace fcmd
         /// <returns></returns>
         public string Cat(string url)
         {
-            pluginner.IFSPlugin fs = ActivePanelWpf.FS;
+            pluginner.IFSPlugin fs = ActivePanel.FS;
             if (!fs.FileExists(url)) return "Файл не найден\n";
 
             return Encoding.ASCII.GetString(fs.GetFileContent(url));
@@ -75,30 +80,33 @@ namespace fcmd
             fpd.lblStatus.Text = string.Format(Localizator.GetString("DoingMkdir"), "\n" + url, null);
             fpd.Show();
 
-            Thread MkDirThread = new Thread(delegate () { ActivePanelWpf.FS.CreateDirectory(url); });
-            MkDirThread.Start();
+            //Thread MkDirThread = new Thread(delegate () { ActivePanel.FS.CreateDirectory(url); });
+            //MkDirThread.Start();
 
-            do { /*Application.DoEvents();*/ Xwt.Application.MainLoop.DispatchPendingEvents(); }
-            while (MkDirThread.ThreadState == ThreadState.Running);
+            //do { /*Application.DoEvents();*/ Xwt.Application.MainLoop.DispatchPendingEvents(); }
+            //while (MkDirThread.ThreadState == ThreadState.Running);
 
-            fpd.pbrProgress.Fraction = 1;
-            ActivePanelWpf.LoadDir(ActivePanelWpf.FS.CurrentDirectory);
+            //fpd.pbrProgress.Fraction = 1;
+            //ActivePanel.LoadDir(ActivePanel.FS.CurrentDirectory);
             fpd.Hide();
         }
 
         /// <summary>Removes the current selected files</summary>
         public void Rm()
         {
-            if (ActivePanelWpf.GetValue(ActivePanelWpf.df.DisplayName) == "..") { return; }
-            ListView2ItemWpf[] chdrws = ActivePanelWpf.ListingView.ChoosedRows.ToArray();
-            //because the List may change due the process, we getting the copy of the list (as array, but how else?)
+            //if (ActivePanel.GetValue(ActivePanel.df.DisplayName) == "..") { return; }
 
-            foreach (ListView2ItemWpf selitem in chdrws)
-            {
-                string URL = selitem.Data[ActivePanelWpf.df.URL].ToString();
-                Rm(URL);
-            }
-            ActivePanelWpf.LoadDir();
+            ListView2Canvas[] chdrws = (ActivePanel.ListingView as IListingView<ListView2Canvas>)
+                .ChoosedRowsTyped.ToArray();
+
+            ////because the List may change due the process, we getting the copy of the list (as array, but how else?)
+
+            //foreach (ListView2ItemWpf selitem in chdrws)
+            //{
+            //    string URL = selitem.Data[ActivePanel.df.URL].ToString();
+            //    Rm(URL);
+            //}
+            //ActivePanel.LoadDir();
         }
 
         /// <summary>
@@ -106,7 +114,10 @@ namespace fcmd
         /// </summary>
         public string Rm(string url)
         {
-            if (ActivePanelWpf.GetValue<string>(ActivePanelWpf.df.DisplayName) == "..") { return "Cannot remove .."; }
+            if (ActivePanel.GetValue<string>(ActivePanel.df.DisplayName) == "..")
+            {
+                return "Cannot remove ..";
+            }
 
             if (!Xwt.MessageDialog.Confirm(
                 String.Format(Localizator.GetString("FCDelAsk"), url, null),
@@ -119,8 +130,8 @@ namespace fcmd
             fpd.cmdCancel.Sensitive = false;
             fpd.Show();
 
-            string curItemDel = ActivePanelWpf.GetValue<string>(ActivePanelWpf.df.URL);
-            pluginner.IFSPlugin fsdel = ActivePanelWpf.FS;
+            string curItemDel = ActivePanel.GetValue<string>(ActivePanel.df.URL);
+            pluginner.IFSPlugin fsdel = ActivePanel.FS;
             if (fsdel.FileExists(curItemDel))
             {
                 fpd.pbrProgress.Fraction = 0.5;
@@ -159,14 +170,16 @@ namespace fcmd
         [STAThread]
         public void Cp()
         {
-            if (ActivePanelWpf.GetValue<string>(ActivePanelWpf.df.DisplayName) == "..") { return; }
+            if (ActivePanel.GetValue<string>(ActivePanel.df.DisplayName) == "..") { return; }
 
-            var PassivePanel = PassivePanelWpf;
+            // var PassivePanel = PassivePanel;
 
-            foreach (ListView2ItemWpf selitem in ActivePanelWpf.ListingView.ChoosedRows)
+            foreach (ListView2Canvas selitem 
+                        in (ActivePanel.ListingView as IListingView<ListView2Canvas>)
+                            .ChoosedRowsTyped)
             {
-                string SourceURL = selitem.Data[ActivePanelWpf.df.URL].ToString();
-                pluginner.IFSPlugin SourceFS = ActivePanelWpf.FS;
+                string SourceURL = selitem.Data[ActivePanel.df.URL].ToString();
+                pluginner.IFSPlugin SourceFS = ActivePanel.FS;
 
                 //check for file existing
                 if (SourceFS.FileExists(SourceURL))
@@ -176,7 +189,11 @@ namespace fcmd
                         String.Format(Localizator.GetString("CopyTo"), SourceName),
                         PassivePanel.FS.CurrentDirectory + PassivePanel.FS.DirSeparator + SourceName);
 
-                    if (ibx.ShowDialog(this))
+                    bool show = false;
+#if XWT
+                    show = ibx.ShowDialog(this);
+#endif
+                    if (show)
                     {
                         String DestinationFilePath = ibx.Result;
                         string StatusMask = Localizator.GetString("DoingCopy");
@@ -184,12 +201,12 @@ namespace fcmd
                         ReplaceQuestionDialog.ClickedButton dummy = ReplaceQuestionDialog.ClickedButton.Cancel;
                         AsyncCopy AC = new AsyncCopy();
 
-                        Thread CpThread = new Thread(delegate () { DoCp(ActivePanelWpf.FS, PassivePanel.FS, SourceURL, DestinationFilePath, ref dummy, AC); });
+                        Thread CpThread = new Thread(delegate () { DoCp(ActivePanel.FS, PassivePanel.FS, SourceURL, DestinationFilePath, ref dummy, AC); });
                         CpThread.TrySetApartmentState(ApartmentState.STA);
                         FileProcessDialog fpd = new FileProcessDialog();
                         fpd.InitialLocation = Xwt.WindowLocation.CenterParent;
-                        fpd.lblStatus.Text = String.Format(StatusMask, ActivePanelWpf.GetValue<string>(ActivePanelWpf.df.URL), ibx.Result, null);
-                        fpd.cmdCancel.Clicked += (object s, EventArgs e) => { CpThread.Abort(); MessageDialog.ShowWarning(Localizator.GetString("Canceled"), ActivePanelWpf.GetValue<string>(ActivePanelWpf.df.URL)); };
+                        fpd.lblStatus.Text = String.Format(StatusMask, ActivePanel.GetValue<string>(ActivePanel.df.URL), ibx.Result, null);
+                        fpd.cmdCancel.Clicked += (object s, EventArgs e) => { CpThread.Abort(); MessageDialog.ShowWarning(Localizator.GetString("Canceled"), ActivePanel.GetValue<string>(ActivePanel.df.URL)); };
 
                         AC.ReportMessage = Localizator.GetString("CopyStatus");
                         AC.OnProgress += (message, percent) =>
@@ -199,7 +216,7 @@ namespace fcmd
                                     try
                                     {
                                         fpd.pbrProgress.Fraction = (double)((double)percent / (double)100);
-                                        fpd.lblStatus.Text = String.Format(StatusMask, ActivePanelWpf.GetValue<string>(ActivePanelWpf.df.URL), ibx.Result, message);
+                                        fpd.lblStatus.Text = String.Format(StatusMask, ActivePanel.GetValue<string>(ActivePanel.df.URL), ibx.Result, message);
                                     }
                                     catch { }
                                 }
@@ -229,13 +246,13 @@ namespace fcmd
                     {
                         String DestinationDirPath = ibxd.Result;
                         //копирование каталога
-                        Thread CpDirThread = new Thread(delegate () { DoCpDir(SourceURL, DestinationDirPath, ActivePanelWpf.FS, PassivePanel.FS); });
+                        Thread CpDirThread = new Thread(delegate () { DoCpDir(SourceURL, DestinationDirPath, ActivePanel.FS, PassivePanel.FS); });
                         CpDirThread.TrySetApartmentState(ApartmentState.STA);
 
                         FileProcessDialog CpDirProgressDialog = new FileProcessDialog();
                         CpDirProgressDialog.InitialLocation = Xwt.WindowLocation.CenterParent;
-                        CpDirProgressDialog.lblStatus.Text = String.Format(Localizator.GetString("DoingCopy"), "\n" + ActivePanelWpf.GetValue<string>(ActivePanelWpf.df.URL) + " [" + Localizator.GetString("Directory") + "]\n", ibxd.Result, null);
-                        CpDirProgressDialog.cmdCancel.Clicked += (object s, EventArgs e) => { CpDirThread.Abort(); MessageDialog.ShowWarning(Localizator.GetString("Canceled"), ActivePanelWpf.GetValue<string>(ActivePanelWpf.df.URL)); };
+                        CpDirProgressDialog.lblStatus.Text = String.Format(Localizator.GetString("DoingCopy"), "\n" + ActivePanel.GetValue<string>(ActivePanel.df.URL) + " [" + Localizator.GetString("Directory") + "]\n", ibxd.Result, null);
+                        CpDirProgressDialog.cmdCancel.Clicked += (object s, EventArgs e) => { CpDirThread.Abort(); MessageDialog.ShowWarning(Localizator.GetString("Canceled"), ActivePanel.GetValue<string>(ActivePanel.df.URL)); };
 
                         CpDirProgressDialog.Show();
                         CpDirThread.Start();
@@ -252,8 +269,8 @@ namespace fcmd
                 //and, if none of those IF blocks has been entered, say that this isn't a real file nor a directory
                 Xwt.MessageDialog.ShowWarning(
                     Localizator.GetString("FileNotFound"),
-                    ActivePanelWpf.GetValue<string>(
-                        ActivePanelWpf.df.URL
+                    ActivePanel.GetValue<string>(
+                        ActivePanel.df.URL
                     )
                 );
                 continue;
@@ -266,16 +283,18 @@ namespace fcmd
         /// </summary>
         public void Mv()
         {
-            if (ActivePanelWpf.GetValue<string>(ActivePanelWpf.df.DisplayName) == "..") { return; }
+            if (ActivePanel.GetValue<string>(ActivePanel.df.DisplayName) == "..") { return; }
 
-            pluginner.IFSPlugin SourceFS = ActivePanelWpf.FS;
-            pluginner.IFSPlugin DestinationFS = PassivePanelWpf.FS;
+            pluginner.IFSPlugin SourceFS = ActivePanel.FS;
+            pluginner.IFSPlugin DestinationFS = PassivePanel.FS;
 
-            foreach (ListView2ItemWpf selitem in ActivePanelWpf.ListingView.ChoosedRows)
+            foreach (ListView2Canvas selitem in 
+                        (ActivePanel.ListingView as IListingView<ListView2Canvas>)
+                            .ChoosedRowsTyped)
             {
                 //Getting useful URL parts
-                string SourceName = selitem.Data[ActivePanelWpf.df.DisplayName].ToString(); //ActivePanel.GetValue<string>(ActivePanel.df.DisplayName);
-                string SourcePath = selitem.Data[ActivePanelWpf.df.URL].ToString(); //ActivePanel.GetValue<string>(ActivePanel.df.URL);
+                string SourceName = selitem.Data[ActivePanel.df.DisplayName].ToString(); //ActivePanel.GetValue<string>(ActivePanel.df.DisplayName);
+                string SourcePath = selitem.Data[ActivePanel.df.URL].ToString(); //ActivePanel.GetValue<string>(ActivePanel.df.URL);
                 string DestinationPath = DestinationFS.CurrentDirectory + DestinationFS.DirSeparator + SourceName;
 
                 InputBox ibx = new InputBox
@@ -321,8 +340,8 @@ namespace fcmd
                     SourceFS.MoveFile(SourcePath, DestinationPath);
                 }
 
-                ActivePanelWpf.LoadDir();
-                PassivePanelWpf.LoadDir();
+                //ActivePanel.LoadDir();
+                //PassivePanel.LoadDir();
             }
         }
     }

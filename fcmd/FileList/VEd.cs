@@ -407,7 +407,7 @@ namespace fcmd
             ProgressDialog.Close();
         }
 
-        private void OpenFile()
+        protected void OpenFile()
         {
             /*FileChooser OpenFileDialog = new FileChooser(FSPlugin);
 			if (OpenFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.Cancel || OpenFileDialog.SelectedFile == null) return;
@@ -445,7 +445,7 @@ namespace fcmd
 
 
         /// <summary>Translates the <paramref name="mnu"/> into the current UI language</summary>
-        private void TranslateMenu(Xwt.Menu mnu)
+        protected void TranslateMenu(Xwt.Menu mnu)
         {
             if (mnu == null) return;
             foreach (MenuItem currentMenuItem in mnu.Items)
@@ -487,7 +487,6 @@ namespace fcmd
             };
             proc.Start();
         }
-
 
     }
 }
