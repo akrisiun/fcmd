@@ -129,23 +129,23 @@ namespace fcmd.base_plugins.ve
 		}
 
 #if XWT
-        public Stylist Stylist
-		{
-			set
-			{
-				s = value;
+  //      public Stylist Stylist
+		//{
+		//	set
+		//	{
+		//		s = value;
 
-				s.Stylize(RTV, "VEWorkingArea");
-				s.Stylize(Layout, "VEToolbar");
-				/*foreach (Xwt.Widget w in Layout.Children)
-				{
-					s.Stylize(w, "VEToolbar");
-				}*/
-				s.Stylize(lblFileName,"VEToolbarLabel");
-				s.Stylize(mbMode,"VEToolbarButton");
-				s.Stylize(mbCodepage,"VEToolbarButton");
-			}
-		}
+		//		s.Stylize(RTV, "VEWorkingArea");
+		//		s.Stylize(Layout, "VEToolbar");
+		//		/*foreach (Xwt.Widget w in Layout.Children)
+		//		{
+		//			s.Stylize(w, "VEToolbar");
+		//		}*/
+		//		s.Stylize(lblFileName,"VEToolbarLabel");
+		//		s.Stylize(mbMode,"VEToolbarButton");
+		//		s.Stylize(mbCodepage,"VEToolbarButton");
+		//	}
+		//}
 #endif
 
 	}

@@ -76,15 +76,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AiLib\IOFile\DirectoryEnum.cs" />
-    <Compile Include="AiLib\IOFile\Iterator.cs" />
-    <Compile Include="AiLib\IOFile\PathHelpers.cs" />
-    <Compile Include="AiLib\IOFile\Win32FileSystemEnumerableIterator.cs" />
-    <Compile Include="AiLib\IOFile\Win32FindFile.cs" />
-    <Compile Include="AiLib\Reflection\ExpandoUtils.cs" />
-    <Compile Include="AiLib\Reflection\StringConvert.cs" />
-    <Compile Include="AiLib\Wpf\GridDataSource.cs" />
-    <Compile Include="AiLib\Wpf\WpfTitleHelper.cs" />
+    <Compile Include="Platform\AiLib\IOFile\DirectoryEnum.cs" />
+    <Compile Include="Platform\AiLib\IOFile\Iterator.cs" />
+    <Compile Include="Platform\AiLib\IOFile\PathHelpers.cs" />
+    <Compile Include="Platform\AiLib\IOFile\Win32FileSystemEnumerableIterator.cs" />
+    <Compile Include="Platform\AiLib\IOFile\Win32FindFile.cs" />
+    <Compile Include="Platform\AiLib\Reflection\ExpandoUtils.cs" />
+    <Compile Include="Platform\AiLib\Reflection\StringConvert.cs" />
+    <Compile Include="Platform\AiLib\Wpf\GridDataSource.cs" />
+    <Compile Include="Platform\AiLib\Wpf\WpfTitleHelper.cs" />
     <Compile Include="base-plugins\fs\FTPFileSystem.cs" />
     <Compile Include="base-plugins\fs\localFileSystem-CLI.cs" />
     <Compile Include="base-plugins\fs\localFileSystem.cs" />
@@ -107,7 +107,13 @@
     <Compile Include="FileList\VEd.cs" />
     <Compile Include="FileList\VEsettings.cs" />
     <Compile Include="FileList\XmlDisplay.cs" />
-    <Compile Include="Menu\MenuWpf.cs" />
+    <Compile Include="Model\View\IBackend.cs" />
+    <Compile Include="Model\CommanderData.cs" />
+    <Compile Include="Controller\ICommanderWindow.cs" />
+    <Compile Include="Model\Menu\Menu.cs" />
+    <Compile Include="Model\Menu\MenuItemWIthKey.cs" />
+    <Compile Include="Model\MainDataContext.cs" />
+    <Compile Include="Platform\Application.cs" />
     <Compile Include="pluginfinder.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />
     <Compile Include="SettingsWindowTabs\ISettingsWindowTab.cs" />
@@ -117,30 +123,32 @@
     <Compile Include="SettingsWindowTabs\swtMainWindowInfobar.cs" />
     <Compile Include="SettingsWindowTabs\swtMainWindowThemes.cs" />
     <Compile Include="SettingsWindowTabs\swtViewerEditor.cs" />
-    <Compile Include="theme\Commands.cs" />
-    <Compile Include="theme\Control.cs" />
-    <Compile Include="theme\ctrl\ButtonWidget.cs" />
-    <Compile Include="theme\ctrl\DataGridBackend.cs" />
-    <Compile Include="theme\ctrl\FontWpf.cs" />
-    <Compile Include="theme\ctrl\LabelWidget.cs" />
-    <Compile Include="theme\ListView2ItemWpf.cs" />
-    <Compile Include="theme\ctrl\ListView2Widget.cs" />
-    <Compile Include="theme\ListView2Wpf.cs" />
-    <Compile Include="theme\ctrl\TextEntry.cs" />
-    <Compile Include="theme\FileListPanelWpf.cs" />
-    <Compile Include="theme\MenuWpf.xaml.cs">
-      <DependentUpon>MenuWpf.xaml</DependentUpon>
+    <Compile Include="Controller\Commands.cs" />
+    <Compile Include="Model\View\Control.cs" />
+    <Compile Include="View.Xaml\ListView2ItemWpf.cs" />
+    <Compile Include="Model\ListView2Wpf.cs" />
+    <Compile Include="Controller\MessageDialog.cs" />
+    <Compile Include="View.Xaml\MenuWpf.cs" />
+    <Compile Include="View.Xaml\WindowData.cs" />
+    <Compile Include="View.Xaml\Ctrl\ButtonWidget.cs" />
+    <Compile Include="View.Xaml\Ctrl\DataGridBackend.cs" />
+    <Compile Include="View.Xaml\Ctrl\FontWpf.cs" />
+    <Compile Include="View.Xaml\Ctrl\LabelWidget.cs" />
+    <Compile Include="View.Xaml\Ctrl\ListView2Widget.cs" />
+    <Compile Include="View.Xaml\Ctrl\TextEntry.cs" />
+    <Compile Include="View.Xaml\FileListPanelWpf.cs" />
+    <Compile Include="View.Xaml\GridEvents.cs" />
+    <Compile Include="View.Xaml\MenuPanelWpf.xaml.cs">
+      <DependentUpon>MenuPanelWpf.xaml</DependentUpon>
     </Compile>
-    <Compile Include="theme\MessageDialog.cs" />
-    <Compile Include="theme\PanelCmd.xaml.cs">
+    <Compile Include="View.Xaml\PanelCmd.xaml.cs">
       <DependentUpon>PanelCmd.xaml</DependentUpon>
     </Compile>
-    <Compile Include="theme\PanelWpf.xaml.cs">
+    <Compile Include="View.Xaml\PanelWpf.xaml.cs">
       <DependentUpon>PanelWpf.xaml</DependentUpon>
     </Compile>
-    <Compile Include="theme\WindowData.cs" />
-    <Compile Include="theme\wpf.cs" />
-    <Compile Include="theme\WpfMenu.cs" />
+    <Compile Include="View.Xaml\WpfMenu.cs" />
+    <Compile Include="View.Xaml\XamlBackend.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -153,15 +161,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="theme\MenuWpf.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="View.Xaml\MenuPanelWpf.xaml">
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="theme\PanelCmd.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="theme\PanelWpf.xaml">
+    <Page Include="View.Xaml\PanelCmd.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View.Xaml\PanelWpf.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

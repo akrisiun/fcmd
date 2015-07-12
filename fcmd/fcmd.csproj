@@ -60,7 +60,7 @@
     <Optimize>false</Optimize>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>5</LangVersion>
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XWT;GTK;</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
@@ -87,13 +87,11 @@
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Compile Include="base-plugins\fs\localFileSystem-CLI.cs" />
-    <Compile Include="AiLib\IOFile\DirectoryEnum.cs" />
-    <Compile Include="AiLib\IOFile\Iterator.cs" />
-    <Compile Include="AiLib\IOFile\PathHelpers.cs" />
-    <Compile Include="AiLib\IOFile\Win32FileSystemEnumerableIterator.cs" />
-    <Compile Include="AiLib\IOFile\Win32FindFile.cs" />
     <Compile Include="base-plugins\ve\PlainText.cs" />
     <Compile Include="base-plugins\ve\PlainXml.cs" />
+    <Compile Include="Controller\Commands.cs" />
+    <Compile Include="Controller\ICommanderWindow.cs" />
+    <Compile Include="Controller\MessageDialog.cs" />
     <Compile Include="FileList\AsyncCopy.cs" />
     <Compile Include="FileList\FileListPanel.cs" />
     <Compile Include="FileList\FileProcessDialog.cs" />
@@ -112,8 +110,24 @@
     <Compile Include="FileList\VEsettings.cs" />
     <Compile Include="FileList\XmlDisplay.cs" />
     <Compile Include="MainWindow.cs" />
-    <Compile Include="Menu\Menu.cs" />
-    <Compile Include="Menu\MenuItemWIthKey.cs" />
+    <Compile Include="Model\CommanderData.cs" />
+    <Compile Include="Model\ListView2Wpf.cs" />
+    <Compile Include="Model\MainDataContext.cs" />
+    <Compile Include="Model\View\Control.cs" />
+    <Compile Include="Model\View\IBackend.cs" />
+    <Compile Include="Platform\AiLib\IOFile\DirectoryEnum.cs" />
+    <Compile Include="Platform\AiLib\IOFile\Iterator.cs" />
+    <Compile Include="Platform\AiLib\IOFile\PathHelpers.cs" />
+    <Compile Include="Platform\AiLib\IOFile\Win32FileSystemEnumerableIterator.cs" />
+    <Compile Include="Platform\AiLib\IOFile\Win32FindFile.cs" />
+    <Compile Include="Platform\AiLib\Reflection\ExpandoArray.cs" />
+    <Compile Include="Platform\AiLib\Reflection\ExpandoUtils.cs" />
+    <Compile Include="Platform\AiLib\Reflection\StringConvert.cs" />
+    <Compile Include="Model\Menu\Menu.cs" />
+    <Compile Include="Model\Menu\MenuItemWIthKey.cs" />
+    <Compile Include="View.GTK\MenuGtk.cs" />
+    <Compile Include="Platform\Application.cs" />
+    <Compile Include="Platform\ICommand.cs" />
     <Compile Include="pluginfinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="base-plugins\fs\localFileSystem.cs" />
@@ -134,8 +148,9 @@
     <Compile Include="SettingsWindowTabs\swtMainWindowThemes.cs" />
     <Compile Include="SettingsWindowTabs\swtViewerEditor.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="theme\Control.cs" />
-    <Compile Include="theme\wpf.cs" />
+    <Compile Include="View.GTK\GtkBackend.cs" />
+    <Compile Include="View.GTK\ListView2Canvas.cs" />
+    <Compile Include="View.GTK\WindowDataGtk.cs" />
     <Compile Include="vm\vmtest.cs" />
     <Compile Include="SettingsWindowTabs\swtMainWindowFonts.cs" />
   </ItemGroup>
@@ -227,4 +242,5 @@
   <ItemGroup>
     <Content Include="FavIcon.ico" />
   </ItemGroup>
+  <ItemGroup />
 </Project>
