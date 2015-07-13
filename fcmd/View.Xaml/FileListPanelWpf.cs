@@ -23,10 +23,9 @@ namespace fcmd.View.Xaml
 
         public ListView2Widget ListingViewWpf { get; protected set; }
 
-        // public override IListView2<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj; } }
         public override IListingView<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj; } }
 
-        public override IUIListingView ListingWidget { get { return ListingViewWpf; } }
+        public override IListingContainer ListingWidget { get { return ListingViewWpf; } }
 
         public override void Initialize(PanelSide side)
         {
@@ -57,7 +56,7 @@ namespace fcmd.View.Xaml
             //  base.GotFocus
         }
 
-        public override event EventHandler GotFocus { add { onFocusSet = true; onFocus += value; } remove { onFocus += value; } }
+        // public override event EventHandler GotFocus { add { onFocusSet = true; onFocus += value; } remove { onFocus += value; } }
 
         protected override void WriteDefaultStatusLabel()
         {

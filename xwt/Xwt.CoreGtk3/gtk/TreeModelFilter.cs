@@ -163,18 +163,20 @@ namespace Gtk {
 			OverrideVirtualMethod (gtype, "rows_reordered", RowsReorderedVMCallback);
 		}
 
-		[Obsolete ("Replaced by int[] new_order overload.")]
-		[GLib.DefaultSignalHandler(Type=typeof(Gtk.TreeModelFilter), ConnectionMethod="OverrideRowsReordered")]
-		protected virtual void OnRowsReordered (Gtk.TreePath path, Gtk.TreeIter iter, out int new_order)
-		{
-			new_order = -1;
-		}
+		//[Obsolete ("Replaced by int[] new_order overload.")]
+		//[GLib.DefaultSignalHandler(Type=typeof(Gtk.TreeModelFilter), ConnectionMethod="OverrideRowsReordered")]
+		//protected virtual void OnRowsReordered (Gtk.TreePath path, Gtk.TreeIter iter, out int new_order)
+		//{
+  //          new_order 
+		//	new_order = -1;
+		//}
 
 		[GLib.DefaultSignalHandler(Type=typeof(Gtk.TreeModelFilter), ConnectionMethod="OverrideRowsReordered")]
 		protected virtual void OnRowsReordered (Gtk.TreePath path, Gtk.TreeIter iter, int[] new_order)
 		{
-			int dummy;
-			OnRowsReordered (path, iter, out dummy);
+			//int dummy;
+			//OnRowsReordered (path, iter, out dummy); [obsolete]
+
 			GLib.Value ret = GLib.Value.Empty;
 			GLib.ValueArray inst_and_params = new GLib.ValueArray (4);
 			GLib.Value[] vals = new GLib.Value [4];

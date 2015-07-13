@@ -41,6 +41,7 @@ namespace Gtk {
 		[DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gtk_icon_set_render_icon(IntPtr raw, IntPtr style, int direction, int state, int size, IntPtr widget, IntPtr detail);
 
+#if GLUE
 		[Obsolete]
 		public Gdk.Pixbuf RenderIcon(Gtk.Style style, Gtk.TextDirection direction, Gtk.StateType state, Gtk.IconSize size, Gtk.Widget widget, string detail) {
 			IntPtr native_detail = GLib.Marshaller.StringToPtrGStrdup (detail);
@@ -49,6 +50,7 @@ namespace Gtk {
 			GLib.Marshaller.Free (native_detail);
 			return ret;
 		}
+#endif
 
 		[DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gtk_icon_set_render_icon_pixbuf(IntPtr raw, IntPtr context, int size);

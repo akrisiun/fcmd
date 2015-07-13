@@ -173,7 +173,7 @@ namespace Xwt.GtkBackend
 				ctx.Context = new Cairo.Context (sf);
 				ctx.TempSurface = sf;
 			} else {
-				ctx.Context = Gdk.CairoHelper.Create (GdkWindow);
+				ctx.Context = Gdk.CairoHelper.Create (Window);
 			}
 			if (!VisibleWindow) {
 				ctx.Context.Translate (Allocation.X, Allocation.Y);

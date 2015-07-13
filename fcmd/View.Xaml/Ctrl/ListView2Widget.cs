@@ -14,6 +14,7 @@ using fcmd.Menu;
 using System.IO;
 using fcmd.View.Xaml;
 using fcmd.Controller;
+using fcmd.Model;
 
 namespace fcmd.View.ctrl
 {
@@ -49,24 +50,30 @@ namespace fcmd.View.ctrl
         }
     }
 
-    public class ListView2Widget : DataGrid, IUIListingView<ListView2ItemWpf>
+    public class ListView2Widget : DataGrid, IListingContainer<ListView2ItemWpf>
                , IAddChild, IContainItemStorage
     {
         // no visual data container
-        public ListView2List DataObj { get; protected set; }
+        public ListView2Xaml DataObj { get; protected set; }
 
         // public override IListingView<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj; } }
 
-        Xwt.CursorType IUIListingView.Cursor { get; set; } // = CursorType.Wait;
+        Xwt.CursorType IListingContainer.Cursor { get; set; } // = CursorType.Wait;
 
         public PanelWpf Panel { get; set; }
         public FileListPanelWpf FileList { get; set; }
 
         public ListView2Widget()
         {
-            DataObj = new ListView2List(this);
+            DataObj = new ListView2Xaml(this);
             DataObj.PointedItem = new PointedItem() { Index = - 1, Item = null }; // <ListView2Item>();
             DataContext = DataObj;
+        }
+
+        public virtual void Bind()  // TODO
+        {
+            // DataGrid bind
+            this.BindGridEvents();
         }
 
         // Visual properties
@@ -101,7 +108,7 @@ namespace fcmd.View.ctrl
 
         // public FS {get; set;}
         // public TextBlock StatusBar { get; }
-        public Font FontForFileNames { get; set; }
+        public Xwt.Drawing.Font FontForFileNames { get; set; }
 
         public int Count { get { return Items == null ? 0 : Items.Count; } }
 
@@ -170,7 +177,7 @@ namespace fcmd.View.ctrl
             var items = DataObj.DataItems;  // .ItemsForGrid();
             if (this.Columns.Count == 0)
             {
-                //this.BindGridEvents();
+                this.Bind();
 
                 ListView2.ColumnInfo[] definitions = DefineColumns(null);
                 this.ToDataSource<object>(items, definitions);

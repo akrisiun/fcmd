@@ -186,7 +186,12 @@ namespace Xwt.GtkBackend
 
 		public Xwt.Drawing.Color TextColor {
 			get {
-				return textColor.HasValue ? textColor.Value : Widget.Style.Foreground (Gtk.StateType.Normal).ToXwtValue ();
+                return textColor.HasValue ? textColor.Value :
+#if GLUE
+                    Widget.Style.Foreground (Gtk.StateType.Normal).ToXwtValue ();
+#else               
+                    Color.FromName("Black");
+#endif
 			}
 			set {
 				var color = value.ToGtkValue ();

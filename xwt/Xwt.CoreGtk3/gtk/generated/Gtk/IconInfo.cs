@@ -157,6 +157,7 @@ namespace Gtk {
 		[DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern unsafe IntPtr gtk_icon_info_load_symbolic_for_style(IntPtr raw, IntPtr style, int state, out bool was_symbolic, out IntPtr error);
 
+#if GLUE
 		[Obsolete]
 		public unsafe Gdk.Pixbuf LoadSymbolicForStyle(Gtk.Style style, Gtk.StateType state, out bool was_symbolic) {
 			IntPtr error = IntPtr.Zero;
@@ -165,6 +166,7 @@ namespace Gtk {
 			if (error != IntPtr.Zero) throw new GLib.GException (error);
 			return ret;
 		}
+#endif
 
 		[DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_icon_info_set_raw_coordinates(IntPtr raw, bool raw_coordinates);

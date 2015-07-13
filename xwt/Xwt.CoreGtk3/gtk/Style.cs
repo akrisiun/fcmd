@@ -32,6 +32,7 @@ namespace Gtk
     public partial class Style
     {
 
+#if GLUE
         [DllImport("gtksharpglue-3")]
         static extern IntPtr gtksharp_gtk_style_get_bg(IntPtr style, int i);
 
@@ -220,5 +221,7 @@ namespace Gtk
                 return ret;
             }
         }
+#endif 
+
     }
 }

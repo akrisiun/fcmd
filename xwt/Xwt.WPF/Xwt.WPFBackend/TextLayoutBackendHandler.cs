@@ -291,7 +291,7 @@ namespace Xwt.WPFBackend
 					ApplyAttribute(at);
 		}
 
-		public DrawingContext Context;
+		// public DrawingContext Context;
 		public Font Font { get; private set; }
 	}
 }

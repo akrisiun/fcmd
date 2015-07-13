@@ -206,12 +206,14 @@ namespace Gtk {
 		[DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_paint_spinner(IntPtr style, IntPtr cr, int state_type, IntPtr widget, IntPtr detail, uint step, int x, int y, int width, int height);
 
-		[Obsolete]
+#if GLUE
+        [Obsolete]
 		public static void PaintSpinner(Gtk.Style style, Cairo.Context cr, Gtk.StateType state_type, Gtk.Widget widget, string detail, uint step, int x, int y, int width, int height) {
 			IntPtr native_detail = GLib.Marshaller.StringToPtrGStrdup (detail);
 			gtk_paint_spinner(style == null ? IntPtr.Zero : style.Handle, cr == null ? IntPtr.Zero : cr.Handle, (int) state_type, widget == null ? IntPtr.Zero : widget.Handle, native_detail, step, x, y, width, height);
 			GLib.Marshaller.Free (native_detail);
 		}
+#endif
 
 		[DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern bool gtk_parse_args(out int argc, IntPtr argv);

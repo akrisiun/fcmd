@@ -26,30 +26,32 @@ namespace fcmd.Menu
             get { return null; } // TODO: base.Items as Collection<MenuItemWithKey>; }
         }
 
-        //public IMenuBackend Backend
-        //{
-        //    get { return (IMenuBackend)BackendHost.Backend; }
-        //}
-
-        protected new void InsertItem(int n, MenuItem item)
+#if WPF
+        public IMenuBackend Backend
         {
-            //Backend.InsertItem(n, (IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend(item));
+            get { return (IMenuBackend)BackendHost.Backend; }
         }
 
-        protected new void RemoveItem(MenuItem item)
+        protected void InsertItem(int n, MenuItem item)
         {
-            //Backend.RemoveItem((IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend(item));
+            (Backend as Xwt.WPFBackend.MenuBackend).InsertItem(n, (IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend(item));
         }
+
+        protected void RemoveItem(MenuItem item)
+        {
+            (Backend as Xwt.WPFBackend.MenuBackend).RemoveItem((IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend(item));
+        }
+#endif
 
         #endregion
 
         /// <summary>
         /// Shows the menu at the current position of the cursor
         /// </summary>
-        public new void Popup()
-        {
-            //Backend.Popup();
-        }
+        //public new void Popup()
+        //{
+        //    Backend.Popup();
+        //}
 
         /// <summary>
         /// Shows the menu at the specified location

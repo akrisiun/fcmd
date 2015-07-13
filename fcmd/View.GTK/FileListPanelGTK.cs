@@ -9,7 +9,7 @@ using Xwt;
 
 namespace fcmd.View.GTK
 {
-    public class FileListPanelGTK : FileListPanel<ListViewGTK>
+    public class FileListPanelGTK : FileListPanel<ListView2Canvas>
     {
         public FileListPanelGTK(string BookmarkXML = null, string CSS = null,
             string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
@@ -25,7 +25,15 @@ namespace fcmd.View.GTK
         //    base.OnGotFocus(ea);
         //}
 
-        public override IUIListingView ListingWidget
+        public override IListingContainer ListingWidget
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public override IListingView<ListView2Canvas> ListingView
         {
             get
             {
@@ -43,7 +51,7 @@ namespace fcmd.View.GTK
         //    throw new NotImplementedException();
         //}
 
-        public override void LoadDir(string Url, Shorten? Shorten)
+        public override void LoadDir(string Url, ShortenPolicies? Shorten)
         {
             throw new NotImplementedException();
         }

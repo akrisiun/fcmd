@@ -300,8 +300,8 @@ namespace Pango {
 			pango_font_description_free (raw);
 		}
 
-		[Obsolete("Pango.FontDescription is now freed automatically")]
-		public void Free () {}
+		//[Obsolete("Pango.FontDescription is now freed automatically")]
+		//public void Free () {}
 
 		class FinalizerInfo {
 			IntPtr handle;

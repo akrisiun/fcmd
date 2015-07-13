@@ -28,7 +28,7 @@ using fcmd.Controller;
 using fcmd.View.Xaml;
 using fcmd.View.ctrl;
 using ColorDrawing = System.Drawing;
-using CursorType = System.Windows.Input.Cursor;
+// using CursorType = System.Windows.Input.Cursor;
 using System.Windows.Controls;
 using System.Windows;
 using System.Drawing;
@@ -40,163 +40,10 @@ using ColorDrawing = Xwt.Drawing;
 
 namespace fcmd
 {
-
-#if WPF
-    public class LabelWidget : System.Windows.Controls.Label, ILabelWidget
-    {
-        public bool Visible
-        {
-            get { return Visibility != Visibility.Hidden; }
-            set { Visibility = Visibility.Visible; }
-        }
-
-        public bool Condensed { get; set; }
-
-    }
-
-
-    public class CommanderStatusBar : LabelWidget, IContent
-    {
-    }
-
-#else
-    //public class LabelWidget : Xwt.Label, ILabelWidget
-    //{
-    //    public new object Content
-    //    { get { return base.Content; } set { base.Content = value as Widget; } }
-
-    //}
-
-
     public class CommanderStatusBar : Xwt.Label //  LabelWidget, IContent
     {
         //  public object Content { get; set; }
     }
-
-#endif
-
-
-#if !WPF
-
-    public class ListViewGTK : IListView2Visual
-    {
-        public bool CanGetFocus
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public ListView2.ColumnInfo[] ColumnData
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public object Content
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public object[] Data
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public string fldFile
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public string fldModified
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public string fldSize
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int? RowIndex
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public ListView2.ItemStates State
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool Visible
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-    }
-
-
 
     public abstract class FileListPanel : Table
     {
@@ -208,67 +55,30 @@ namespace fcmd
         public IStatusBar StatusBar { get; set; }
 
         public ShortenPolicies ShortenPolicy { get; set; }
-        public Shorten Shorten { get; set; }
 
-        public IListingView ListingView { get; set; }
         public IFSPlugin FS { get; set; }
 
         // T GetValue<T>(int Field)
         public abstract T GetValue<T>(int field);
         public abstract string GetValue(int field);
 
-        public abstract void LoadDir(string Url, Shorten? Shorten); // string[] args
+        public abstract void LoadDir(string Url, ShortenPolicies? shortenPolicy);
         public void LoadDir() { LoadDir(null, null); }
     }
 
-    /// <summary>Filelist panel</summary>
     public abstract class FileListPanel<T> : FileListPanel, IFileListPanel<T>, IFileListPanel where T : class, IListView2Visual
     {
-
-#else
-
-    public abstract class FileListPanel
-    {
-        //Data Field Numbers
-        //they aren't const because they may change when the columns are reordered
-
-        //public DataFieldNumbers df { get; set; }
-        // public int dfDirItem = 5;
-
-        // public object ListingView { get; set; }
-        public IFSPlugin FS { get; set; }
-
-        public PanelWpf PanelWpf { get; set; }
-
-        public abstract event EventHandler GotFocus;
-
-    }
-
-    public abstract class FileListPanel<T> : FileListPanel, IFileListPanel<T>, IFileListPanel where T : class, IListView2Visual
-    {
-
-        // public abstract IListView2<T> ListingView { get; }
-
         public abstract IListingView<T> ListingView { get; }
-
-        //   IStatusBar IFileListPanel.StatusBar
-        public IStatusBar StatusBar { get; set; }
-        public ShortenPolicies ShortenPolicy { get; set; }
-        public DataFieldNumbers df { get; set; }
-
-#endif
-        IListingView IFileListPanel.ListingView { get { return this.ListingView as IListingView; } }
-        // IFileListPanel<T>.ListingView
 
         #region Properties 
 
-        // public IFSPlugin FS { get; set; }
+        public IFSPlugin FS { get; set; }
 
         public IButton GoRoot { get; set; }
         public IButton GoUp { get; set; }
         public ITextEntry UrlBox { get; set; }
 
-        public abstract IUIListingView ListingWidget { get; }
+        public abstract IListingContainer ListingWidget { get; }
 
         // IListView2<T> IFileListPanel<T>.ListingView get 
         // ShortenPolicies IFileListPanel.ShortenPolicy
@@ -336,7 +146,7 @@ namespace fcmd
             GoRoot.CanGetFocus = true; // TODO: GoUp.CanGetFocus = BookmarksButton.CanGetFocus = HistoryButton.CanGetFocus = false;
             string fontFamily = fcmd.Properties.Settings.Default.UserFileListFontFamily;
 #if WPF
-            ListingView.FontForFileNames = String.IsNullOrWhiteSpace(fontFamily) ? FontWpf.SystemFont : FontWpf.FromName(fontFamily);
+            //ListingView.FontForFileNames = String.IsNullOrWhiteSpace(fontFamily) ? FontWpf.SystemFont : FontWpf.FromName(fontFamily);
 #else
 
 #endif
@@ -626,7 +436,7 @@ namespace fcmd
         /// <param name="ShortenKB">How kilobyte sizes should be humanized</param>
         /// <param name="ShortenMB">How megabyte sizes should be humanized</param>
         /// <param name="ShortenGB">How gigabyte sizes should be humanized</param> //плохой перевод? "так nбайтные размеры должны очеловечиваться"
-        public virtual void LoadDir(string URL, ShortenPolicies? Shorten = null)
+        public override void LoadDir(string URL, ShortenPolicies? Shorten = null)
         {
 
             ShortenPolicy = Shorten ?? ShortenPolicy;
@@ -714,17 +524,23 @@ namespace fcmd
                 }
             }
 
-#if WPF
-            if (ListingView.DataItems.Count > 0)
+            // #if WPF
+            var view = ListingView;
+            if (view.DataItems.Count > 0)
             {
-                ListingView.SetupColumns();
-                ListingView.SelectedRow = 0;
-                // ListingView.ScrollerIn.ScrollTo(0, 0);
-            }
-            ListingView.SetFocus();//one fixed bug may make many other bugs...уточнить необходимость!
-                                   //ListingWidget.Sensitive = true;
+                view.SetupColumns();
+                view.SelectedRow = 0;
+#if XWT
+                // view.ScrollerIn.ScrollTo(0, 0);
 #endif
-            // ListingWidget.Cursor = CursorType.Arrow;
+            }
+
+            view.SetFocus();//one fixed bug may make many other bugs...уточнить необходимость!
+                            //ListingWidget.Sensitive = true;
+                            // #endif
+
+
+            ListingWidget.Cursor = CursorType.Arrow;
         }
 
         #region FS
@@ -800,7 +616,7 @@ namespace fcmd
                 Data.Add(di);
 
 #if !XWT
-                (ListingView as ListView2List).AddItem(Data, EditableFileds, di.URL);
+                (ListingView as ListView2Xaml).AddItem(Data, EditableFileds, di.URL);
 #else
                 ListingView.AddItem(Data, EditableFileds, di.URL);
                 if ((++counter & per_number) == 0)
@@ -901,12 +717,12 @@ namespace fcmd
         }
 #else
         // ExpandoObject data
-        public TItem GetValue<TItem>(int Field)
+        public override TItem GetValue<TItem>(int Field)
         {
             return (TItem)ListingView.PointedItem.Data[Field];
         }
 
-        public string GetValue(int Field)
+        public override string GetValue(int Field)
         {
             return (string)ListingView.PointedItem.Data[Field];
         }

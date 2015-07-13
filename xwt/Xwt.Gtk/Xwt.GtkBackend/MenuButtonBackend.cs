@@ -104,7 +104,7 @@ namespace Xwt.GtkBackend
 		void PositionFunc (Gtk.Menu mn, out int x, out int y, out bool push_in)
 		{
 			Gtk.Widget w = (Gtk.Widget)Widget;
-			w.GdkWindow.GetOrigin (out x, out y);
+			w.Window.GetOrigin (out x, out y);
 			Gdk.Rectangle rect = w.Allocation;
 			x += rect.X;
 			y += rect.Y + rect.Height;

@@ -128,7 +128,7 @@ namespace Xwt.GtkBackend
 			protected override bool OnDrawn (Context cr)
 			{
 				int w, h;
-				this.GdkWindow.GetSize (out w, out h);
+				this.Window.GetSize (out w, out h);
 				var bounds = new Xwt.Rectangle (0.5, 0.5, w - 1, h - 1);
 				var black = Xwt.Drawing.Color.FromBytes (0xee, 0xee, 0xee);
 				

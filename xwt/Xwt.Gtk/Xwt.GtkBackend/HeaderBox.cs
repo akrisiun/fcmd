@@ -125,9 +125,13 @@ namespace Xwt.GtkBackend
 			}
 		
 			if (GradientBackround) {
-				Color gcol = Style.Background (Gtk.StateType.Normal).ToXwtValue ();
-			
-				cr.NewPath ();
+#if GLUE
+                Color gcol = Style.Background (Gtk.StateType.Normal).ToXwtValue ();
+#else
+                Color gcol = Color.FromName(this.StyleGetProperty("Background") as string ?? "Silver");
+#endif
+
+                cr.NewPath ();
 				cr.MoveTo (rect.X, rect.Y);
 				cr.RelLineTo (rect.Width, 0);
 				cr.RelLineTo (0, rect.Height);
@@ -143,9 +147,16 @@ namespace Xwt.GtkBackend
 					cr.FillPreserve ();
 				}
 			}
-		
-			cr.SetSourceColor (color.HasValue ? color.Value.ToCairoColor () : Style.Dark (Gtk.StateType.Normal).ToXwtValue ().ToCairoColor ());
-			cr.Rectangle (rect.X, rect.Y, rect.Width, topMargin);
+
+#if GLUE
+            cr.SetSourceColor (color.HasValue ? color.Value.ToCairoColor () : 
+                            Style.Dark (Gtk.StateType.Normal).ToXwtValue ().ToCairoColor ());
+#else
+            if (color.HasValue)
+                cr.SetSourceColor(color.Value.ToCairoColor());
+#endif
+
+            cr.Rectangle (rect.X, rect.Y, rect.Width, topMargin);
 			cr.Rectangle (rect.X, rect.Y + rect.Height - bottomMargin, rect.Width, bottomMargin);
 			cr.Rectangle (rect.X, rect.Y, leftMargin, rect.Height);
 			cr.Rectangle (rect.X + rect.Width - rightMargin, rect.Y, rightMargin, rect.Height);

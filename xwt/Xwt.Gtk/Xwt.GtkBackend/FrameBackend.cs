@@ -183,7 +183,13 @@ namespace Xwt.GtkBackend
             get
             {
                 if (borderColor == null)
-                    return Widget.Style.Dark(Gtk.StateType.Normal).ToXwtValue();
+#if GLUE
+                    return Style.Dark(Gtk.StateType.Normal).ToXwtValue();
+#else
+                    return Color.FromName(
+                                 Widget.StyleGetProperty("BorderColor") as string ?? "silver"
+                                 ); // 
+#endif
                 else
                     return borderColor.Value;
             }
@@ -225,7 +231,7 @@ namespace Xwt.GtkBackend
                     ((Gtk.Frame)Widget).Label = value;
             }
         }
-        #endregion
+#endregion
     }
 
     class FrameWidget : Gtk.Frame, IConstraintProvider

@@ -31,12 +31,12 @@ namespace Gtk
     public partial class Widget
     {
 
-        [Obsolete("Replaced by Window property.")]
-        public Gdk.Window GdkWindow
-        {
-            get { return Window; }
-            set { Window = value; }
-        }
+        //[Obsolete("Replaced by Window property.")]
+        //public Gdk.Window GdkWindow
+        //{
+        //    get { return Window; }
+        //    set { Window = value; }
+        //}
 
         public void AddAccelerator(string accel_signal, AccelGroup accel_group, AccelKey accel_key)
         {

@@ -68,14 +68,17 @@
     <Compile Include="Toolkit\Utilities.cs" />
     <Compile Include="Resources\AssemblyInfo.cs" />
     <Compile Include="Widgets\EditableLabel.cs" />
+    <Compile Include="Widgets\GTK\ListView2Canvas.cs" />
     <Compile Include="Widgets\HeavyScroller.cs" />
     <Compile Include="Widgets\IContent.cs" />
     <Compile Include="Widgets\IFileListPanel.cs" />
+    <Compile Include="Widgets\IListingView.cs" />
     <Compile Include="Widgets\IMainMenu.cs" />
     <Compile Include="Widgets\IStatusBar.cs" />
     <Compile Include="Widgets\LightScroller.cs" />
     <Compile Include="Widgets\ListView2.cs" />
     <Compile Include="Widgets\VirtualListView.cs" />
+    <Compile Include="Widgets\Xaml\ListView2Xaml.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="DefaultBookmarks.xml">

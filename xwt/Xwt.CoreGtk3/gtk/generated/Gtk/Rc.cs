@@ -111,16 +111,19 @@ namespace Gtk {
 		[DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gtk_rc_get_style(IntPtr widget);
 
+#if GLUE
 		[Obsolete]
 		public static Gtk.Style GetStyle(Gtk.Widget widget) {
 			IntPtr raw_ret = gtk_rc_get_style(widget == null ? IntPtr.Zero : widget.Handle);
 			Gtk.Style ret = GLib.Object.GetObject(raw_ret) as Gtk.Style;
 			return ret;
 		}
+#endif
 
 		[DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gtk_rc_get_style_by_paths(IntPtr settings, IntPtr widget_path, IntPtr class_path, IntPtr type);
 
+#if GLUE
 		[Obsolete]
 		public static Gtk.Style GetStyleByPaths(Gtk.Settings settings, string widget_path, string class_path, GLib.GType type) {
 			IntPtr native_widget_path = GLib.Marshaller.StringToPtrGStrdup (widget_path);
@@ -131,6 +134,7 @@ namespace Gtk {
 			GLib.Marshaller.Free (native_class_path);
 			return ret;
 		}
+#endif
 
 		[DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern IntPtr gtk_rc_get_theme_dir();

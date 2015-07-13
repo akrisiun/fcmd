@@ -345,7 +345,7 @@ namespace Xwt.GtkBackend
         public override object RenderWidget(Widget widget)
         {
             var w = ((WidgetBackend)widget.GetBackend()).Widget;
-            Gdk.Window win = w.GdkWindow;
+            Gdk.Window win = w.Window;
             if (win != null && win.IsViewable)
             {
                 int ww, wh;

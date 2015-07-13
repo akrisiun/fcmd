@@ -13,17 +13,24 @@ namespace pluginner.Widgets
     /// <summary>A scrollable panel, that can be 100% controlled by the host</summary>
     public class HeavyScroller : Widget
     {
-        Table Layout = new Table();
-        Canvas Locator = new Canvas();
-        Widget Child = new Label("No child is inserted");
+        Table Layout;
+        Canvas Locator;
+        Widget Child;
 
         // public HScrollbar HScroll = new HScrollbar();
-        public VScrollbar VScroll = new VScrollbar();
+        public VScrollbar VScroll;
         double OffsetX;
         double OffsetY;
 
         public HeavyScroller()
         {
+            OffsetX = 0;
+            OffsetY = 0;
+            Layout = new Table();
+            Locator = new Canvas();
+            Child = new Label("No child is inserted");
+            VScroll = new VScrollbar();
+
             Locator.AddChild(Child);
             Layout.Add(Locator, 0, 0, 1, 1, true, true);
             Layout.Add(VScroll, 1, 0);

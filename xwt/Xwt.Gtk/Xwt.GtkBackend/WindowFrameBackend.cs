@@ -55,7 +55,7 @@ namespace Xwt.GtkBackend
 		void HandleRealized (object sender, EventArgs e)
 		{
 			if (opacity != 1d)
-				window.GdkWindow.Opacity = opacity;
+				window.Window.Opacity = opacity;
 		}
 		
 		protected WindowFrame Frontend {
@@ -133,9 +133,9 @@ namespace Xwt.GtkBackend
 		public Rectangle Bounds {
 			get {
 				int w, h, x, y;
-				if (Window.GdkWindow != null) {
-					Window.GdkWindow.GetOrigin (out x, out y);
-					Window.GdkWindow.GetSize (out w, out h);
+				if (Window.Window != null) {
+					Window.Window.GetOrigin (out x, out y);
+					Window.Window.GetSize (out w, out h);
 				} else {
 					Window.GetPosition (out x, out y);
 					Window.GetSize (out w, out h);
@@ -182,8 +182,8 @@ namespace Xwt.GtkBackend
 			}
 			set {
 				opacity = value;
-				if (Window.GdkWindow != null)
-					Window.GdkWindow.Opacity = value;
+				if (Window.Window != null)
+					Window.Window.Opacity = value;
 			}
 		}
 
@@ -242,7 +242,7 @@ namespace Xwt.GtkBackend
 
 		object IWindowFrameBackend.Screen {
 			get {
-				return Window.Screen.GetMonitorAtWindow (Window.GdkWindow);
+				return Window.Screen.GetMonitorAtWindow (Window.Window);
 			}
 		}
 

@@ -171,7 +171,8 @@ namespace Xwt.GtkBackend
 			}
 
 			DatePickerStyle style;
-			public DatePickerStyle Style {
+
+			public new DatePickerStyle Style {
 				get {
 					return style;
 				}
@@ -304,7 +305,7 @@ namespace Xwt.GtkBackend
 						// Workaround: find child windows inside own allocation and select the first
 						// window from the left, which is the window holding the text entry of the
 						// spin button.
-						entryWindow = GdkWindow.Children
+						entryWindow = Window.Children
 							// get child window geometry
 							.Select(childw => {
 									int x, y, w, h;

@@ -174,14 +174,17 @@ namespace Xwt.GtkBackend
 			Gtk.IconSet iconset = Gtk.IconFactory.LookupDefault (stockId);
 			if (iconset != null) {
 				// Find the size that better fits the requested size
+
 				Gtk.IconSize gsize = Util.GetBestSizeFit (width);
-				result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null, scaleFactor);
+#if GLUE
+                result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize, null, null, scaleFactor);
 				if (result == null || result.Width < width * scaleFactor) {
 					var gsize2x = Util.GetBestSizeFit (width * scaleFactor, iconset.Sizes);
 					if (gsize2x != Gtk.IconSize.Invalid && gsize2x != gsize)
 						// Don't dispose the previous result since the icon is owned by the IconSet
 						result = iconset.RenderIcon (Gtk.Widget.DefaultStyle, Gtk.TextDirection.Ltr, Gtk.StateType.Normal, gsize2x, null, null);
 				}
+#endif
 			}
 			
 			if (result == null && Gtk.IconTheme.Default.HasIcon (stockId))
@@ -403,7 +406,7 @@ namespace Xwt.GtkBackend
 			ctx.Scale (idesc.Size.Width / (double)img.Width, idesc.Size.Height / (double)img.Height);
 			Gdk.CairoHelper.SetSourcePixbuf (ctx, img, 0, 0);
 
-			#pragma warning disable 618
+#pragma warning disable 618
 			using (var pattern = ctx.Source as Cairo.SurfacePattern) {
 				if (pattern != null) {
 					if (idesc.Size.Width > img.Width || idesc.Size.Height > img.Height) {
@@ -413,7 +416,7 @@ namespace Xwt.GtkBackend
 						pattern.Filter = Cairo.Filter.Good;
 				}
 			}
-			#pragma warning restore 618
+#pragma warning restore 618
 
 			if (idesc.Alpha >= 1)
 				ctx.Paint ();

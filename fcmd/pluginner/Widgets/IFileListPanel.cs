@@ -1,41 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Windows;
+//using System.Dynamic;
+//using System.Windows;
 using fcmd;
-using System.Drawing;
-using System.Windows.Input;
+using Xwt.Drawing;
+// using System.Drawing;
+// using System.Windows.Input;
 
 namespace pluginner.Widgets
 {
     // intefaces
 
-    public interface IListingView : IListView2
-    {
-        IEnumerable ChoosedRows { get; }
-
-        void SetFocus();
-
-        void Select(object items); 
-        void Unselect();
-        void InvertSelection();
-
-        void AddItem(IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag = null);
-        // List<Object> Data, List<Boolean> EditableFields, string ItemTag = null)
-        // IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag = null)
-
-        // ActivePanel.LoadDir(); };
-    }
-
-    public interface IListingView<T> : IListingView, IListView2<T>, IEnumerable
-        where T : IListView2Visual
-    {
-        // ListView2ItemWpf
-        // IEnumerable<T> ChoosedRowsTyped { get; }
-
-        // T Empty { get; }
-    }
+  
 
     public interface IFileListPanel
     {
@@ -49,7 +26,6 @@ namespace pluginner.Widgets
         void LoadDir(string currentDirectory = null, ShortenPolicies? Shorten = null);
         // void LoadDir(string currentDirectory = null, Shorten? shorten);
 
-        IListingView ListingView { get; }
         ShortenPolicies ShortenPolicy { get; set; }
         // Shorten Shorten { get; set; }
         DataFieldNumbers df { get; set; }
@@ -65,12 +41,12 @@ namespace pluginner.Widgets
 
     public interface IFileListPanel<T> : IFileListPanel where T : class, IListView2Visual
     {
-        // IListView2<T> ListingView { get; }
-        IUIListingView ListingWidget { get; }
+        IListingView<T> ListingView { get; }
+        // IUIListingView ListingWidget { get; }
     }
 
     // Visual data container
-    public interface IUIListingView : IControl, IListView2
+    public interface IListingContainer : IControl, IListView2
     {
 #if WPF
         System.Windows.Input.Cursor Cursor { get; set; } // = CursorType.Wait;
@@ -84,11 +60,12 @@ namespace pluginner.Widgets
         IEnumerable ItemsSource { get; set; }
     }
 
-    public interface IUIListingView<T> : IUIListingView
+    // DataGrid for Xaml
+    public interface IListingContainer<T> : IListingContainer
     {
         // IEnumerable<T> ChoosedRows { get; set; }
         // object[]
-        IList<T> DataItems { get; }
+        void Bind();
     }
 
     public interface IPointedItem<T> : IPointedItem
@@ -109,7 +86,7 @@ namespace pluginner.Widgets
 
     public interface IListView2
     {
-        Font FontForFileNames { get; set; }
+        Xwt.Drawing.Font FontForFileNames { get; set; }
         void SetFocus();
         void SetupColumns();
 
@@ -123,7 +100,6 @@ namespace pluginner.Widgets
         int SelectedRow { get; set; }
 
         void Select(T item);
-        IEnumerable<T> ChoosedRowsTyped { get; }
 
         IList<T> DataItems { get; }
         void AddItem(IEnumerable<Object> Data, IEnumerable<Boolean> EditableFields, string ItemTag = null);

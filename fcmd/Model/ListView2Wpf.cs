@@ -2,7 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
+using Xwt.Drawing;
 
 #if WPF
 using ListView2Canvas = pluginner.Widgets.ListView2ItemWpf;
@@ -14,9 +14,9 @@ namespace fcmd.View.ctrl
 {
     // FilePanel non Visual
 
-    public class ListView2List : ListView2<ListView2Canvas>, IListingView<ListView2Canvas>, IListingView 
+    public class ListView2Xaml : pluginner.Widgets.Xaml.ListView2Xaml<ListView2Canvas>, IListingView<ListView2Canvas>
     {
-        public ListView2List(IUIListingView<ListView2Canvas> parent) : base() // parent)
+        public ListView2Xaml(IListingContainer<ListView2Canvas> parent) : base(parent)
         {
             _Items = new List<ListView2Canvas>();
         }
@@ -24,48 +24,18 @@ namespace fcmd.View.ctrl
         #region Items array
 
         //public override object Content { get { return null; } set {; } }
-        //public override Font FontForFileNames { get; set; }
+        public override Font FontForFileNames { get; set; }
 
         protected List<ListView2Canvas> _Items;
-        public // override 
-            IList<ListView2Canvas> DataItems { get { return _Items; } }
+        public override IList<ListView2Canvas> DataItems { get { return _Items; } }
 
-        public // override 
-            IEnumerable ChoosedRows
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //public IPointedItem<ListView2Canvas> PointedItem { get; set; }
 
-        public IPointedItem<ListView2Canvas> PointedItem { get; set; }
+        public override object Content { get; set; }
 
-        public int SelectedRow { get; set; } 
-
-        public IEnumerable<ListView2Canvas> ChoosedRowsTyped
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int Count
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsReadOnly
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        //public override Xwt.Drawing.Font FontForFileNames
+        //public int SelectedRow { get; set; } 
+        //public int Count
 
         public IEnumerable<object> ItemsForGrid()
         {
@@ -77,108 +47,52 @@ namespace fcmd.View.ctrl
             }
         }
 
-        //public override void Add(ListView2Canvas item)
-        //{
-        //    item.RowIndex = _Items.Count;
-        //    _Items.Add(item);
-        //}
+        public override void Add(ListView2Canvas item)
+        {
+            item.RowIndex = _Items.Count;
+            _Items.Add(item);
+        }
 
-        //public override bool Contains(ListView2Canvas item)
-        //{
-        //    return _Items.Contains(item);
-        //}
+        public override bool Contains(ListView2Canvas item)
+        {
+            return _Items.Contains(item);
+        }
 
-        //public override void CopyTo(ListView2Canvas[] item, int arrayIndex)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public override void CopyTo(ListView2Canvas[] item, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
 
-        //public override bool Remove(ListView2Canvas item)
-        //{
-        //    return _Items.Remove(item);
-        //}
+        public override bool Remove(ListView2Canvas item)
+        {
+            return _Items.Remove(item);
+        }
 
         #endregion
 
         // Route Events to Parent
 
-        // public override void SetFocus() { Parent.SetFocus(); }
-        public override void SetupColumns() {
+        public override void SetFocus() { Parent.SetFocus(); }
+        public override void SetupColumns()
+        {
 #if WPF
-            //(Parent as ListView2Widget).SetupColumns(); 
+            var parent = Parent as ListView2Widget;
+            parent.SetupColumns();
 #endif
         }
 
-        //public // override 
-        //    void Dispose()
-        //{
-        //    _Items = null;
-        //}
-
-        public void Select(object items)
+        public override void Dispose()
         {
-            throw new NotImplementedException();
+            _Items = null;
         }
 
-        public void Unselect()
+
+        public override ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df)
         {
-            throw new NotImplementedException();
+            // TODO: dynamic columns size
+            return ListView2Xaml.DefaultXamlColumns();
         }
 
-        public void InvertSelection()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void AddItem(IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Select(ListView2Canvas item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Clear()
-        {
-            throw new NotImplementedException();
-        }
-
-        public IEnumerator<ListView2Canvas> GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Add(ListView2Canvas item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Contains(ListView2Canvas item)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void CopyTo(ListView2Canvas[] array, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Remove(ListView2Canvas item)
-        {
-            throw new NotImplementedException();
-        }
     }
 
 }

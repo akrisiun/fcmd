@@ -305,21 +305,21 @@ namespace Gtk
         [DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void gtk_widget_set_style(IntPtr raw, IntPtr style);
 
-        [Obsolete]
-        [GLib.Property("style")]
-        public Gtk.Style Style
-        {
-            get
-            {
-                IntPtr raw_ret = gtk_widget_get_style(Handle);
-                Gtk.Style ret = GLib.Object.GetObject(raw_ret) as Gtk.Style;
-                return ret;
-            }
-            set
-            {
-                gtk_widget_set_style(Handle, value == null ? IntPtr.Zero : value.Handle);
-            }
-        }
+        //[Obsolete]
+        //[GLib.Property("style")]
+        //public Gtk.Style Style
+        //{
+        //    get
+        //    {
+        //        IntPtr raw_ret = gtk_widget_get_style(Handle);
+        //        Gtk.Style ret = GLib.Object.GetObject(raw_ret) as Gtk.Style;
+        //        return ret;
+        //    }
+        //    set
+        //    {
+        //        gtk_widget_set_style(Handle, value == null ? IntPtr.Zero : value.Handle);
+        //    }
+        //}
 
         [DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern int gtk_widget_get_events(IntPtr raw);
@@ -7059,7 +7059,7 @@ namespace Gtk
         [DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void gtk_widget_modify_font(IntPtr raw, IntPtr font_desc);
 
-        [Obsolete]
+        // [Obsolete]
         public void ModifyFont(Pango.FontDescription font_desc)
         {
             gtk_widget_modify_font(Handle, font_desc == null ? IntPtr.Zero : font_desc.Handle);

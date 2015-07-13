@@ -222,7 +222,7 @@ namespace Xwt.GtkBackend
 			RunWhenRealized(SubscribeCursorEnterLeaveEvent);
 
 			if (immediateCursorChange) // if realized and mouse inside set immediatly
-				EventsRootWidget.GdkWindow.Cursor = gdkCursor;
+				EventsRootWidget.Window.Cursor = gdkCursor;
 		}
 
 		bool cursorEnterLeaveSubscribed, immediateCursorChange;
@@ -234,11 +234,11 @@ namespace Xwt.GtkBackend
 				EventsRootWidget.AddEvents ((int)Gdk.EventMask.LeaveNotifyMask);
 				EventsRootWidget.EnterNotifyEvent += (o, args) => {
 					immediateCursorChange = true;
-					if (gdkCursor != null) ((Gtk.Widget)o).GdkWindow.Cursor = gdkCursor;
+					if (gdkCursor != null) ((Gtk.Widget)o).Window.Cursor = gdkCursor;
 				};
 				EventsRootWidget.LeaveNotifyEvent += (o, args) => {
 					immediateCursorChange = false;
-					((Gtk.Widget)o).GdkWindow.Cursor = null;
+					((Gtk.Widget)o).Window.Cursor = null;
 				};
 			}
 		}
@@ -308,7 +308,7 @@ namespace Xwt.GtkBackend
 		
 		public virtual object Font {
 			get {
-				return customFont ?? Widget.Style.FontDescription;
+                return customFont ?? Widget.StyleGetProperty("Font"); // .Style.FontDescription;
 			}
 			set {
 				var fd = (Pango.FontDescription) value;
@@ -321,7 +321,9 @@ namespace Xwt.GtkBackend
 		
 		public virtual Color BackgroundColor {
 			get {
-				return customBackgroundColor.HasValue ? customBackgroundColor.Value : Widget.Style.Background (Gtk.StateType.Normal).ToXwtValue ();
+                return customBackgroundColor.HasValue ? customBackgroundColor.Value :
+                            default(Color);
+                            // Widget.StyleGetProperty("Background"); //  Style.Background (Gtk.StateType.Normal).ToXwtValue ();
 			}
 			set {
 				customBackgroundColor = value;
@@ -525,7 +527,7 @@ namespace Xwt.GtkBackend
 						RunWhenRealized (delegate {
 							if (IMContext == null) {
 								IMContext = new Gtk.IMMulticontext ();
-								IMContext.ClientWindow = EventsRootWidget.GdkWindow;
+								IMContext.ClientWindow = EventsRootWidget.Window;
 								IMContext.Commit += HandleImCommitEvent;
 							}
 						});

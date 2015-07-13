@@ -8,23 +8,28 @@ using System.Windows;
 using fcmd.View.Xaml;
 #else
 using Xwt;
+using fcmd.View.GTK;
 #endif
 
 namespace fcmd
 {
     // Window model data
 
-    public partial class MainWindow : Window, ICommanderWindow
-    {
-
 #if !WPF
+    public partial class MainWindow : Window, ICommanderWindow<ListView2Canvas>
+    {
+        // GTK
 
         public CommanderData WindowData { get; private set; }
 
         IFileListPanel ICommanderWindow.p1 { get; set; }
         IFileListPanel ICommanderWindow.p2 { get; set; }
 
-#else
+#else 
+    public partial class MainWindow : Window, ICommanderWindow<ListView2ItemWpf> // ListView2Canvas>
+    {
+
+        // WPF
         public CommanderData WindowData {[DebuggerStepThrough] get { return DataContext as CommanderData; } }
 
         public IFileListPanel p1 { get; set; }
@@ -39,12 +44,12 @@ namespace fcmd
         /// <summary>The current inactive panel</summary>
         public FileListPanelWpf PassivePanelWpf { get; set; }
 
-        public IFileListPanel ActivePanel
+        public IFileListPanel<ListView2ItemWpf> ActivePanel
         {
             [DebuggerStepThrough] get { return ActivePanelWpf; }
             set { ActivePanelWpf = value as FileListPanelWpf; }
         }
-        public IFileListPanel PassivePanel
+        public IFileListPanel<ListView2ItemWpf> PassivePanel
         {
             [DebuggerStepThrough] get { return PassivePanelWpf; }
             set { ActivePanelWpf = value as FileListPanelWpf; }

@@ -97,7 +97,7 @@ namespace fcmd
             //if (ActivePanel.GetValue(ActivePanel.df.DisplayName) == "..") { return; }
 
             ListView2Canvas[] chdrws = (ActivePanel.ListingView as IListingView<ListView2Canvas>)
-                .ChoosedRowsTyped.ToArray();
+                .ChoosedRows.ToArray();
 
             ////because the List may change due the process, we getting the copy of the list (as array, but how else?)
 
@@ -176,7 +176,7 @@ namespace fcmd
 
             foreach (ListView2Canvas selitem 
                         in (ActivePanel.ListingView as IListingView<ListView2Canvas>)
-                            .ChoosedRowsTyped)
+                            .ChoosedRows)
             {
                 string SourceURL = selitem.Data[ActivePanel.df.URL].ToString();
                 pluginner.IFSPlugin SourceFS = ActivePanel.FS;
@@ -290,7 +290,7 @@ namespace fcmd
 
             foreach (ListView2Canvas selitem in 
                         (ActivePanel.ListingView as IListingView<ListView2Canvas>)
-                            .ChoosedRowsTyped)
+                            .ChoosedRows)
             {
                 //Getting useful URL parts
                 string SourceName = selitem.Data[ActivePanel.df.DisplayName].ToString(); //ActivePanel.GetValue<string>(ActivePanel.df.DisplayName);

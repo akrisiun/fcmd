@@ -467,7 +467,7 @@ namespace Xwt.GtkBackend
 						menu.Detach ();
 				};
 				posFunc = delegate (Gtk.Menu m, out int x, out int y, out bool pushIn) {
-					Gdk.Window window = evt != null? evt.Window : parent.GdkWindow;
+					Gdk.Window window = evt != null? evt.Window : parent.Window;
 					window.GetOrigin (out x, out y);
 					var alloc = parent.Allocation;
 					if (evt != null) {
@@ -821,7 +821,7 @@ namespace Xwt.GtkBackend
 		public static void ShowNativeShadow (Gtk.Window window, bool show)
 		{
 			if (Platform.IsMac) {
-				var ptr = gdk_quartz_window_get_nswindow (window.GdkWindow.Handle);
+				var ptr = gdk_quartz_window_get_nswindow (window.Window.Handle);
 				objc_msgSend_void_bool (ptr, sel_setHasShadow, show);
 			}
 		}
@@ -831,7 +831,7 @@ namespace Xwt.GtkBackend
 			if (!Platform.IsMac)
 				return;
 
-			var ptr = gdk_quartz_window_get_nswindow (window.GdkWindow.Handle);
+			var ptr = gdk_quartz_window_get_nswindow (window.Window.Handle);
 			objc_msgSend_IntPtr (ptr, sel_invalidateShadow);
 		}
 
@@ -1193,8 +1193,9 @@ namespace Xwt.GtkBackend
 			return 1;
 		}
 
-		
-		public static Gdk.Pixbuf RenderIcon (this Gtk.IconSet iconset, Gtk.Style style, Gtk.TextDirection direction, Gtk.StateType state, Gtk.IconSize size, Gtk.Widget widget, string detail, double scale)
+#if GLUE
+        public static Gdk.Pixbuf RenderIcon (this Gtk.IconSet iconset, Gtk.Style style, 
+            Gtk.TextDirection direction, Gtk.StateType state, Gtk.IconSize size, Gtk.Widget widget, string detail, double scale)
 		{
 			if (scale == 1d)
 				return iconset.RenderIcon (style, direction, state, size, widget, detail);
@@ -1214,15 +1215,15 @@ namespace Xwt.GtkBackend
 			supportsHiResIcons = false;
 			return null;
 		}
-
+#endif
 
 		public static Gtk.Bin CreateComboBoxEntry()
 		{
-			#if XWT_GTK3
+#if XWT_GTK3
 			return Gtk.ComboBoxText.NewWithEntry ();
-			#else
+#else
 			return new Gtk.ComboBoxEntry ();
-			#endif
+#endif
 		}
 
 
@@ -1246,7 +1247,7 @@ namespace Xwt.GtkBackend
 		///</remarks>
 		public static Xwt.Point CheckPointerCoordinates (this Gtk.Widget widget, Gdk.Window eventWindow, double x, double y)
 		{
-			if (widget.GdkWindow != eventWindow)
+			if (widget.Window != eventWindow)
 			{
 				int pointer_x, pointer_y;
 				widget.GetPointer (out pointer_x, out pointer_y);
@@ -1261,18 +1262,18 @@ namespace Xwt.GtkBackend
 		
 		public static Gtk.Box GetMessageArea(this Gtk.MessageDialog dialog)
 		{
-			#if XWT_GTK3
+#if XWT_GTK3
 			// according to Gtk docs MessageArea should always be a Gtk.Box, but we test this
 			// to be on the safe side.
 			var messageArea = dialog.MessageArea as Gtk.Box;
 			return messageArea ?? dialog.ContentArea;
-			#else
+#else
 			if (GtkWorkarounds.GtkMajorVersion <= 2 && GtkWorkarounds.GtkMinorVersion < 22) // message area not present before 2.22
 				return dialog.VBox;
 			IntPtr raw_ret = gtk_message_dialog_get_message_area(dialog.Handle);
 			Gtk.Box ret = GLib.Object.GetObject(raw_ret) as Gtk.Box;
 			return ret;
-			#endif
+#endif
 		}
 
 

@@ -1,4 +1,5 @@
-﻿using pluginner.Widgets;
+﻿using fcmd.Controller;
+using pluginner.Widgets;
 using System;
 using System.Collections.Generic;
 
@@ -10,9 +11,6 @@ namespace fcmd.Model
         IFileListPanel p2 { get; set; }
 
 #if WPF
-        IFileListPanel ActivePanel { get; set; }
-        IFileListPanel PassivePanel { get; set; }
-
         IList<IColumnInfo> LVCols { get; set; } // = new List<ListView2.ColumnInfo>();
 
 #endif
@@ -23,6 +21,15 @@ namespace fcmd.Model
         int Width { get; set; }
 
         CommanderData WindowData { get; }
+    }
+
+    public interface ICommanderWindow<T> : ICommanderWindow where T : class, IListView2Visual
+    {
+
+#if WPF
+        IFileListPanel<T> ActivePanel { get; set; }
+        IFileListPanel<T> PassivePanel { get; set; }
+#endif
     }
 
 }

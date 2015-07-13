@@ -15,17 +15,18 @@ using pluginner.Toolkit;
 using pluginner.Widgets;
 using fcmd.Menu;
 using fcmd.View.GTK;
+using fcmd.Model;
 
 namespace fcmd
 {
-    partial class MainWindow : Xwt.Window
+    partial class MainWindow : Xwt.Window, ICommanderWindow<ListView2Canvas> 
     {
         public static string ProductVersion
         {
             get { return Assembly.GetExecutingAssembly().GetName().Version.ToString(); }
         }
 
-        #region Properties
+        #region Menu
 
         // public Stylist stylist;
         public FcmdMenu WindowMenu = new Menu.FcmdMenu();
@@ -88,18 +89,22 @@ namespace fcmd
         public MenuItemWithKey mnuHelpDebug = new MenuItemWithKey { Tag = "mnuHelpDebug" };
         public MenuItemWithKey mnuHelpAbout = new MenuItemWithKey { Tag = "mnuHelpAbout" };
 
+        #endregion
+
+        #region Layout panels
+
         public Xwt.VBox Layout = new Xwt.VBox();
         public Xwt.HPaned PanelLayout = new Xwt.HPaned();
 
-        public FileListPanel p1;
-        public FileListPanel p2;
+        public FileListPanel<ListView2Canvas> p1;
+        public FileListPanel<ListView2Canvas> p2;
 
         public List<ListView2.ColumnInfo> LVCols = new List<ListView2.ColumnInfo>();
 
         /// <summary>The current active panel</summary>
-        public FileListPanel ActivePanel;
+        public FileListPanel<ListView2Canvas> ActivePanel;
         /// <summary>The current inactive panel</summary>
-        public FileListPanel PassivePanel;
+        public FileListPanel<ListView2Canvas> PassivePanel;
 
         public Xwt.HBox KeyBoardHelp = new Xwt.HBox();
         public KeyboardHelpButton[] KeybHelpButtons = new KeyboardHelpButton[11];//одна лишняя, которая нумбер [0]
@@ -191,7 +196,7 @@ namespace fcmd
 					);*/
                 ActivePanel.LoadDir(
                     ActivePanel.FS.CurrentDirectory,
-                    ActivePanel.Shorten
+                    ActivePanel.ShortenPolicy
                     //new Shorten
                     //{
                     //    KB = ActivePanel.CurShortenKB,
@@ -329,7 +334,7 @@ namespace fcmd
 
         /// <summary>Switches the active panel</summary>
         /// <param name="NewPanel">The new active panel</param>
-        private void SwitchPanel(FileListPanel NewPanel)
+        private void SwitchPanel(FileListPanelGTK NewPanel)
         {
             if (NewPanel == ActivePanel) return;
             PassivePanel = ActivePanel;
@@ -447,8 +452,8 @@ namespace fcmd
                 fcmd.Properties.Settings.Default.UserTheme, Properties.Settings.Default.InfoBarContent1,
                         Properties.Settings.Default.InfoBarContent2);
 
-            p1 = PanelLayout.Panel1.Content as FileListPanel;
-            p2 = PanelLayout.Panel2.Content as FileListPanel;
+            //p1 = PanelLayout.Panel1.Content as FileListPanel;
+            //p2 = PanelLayout.Panel2.Content as FileListPanel;
             var openFileHandler = new pluginner.TypedEvent<string>(Panel_OpenFile);
             //p1.OpenFile += openFileHandler;
             //p2.OpenFile += openFileHandler;
@@ -472,8 +477,8 @@ namespace fcmd
                 p1.FS = new base_plugins.fs.localFileSystem();
                 p2.FS = new base_plugins.fs.localFileSystem();
 
-                p1.GotFocus += (o, ea) => SwitchPanel(p1);
-                p2.GotFocus += (o, ea) => SwitchPanel(p2);
+                //p1.GotFocus += (o, ea) => SwitchPanel(p1);
+                //p2.GotFocus += (o, ea) => SwitchPanel(p2);
             }
             catch (Exception ex)
             {
@@ -519,7 +524,7 @@ namespace fcmd
         {
             //file size display policy
             char[] Policies = fcmd.Properties.Settings.Default.SizeShorteningPolicy.ToCharArray();
-            var Shorten = new Shorten
+            var Shorten = new ShortenPolicies
             {
                 KB = ConvertSDP(Policies[0]),
                 MB = ConvertSDP(Policies[1]),
@@ -572,10 +577,10 @@ namespace fcmd
         #endregion
     }
 
-    public struct Shorten
-    {
-        public SizeDisplayPolicy KB { get; set; }
-        public SizeDisplayPolicy MB { get; set; }
-        public SizeDisplayPolicy GB { get; set; }
-    }
+    //public struct Shorten
+    //{
+    //    public SizeDisplayPolicy KB { get; set; }
+    //    public SizeDisplayPolicy MB { get; set; }
+    //    public SizeDisplayPolicy GB { get; set; }
+    //}
 }
