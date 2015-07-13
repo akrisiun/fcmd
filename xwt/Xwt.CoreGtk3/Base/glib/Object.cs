@@ -360,12 +360,20 @@ namespace GLib {
 					if (baseinfo == minfo)
 						continue;
 
-					foreach (object attr in baseinfo.GetCustomAttributes (typeof (DefaultSignalHandlerAttribute), false)) {
+					foreach (object attr in baseinfo.GetCustomAttributes (typeof (DefaultSignalHandlerAttribute), false))
+                    {
 						DefaultSignalHandlerAttribute sigattr = attr as DefaultSignalHandlerAttribute;
 						MethodInfo connector = sigattr.Type.GetMethod (sigattr.ConnectionMethod, BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { typeof (GType) }, new ParameterModifier [0]);
 						object[] parms = new object [1];
 						parms [0] = gtype;
-						connector.Invoke (null, parms);
+                        try
+                        {
+                            connector.Invoke(null, parms);
+                        }
+                        catch (Exception ex)
+                        {
+                            Console.WriteLine("glib error:" + ex.Message);
+                        }
 						break;
 					}
 				}

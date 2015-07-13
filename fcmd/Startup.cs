@@ -24,16 +24,18 @@ namespace fcmd
 #if DEBUG
 			try 
 			{
-				//for debugging purposes you may set any ToolkitType as you need
-				switch (OSVersionEx.Platform)
+                //for debugging purposes you may set any ToolkitType as you need
+                switch (OSVersionEx.Platform)
 				{
+#if !GTK
 					case PlatformID.Win32NT:
 						Application.Initialize(ToolkitType.Wpf);
 						break;
 					case PlatformID.MacOSX:
 						Application.Initialize(ToolkitType.Cocoa);
 						break;
-					default:
+#endif
+                    default:
 						Application.Initialize(ToolkitType.Gtk3);
 						break;
 				}
@@ -53,7 +55,7 @@ namespace fcmd
 				return;
 			}
 #else
-			try
+                try
 			{
 				var toolkitType = OSVersionEx.GetToolkitType();
 				if (toolkitType == ToolkitType.Gtk) {

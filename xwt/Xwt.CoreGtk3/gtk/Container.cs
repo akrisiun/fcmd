@@ -190,7 +190,11 @@ namespace Gtk {
 		{
 			if (ForallCallback == null)
 				ForallCallback = new ForallDelegate (Forall_cb);
-			gtksharp_container_override_forall (gtype.Val, ForallCallback);
+            try
+            {
+                gtksharp_container_override_forall(gtype.Val, ForallCallback);
+            }
+            catch { }
 		}
 
 		[GLib.DefaultSignalHandler (Type=typeof(Gtk.Container), ConnectionMethod="OverrideForall")]

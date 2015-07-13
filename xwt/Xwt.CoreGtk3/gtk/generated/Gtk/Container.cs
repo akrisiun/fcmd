@@ -122,7 +122,13 @@ namespace Gtk {
 
 		static void OverrideAdded (GLib.GType gtype, AddedNativeDelegate callback)
 		{
-			gtksharp_container_override_add (gtype.GetClassPtr (), callback);
+            try
+            {
+                gtksharp_container_override_add(gtype.GetClassPtr(), callback);
+            }
+            catch (Exception) {
+                // throw ex;
+            }
 		}
 
 		[UnmanagedFunctionPointer (CallingConvention.Cdecl)]
@@ -171,7 +177,11 @@ namespace Gtk {
 
 		static void OverrideRemoved (GLib.GType gtype, RemovedNativeDelegate callback)
 		{
-			gtksharp_container_override_remove (gtype.GetClassPtr (), callback);
+            try
+            {
+                gtksharp_container_override_remove(gtype.GetClassPtr(), callback);
+            }
+            catch { }
 		}
 
 		[UnmanagedFunctionPointer (CallingConvention.Cdecl)]

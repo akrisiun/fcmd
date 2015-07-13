@@ -26,9 +26,6 @@
     <Reference Include="Org.Mentalis.Security">
       <HintPath>..\SharpSSH\bin\Org.Mentalis.Security.dll</HintPath>
     </Reference>
-    <Reference Include="SharpSSH">
-      <HintPath>..\..\SharpSSH\bin\SharpSSH.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
@@ -36,6 +33,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
+    <Reference Include="Xwt3, Version=3.2.0.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FtpClient.cs" />
@@ -43,9 +44,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\xwt\Xwt\Xwt3.csproj">
-      <Project>{92494904-35fa-4dc9-bde9-3a3e87ac49d3}</Project>
-      <Name>Xwt3</Name>
+    <ProjectReference Include="..\..\SharpSSH\SharpSSH\SharpSSH.csproj">
+      <Project>{d27cf69d-4681-492a-be4d-d3d209104423}</Project>
+      <Name>SharpSSH</Name>
     </ProjectReference>
     <ProjectReference Include="..\fcmd\pluginner\pluginner.csproj">
       <Project>{88785B26-D617-4BE9-B449-F7CE77444794}</Project>

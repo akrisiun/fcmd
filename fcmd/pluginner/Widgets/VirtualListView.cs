@@ -14,6 +14,7 @@ using pluginner.Toolkit;
 using pluginner.Widgets;
 using Xwt;
 using Xwt.Drawing;
+using ListView2Item = pluginner.Widgets.ListView2; // ListView2Canvas;
 
 namespace pluginner.Widgets
 {

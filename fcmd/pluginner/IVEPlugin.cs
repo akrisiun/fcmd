@@ -40,7 +40,7 @@ namespace pluginner
 
 #if XWT
         /// <summary>UI theme applicator.</summary>
-        Stylist Stylist { set; }
+        // Stylist Stylist { set; }
 		//note that the plugin color scheme must rely on VEWorkingArea selector
 #endif
 	}

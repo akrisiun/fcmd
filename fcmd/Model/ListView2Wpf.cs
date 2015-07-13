@@ -37,6 +37,56 @@ namespace fcmd.View.ctrl
             }
         }
 
+        public IPointedItem<ListView2Canvas> PointedItem
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int SelectedRow
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public IEnumerable<ListView2Canvas> ChoosedRowsTyped
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public int Count
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public bool IsReadOnly
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
         public IEnumerable<object> ItemsForGrid()
         {
             var numerator = _Items.GetEnumerator();
@@ -82,6 +132,51 @@ namespace fcmd.View.ctrl
         public override void Dispose()
         {
             _Items = null;
+        }
+
+        public void Select(object items)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Unselect()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void InvertSelection()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AddItem(IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Select(ListView2Canvas item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Clear()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerator<ListView2Canvas> GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 

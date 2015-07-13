@@ -22,7 +22,18 @@ namespace Gtk {
 				CreateNativeObject (new string [0], new GLib.Value[0]);
 				return;
 			}
-			Raw = gtk_style_new();
+
+            try
+            {
+                black_offset = gtksharp_gtk_style_get_black_offset();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw ex;
+            }
+
+            Raw = gtk_style_new();
 		}
 
 		[GLib.Property ("context")]
@@ -38,7 +49,8 @@ namespace Gtk {
 		[DllImport ("gtksharpglue-3")]
 		extern static uint gtksharp_gtk_style_get_black_offset ();
 
-		static uint black_offset = gtksharp_gtk_style_get_black_offset ();
+        static uint black_offset = 0;
+        
 		public Gdk.Color Black {
 			get {
 				unsafe {

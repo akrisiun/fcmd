@@ -65,10 +65,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="Xwt3, Version=3.2.0.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\xwt\bin\Xwt3.dll</HintPath>
-    </Reference>
-    <Reference Include="Xwt3.WPF">
-      <HintPath>..\..\xwt\bin\Xwt3.WPF.dll</HintPath>
+      <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -198,6 +195,10 @@
     <EmbeddedResource Include="Properties\Resources.resx" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\xwt\Xwt.WPF\Xwt3.WPF.csproj">
+      <Project>{c93d746e-1586-4d4f-b411-bf5a966e6a08}</Project>
+      <Name>Xwt3.WPF</Name>
+    </ProjectReference>
     <ProjectReference Include="pluginner\pluginner.csproj">
       <Project>{88785b26-d617-4be9-b449-f7ce77444794}</Project>
       <Name>pluginner</Name>

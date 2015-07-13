@@ -110,9 +110,9 @@ namespace pluginner.Toolkit
         /// <param name="box">The XWT box</param>
         /// <param name="OnClick">What should happen if user clicks the bookmark</param>
         /// <param name="s">The Stylist that should apply usertheme to the button (or null)</param>
-        public void DisplayBookmarks(Box box, Action<string> OnClick, Stylist s = null)
+        public void DisplayBookmarks(Box box, Action<string> OnClick) //, Stylist s = null)
         {
-            if (s == null) s = new Stylist();
+            //if (s == null) s = new Stylist();
             box.Clear();
             foreach (Bookmark b in bookmarks)
             {
@@ -130,7 +130,7 @@ namespace pluginner.Toolkit
                 NewBtn.Margin = -3;
                 NewBtn.Cursor = CursorType.Hand;
                 NewBtn.Image = b.GetIcon();
-                s.Stylize(NewBtn);
+                // s.Stylize(NewBtn);
                 box.PackStart(NewBtn);
             }
         }

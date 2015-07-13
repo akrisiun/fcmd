@@ -13,6 +13,7 @@ using pluginner.Toolkit;
 using Xwt;
 using Xwt.Drawing;
 using System.Collections;
+using System.Drawing;
 
 namespace pluginner.Widgets
 {
@@ -21,7 +22,7 @@ namespace pluginner.Widgets
 
 #if XWT
     /// <summary>Modern listview widget</summary>
-    public class ListView2 : Widget, IListView2
+    public abstract class ListView2 : Widget, IListView2
     {
 
         private VBox Layout = new VBox();
@@ -31,7 +32,15 @@ namespace pluginner.Widgets
         public ScrollView ScrollerOut = new ScrollView();   //horizontal scroller
         private List<Label> ColumnTitles = new List<Label>();
         private Table Grid = new Table();
-#else 
+
+        public ItemStates State { get; set; }
+        // ListView2.ItemStates State { get; set; }
+
+        public int RowNo { get; set; }
+
+        public System.Drawing.Font FontForFileNames { get; set; }
+
+#else
 
     public abstract class ListView2<T> : ListView2, IListingView,   // , -> ListView2Widget
         IListView2<T>, ICollection<T>, IDisposable
@@ -398,228 +407,247 @@ namespace pluginner.Widgets
 
 #endif
 
-    public abstract class ListView2 : IListView2
-    {
-        public abstract System.Drawing.Font FontForFileNames { get; set; }
+    }
 
-        // abstract GUI events
-        public abstract void SetFocus();
-        public abstract void SetupColumns();
-
-        // private int LastRow;
-        // private int LastCol;
-        private Views _View = Views.Details;
-
-        // private bool Color2; //для обеспечения чередования цветов строк
-        private DateTime PointedItemLastClickTime = DateTime.Now.AddDays(-1); //for double click detecting
-
-        public static double MillisecondsForDoubleClick = SysInfo.DoubleClickTime; //Depends on user settings
-
-        ////Color sheme
-        //public Color NormalBgColor1 = Colors.White;
-        //public Color NormalBgColor2 = Colors.WhiteSmoke;
-        //public Color NormalFgColor1 = Colors.Black;
-        //public Color NormalFgColor2 = Colors.Black;
-        //public Color PointedBgColor = Colors.LightGray;
-        //public Color PointedFgColor = Colors.Black;
-        //public Color SelectedBgColor = Colors.White;
-        //public Color SelectedFgColor = Colors.Red;
-
-        // public Font FontForFileNames = Font.SystemFont;
-
-        //For virtual mode
-        int VisibleItemsByY = -1;
-        // int VisibleItemsByX = -1;
-
-        /// <summary>List of items. Please do not edit directly! Please use the AddItem and RemoveItem functions.</summary>
-        // List<T> IListView2.DataItems = new List<T>();
-
-        public List<int> AllowedToPoint = new List<int>();
-
-        public ListView2()
+        public class ListView2<T> : ListView2, IListView2
         {
-#if XWT
-            Layout.Spacing = 0;
-            Grid.DefaultRowSpacing = 0;
-            Content = ScrollerOut;
 
-            ScrollerOut.Content = Layout;
-            ScrollerOut.VerticalScrollPolicy = ScrollPolicy.Never;
+            // abstract GUI events
+            //public abstract void SetFocus();
+            //public abstract void SetupColumns();
 
-            Content = ScrollerIn;
-            ScrollerIn.Content = Grid;
-            ScrollerIn.CanScrollByX = false;// ScrollPolicy.Never;
-            Layout.PackStart(ColumnRow);
+            // private int LastRow;
+            // private int LastCol;
+            private Views _View = Views.Details;
 
-            Layout.KeyPressed += Layout_KeyPressed;
-            Layout.CanGetFocus = true;
-            CanGetFocus = true;
-            KeyPressed += Layout_KeyPressed;
+            // private bool Color2; //для обеспечения чередования цветов строк
+            private DateTime PointedItemLastClickTime = DateTime.Now.AddDays(-1); //for double click detecting
 
-            BoundsChanged += ListView2_BoundsChanged;
+            public static double MillisecondsForDoubleClick = SysInfo.DoubleClickTime; //Depends on user settings
 
-            ScrollerIn.BackgroundColor = Colors.White;
-#endif
-        }
+            ////Color sheme
+            //public Color NormalBgColor1 = Colors.White;
+            //public Color NormalBgColor2 = Colors.WhiteSmoke;
+            //public Color NormalFgColor1 = Colors.Black;
+            //public Color NormalFgColor2 = Colors.Black;
+            //public Color PointedBgColor = Colors.LightGray;
+            //public Color PointedFgColor = Colors.Black;
+            //public Color SelectedBgColor = Colors.White;
+            //public Color SelectedFgColor = Colors.Red;
 
-#if XWT
+            // public Font FontForFileNames = Font.SystemFont;
 
-        //EVENT HANDLERS
+            //For virtual mode
+            int VisibleItemsByY = -1;
+            // int VisibleItemsByX = -1;
 
-        void ListView2_BoundsChanged(object sender, EventArgs e)
-        {
-            //if the calculation is possible
-            if (Items != null && Items.Count > 0)
+            /// <summary>List of items. Please do not edit directly! Please use the AddItem and RemoveItem functions.</summary>
+            // List<T> IListView2.DataItems = new List<T>();
+
+            public List<int> AllowedToPoint = new List<int>();
+
+            public ListView2()
             {
-                Size mySize = Size;
-                Size oneItemSize = Items[0].Size;
+#if XWT_TODO
+                Layout.Spacing = 0;
+                Grid.DefaultRowSpacing = 0;
+                Content = ScrollerOut;
 
-                if (_View == Views.Details)
+                ScrollerOut.Content = Layout;
+                ScrollerOut.VerticalScrollPolicy = ScrollPolicy.Never;
+
+                Content = ScrollerIn;
+                ScrollerIn.Content = Grid;
+                ScrollerIn.CanScrollByX = false;// ScrollPolicy.Never;
+                Layout.PackStart(ColumnRow);
+
+                Layout.KeyPressed += Layout_KeyPressed;
+                Layout.CanGetFocus = true;
+                CanGetFocus = true;
+                KeyPressed += Layout_KeyPressed;
+
+                BoundsChanged += ListView2_BoundsChanged;
+
+                ScrollerIn.BackgroundColor = Colors.White;
+#endif
+            }
+
+#if XWT_TODO
+
+            //EVENT HANDLERS
+
+            void ListView2_BoundsChanged(object sender, EventArgs e)
+            {
+                //if the calculation is possible
+                if (Items != null && Items.Count > 0)
                 {
-                    //table mode
-                    double visibleHeight = mySize.Height;
-                    double itemHeight = oneItemSize.Height;
+                    Size mySize = Size;
+                    Size oneItemSize = Items[0].Size;
 
-                    for (double i = 0; i < visibleHeight; i += itemHeight)
+                    if (_View == Views.Details)
                     {
-                        VisibleItemsByY++;
-                    }
+                        //table mode
+                        double visibleHeight = mySize.Height;
+                        double itemHeight = oneItemSize.Height;
 
-                    // VisibleItemsByX = 0;
+                        for (double i = 0; i < visibleHeight; i += itemHeight)
+                        {
+                            VisibleItemsByY++;
+                        }
+
+                        // VisibleItemsByX = 0;
+                    }
                 }
             }
-        }
 
-        private void Item_ButtonPressed(object sender, ButtonEventArgs e)
-        {
-            SetFocus();
-            T lvi = sender as T;
-            //currently, the mouse click policy is same as in Total and Norton Commander
-            if (e.Button == PointerButton.Right)//right click - select & do nothing
+            private void Item_ButtonPressed(object sender, ButtonEventArgs e)
             {
-                _SelectItem(lvi);
-                return;
-            }
-
-            if (e.Button == PointerButton.Left)//left click - point & don't touch selection
-            {
-                if (lvi == PointedItem)
+#if GTK_TODO
+                SetFocus();
+                T lvi = sender as T;
+                //currently, the mouse click policy is same as in Total and Norton Commander
+                if (e.Button == PointerButton.Right)//right click - select & do nothing
                 {
-                    double MillisecondsPassed = (DateTime.Now - PointedItemLastClickTime).TotalMilliseconds;
-                    if (MillisecondsPassed < MillisecondsForDoubleClick)
+                    _SelectItem(lvi);
+                    return;
+                }
+
+                if (e.Button == PointerButton.Left)//left click - point & don't touch selection
+                {
+                    if (lvi == PointedItem)
                     {
-                        PointedItemDoubleClicked(PointedItem);
-                        // The last click was so long long ago that the next one can't be double click
-                        PointedItemLastClickTime = DateTime.Now.AddDays(-1);
+                        double MillisecondsPassed = (DateTime.Now - PointedItemLastClickTime).TotalMilliseconds;
+                        if (MillisecondsPassed < MillisecondsForDoubleClick)
+                        {
+                            PointedItemDoubleClicked(PointedItem);
+                            // The last click was so long long ago that the next one can't be double click
+                            PointedItemLastClickTime = DateTime.Now.AddDays(-1);
+                        }
+                        else
+                        {
+                            PointedItemLastClickTime = DateTime.Now;
+                        }
                     }
                     else
                     {
+                        _SetPoint(lvi);
                         PointedItemLastClickTime = DateTime.Now;
                     }
                 }
-                else
+#endif
+            }
+
+            private void Layout_KeyPressed(object sender, KeyEventArgs e)
+            {
+#if DEBUG
+                //initiated by GH issue #10, but may give a help in the future too...
+                Console.WriteLine("LV2 DEBUG: pressed {0}, repeat={1}, handled={2}", e.Key, e.IsRepeat, e.Handled);
+#endif
+                //currently, the keyboard feel is same as in Norton & Total Commanders
+                switch (e.Key)
                 {
-                    _SetPoint(lvi);
-                    PointedItemLastClickTime = DateTime.Now;
+                    case Key.Up: //[↑] - move cursor up
+                        _SetPointerByCondition(-1);
+                        e.Handled = true;
+                        return;
+                    case Key.Down: //[↓] - move cursor bottom
+                        _SetPointerByCondition(+1);
+                        e.Handled = true;
+                        return;
+                    case Key.Insert: //[Ins] - set selection & move pointer bottom
+                        _SelectItem(PointedItem);
+                        _SetPointerByCondition(+1);
+                        e.Handled = true;
+                        return;
+                    case Key.Return: //[↵] - same as double click
+                        PointedItem.OnDblClick();
+                        e.Handled = true;
+                        return;
+                    case Key.NumPadMultiply: //gray [*] - invert selection
+                        InvertSelection();
+                        e.Handled = true;
+                        return;
+                    case Key.Home:
+                        _SetPoint(Items[0]);
+                        return;
+                    case Key.End:
+                        _SetPoint(Items[Items.Count - 1]);
+                        return;
                 }
             }
-        }
 
-        private void Layout_KeyPressed(object sender, KeyEventArgs e)
-        {
-#if DEBUG
-            //initiated by GH issue #10, but may give a help in the future too...
-            Console.WriteLine("LV2 DEBUG: pressed {0}, repeat={1}, handled={2}", e.Key, e.IsRepeat, e.Handled);
-#endif
-            //currently, the keyboard feel is same as in Norton & Total Commanders
-            switch (e.Key)
+
+
+            /// <summary>Sets the pointer to an item</summary>
+            /// <param name="lvi">The requested T</param>
+            private void _SetPoint<T>(T lvi)
             {
-                case Key.Up: //[↑] - move cursor up
-                    _SetPointerByCondition(-1);
-                    e.Handled = true;
-                    return;
-                case Key.Down: //[↓] - move cursor bottom
-                    _SetPointerByCondition(+1);
-                    e.Handled = true;
-                    return;
-                case Key.Insert: //[Ins] - set selection & move pointer bottom
-                    _SelectItem(PointedItem);
-                    _SetPointerByCondition(+1);
-                    e.Handled = true;
-                    return;
-                case Key.Return: //[↵] - same as double click
-                    PointedItem.OnDblClick();
-                    e.Handled = true;
-                    return;
-                case Key.NumPadMultiply: //gray [*] - invert selection
-                    InvertSelection();
-                    e.Handled = true;
-                    return;
-                case Key.Home:
-                    _SetPoint(Items[0]);
-                    return;
-                case Key.End:
-                    _SetPoint(Items[Items.Count - 1]);
-                    return;
-            }
-        }
+#if GTK_TODO
+                //unpoint current
+                if (PointedItem != null)
+                {
+                    if ((int)PointedItem.State > 1)
+                        PointedItem.State = ItemStates.Selected;
+                    else
+                        PointedItem.State = ItemStates.Default;
+                }
 
-    
-
-        /// <summary>Sets the pointer to an item</summary>
-        /// <param name="lvi">The requested T</param>
-        private void _SetPoint(T lvi)
-        {
-            //unpoint current
-            if (PointedItem != null)
-            {
-                if ((int)PointedItem.State > 1)
-                    PointedItem.State = ItemStates.Selected;
+                //point new
+                if ((int)lvi.State > 1)
+                    lvi.State = ItemStates.PointedAndSelected;
                 else
-                    PointedItem.State = ItemStates.Default;
-            }
+                    lvi.State = ItemStates.Pointed;
+                PointedItem = lvi;
 
-            //point new
-            if ((int)lvi.State > 1)
-                lvi.State = ItemStates.PointedAndSelected;
-            else
-                lvi.State = ItemStates.Pointed;
-            PointedItem = lvi;
+                var pointerMoved = PointerMoved;
+                if (pointerMoved != null)
+                {
+                    pointerMoved(lvi);
+                }
 
-            var pointerMoved = PointerMoved;
-            if (pointerMoved != null)
-            {
-                pointerMoved(lvi);
-            }
+                //if need, scroll the view
+                double top = -ScrollerIn.PosY;
+                double down = ScrollerIn.Size.Height;
+                double newpos = lvi.Size.Height * lvi.RowNo;
 
-            //if need, scroll the view
-            double top = -ScrollerIn.PosY;
-            double down = ScrollerIn.Size.Height;
-            double newpos = lvi.Size.Height * lvi.RowNo;
+                if (top > down)
+                {
+                    //если прокручено далее первой страницы
+                    down = top + ScrollerIn.Size.Height;
+                }
 
-            if (top > down)
-            {
-                //если прокручено далее первой страницы
-                down = top + ScrollerIn.Size.Height;
-            }
-
-            if (newpos > down || newpos < top)
-            {
-                ScrollerIn.ScrollTo(-(lvi.Size.Height * lvi.RowNo));
-            }
-
-            //todo: add smooth scrolling
-        }
-
-        //PUBLIC MEMBERS
-
-        /// <summary>Imitates a press of a keyboard key</summary>
-        /// <param name="kea">The key to be "pressed"</param>
-        public new void OnKeyPressed(KeyEventArgs kea)
-        {
-            base.OnKeyPressed(kea);
-        }
+                if (newpos > down || newpos < top)
+                {
+                    ScrollerIn.ScrollTo(-(lvi.Size.Height * lvi.RowNo));
+                }
 #endif
+                //todo: add smooth scrolling
+            }
+
+            //PUBLIC MEMBERS
+
+            /// <summary>Imitates a press of a keyboard key</summary>
+            /// <param name="kea">The key to be "pressed"</param>
+            //public new void OnKeyPressed(KeyEventArgs kea)
+            //{
+            //    base.OnKeyPressed(kea);
+            //}
+#endif
+
+            public virtual ColumnInfo[] DefineColumns(DataFieldNumbers df)
+            {
+                //public int DisplayName = 2;      // dfDisplayName
+                //public int Size = 3;
+                //public int Changed = 4;
+
+                return new ColumnInfo[] {
+                new ColumnInfo { Index = 0, Tag = "fldFile", Title= "File", Width=200, Visible=true },
+                new ColumnInfo { Index = 1, Tag = "fldSize", Title= "Size", Width=90, Visible=true },
+                new ColumnInfo { Index = 2, Tag = "fldModified", Title= "Modified", Width=110, Visible=true }
+            };
+            }
+
+        }
 
         #region ENUMS & STRUCTS
 
@@ -658,20 +686,17 @@ namespace pluginner.Widgets
             public int Index;
         }
 
-        #endregion
-
-        public virtual ColumnInfo[] DefineColumns(DataFieldNumbers df)
+        public void SetupColumns()
         {
-            //public int DisplayName = 2;      // dfDisplayName
-            //public int Size = 3;
-            //public int Changed = 4;
-
-            return new ColumnInfo[] {
-                new ColumnInfo { Index = 0, Tag = "fldFile", Title= "File", Width=200, Visible=true },
-                new ColumnInfo { Index = 1, Tag = "fldSize", Title= "Size", Width=90, Visible=true },
-                new ColumnInfo { Index = 2, Tag = "fldModified", Title= "Modified", Width=110, Visible=true }
-            };
+            throw new NotImplementedException();
         }
+
+        public ColumnInfo[] DefineColumns(DataFieldNumbers df)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
 
     }
 }

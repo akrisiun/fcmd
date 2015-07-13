@@ -1,4 +1,4 @@
 
-call msbuild fcmd.sln
+call msbuild fcmd.sln "/v:m"
 
 @PAUSE

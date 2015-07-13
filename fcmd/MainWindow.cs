@@ -14,6 +14,7 @@ using System.IO;
 using pluginner.Toolkit;
 using pluginner.Widgets;
 using fcmd.Menu;
+using fcmd.View.GTK;
 
 namespace fcmd
 {
@@ -439,14 +440,16 @@ namespace fcmd
             }
 
             //build panels
-            //PanelLayout.Panel1.Content = new FileListPanel(BookmarksStore,
-            //    fcmd.Properties.Settings.Default.UserTheme, Properties.Settings.Default.InfoBarContent1, Properties.Settings.Default.InfoBarContent2); //Левая, правая где сторона? Улица, улица, ты, брат, пьяна!
-            //PanelLayout.Panel2.Content = new FileListPanel(BookmarksStore,
-            //    fcmd.Properties.Settings.Default.UserTheme, Properties.Settings.Default.InfoBarContent1, Properties.Settings.Default.InfoBarContent2);
+            PanelLayout.Panel1.Content = new FileListPanelGTK(BookmarksStore,
+                fcmd.Properties.Settings.Default.UserTheme, Properties.Settings.Default.InfoBarContent1,
+                        Properties.Settings.Default.InfoBarContent2); //Левая, правая где сторона? Улица, улица, ты, брат, пьяна!
+            PanelLayout.Panel2.Content = new FileListPanelGTK(BookmarksStore,
+                fcmd.Properties.Settings.Default.UserTheme, Properties.Settings.Default.InfoBarContent1,
+                        Properties.Settings.Default.InfoBarContent2);
 
-            //p1 = PanelLayout.Panel1.Content as FileListPanel;
-            //p2 = PanelLayout.Panel2.Content as FileListPanel;
-            //var openFileHandler = new pluginner.TypedEvent<string>(Panel_OpenFile);
+            p1 = PanelLayout.Panel1.Content as FileListPanel;
+            p2 = PanelLayout.Panel2.Content as FileListPanel;
+            var openFileHandler = new pluginner.TypedEvent<string>(Panel_OpenFile);
             //p1.OpenFile += openFileHandler;
             //p2.OpenFile += openFileHandler;
 
@@ -463,11 +466,20 @@ namespace fcmd
             { Title = "Directory item info", Tag = "DirItem", Width = 0, Visible = false });
             // */
 
-            p1.FS = new base_plugins.fs.localFileSystem();
-            p2.FS = new base_plugins.fs.localFileSystem();
+            try
+            {
 
-            p1.GotFocus += (o, ea) => SwitchPanel(p1);
-            p2.GotFocus += (o, ea) => SwitchPanel(p2);
+                p1.FS = new base_plugins.fs.localFileSystem();
+                p2.FS = new base_plugins.fs.localFileSystem();
+
+                p1.GotFocus += (o, ea) => SwitchPanel(p1);
+                p2.GotFocus += (o, ea) => SwitchPanel(p2);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
         }
 
         private void KeyBoardHelpInit()

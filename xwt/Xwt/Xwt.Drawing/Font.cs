@@ -220,7 +220,16 @@ namespace Xwt.Drawing
 			}
 		}
 
-		public static Font SystemFont {
+        // GTK3
+        public static FontBackendHandler FontBackend
+        {
+            get
+            {
+                return Toolkit.CurrentEngine.FontBackendHandler;
+            }
+        }
+
+        public static Font SystemFont {
 			get { return Toolkit.CurrentEngine.FontBackendHandler.SystemFont; }
 		}
 

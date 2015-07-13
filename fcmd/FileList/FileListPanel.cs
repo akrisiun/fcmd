@@ -196,41 +196,7 @@ namespace fcmd
         }
     }
 
-    public class FileListPanelGTK : FileListPanel<ListViewGTK>
-    {
-        public override IUIListingView ListingWidget
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
 
-        public override void Initialize(PanelSide side)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void LoadDir()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void LoadDir(string Url, Shorten? Shorten)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override string MakeStatusbarText(string Template)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void WriteDefaultStatusLabel()
-        {
-            throw new NotImplementedException();
-        }
-    }
 
     public abstract class FileListPanel : Table
     {
@@ -240,7 +206,7 @@ namespace fcmd
         // public int dfDirItem = 5;
 
         public IStatusBar StatusBar { get; set; }
-        
+
         public ShortenPolicies ShortenPolicy { get; set; }
         public Shorten Shorten { get; set; }
 
@@ -330,16 +296,13 @@ namespace fcmd
 
 #endif
 
-        // public IStatusBar StatusBar;
-
         /// <summary>User navigates into another directory</summary>
         public event TypedEvent<string> Navigate;
         /// <summary>User tried to open the highlighted file</summary>
         public event TypedEvent<string> OpenFile;
         // public event EventHandler GotFocus;
 
-        // public ShortenPolicies ShortenPolicy; // SizeDisplayPolicy CurShortenKB, CurShortenMB, CurShortenGB;
-        private string SBtext1, SBtext2;
+        protected string SBtext1, SBtext2;
         // private Stylist s;
 
         #endregion
@@ -385,13 +348,13 @@ namespace fcmd
         #region Events, Methods
 
 #if XWT
-        public void OnGotFocus(ButtonEventArgs ea)
-        {
-            // #if XWT
-            // base.OnGotFocus(ea);
-        }
+        // public void OnGotFocus(ButtonEventArgs ea)
+        //{
+        //    // #if XWT
+        //    // base.OnGotFocus(ea);
+        //}
 
-        void QuickSearchText_KeyPressed(object sender, KeyEventArgs e)
+        protected void QuickSearchText_KeyPressed(object sender, KeyEventArgs e)
         {
             //if (e.Key == Key.Escape)
             //{
@@ -427,7 +390,7 @@ namespace fcmd
             //}
         }
 
-        void CLIprompt_KeyReleased(object sender, KeyEventArgs e)
+        protected void CLIprompt_KeyReleased(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Return)
             {
@@ -446,12 +409,12 @@ namespace fcmd
             }
         }
 
-        void FS_CLIpromptChanged(string data)
+        protected void FS_CLIpromptChanged(string data)
         {
             //CLIprompt.PlaceholderText = data;
         }
 
-        void FS_CLIstdoutDataReceived(string data)
+        protected void FS_CLIstdoutDataReceived(string data)
         {
             Application.Invoke(delegate
             {
@@ -585,7 +548,7 @@ namespace fcmd
         /// <summary>Open the FS item at <paramref name="url"/> (if it's file, load; if it's directory, go to)</summary>
         /// <param name="url">The URL of the filesystem entry</param>
         /// <param name="ClearHistory">The number of the history entrie after that all entries should be removed</param>
-        private void NavigateTo(string url, int? ClearHistory = null)
+        protected void NavigateTo(string url, int? ClearHistory = null)
         {
             if (!url.Contains("://"))
             {
@@ -663,7 +626,7 @@ namespace fcmd
         /// <param name="ShortenKB">How kilobyte sizes should be humanized</param>
         /// <param name="ShortenMB">How megabyte sizes should be humanized</param>
         /// <param name="ShortenGB">How gigabyte sizes should be humanized</param> //плохой перевод? "так nбайтные размеры должны очеловечиваться"
-        public void LoadDir(string URL, ShortenPolicies? Shorten = null)
+        public virtual void LoadDir(string URL, ShortenPolicies? Shorten = null)
         {
 
             ShortenPolicy = Shorten ?? ShortenPolicy;
@@ -764,9 +727,9 @@ namespace fcmd
             // ListingWidget.Cursor = CursorType.Arrow;
         }
 
-#region FS
+        #region FS
 
-        public void LoadFs(string URL, ShortenPolicies Shorten)
+        public virtual void LoadFs(string URL, ShortenPolicies Shorten)
         {
             // string URL, SizeDisplayPolicy ShortenKB, SizeDisplayPolicy ShortenMB, SizeDisplayPolicy ShortenGB)
             // new { KB = ShortenKB, MB = ShortenMB, GB
@@ -873,7 +836,7 @@ namespace fcmd
 
         }
 
-        private void FS_StatusChanged(string data)
+        protected void FS_StatusChanged(string data)
         {
             Xwt.Application.Invoke(delegate ()
             {
@@ -885,7 +848,7 @@ namespace fcmd
             );
         }
 
-        private void FS_ProgressChanged(double data)
+        protected void FS_ProgressChanged(double data)
         {
             Xwt.Application.Invoke(delegate ()
                 {
@@ -918,7 +881,7 @@ namespace fcmd
             LoadDir(URL, ShortenPolicy);
         }
 
-#endregion
+        #endregion
 
 #if !WPF
         /// <summary>
@@ -948,10 +911,10 @@ namespace fcmd
             return (string)ListingView.PointedItem.Data[Field];
         }
 #endif
-#region Drives, Mounts
+        #region Drives, Mounts
 
         /// <summary>Add autobookmark "system disks" onto disk toolbar</summary>
-        private void AddSysDrives()
+        protected void AddSysDrives()
         {
             foreach (DriveInfo di in DriveInfo.GetDrives())
             {
@@ -1007,7 +970,7 @@ namespace fcmd
         }
 
         /// <summary>Add buttons of mounted medias (*nix)</summary>
-        private void AddLinuxMounts()
+        protected void AddLinuxMounts()
         {
             if (Directory.Exists(@"/mnt"))
             {
@@ -1028,7 +991,7 @@ namespace fcmd
             else AddSysDrives(); //fallback for Windows
         }
 
-#endregion
+        #endregion
 
         /// <summary>
         /// Writes to statusbar the default text
