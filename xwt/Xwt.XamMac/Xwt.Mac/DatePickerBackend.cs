@@ -38,62 +38,72 @@ using AppKit;
 
 namespace Xwt.Mac
 {
-	public class DatePickerBackend: ViewBackend<NSDatePicker,IDatePickerEventSink>, IDatePickerBackend
-	{
-		public DatePickerBackend ()
-		{
-		}
+    public class DatePickerBackend : ViewBackend<NSDatePicker, IDatePickerEventSink>, IDatePickerBackend
+    {
+        public DatePickerBackend()
+        {
+        }
 
-		public override void Initialize ()
-		{
-			base.Initialize ();
-			ViewObject = new MacDatePicker ();
-		}
+        public override void Initialize()
+        {
+            base.Initialize();
+            ViewObject = new MacDatePicker();
+        }
 
-		public override void EnableEvent (object eventId)
-		{
-			base.EnableEvent (eventId);
-			if (eventId is DatePickerEvent)
-				Widget.Activated += HandleActivated;
-		}
+        public override void EnableEvent(object eventId)
+        {
+            base.EnableEvent(eventId);
+            if (eventId is DatePickerEvent)
+                Widget.Activated += HandleActivated;
+        }
 
-		public override void DisableEvent (object eventId)
-		{
-			base.DisableEvent (eventId);
-			if (eventId is DatePickerEvent)
-				Widget.Activated -= HandleActivated;
-		}
+        public override void DisableEvent(object eventId)
+        {
+            base.DisableEvent(eventId);
+            if (eventId is DatePickerEvent)
+                Widget.Activated -= HandleActivated;
+        }
 
-		void HandleActivated (object sender, EventArgs e)
-		{
-			ApplicationContext.InvokeUserCode (((IDatePickerEventSink)EventSink).ValueChanged);
-		}
+        void HandleActivated(object sender, EventArgs e)
+        {
+            ApplicationContext.InvokeUserCode(((IDatePickerEventSink)EventSink).ValueChanged);
+        }
 
-		#region IDatePickerBackend implementation
+        #region IDatePickerBackend implementation
 
-		public DateTime DateTime {
-			get {
-				return (DateTime)Widget.DateValue;
-			}
-			set {
-				Widget.DateValue = (NSDate) value;
-			}
-		}
+        public DateTime DateTime
+        {
+            get
+            {
+                return (DateTime)Widget.DateValue;
+            }
+            set
+            {
+                Widget.DateValue = (NSDate)value;
+            }
+        }
 
-		#endregion
-	}
+        public DateTime MinimumDateTime { get; set; }
 
-	class MacDatePicker: NSDatePicker, IViewObject
-	{
-		public NSView View { get { return this; } }
-		public ViewBackend Backend { get; set; }
+        public DateTime MaximumDateTime { get; set; }
 
-		public override void ResetCursorRects ()
-		{
-			base.ResetCursorRects ();
-			if (Backend.Cursor != null)
-				AddCursorRect (Bounds, Backend.Cursor);
-		}
-	}
+
+        public DatePickerStyle Style { get; set; }
+
+        #endregion
+    }
+
+    class MacDatePicker : NSDatePicker, IViewObject
+    {
+        public NSView View { get { return this; } }
+        public ViewBackend Backend { get; set; }
+
+        public override void ResetCursorRects()
+        {
+            base.ResetCursorRects();
+            if (Backend.Cursor != null)
+                AddCursorRect(Bounds, Backend.Cursor);
+        }
+    }
 }
 

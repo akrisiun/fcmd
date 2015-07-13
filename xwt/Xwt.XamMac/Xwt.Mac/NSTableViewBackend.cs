@@ -166,15 +166,17 @@ namespace Xwt.Mac
 			if (keyArgs.Handled)
 				return;
 
-			var textArgs = new PreviewTextInputEventArgs (theEvent.Characters);
+#if !MONOMAC
+            var textArgs = new PreviewTextInputEventArgs (theEvent.Characters);
 			if (!String.IsNullOrEmpty(theEvent.Characters))
 				context.InvokeUserCode (delegate {
 					eventSink.OnPreviewTextInput (textArgs);
 				});
 			if (textArgs.Handled)
 				return;
+#endif
 
-			base.KeyDown (theEvent);
+            base.KeyDown (theEvent);
 		}
 
 		public override void KeyUp (NSEvent theEvent)

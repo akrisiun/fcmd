@@ -186,6 +186,7 @@ namespace Xwt.Mac
 			if (keyArgs.Handled)
 				return;
 
+#if !MONOMAC
 			var textArgs = new PreviewTextInputEventArgs (theEvent.Characters);
 			if (!String.IsNullOrEmpty(theEvent.Characters))
 				context.InvokeUserCode (delegate {
@@ -193,6 +194,7 @@ namespace Xwt.Mac
 				});
 			if (textArgs.Handled)
 				return;
+#endif
 
 			base.KeyDown (theEvent);
 		}

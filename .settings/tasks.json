@@ -13,12 +13,18 @@
 
 {
 	"version": "0.1.0",
-	"command": "xbuild",
-	"args": [
+	//"command": "xbuild",
+	//"args": [
 		// Ask msbuild to generate full paths for file names.
-		"fcmd-Mac.sln",
-		"/property:GenerateFullPaths=true"
-	],
+	//	"fcmd-Mac.sln",
+	//	"/property:GenerateFullPaths=true"
+	//],
+	
+	"command": "msbuild.cmd",
+	"args": [ 
+		 "fcmd.sln" ]
+	,
+	
 	"taskSelector": "/t:",
 	"showOutput": "always",
 	"tasks": [

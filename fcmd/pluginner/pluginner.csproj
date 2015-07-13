@@ -52,6 +52,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Xwt3">
+      <HintPath>..\..\..\xwt\bin\Xwt3.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Toolkit\BookmarkTools.cs" />
@@ -134,12 +137,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="xwt.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\xwt\Xwt\Xwt3.csproj">
-      <Project>{92494904-35fa-4dc9-bde9-3a3e87ac49d3}</Project>
-      <Name>Xwt3</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

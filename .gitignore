@@ -26,3 +26,4 @@ test-results
 monomac/monomac/
 xwt/Test/
 xwt/TestApps/
+xwt/lib/nunit.framework.xml
