@@ -6,7 +6,7 @@
     <ProjectGuid>{C93D746E-1586-4D4F-B411-BF5A966E6A08}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>Xwt.WPF</RootNamespace>
-    <AssemblyName>Xwt.WPF</AssemblyName>
+    <AssemblyName>Xwt3.WPF</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
