@@ -36,7 +36,8 @@ namespace fcmd
 						break;
 #endif
                     default:
-						Application.Initialize(ToolkitType.Gtk3);
+                        if (!Environment.Is64BitProcess)
+                            Application.Initialize(ToolkitType.Gtk3);
 						break;
 				}
 			}
