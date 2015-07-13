@@ -16,20 +16,22 @@ namespace fcmd.View.ctrl
 
     public class ListView2List : ListView2<ListView2Canvas>, IListingView<ListView2Canvas>, IListingView 
     {
-        public ListView2List(IUIListingView<ListView2Canvas> parent) : base(parent)
+        public ListView2List(IUIListingView<ListView2Canvas> parent) : base() // parent)
         {
             _Items = new List<ListView2Canvas>();
         }
 
         #region Items array
 
-        public override object Content { get { return null; } set {; } }
-        public override Font FontForFileNames { get; set; }
+        //public override object Content { get { return null; } set {; } }
+        //public override Font FontForFileNames { get; set; }
 
         protected List<ListView2Canvas> _Items;
-        public override IList<ListView2Canvas> DataItems { get { return _Items; } }
+        public // override 
+            IList<ListView2Canvas> DataItems { get { return _Items; } }
 
-        public override IEnumerable ChoosedRows
+        public // override 
+            IEnumerable ChoosedRows
         {
             get
             {
@@ -37,31 +39,9 @@ namespace fcmd.View.ctrl
             }
         }
 
-        public IPointedItem<ListView2Canvas> PointedItem
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
+        public IPointedItem<ListView2Canvas> PointedItem { get; set; }
 
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int SelectedRow
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public int SelectedRow { get; set; } 
 
         public IEnumerable<ListView2Canvas> ChoosedRowsTyped
         {
@@ -97,42 +77,43 @@ namespace fcmd.View.ctrl
             }
         }
 
-        public override void Add(ListView2Canvas item)
-        {
-            item.RowIndex = _Items.Count;
-            _Items.Add(item);
-        }
+        //public override void Add(ListView2Canvas item)
+        //{
+        //    item.RowIndex = _Items.Count;
+        //    _Items.Add(item);
+        //}
 
-        public override bool Contains(ListView2Canvas item)
-        {
-            return _Items.Contains(item);
-        }
+        //public override bool Contains(ListView2Canvas item)
+        //{
+        //    return _Items.Contains(item);
+        //}
 
-        public override void CopyTo(ListView2Canvas[] item, int arrayIndex)
-        {
-            throw new NotImplementedException();
-        }
+        //public override void CopyTo(ListView2Canvas[] item, int arrayIndex)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public override bool Remove(ListView2Canvas item)
-        {
-            return _Items.Remove(item);
-        }
+        //public override bool Remove(ListView2Canvas item)
+        //{
+        //    return _Items.Remove(item);
+        //}
 
         #endregion
 
         // Route Events to Parent
 
-        public override void SetFocus() { Parent.SetFocus(); }
+        // public override void SetFocus() { Parent.SetFocus(); }
         public override void SetupColumns() {
 #if WPF
-            (Parent as ListView2Widget).SetupColumns(); 
+            //(Parent as ListView2Widget).SetupColumns(); 
 #endif
         }
 
-        public override void Dispose()
-        {
-            _Items = null;
-        }
+        //public // override 
+        //    void Dispose()
+        //{
+        //    _Items = null;
+        //}
 
         public void Select(object items)
         {
@@ -175,6 +156,26 @@ namespace fcmd.View.ctrl
         }
 
         IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Add(ListView2Canvas item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Contains(ListView2Canvas item)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void CopyTo(ListView2Canvas[] array, int arrayIndex)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Remove(ListView2Canvas item)
         {
             throw new NotImplementedException();
         }

@@ -21,6 +21,7 @@ namespace pluginner.Widgets
     // File
 
 #if XWT
+
     /// <summary>Modern listview widget</summary>
     public abstract class ListView2 : Widget, IListView2
     {
@@ -39,6 +40,10 @@ namespace pluginner.Widgets
         public int RowNo { get; set; }
 
         public System.Drawing.Font FontForFileNames { get; set; }
+
+
+        public abstract ColumnInfo[] DefineColumns(DataFieldNumbers df);
+        public abstract void SetupColumns();
 
 #else
 
@@ -407,47 +412,86 @@ namespace pluginner.Widgets
 
 #endif
 
+        #region ENUMS & STRUCTS
+
+        /// <summary>
+        /// Defines how the items are displayed in the control.
+        /// </summary>
+        public enum Views
+        {
+            SmallIcons, LargeIcons, Details
+        }
+
+        /// <summary>
+        /// Enumeration of items' selection statuses
+        /// </summary>
+        public enum ItemStates
+        {
+            /// <summary>Default item state (not selected nor pointed)</summary>
+            Default = 0,
+            /// <summary>The item is pointed, but not selected</summary>
+            Pointed = 1,
+            /// <summary>The item is selected</summary>
+            Selected = 2,
+            /// <summary>The item is pointed and selected</summary>
+            PointedAndSelected = 3
+        }
+
+        /// <summary>
+        /// Structure, that contains information about columns
+        /// </summary>
+        public struct ColumnInfo
+        {
+            public string Title;
+            public object Tag;
+            public double Width;
+            public bool Visible;
+            public int Index;
+        }
+
+        #endregion
+
     }
 
-        public class ListView2<T> : ListView2, IListView2
+    public class ListView2<T> : ListView2, IListView2
+    {
+
+        // abstract GUI events
+        //public abstract void SetFocus();
+        //public abstract void SetupColumns();
+
+        // private int LastRow;
+        // private int LastCol;
+        private Views _View = Views.Details;
+
+        // private bool Color2; //для обеспечения чередования цветов строк
+        private DateTime PointedItemLastClickTime = DateTime.Now.AddDays(-1); //for double click detecting
+
+        public static double MillisecondsForDoubleClick = SysInfo.DoubleClickTime; //Depends on user settings
+
+        ////Color sheme
+        //public Color NormalBgColor1 = Colors.White;
+        //public Color NormalBgColor2 = Colors.WhiteSmoke;
+        //public Color NormalFgColor1 = Colors.Black;
+        //public Color NormalFgColor2 = Colors.Black;
+        //public Color PointedBgColor = Colors.LightGray;
+        //public Color PointedFgColor = Colors.Black;
+        //public Color SelectedBgColor = Colors.White;
+        //public Color SelectedFgColor = Colors.Red;
+
+        // public Font FontForFileNames = Font.SystemFont;
+
+        //For virtual mode
+        int VisibleItemsByY = -1;
+        int VisibleItemsByX = -1;
+
+        /// <summary>List of items. Please do not edit directly! Please use the AddItem and RemoveItem functions.</summary>
+        //  List<T> IListView2.DataItems = new List<T>();
+
+        public List<int> AllowedToPoint = new List<int>();
+
+        public ListView2()
         {
-
-            // abstract GUI events
-            //public abstract void SetFocus();
-            //public abstract void SetupColumns();
-
-            // private int LastRow;
-            // private int LastCol;
-            private Views _View = Views.Details;
-
-            // private bool Color2; //для обеспечения чередования цветов строк
-            private DateTime PointedItemLastClickTime = DateTime.Now.AddDays(-1); //for double click detecting
-
-            public static double MillisecondsForDoubleClick = SysInfo.DoubleClickTime; //Depends on user settings
-
-            ////Color sheme
-            //public Color NormalBgColor1 = Colors.White;
-            //public Color NormalBgColor2 = Colors.WhiteSmoke;
-            //public Color NormalFgColor1 = Colors.Black;
-            //public Color NormalFgColor2 = Colors.Black;
-            //public Color PointedBgColor = Colors.LightGray;
-            //public Color PointedFgColor = Colors.Black;
-            //public Color SelectedBgColor = Colors.White;
-            //public Color SelectedFgColor = Colors.Red;
-
-            // public Font FontForFileNames = Font.SystemFont;
-
-            //For virtual mode
-            int VisibleItemsByY = -1;
-            // int VisibleItemsByX = -1;
-
-            /// <summary>List of items. Please do not edit directly! Please use the AddItem and RemoveItem functions.</summary>
-            // List<T> IListView2.DataItems = new List<T>();
-
-            public List<int> AllowedToPoint = new List<int>();
-
-            public ListView2()
-            {
 #if XWT_TODO
                 Layout.Spacing = 0;
                 Grid.DefaultRowSpacing = 0;
@@ -470,7 +514,7 @@ namespace pluginner.Widgets
 
                 ScrollerIn.BackgroundColor = Colors.White;
 #endif
-            }
+        }
 
 #if XWT_TODO
 
@@ -634,69 +678,25 @@ namespace pluginner.Widgets
             //}
 #endif
 
-            public virtual ColumnInfo[] DefineColumns(DataFieldNumbers df)
-            {
-                //public int DisplayName = 2;      // dfDisplayName
-                //public int Size = 3;
-                //public int Changed = 4;
+        public override ColumnInfo[] DefineColumns(DataFieldNumbers df)
+        {
+            //public int DisplayName = 2;      // dfDisplayName
+            //public int Size = 3;
+            //public int Changed = 4;
 
-                return new ColumnInfo[] {
+            return new ColumnInfo[] {
                 new ColumnInfo { Index = 0, Tag = "fldFile", Title= "File", Width=200, Visible=true },
                 new ColumnInfo { Index = 1, Tag = "fldSize", Title= "Size", Width=90, Visible=true },
                 new ColumnInfo { Index = 2, Tag = "fldModified", Title= "Modified", Width=110, Visible=true }
             };
-            }
-
         }
 
-        #region ENUMS & STRUCTS
-
-        /// <summary>
-        /// Defines how the items are displayed in the control.
-        /// </summary>
-        public enum Views
-        {
-            SmallIcons, LargeIcons, Details
-        }
-
-        /// <summary>
-        /// Enumeration of items' selection statuses
-        /// </summary>
-        public enum ItemStates
-        {
-            /// <summary>Default item state (not selected nor pointed)</summary>
-            Default = 0,
-            /// <summary>The item is pointed, but not selected</summary>
-            Pointed = 1,
-            /// <summary>The item is selected</summary>
-            Selected = 2,
-            /// <summary>The item is pointed and selected</summary>
-            PointedAndSelected = 3
-        }
-
-        /// <summary>
-        /// Structure, that contains information about columns
-        /// </summary>
-        public struct ColumnInfo
-        {
-            public string Title;
-            public object Tag;
-            public double Width;
-            public bool Visible;
-            public int Index;
-        }
-
-        public void SetupColumns()
+        public override void SetupColumns()
         {
             throw new NotImplementedException();
         }
-
-        public ColumnInfo[] DefineColumns(DataFieldNumbers df)
-        {
-            throw new NotImplementedException();
-        }
-
-        #endregion
 
     }
+
+  
 }

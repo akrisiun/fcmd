@@ -6,7 +6,7 @@ using fcmd.View;
 using fcmd.Controller;
 // using Xwt.Drawing;
 
-    
+
 namespace fcmd.View.Xaml
 {
     // pluginner.Widgets.ListView2ItemWpf
@@ -16,15 +16,15 @@ namespace fcmd.View.Xaml
     {
         public PanelWpf Parent { get; set; }
 
-        public FileListPanelWpf(PanelWpf parent) 
+        public FileListPanelWpf(PanelWpf parent)
         {
             Parent = parent;
         }
 
         public ListView2Widget ListingViewWpf { get; protected set; }
-        
+
         // public override IListView2<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj; } }
-        public override IListingView<ListView2ItemWpf> ListingView {  get { return ListingViewWpf.DataObj; } }
+        public override IListingView<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj; } }
 
         public override IUIListingView ListingWidget { get { return ListingViewWpf; } }
 
@@ -42,14 +42,15 @@ namespace fcmd.View.Xaml
             ListingViewWpf = Parent.data;
             ListingViewWpf.Panel = Parent as Xaml.PanelWpf;
             ListingViewWpf.FileList = this;
-            Debug.Assert(ListingViewWpf.DataObj.Parent == ListingViewWpf);
+            // Debug.Assert(ListingViewWpf.DataObj.Parent == ListingViewWpf);
             ListingViewWpf.Side = side;
             PostInitialize();
         }
 
         EventHandler onFocus;
         bool onFocusSet;
-        protected void OnFocus(object sender, EventArgs e) {
+        protected void OnFocus(object sender, EventArgs e)
+        {
             if (onFocusSet)
                 onFocus(sender, e);
 

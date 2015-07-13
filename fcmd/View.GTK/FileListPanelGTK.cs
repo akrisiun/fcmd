@@ -18,11 +18,12 @@ namespace fcmd.View.GTK
 
         }
 
-        public void OnGotFocus(ButtonEventArgs ea)
-        {
-            // #if XWT
-            base.OnGotFocus(ea);
-        }
+        // dublicate backe methods
+        //public void OnGotFocus(ButtonEventArgs ea)
+        //{
+        //    // #if XWT
+        //    base.OnGotFocus(ea);
+        //}
 
         public override IUIListingView ListingWidget
         {
