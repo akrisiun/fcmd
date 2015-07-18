@@ -1,37 +1,110 @@
-﻿
+﻿using System;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 using fcmd.Controller;
-using fcmd.View;
 using fcmd.View.Xaml;
+using pluginner;
 using pluginner.Widgets;
-using System;
-using System.Collections.Generic;
 
 namespace fcmd.Model
 {
     public class WindowDataWpf : CommanderData
     {
-        public class PanelLayoutClass
+        public override PanelSide? ActiveSide
         {
-            public PanelWpf Panel1 { get; protected set; }
-            public PanelWpf Panel2 { get; protected set; }
+            get
+            {
+                return PanelLayout == null || !PanelLayout.Panel1.IsActive.HasValue ? PanelSide.Undefined
+                     : PanelLayout.Panel1.IsActive.Value ? PanelSide.Left : PanelSide.Right;
+            }
+            //set
+            //{
+            //    bool isLeft = (value == PanelSide.Left);
+            //    PanelLayout.Panel1.IsActive = isLeft;
+            //    PanelLayout.Panel2.IsActive = !isLeft;
+            //}
+        }
+
+        public class PanelLayoutClass : IPanelLayout
+        {
+            public IPanel Panel1 {[DebuggerStepThrough] get { return wpfPanel1; } }
+            public IPanel Panel2 {[DebuggerStepThrough] get { return wpfPanel1; } }
+
+            public PanelWpf wpfPanel1 { get; protected set; }
+            public PanelWpf wpfPanel2 { get; protected set; }
 
             public static PanelLayoutClass Create(MainWindow w)
             {
                 // Initialize Undefined sides
-                w.LeftPanel.PanelData.Initialize(PanelSide.Left);
-                w.RightPanel.PanelData.Initialize(PanelSide.Right);
+                w.LeftPanel.PanelDataWpf.Initialize(PanelSide.Left);
+                w.RightPanel.PanelDataWpf.Initialize(PanelSide.Right);
 
                 // left and right
-                w.ActivePanelWpf = w.LeftPanel.PanelData as FileListPanelWpf;
-                w.PassivePanelWpf = w.RightPanel.PanelData as FileListPanelWpf;
+                w.ActivePanelWpf = w.LeftPanel.PanelDataWpf as FileListPanelWpf;
+                w.PassivePanelWpf = w.RightPanel.PanelDataWpf as FileListPanelWpf;
 
                 w.p1 = w.ActivePanelWpf;
                 w.p2 = w.PassivePanelWpf;
-                w.WindowData.ActiveSide = PanelSide.Left;
 
-                return new PanelLayoutClass { Panel1 = w.LeftPanel, Panel2 = w.RightPanel };
+                return new PanelLayoutClass { wpfPanel1 = w.LeftPanel, wpfPanel2 = w.RightPanel };
             }
+
+        }
+
+        /// <summary>Switches the active panel</summary>
+        protected override void SwitchPanel(FileListPanel NewPanel)
+        {
+            if (NewPanel == Window.ActivePanel) return;
+
+            Window.PassivePanelWpf = WindowWpf.ActivePanelWpf;
+            Window.ActivePanelWpf = NewPanel as FileListPanelWpf;
+
+            bool isLeft = (NewPanel == Window.p1);
+#if DEBUG
+            string PanelName = isLeft ? "LEFT" : "RIGHT";
+            // Console.WriteLine("FOCUS DEBUG: The " + PanelName + " panel (" + NewPanel.FS.CurrentDirectory + ") got focus");
+#endif
+
+            var pasive = Window.PassivePanelWpf.Parent as PanelWpf;
+            pasive.IsActive = false;
+            //  this.ActiveSide = isLeft ? PanelSide.Left : PanelSide.Right;
+
+            // AssemblyName an = Assembly.GetExecutingAssembly().GetName();
+            Window.Title = string.Format(
+                "{0} - {1}",
+                "FC",//System.Reflection.Assembly.GetExecutingAssembly().GetName().Name, //todo: add the ProductName w/o WinForms usage
+                NewPanel.FS.CurrentDirectory
+            );
+        }
+
+        protected override void LayoutInit()
+        {
+            // base.LayoutInit();
+            var p1 = Window.p1 as FileListPanelWpf;
+            var p2 = Window.p2 as FileListPanelWpf;
+
+            var openFileHandler = new pluginner.TypedEvent<string>(Panel_OpenFile);
+            p1.OpenFile += openFileHandler;
+            p2.OpenFile += openFileHandler;
+
+            // Ankr
+            var LVCols = Window.LVCols;
+            //LVCols.Add(new ListView2.ColumnInfo { Title = "", Tag = "Icon", Width = 16, Visible = true });
+            //LVCols.Add(new ListView2.ColumnInfo { Title = "URL", Tag = "Path", Width = 0, Visible = false });
+            //LVCols.Add(new ListView2.ColumnInfo
+            //{ Title = Localizator.GetString("FName"), Tag = "FName", Width = 100, Visible = true });
+            //LVCols.Add(new ListView2.ColumnInfo
+            //{ Title = Localizator.GetString("FSize"), Tag = "FSize", Width = 50, Visible = true });
+            //LVCols.Add(new ListView2.ColumnInfo
+            //{ Title = Localizator.GetString("FDate"), Tag = "FDate", Width = 50, Visible = true });
+            //LVCols.Add(new ListView2.ColumnInfo
+            //{ Title = "Directory item info", Tag = "DirItem", Width = 0, Visible = false });
+
+            p1.FS = new base_plugins.fs.localFileSystem();
+            p2.FS = new base_plugins.fs.localFileSystem();
+            p1.GotFocus += (o, ea) => SwitchPanel(p1);
+            p2.GotFocus += (o, ea) => SwitchPanel(p2);
         }
 
         protected override void Initialize()
@@ -41,8 +114,9 @@ namespace fcmd.Model
             window.Title = "File Commander";
 
             window.LVCols = new List<IColumnInfo>();
+
             Backend.Init(window);
-            PanelLayout = PanelLayoutClass.Create(window);
+            _panelLayout = PanelLayoutClass.Create(window);
 
             TranslateMenu(MainMenu);
             BindMenu();
@@ -52,7 +126,7 @@ namespace fcmd.Model
             LayoutInit();
             KeyBoardHelpInit();
 
-            Localizator.LocalizationChanged += (o, ea) 
+            Localizator.LocalizationChanged += (o, ea)
                 => Localize();
             Localize();
 
@@ -69,9 +143,18 @@ namespace fcmd.Model
         protected override void OnShown()
         {
             var visual = this.Backend;
+            var panel1 = this.PanelLayout.Panel1;
+            var panel2 = this.PanelLayout.Panel2 as PanelWpf;
+            panel1.Shown();
+            panel2.Shown();
+
+            panel2.IsActive = false;
+            panel1.IsActive = true;
             visual.Shown();
+
 #if DEBUG
-            Console.WriteLine(@"DEBUG: MainWindow initialization has been completed.");
+            var active = ActiveSide; // = PanelSide.Left;
+            Console.WriteLine(@"DEBUG: MainWindow initialization has been completed. Side=" + active.ToString());
 #endif
         }
 
@@ -81,16 +164,15 @@ namespace fcmd.Model
         public FileListPanelWpf ActivePanel { get { return WindowWpf.ActivePanelWpf as FileListPanelWpf; } }
         public FileListPanelWpf PassivePanel { get { return WindowWpf.PassivePanelWpf as FileListPanelWpf; } }
 
-        //public int Height { get { return (int)Window.Height; } }
-        //public int Width { get { return (int)Window.Width; } }
+        protected PanelLayoutClass _panelLayout { get; set; }
+        public override IPanelLayout PanelLayout { get { return _panelLayout; } }     // was: Xwt.HPaned();
 
         // public Xwt.HBox KeyBoardHelp = new Xwt.HBox();
-        // public KeyboardHelpButton[] KeybHelpButtons = new KeyboardHelpButton[11];//одна лишняя, которая нумбер [0]
-        // public Xwt.VBox Layout = new Xwt.VBox();
-        // public Xwt.HPaned PanelLayout = new Xwt.HPaned();
+        public override object KeybHelpButtons { get { return null; } }
+        // KeyboardHelpButton[] KeybHelpButtons = new KeyboardHelpButton[11];//одна лишняя, которая нумбер [0]
 
-        public PanelLayoutClass PanelLayout { get; protected set; }
-        
+        public override object Layout { get { return Window.Content; } }    // was: Xwt.VBox 
+
         public CommanderStatusBar StatusBar { get; protected set; }
 
         public override void LoadDir(string[] argv)
@@ -158,6 +240,7 @@ namespace fcmd.Model
             }
         }
 
+        protected override void KeyBoardHelpInit() { }
     }
 
 }

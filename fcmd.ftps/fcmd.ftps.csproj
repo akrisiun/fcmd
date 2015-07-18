@@ -44,7 +44,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SharpSSH\SharpSSH\SharpSSH.csproj">
+    <ProjectReference Include="..\SharpSSH\SharpSSH\SharpSSH.csproj">
       <Project>{d27cf69d-4681-492a-be4d-d3d209104423}</Project>
       <Name>SharpSSH</Name>
     </ProjectReference>

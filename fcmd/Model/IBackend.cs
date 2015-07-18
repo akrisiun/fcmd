@@ -1,6 +1,6 @@
 ﻿using fcmd.Model;
 
-namespace fcmd.View
+namespace fcmd
 {
     public interface IBackend
     {
@@ -9,7 +9,7 @@ namespace fcmd.View
         MainWindow Window { get; }
 
 #if WPF
-        void KeyEvent(MainWindow window, System.Windows.Input.KeyEventArgs key);
+        void KeyEvent(object sender, System.Windows.Input.KeyEventArgs key);
 #else
         void KeyEvent(MainWindow window, Xwt.KeyEventArgs key);
 #endif

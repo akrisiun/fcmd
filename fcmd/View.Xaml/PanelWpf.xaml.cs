@@ -1,36 +1,66 @@
-﻿using fcmd.Controller;
-using fcmd.View.Xaml;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using System.Windows;
+using System.Diagnostics;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using fcmd.Controller;
+using fcmd.Model;
 
 namespace fcmd.View.Xaml
 {
     /// <summary>
     /// Interaction logic for PanelWpf.xaml
     /// </summary>
-    public partial class PanelWpf : UserControl
+    public partial class PanelWpf : UserControl, IPanel
     {
-        public FileListPanelWpf PanelData { get; private set; }
+        public FileListPanel PanelData {[DebuggerStepThrough] get { return PanelDataWpf; } }
         public PanelSide Side { get; set; }
+
+        public FileListPanelWpf PanelDataWpf { get; private set; }
+
+        private bool? active;
+        public bool? IsActive
+        {
+            get { return active; }
+            set
+            {
+                active = value;
+                if (value != null)
+                    SetStyle();
+            }
+        }
 
         public PanelWpf()
         {
+            active = null;
             InitializeComponent();
 
-            PanelData = new FileListPanelWpf(this);
-            DataContext = PanelData;
+            PanelDataWpf = new FileListPanelWpf(this);
+            DataContext = PanelDataWpf;
+
+            GotFocus += (s, e) =>
+            {
+                IsActive = true;
+                PanelDataWpf.OnFocus();
+            };
+
+        }
+
+        public void Shown() { }
+
+        protected void SetStyle()
+        {
+            var act = this.active;
+            if (act.HasValue)
+            {
+                var style = this.Resources[act.Value ? "ActiveStyle" : "PasiveStyle"] as Style;
+                var textStyle = this.Resources[act.Value ? "TextActive" : "TextPasive"] as Style;
+                if (style != null) // && Panel.Style != style)
+                {
+                    path.Style = textStyle;
+                    Panel.Style = style;
+                }
+            }
         }
     }
+
 }

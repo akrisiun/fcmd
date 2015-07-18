@@ -57,6 +57,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ShortenPolicies.cs" />
     <Compile Include="Toolkit\BookmarkTools.cs" />
     <Compile Include="Toolkit\OSAbstraction.cs" />
     <Compile Include="Toolkit\SysInfo.cs" />
@@ -73,8 +74,11 @@
     <Compile Include="Widgets\IContent.cs" />
     <Compile Include="Widgets\IFileListPanel.cs" />
     <Compile Include="Widgets\IListingView.cs" />
+    <Compile Include="Widgets\IListView2Visual.cs" />
     <Compile Include="Widgets\IMainMenu.cs" />
+    <Compile Include="Widgets\IMenu.cs" />
     <Compile Include="Widgets\IStatusBar.cs" />
+    <Compile Include="Widgets\IWidget.cs" />
     <Compile Include="Widgets\LightScroller.cs" />
     <Compile Include="Widgets\ListView2.cs" />
     <Compile Include="Widgets\VirtualListView.cs" />

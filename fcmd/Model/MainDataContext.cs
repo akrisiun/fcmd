@@ -26,6 +26,7 @@ namespace fcmd
         IFileListPanel ICommanderWindow.p2 { get; set; }
 
 #else 
+
     public partial class MainWindow : Window, ICommanderWindow<ListView2ItemWpf> // ListView2Canvas>
     {
 

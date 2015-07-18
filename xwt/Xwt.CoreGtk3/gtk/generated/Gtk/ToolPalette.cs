@@ -92,7 +92,7 @@ namespace Gtk {
 			}
 
 			[Gtk.ChildProperty ("expand")]
-			public new bool Expand {
+			public bool Expand {
 				get {
 					GLib.Value val = parent.ChildGetProperty (child, "expand");
 					bool ret = (bool) val;
@@ -236,7 +236,7 @@ namespace Gtk {
 		[DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
 		static extern void gtk_tool_palette_set_style(IntPtr raw, int style);
 
-		public new Gtk.ToolbarStyle Style { 
+		public Gtk.ToolbarStyle Style { 
 			get {
 				int raw_ret = gtk_tool_palette_get_style(Handle);
 				Gtk.ToolbarStyle ret = (Gtk.ToolbarStyle) raw_ret;

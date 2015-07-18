@@ -38,7 +38,7 @@ namespace Xwt.WPFBackend
 		public event EventHandler<ListRowEventArgs> RowInserted;
 		public event EventHandler<ListRowEventArgs> RowDeleted;
 		public event EventHandler<ListRowEventArgs> RowChanged;
-		public event EventHandler<ListRowOrderEventArgs> RowsReordered = null;
+        public event EventHandler<ListRowOrderEventArgs> RowsReordered;
 
 		public event NotifyCollectionChangedEventHandler CollectionChanged
 		{
@@ -58,7 +58,8 @@ namespace Xwt.WPFBackend
 
 		public void Initialize (Type[] types)
 		{
-			if (types == null)
+            RowsReordered = null;   // no warning
+            if (types == null)
 				throw new ArgumentNullException ("types");
 
 			this.columnTypes = types;

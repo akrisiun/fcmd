@@ -1,10 +1,7 @@
 ﻿using fcmd.Controller;
+using pluginner;
 using pluginner.Widgets;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xwt;
 
 namespace fcmd.View.GTK

@@ -8,6 +8,7 @@ using Key = Xwt.Key;
 #endif
 using fcmd.Model;
 using Xwt;
+using fcmd.FileList;
 
 namespace fcmd.View
 {
@@ -159,7 +160,7 @@ namespace fcmd.View
             var ActivePanel = main.ActivePanel;
             var PassivePanel = main.PassivePanel;
 
-            string URL1;
+            //string URL1;
             //if (ActivePanel.ListingView.SelectedRow > -1)
             //{ URL1 = ActivePanel.GetValue(ActivePanel.df.URL); }
             //else

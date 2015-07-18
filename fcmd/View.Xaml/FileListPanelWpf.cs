@@ -6,7 +6,6 @@ using fcmd.View;
 using fcmd.Controller;
 // using Xwt.Drawing;
 
-
 namespace fcmd.View.Xaml
 {
     // pluginner.Widgets.ListView2ItemWpf
@@ -18,6 +17,7 @@ namespace fcmd.View.Xaml
 
         public FileListPanelWpf(PanelWpf parent)
         {
+            // base.Parent 
             Parent = parent;
         }
 
@@ -29,34 +29,34 @@ namespace fcmd.View.Xaml
 
         public override void Initialize(PanelSide side)
         {
-            onFocus = new EventHandler(OnFocus);
-            df = DataFieldNumbers.Default();
-            GoRoot = new ButtonWidget { Content = "/" };
+            onFocus = new EventHandler(Focused);
 
-            GoUp = new ButtonWidget { Content = ".." };
+            df = DataFieldNumbers.Default();
+
+            //GoRoot = new ButtonWidget { Content = "/" };
+            //GoUp = new ButtonWidget { Content = ".." };
             // UrlBox = new TextEntry { Text = "" };
+
             GoUp = Parent.cdUp;
+            GoRoot = Parent.cdRoot;
             UrlBox = Parent.path;
 
             ListingViewWpf = Parent.data;
             ListingViewWpf.Panel = Parent as Xaml.PanelWpf;
             ListingViewWpf.FileList = this;
-            // Debug.Assert(ListingViewWpf.DataObj.Parent == ListingViewWpf);
+            
             ListingViewWpf.Side = side;
             PostInitialize();
         }
 
-        EventHandler onFocus;
-        bool onFocusSet;
-        protected void OnFocus(object sender, EventArgs e)
+        public void Focused(object sender, EventArgs e)
         {
-            if (onFocusSet)
-                onFocus(sender, e);
+            //if (onFocusSet)
+            //    onFocus(sender, e);
+            // base.OnFocus 
 
             //  base.GotFocus
         }
-
-        // public override event EventHandler GotFocus { add { onFocusSet = true; onFocus += value; } remove { onFocus += value; } }
 
         protected override void WriteDefaultStatusLabel()
         {

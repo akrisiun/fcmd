@@ -73,6 +73,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FileList\InputBox.cs" />
+    <Compile Include="Model\IDriveCombo.cs" />
+    <Compile Include="Model\IPanelLayout.cs" />
     <Compile Include="Platform\AiLib\IOFile\DirectoryEnum.cs" />
     <Compile Include="Platform\AiLib\IOFile\Iterator.cs" />
     <Compile Include="Platform\AiLib\IOFile\PathHelpers.cs" />
@@ -87,30 +90,30 @@
     <Compile Include="base-plugins\fs\localFileSystem.cs" />
     <Compile Include="base-plugins\ve\PlainText.cs" />
     <Compile Include="base-plugins\ve\PlainXml.cs" />
-    <Compile Include="FileList\AsyncCopy.cs" />
-    <Compile Include="FileList\FileListPanel.cs" />
-    <Compile Include="FileList\FileProcessDialog.cs" />
+    <Compile Include="FileList\Actions\AsyncCopy.cs" />
+    <Compile Include="FileList\Panel\FileListPanel.cs" />
+    <Compile Include="FileList\Actions\FileProcessDialog.cs" />
     <Compile Include="FileList\FLPDataSource.cs" />
     <Compile Include="FileList\FTPClient.cs" />
-    <Compile Include="FileList\InputBox.cs" />
-    <Compile Include="FileList\KeyboardHelpButton.cs" />
+    <Compile Include="FileList\Actions\KeyboardHelpButton.cs" />
     <Compile Include="FileList\Localizator.cs" />
-    <Compile Include="FileList\MainWindow-Actions.cs" />
+    <Compile Include="FileList\Actions\MainWindow-Actions.cs" />
     <Compile Include="FileList\MainWindow-Workers.cs" />
-    <Compile Include="FileList\MenuButton.cs" />
-    <Compile Include="FileList\ReplaceQuestionDialog.cs" />
+    <Compile Include="Model\Menu\MenuButton.cs" />
+    <Compile Include="FileList\Actions\ReplaceQuestionDialog.cs" />
     <Compile Include="FileList\Settings.cs" />
     <Compile Include="FileList\SettingsWindow.cs" />
     <Compile Include="FileList\VEd.cs" />
     <Compile Include="FileList\VEsettings.cs" />
     <Compile Include="FileList\XmlDisplay.cs" />
-    <Compile Include="Model\View\IBackend.cs" />
+    <Compile Include="Model\IBackend.cs" />
     <Compile Include="Model\CommanderData.cs" />
-    <Compile Include="Controller\ICommanderWindow.cs" />
+    <Compile Include="Platform\ICommanderWindow.cs" />
     <Compile Include="Model\Menu\Menu.cs" />
     <Compile Include="Model\Menu\MenuItemWIthKey.cs" />
     <Compile Include="Model\MainDataContext.cs" />
     <Compile Include="Platform\Application.cs" />
+    <Compile Include="Platform\ICommand.cs" />
     <Compile Include="pluginfinder.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />
     <Compile Include="SettingsWindowTabs\ISettingsWindowTab.cs" />
@@ -120,11 +123,12 @@
     <Compile Include="SettingsWindowTabs\swtMainWindowInfobar.cs" />
     <Compile Include="SettingsWindowTabs\swtMainWindowThemes.cs" />
     <Compile Include="SettingsWindowTabs\swtViewerEditor.cs" />
-    <Compile Include="Controller\Commands.cs" />
+    <Compile Include="Platform\Commands.cs" />
     <Compile Include="Model\View\Control.cs" />
+    <Compile Include="View.Xaml\Ctrl\InputBox.cs" />
     <Compile Include="View.Xaml\ListView2ItemWpf.cs" />
     <Compile Include="Model\ListView2Wpf.cs" />
-    <Compile Include="Controller\MessageDialog.cs" />
+    <Compile Include="Platform\MessageDialog.cs" />
     <Compile Include="View.Xaml\MenuWpf.cs" />
     <Compile Include="View.Xaml\WindowData.cs" />
     <Compile Include="View.Xaml\Ctrl\ButtonWidget.cs" />
@@ -195,10 +199,6 @@
     <EmbeddedResource Include="Properties\Resources.resx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\xwt\Xwt.WPF\Xwt3.WPF.csproj">
-      <Project>{c93d746e-1586-4d4f-b411-bf5a966e6a08}</Project>
-      <Name>Xwt3.WPF</Name>
-    </ProjectReference>
     <ProjectReference Include="pluginner\pluginner.csproj">
       <Project>{88785b26-d617-4be9-b449-f7ce77444794}</Project>
       <Name>pluginner</Name>

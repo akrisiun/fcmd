@@ -33,7 +33,7 @@ namespace Pango {
 
 		internal AttrFontDesc (IntPtr raw) : base (raw) {}
 
-		new struct NativeStruct {
+		private new struct NativeStruct {
 			Attribute.NativeStruct attr;
 			public IntPtr desc;
 		}

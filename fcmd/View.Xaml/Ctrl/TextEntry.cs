@@ -16,4 +16,17 @@ namespace fcmd.View.ctrl
         }
 
     }
+
+    public class ComboWidget : ComboBox, ITextEntry, IInputElement
+    {
+
+        public bool CanGetFocus { get { return IsEnabled; } set { IsEnabled = value; } }
+        public Color BackgroundColor
+        {
+            get { return ColorConvert.To(Background); }
+            set { throw new NotImplementedException("no Background for TextEntry"); }
+        }
+
+    }
+
 }

@@ -17,10 +17,7 @@ using MessageDialog = fcmd.View.MessageDialog;
 using Xwt;
 
 using pluginner;
-using pluginner.Toolkit;
 using pluginner.Widgets;
-
-using fcmd.View;
 using fcmd.Controller;
 
 #if WPF
@@ -40,12 +37,57 @@ using ColorDrawing = Xwt.Drawing;
 
 namespace fcmd
 {
-    public class CommanderStatusBar : Xwt.Label //  LabelWidget, IContent
+
+#if XWT
+
+    public class CommanderStatusBar : Xwt.Label, IContent //  LabelWidget
     {
-        //  public object Content { get; set; }
+        object IContent.Content { get { return base.Content; } set { base.Content = value as Xwt.Widget; } }
+        // public abstract string Text { get; set; }
+
+        public bool Condensed { get { return false; } set { } } // only for WPF
     }
 
-    public abstract class FileListPanel : Table
+    public abstract class FileListPanel : Table, IFileListPanel
+    {
+        //Data Field Numbers
+        //they aren't const because they may change when the columns are reordered
+        public DataFieldNumbers df { get; set; }
+        // public int dfDirItem = 5;
+
+        public IStatusBar StatusBar { get; set; }
+
+        public ShortenPolicies ShortenPolicy { get; set; }
+
+        public IFSPlugin FS { get; set; }
+
+        public abstract IButton GoRoot { get; protected set; }
+        public abstract IButton GoUp { get; protected set; }
+        public abstract ITextEntry UrlBox { get; set; }
+
+        public abstract event TypedEvent<string> Navigate;
+        public abstract event TypedEvent<string> OpenFile;
+
+
+        // T GetValue<T>(int Field)
+        public abstract T GetValue<T>(int field);
+        public abstract string GetValue(int field);
+
+        public abstract void LoadDir(string Url, ShortenPolicies? shortenPolicy);
+        public void LoadDir() { LoadDir(null, null); }
+    }
+#else
+
+    public abstract class CommanderStatusBar : UIElement, IInputElement, IContent, IStatusBar
+    {
+        public abstract object Content { get; set; }
+        public abstract string Text { get; set; }
+
+        public abstract bool Visible { get; set; }
+        public abstract bool Condensed { get; set; }    // when not Expanded (like XAML control)
+    }
+
+    public abstract class FileListPanel : IFileListPanel
     {
         //Data Field Numbers
         //they aren't const because they may change when the columns are reordered
@@ -64,28 +106,40 @@ namespace fcmd
 
         public abstract void LoadDir(string Url, ShortenPolicies? shortenPolicy);
         public void LoadDir() { LoadDir(null, null); }
+
+        // WPF abstract
+        public abstract IButton GoRoot { get; protected set; }
+        public abstract IButton GoUp { get; protected set; }
+        public abstract ITextEntry UrlBox { get; set; }
+
+        public abstract event TypedEvent<string> Navigate;
+        public abstract event TypedEvent<string> OpenFile;
+        public abstract event EventHandler GotFocus;
+        // void OnFocus();
     }
 
-    public abstract class FileListPanel<T> : FileListPanel, IFileListPanel<T>, IFileListPanel where T : class, IListView2Visual
+#endif
+
+    public abstract class FileListPanel<T> : FileListPanel, IFileListPanel<T> where T : class, IListView2Visual
     {
         public abstract IListingView<T> ListingView { get; }
 
         #region Properties 
 
-        public IFSPlugin FS { get; set; }
-
-        public IButton GoRoot { get; set; }
-        public IButton GoUp { get; set; }
-        public ITextEntry UrlBox { get; set; }
+        public override IButton GoRoot { get; protected set; }
+        public override IButton GoUp { get; protected set; }
+        public override ITextEntry UrlBox { get; set; }
 
         public abstract IListingContainer ListingWidget { get; }
 
-        // IListView2<T> IFileListPanel<T>.ListingView get 
-        // ShortenPolicies IFileListPanel.ShortenPolicy
-
         public abstract void Initialize(PanelSide side);
 
-#if XWT
+#if !XWT
+        protected EventHandler onFocus;
+        protected bool onFocusSet;
+        public override event EventHandler GotFocus { add { onFocusSet = true; onFocus += value; } remove { onFocus += value; } }
+
+#else 
         EventHandler goRootDelegate = null;
         EventHandler goUpDelegate = null;
 
@@ -107,10 +161,9 @@ namespace fcmd
 #endif
 
         /// <summary>User navigates into another directory</summary>
-        public event TypedEvent<string> Navigate;
+        public override event TypedEvent<string> Navigate;
         /// <summary>User tried to open the highlighted file</summary>
-        public event TypedEvent<string> OpenFile;
-        // public event EventHandler GotFocus;
+        public override event TypedEvent<string> OpenFile;
 
         protected string SBtext1, SBtext2;
         // private Stylist s;
@@ -545,6 +598,16 @@ namespace fcmd
 
         #region FS
 
+        public virtual void OnFocus()
+        {
+#if XWT
+            base.OnGotFocus(EventArgs.Empty);
+#else
+            if (this.onFocusSet)
+                this.onFocus(null, EventArgs.Empty);
+#endif
+        }
+
         public virtual void LoadFs(string URL, ShortenPolicies Shorten)
         {
             // string URL, SizeDisplayPolicy ShortenKB, SizeDisplayPolicy ShortenMB, SizeDisplayPolicy ShortenGB)
@@ -559,8 +622,8 @@ namespace fcmd
             UrlBox.Text = URL;
             string updir = URL + FS.DirSeparator + "..";
             string rootdir = FS.GetMetadata(URL).RootDirectory;
-            uint counter = 0;
-            const uint per_number = ~(((~(uint)0) >> 10) << 10);
+
+
             List<DirItem> dis = new List<DirItem>();
             //dis = FS.DirectoryContent;
 
@@ -577,6 +640,8 @@ namespace fcmd
                                                                                  // wait loop: do { } while (DirLoadingThread.ThreadState == ThreadState.Running);
             if (dis.Count == 0)
                 return;
+
+            uint counter = 0;
 
             foreach (DirItem di in dis)
             {
@@ -617,8 +682,11 @@ namespace fcmd
 
 #if !XWT
                 (ListingView as ListView2Xaml).AddItem(Data, EditableFileds, di.URL);
+                ++counter;
 #else
                 ListingView.AddItem(Data, EditableFileds, di.URL);
+
+                const uint per_number = ~(((~(uint)0) >> 10) << 10);
                 if ((++counter & per_number) == 0)
                 {
                     Application.MainLoop.DispatchPendingEvents();
@@ -626,30 +694,31 @@ namespace fcmd
 #endif
             }
 
-            //if (goUpDelegate != null)
-            //{
-            //    GoUp.Clicked -= goUpDelegate;
-            //}
+#if !WPF
+            if (goUpDelegate != null)
+            {
+                GoUp.Clicked -= goUpDelegate;
+            }
 
 
             // WPF problem : no UI thread synchornize
-            //goUpDelegate = (o, ea) =>
-            //    {
-            //        LoadDir(updir);
-            //    };
+            goUpDelegate = (o, ea) =>
+                {
+                    LoadDir(updir);
+                };
 
 
-            //GoUp.Clicked += goUpDelegate;
-            //if (goRootDelegate != null)
-            //{
-            //    GoRoot.Clicked -= goRootDelegate;
-            //}
-            //goRootDelegate = (o, ea) =>
-            //    {
-            //        LoadDir(rootdir);
-            //    };
-            //GoRoot.Clicked += goRootDelegate;
-
+            GoUp.Clicked += goUpDelegate;
+            if (goRootDelegate != null)
+            {
+                GoRoot.Clicked -= goRootDelegate;
+            }
+            goRootDelegate = (o, ea) =>
+                {
+                    LoadDir(rootdir);
+                };
+            GoRoot.Clicked += goRootDelegate;
+#endif
         }
 
         protected void FS_StatusChanged(string data)
@@ -683,7 +752,7 @@ namespace fcmd
         /// <summary>
         /// Reloads the current directory
         /// </summary>
-        public void LoadDir()
+        public new void LoadDir()
         {
             LoadDir(FS.CurrentDirectory);
         }
@@ -697,7 +766,7 @@ namespace fcmd
             LoadDir(URL, ShortenPolicy);
         }
 
-        #endregion
+#endregion
 
 #if !WPF
         /// <summary>
@@ -727,7 +796,7 @@ namespace fcmd
             return (string)ListingView.PointedItem.Data[Field];
         }
 #endif
-        #region Drives, Mounts
+#region Drives, Mounts
 
         /// <summary>Add autobookmark "system disks" onto disk toolbar</summary>
         protected void AddSysDrives()
@@ -807,7 +876,7 @@ namespace fcmd
             else AddSysDrives(); //fallback for Windows
         }
 
-        #endregion
+#endregion
 
         /// <summary>
         /// Writes to statusbar the default text

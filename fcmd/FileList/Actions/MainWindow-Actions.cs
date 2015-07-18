@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading;
 using pluginner.Widgets;
 using Xwt;
+using fcmd.FileList;
 #if WPF
 using ListView2Canvas = pluginner.Widgets.ListView2ItemWpf;
 #else 
@@ -174,7 +175,7 @@ namespace fcmd
 
             // var PassivePanel = PassivePanel;
 
-            foreach (ListView2Canvas selitem 
+            foreach (ListView2Canvas selitem
                         in (ActivePanel.ListingView as IListingView<ListView2Canvas>)
                             .ChoosedRows)
             {
@@ -185,14 +186,13 @@ namespace fcmd
                 if (SourceFS.FileExists(SourceURL))
                 {
                     string SourceName = SourceFS.GetMetadata(SourceURL).Name;
+
                     InputBox ibx = new InputBox(
                         String.Format(Localizator.GetString("CopyTo"), SourceName),
                         PassivePanel.FS.CurrentDirectory + PassivePanel.FS.DirSeparator + SourceName);
 
                     bool show = false;
-#if XWT
                     show = ibx.ShowDialog(this);
-#endif
                     if (show)
                     {
                         String DestinationFilePath = ibx.Result;
@@ -202,11 +202,17 @@ namespace fcmd
                         AsyncCopy AC = new AsyncCopy();
 
                         Thread CpThread = new Thread(delegate () { DoCp(ActivePanel.FS, PassivePanel.FS, SourceURL, DestinationFilePath, ref dummy, AC); });
+
                         CpThread.TrySetApartmentState(ApartmentState.STA);
                         FileProcessDialog fpd = new FileProcessDialog();
                         fpd.InitialLocation = Xwt.WindowLocation.CenterParent;
                         fpd.lblStatus.Text = String.Format(StatusMask, ActivePanel.GetValue<string>(ActivePanel.df.URL), ibx.Result, null);
-                        fpd.cmdCancel.Clicked += (object s, EventArgs e) => { CpThread.Abort(); MessageDialog.ShowWarning(Localizator.GetString("Canceled"), ActivePanel.GetValue<string>(ActivePanel.df.URL)); };
+                        fpd.cmdCancel.Clicked += (object s, EventArgs e)
+                            =>
+                            {
+                                CpThread.Abort();
+                                MessageDialog.ShowWarning(Localizator.GetString("Canceled"), ActivePanel.GetValue<string>(ActivePanel.df.URL));
+                            };
 
                         AC.ReportMessage = Localizator.GetString("CopyStatus");
                         AC.OnProgress += (message, percent) =>
@@ -224,6 +230,7 @@ namespace fcmd
                         };
 
                         fpd.Show();
+
                         CpThread.Start();
 
                         do
@@ -231,7 +238,8 @@ namespace fcmd
                             Xwt.Application.MainLoop.DispatchPendingEvents();
                         }
                         while (CpThread.ThreadState == ThreadState.Running);
-                        //todo: замер и показ скорости, пауза, запрос отмены, вывод в фоновый поток (кнопка "в фоне").
+                        // todo: замер и показ скорости, пауза, запрос отмены, вывод в фоновый поток (кнопка "в фоне").
+                        // TODO: show bytes rate, pause, cancel button, move to queue
 
                         fpd.Hide();
                     }
@@ -273,6 +281,7 @@ namespace fcmd
                         ActivePanel.df.URL
                     )
                 );
+
                 continue;
 
             }
@@ -288,7 +297,7 @@ namespace fcmd
             pluginner.IFSPlugin SourceFS = ActivePanel.FS;
             pluginner.IFSPlugin DestinationFS = PassivePanel.FS;
 
-            foreach (ListView2Canvas selitem in 
+            foreach (ListView2Canvas selitem in
                         (ActivePanel.ListingView as IListingView<ListView2Canvas>)
                             .ChoosedRows)
             {
@@ -297,6 +306,7 @@ namespace fcmd
                 string SourcePath = selitem.Data[ActivePanel.df.URL].ToString(); //ActivePanel.GetValue<string>(ActivePanel.df.URL);
                 string DestinationPath = DestinationFS.CurrentDirectory + DestinationFS.DirSeparator + SourceName;
 
+#if XWT
                 InputBox ibx = new InputBox
                     (
                     string.Format(Localizator.GetString("MoveTo"), SourceName),
@@ -339,6 +349,7 @@ namespace fcmd
                 {//this is a file
                     SourceFS.MoveFile(SourcePath, DestinationPath);
                 }
+#endif
 
                 //ActivePanel.LoadDir();
                 //PassivePanel.LoadDir();

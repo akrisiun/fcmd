@@ -89,21 +89,17 @@
     <Compile Include="base-plugins\fs\localFileSystem-CLI.cs" />
     <Compile Include="base-plugins\ve\PlainText.cs" />
     <Compile Include="base-plugins\ve\PlainXml.cs" />
-    <Compile Include="Controller\Commands.cs" />
-    <Compile Include="Controller\ICommanderWindow.cs" />
-    <Compile Include="Controller\MessageDialog.cs" />
-    <Compile Include="FileList\AsyncCopy.cs" />
-    <Compile Include="FileList\FileListPanel.cs" />
-    <Compile Include="FileList\FileProcessDialog.cs" />
+    <Compile Include="FileList\Actions\AsyncCopy.cs" />
+    <Compile Include="FileList\Actions\FileProcessDialog.cs" />
+    <Compile Include="FileList\Actions\KeyboardHelpButton.cs" />
+    <Compile Include="FileList\Actions\MainWindow-Actions.cs" />
+    <Compile Include="FileList\Actions\ReplaceQuestionDialog.cs" />
     <Compile Include="FileList\FLPDataSource.cs" />
     <Compile Include="FileList\FTPClient.cs" />
     <Compile Include="FileList\InputBox.cs" />
-    <Compile Include="FileList\KeyboardHelpButton.cs" />
     <Compile Include="FileList\Localizator.cs" />
-    <Compile Include="FileList\MainWindow-Actions.cs" />
     <Compile Include="FileList\MainWindow-Workers.cs" />
-    <Compile Include="FileList\MenuButton.cs" />
-    <Compile Include="FileList\ReplaceQuestionDialog.cs" />
+    <Compile Include="FileList\Panel\FileListPanel.cs" />
     <Compile Include="FileList\Settings.cs" />
     <Compile Include="FileList\SettingsWindow.cs" />
     <Compile Include="FileList\VEd.cs" />
@@ -111,10 +107,12 @@
     <Compile Include="FileList\XmlDisplay.cs" />
     <Compile Include="MainWindow.cs" />
     <Compile Include="Model\CommanderData.cs" />
+    <Compile Include="Model\IBackend.cs" />
+    <Compile Include="Model\IDriveCombo.cs" />
+    <Compile Include="Model\IPanelLayout.cs" />
     <Compile Include="Model\ListView2Wpf.cs" />
     <Compile Include="Model\MainDataContext.cs" />
     <Compile Include="Model\View\Control.cs" />
-    <Compile Include="Model\View\IBackend.cs" />
     <Compile Include="Platform\AiLib\IOFile\DirectoryEnum.cs" />
     <Compile Include="Platform\AiLib\IOFile\Iterator.cs" />
     <Compile Include="Platform\AiLib\IOFile\PathHelpers.cs" />
@@ -125,7 +123,12 @@
     <Compile Include="Platform\AiLib\Reflection\StringConvert.cs" />
     <Compile Include="Model\Menu\Menu.cs" />
     <Compile Include="Model\Menu\MenuItemWIthKey.cs" />
+    <Compile Include="Platform\Commands.cs" />
+    <Compile Include="Platform\ICommanderWindow.cs" />
+    <Compile Include="Platform\MessageDialog.cs" />
+    <Compile Include="View.GTK\BodyGtk.cs" />
     <Compile Include="View.GTK\FileListPanelGTK.cs" />
+    <Compile Include="View.GTK\InputBoxGTK.cs" />
     <Compile Include="View.GTK\MenuGtk.cs" />
     <Compile Include="Platform\Application.cs" />
     <Compile Include="Platform\ICommand.cs" />
@@ -156,11 +159,16 @@
     <Compile Include="SettingsWindowTabs\swtMainWindowFonts.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="CoreGtk3, Version=3.2.5677.13770, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\xwt\bin\CoreGtk3.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="Xwt3">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
@@ -223,10 +231,6 @@
     <EmbeddedResource Include="Resources\emblem-system.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\xwt\Xwt.CoreGtk3\CoreGtk3.csproj">
-      <Project>{9e4b0803-5255-43aa-9c68-0cbdf76db564}</Project>
-      <Name>CoreGtk3</Name>
-    </ProjectReference>
     <ProjectReference Include="pluginner\pluginner.csproj">
       <Project>{88785B26-D617-4BE9-B449-F7CE77444794}</Project>
       <Name>pluginner</Name>

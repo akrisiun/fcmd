@@ -536,7 +536,7 @@ namespace Gtk
         [DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void gtk_toolbar_set_style(IntPtr raw, int style);
 
-        public new Gtk.ToolbarStyle Style
+        public Gtk.ToolbarStyle Style
         {
             get
             {

@@ -1,4 +1,5 @@
-﻿using fcmd.Model;
+﻿using fcmd.FileList;
+using fcmd.Model;
 using pluginner.Widgets;
 using System;
 using System.Windows.Input;
@@ -15,7 +16,7 @@ namespace fcmd.View
             InitMenu();
         }
 
-        MainWindow IBackend.Window { get {return main; } }
+        MainWindow IBackend.Window { get { return main; } }
         protected MainWindow main;
 
         public void Shown()
@@ -24,6 +25,9 @@ namespace fcmd.View
             main.RightPanel.data.Columns.Clear();
 
             main.WindowData.LoadDir(Environment.GetCommandLineArgs());
+
+            // KeyEventHandler  object sender, KeyEventArgs e);
+            main.PreviewKeyDown += (s,e) => this.KeyEvent(s,e);
         }
 
         public void InitMenu()
@@ -112,7 +116,6 @@ namespace fcmd.View
 
         public void Localize()
         {
-
             //main.WindowData.TranslateMenu();
             //     // main.WindowData.M  .DataContext as CommanderData).TranslateMenu(main.MainMenu);
 
@@ -142,17 +145,20 @@ namespace fcmd.View
             //    main.p2.ListingView.SetColumns(LVCols);
         }
 
-        // public void Key(MainWindow main, Xwt.KeyEventArgs e)
-        public void KeyEvent(MainWindow main, System.Windows.Input.KeyEventArgs e)
+        public void KeyEvent(object sender, System.Windows.Input.KeyEventArgs e)
         {
             var ActivePanel = main.ActivePanelWpf;
             var PassivePanel = main.PassivePanelWpf;
 
             string URL1;
             if (ActivePanel.ListingView.SelectedRow > -1)
-            { URL1 = ActivePanel.GetValue(ActivePanel.df.URL); }
+            {
+                URL1 = ActivePanel.GetValue(ActivePanel.df.URL);
+            }
             else
-            { URL1 = null; }
+            {
+                URL1 = null;
+            }
             pluginner.IFSPlugin FS1 = ActivePanel.FS;
 
             /* string URL2;
@@ -172,7 +178,12 @@ namespace fcmd.View
                     InputBox ibx_qs = new InputBox(Localizator.GetString("QuickSelect"), Filter);
                     Xwt.CheckBox chkRegExp = new Xwt.CheckBox(Localizator.GetString("NameFilterUseRegExp"));
                     ibx_qs.OtherWidgets.Add(chkRegExp, 0, 0);
-                    if (!ibx_qs.ShowDialog()) return;
+                    if (!ibx_qs.ShowDialog())
+                    {
+                        e.Handled = false;
+                        return;
+                    }
+
                     Filter = ibx_qs.Result;
                     if (chkRegExp.State == Xwt.CheckBoxState.Off)
                     {
@@ -200,6 +211,8 @@ namespace fcmd.View
                     {
                         Xwt.MessageDialog.ShowError(Localizator.GetString("NameFilterError"), ex.Message);
                     }
+
+                    e.Handled = true;
                     return;
 
                 // case Xwt.Key.NumPadSubtract: //[-] gray - add selection
@@ -260,7 +273,7 @@ namespace fcmd.View
                     //    V.Show();
                     //}
 
-                    //todo: handle Ctrl+F3 (Sort by name).
+                    //   TODO: handle Ctrl+F3 (Sort by name).
                     return;
 
                 // case Xwt.Key.F4: //F4: Edit. Shift+F4: Edit as txt.
@@ -281,12 +294,15 @@ namespace fcmd.View
                     //else if (e.Modifiers == Xwt.ModifierKeys.Shift)
                     //{ E.LoadFile(URL1, FS1, new base_plugins.ve.PlainText(), true); E.Show(); }
                     //todo: handle Ctrl+F4 (Sort by extension).
+
+                    e.Handled = true;
                     return;
 
                 case Key.F5: //F5: Copy.
                     if (URL1 == null)
                         return;
                     main.Cp();
+
                     //todo: handle Ctrl+F5 (Sort by timestamp).
                     return;
 
@@ -296,7 +312,9 @@ namespace fcmd.View
                     main.Mv();
                     //todo: handle Ctrl+F6 (Sort by size).
                     return;
+
                 case Key.F7: //F7: New directory.
+
                     InputBox ibx = new InputBox(Localizator.GetString("NewDirURL"), ActivePanel.FS.CurrentDirectory + Localizator.GetString("NewDirTemplate"));
                     if (ibx.ShowDialog())
                         main.MkDir(ibx.Result);
@@ -323,6 +341,6 @@ namespace fcmd.View
             throw new NotImplementedException();
         }
 
-       
+
     }
 }

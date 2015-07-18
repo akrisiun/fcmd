@@ -16,6 +16,7 @@ using pluginner.Widgets;
 using fcmd.Menu;
 using fcmd.View.GTK;
 using fcmd.Model;
+using pluginner;
 
 namespace fcmd
 {
@@ -165,7 +166,7 @@ namespace fcmd
         {
             string Filter = @"*.*";
 
-            InputBox ibx = new InputBox(Localizator.GetString("NameFilterQuestion"), Filter);
+            InputBoxGTK ibx = new InputBoxGTK(Localizator.GetString("NameFilterQuestion"), Filter);
             Xwt.CheckBox chkRegExp = new Xwt.CheckBox(Localizator.GetString("NameFilterUseRegExp"));
             ibx.OtherWidgets.Add(chkRegExp, 0, 0);
             if (!ibx.ShowDialog()) return;
@@ -281,7 +282,7 @@ namespace fcmd
 
         private void mnuToolsOptions_Clicked(object sender, EventArgs e)
         {
-            new SettingsWindow().Run();
+            new SettingsWindow().RunCommand(); // .Run();
             ActivePanel.LoadDir(null, null);
             PassivePanel.LoadDir(null, null);
         }

@@ -6,7 +6,7 @@ using Xwt.Backends;
 #if !WPF
 using Xwt.GtkBackend;
 #else
-using Xwt.WPFBackend;
+// using Xwt.WPFBackend;
 #endif
 
 namespace fcmd.Menu
@@ -34,31 +34,35 @@ namespace fcmd.Menu
 
         protected void InsertItem(int n, MenuItem item)
         {
+#if XWT
             (Backend as Xwt.WPFBackend.MenuBackend).InsertItem(n, (IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend(item));
+#endif
         }
 
         protected void RemoveItem(MenuItem item)
         {
+#if XWT
             (Backend as Xwt.WPFBackend.MenuBackend).RemoveItem((IMenuItemBackend)BackendHost.ToolkitEngine.GetSafeBackend(item));
+#endif
         }
 #endif
 
-        #endregion
+#endregion
 
-        /// <summary>
-        /// Shows the menu at the current position of the cursor
-        /// </summary>
-        //public new void Popup()
-        //{
-        //    Backend.Popup();
-        //}
+            /// <summary>
+            /// Shows the menu at the current position of the cursor
+            /// </summary>
+            //public new void Popup()
+            //{
+            //    Backend.Popup();
+            //}
 
-        /// <summary>
-        /// Shows the menu at the specified location
-        /// </summary>
-        /// <param name="parentWidget">Widget upon which to show the menu</param>
-        /// <param name="x">The x coordinate, relative to the widget origin</param>
-        /// <param name="y">The y coordinate, relative to the widget origin</param>
+            /// <summary>
+            /// Shows the menu at the specified location
+            /// </summary>
+            /// <param name="parentWidget">Widget upon which to show the menu</param>
+            /// <param name="x">The x coordinate, relative to the widget origin</param>
+            /// <param name="y">The y coordinate, relative to the widget origin</param>
         public new void Popup(Widget parentWidget, double x, double y)
         {
             //Backend.Popup((IWidgetBackend)BackendHost.ToolkitEngine.GetSafeBackend(parentWidget), x, y);

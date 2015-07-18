@@ -44,7 +44,7 @@ namespace Gtk {
 			}
 
 			[Gtk.ChildProperty ("title")]
-			public new string Title {
+			public string Title {
 				get {
 					GLib.Value val = parent.ChildGetProperty (child, "title");
 					string ret = (string) val;

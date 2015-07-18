@@ -7008,7 +7008,7 @@ namespace Gtk
         [DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void gtk_widget_modify_base(IntPtr raw, int state, IntPtr color);
 
-        [Obsolete]
+        // [Obsolete]
         public void ModifyBase(Gtk.StateType state, Gdk.Color color)
         {
             IntPtr native_color = GLib.Marshaller.StructureToPtrAlloc(color);
@@ -7020,7 +7020,7 @@ namespace Gtk
         [DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void gtk_widget_modify_bg(IntPtr raw, int state, IntPtr color);
 
-        [Obsolete]
+        // [Obsolete]
         public void ModifyBg(Gtk.StateType state, Gdk.Color color)
         {
             IntPtr native_color = GLib.Marshaller.StructureToPtrAlloc(color);
@@ -7032,7 +7032,7 @@ namespace Gtk
         [DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void gtk_widget_modify_cursor(IntPtr raw, IntPtr primary, IntPtr secondary);
 
-        [Obsolete]
+        // [Obsolete]
         public void ModifyCursor(Gdk.Color primary, Gdk.Color secondary)
         {
             IntPtr native_primary = GLib.Marshaller.StructureToPtrAlloc(primary);
@@ -7047,7 +7047,7 @@ namespace Gtk
         [DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void gtk_widget_modify_fg(IntPtr raw, int state, IntPtr color);
 
-        [Obsolete]
+        // [Obsolete]
         public void ModifyFg(Gtk.StateType state, Gdk.Color color)
         {
             IntPtr native_color = GLib.Marshaller.StructureToPtrAlloc(color);
@@ -7077,7 +7077,7 @@ namespace Gtk
         [DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void gtk_widget_modify_text(IntPtr raw, int state, IntPtr color);
 
-        [Obsolete]
+        // [Obsolete]
         public void ModifyText(Gtk.StateType state, Gdk.Color color)
         {
             IntPtr native_color = GLib.Marshaller.StructureToPtrAlloc(color);
@@ -7438,7 +7438,7 @@ namespace Gtk
         [DllImport("libgtk-3-0.dll", CallingConvention = CallingConvention.Cdecl)]
         static extern void gtk_widget_size_request(IntPtr raw, IntPtr requisition);
 
-        [Obsolete]
+        // [Obsolete]
         public Gtk.Requisition SizeRequest()
         {
             Gtk.Requisition requisition;

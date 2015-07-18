@@ -71,7 +71,7 @@ namespace Gtk {
 			protected internal BoxChild (Gtk.Container parent, Gtk.Widget child) : base (parent, child) {}
 
 			[Gtk.ChildProperty ("expand")]
-			public new bool Expand {
+			public bool Expand {
 				get {
 					GLib.Value val = parent.ChildGetProperty (child, "expand");
 					bool ret = (bool) val;

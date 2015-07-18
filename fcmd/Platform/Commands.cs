@@ -2,8 +2,6 @@
 using fcmd.View.ctrl;
 using pluginner.Widgets;
 using System;
-//using System.Windows;
-//using System.Windows.Input;
 
 namespace fcmd.Controller
 {
@@ -25,6 +23,7 @@ namespace fcmd.Controller
 
         public void Execute(object parameter)
         {
+            CanExecuteChanged = null;
 #if WPF
             Application.Current.Shutdown();
 #else 

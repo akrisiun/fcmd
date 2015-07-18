@@ -1,15 +1,15 @@
-﻿using fcmd.View;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows;
-// using System.Windows.Controls;
-using System.Windows.Input;
+﻿using pluginner.Widgets;
 using Xwt;
+using fcmd.View;
 
 namespace fcmd.Menu
 {
-    public static class MenuWpf
+    public class MenuGtk : Xwt.Menu, IMenu
+    {
+
+    }
+
+    public static class MenuBind
     {
         public static void Bind(MainWindow window)
         {

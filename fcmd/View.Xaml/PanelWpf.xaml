@@ -8,8 +8,37 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <SolidColorBrush x:Key="SilverLine" Color="#F0F0F0" />
+        <Style x:Key="Button" TargetType="{x:Type local:ButtonWidget}">
+            <Setter Property="BorderBrush" Value="Silver" />
+        </Style>
+
+        <Style x:Key="ActiveStyle" TargetType="{x:Type DockPanel}">
+            <Setter Property="Background" Value="{x:Static SystemColors.HighlightBrush}" />
+        </Style>
+        <Style x:Key="PasiveStyle" TargetType="{x:Type DockPanel}">
+            <Setter Property="Background" Value="WhiteSmoke" />
+            <!--Value="{x:Static SystemColors.InactiveBorderBrush}"-->
+        </Style>
+        <Style x:Key="TextActive" TargetType="{x:Type local:TextEntry}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="White" />
+        </Style>
+        <Style x:Key="TextPasive" TargetType="{x:Type local:TextEntry}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="Black" />
+        </Style>
+
+        <Style x:Key="PanelBG" TargetType="{x:Type Grid}">
+            <Setter Property="Background" Value="WhiteSmoke" />
+        </Style>
+
+        <!--<Setter Property="Background" TargetName="Bd" 
+                Value="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Grid}}}"/>-->
     </UserControl.Resources>
-    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="WhiteSmoke">
+
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+          Style="{StaticResource PanelBG}">
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="24" />
             <RowDefinition Height="*" />
@@ -18,14 +47,43 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="24" />
         </Grid.ColumnDefinitions>
-        <DockPanel Background="Silver" HorizontalAlignment="Stretch">
-            <local:TextEntry x:Name="path" BorderThickness="0"
-                Background="Transparent" Foreground="White"
-                Grid.Column="0" Margin="6,4,0,2"
-                HorizontalAlignment="Stretch" Text="Directory ...">
-            </local:TextEntry>
+
+        <DockPanel x:Name="Panel" Style="{StaticResource ActiveStyle}"
+                   HorizontalAlignment="Stretch" Grid.ColumnSpan="2">
+                   <!--Style="{StaticResource ActiveStyle}"-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition Width="*" MinWidth="100" />
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="24" />
+                </Grid.ColumnDefinitions>
+
+                <local:ComboWidget x:Name="combo"
+                    Grid.Column="0"
+                />
+
+                <local:TextEntry x:Name="path" BorderThickness="0"
+                    Grid.Column="1"
+                    Margin="6,4,0,2"
+                    HorizontalAlignment="Stretch" Text="Directory ...">
+                </local:TextEntry>
+                <!--Style="{StaticResource TextPasive}"-->
+
+                <local:ButtonWidget Style="{StaticResource Button}"
+                    Grid.Column="2"
+                    x:Name="cdRoot" Text="/" />
+
+                <local:ButtonWidget x:Name="cdUp" 
+                    Grid.Column="3" Style="{StaticResource Button}"
+                    Text=".." />
+
+                <local:ButtonWidget x:Name="cdFavorites" 
+                    Grid.Column="4" Style="{StaticResource Button}"
+                    Text="*" />
+            </Grid>
         </DockPanel>
-        <local:ButtonWidget x:Name="cdUp" Grid.Column="1" Text=".." />
 
         <local:ListView2Widget x:Name="data" Grid.Row="1" Grid.ColumnSpan="2"
                ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto" 
@@ -33,11 +91,14 @@
                RowHeight="23"
                VerticalGridLinesBrush="{StaticResource SilverLine}"
                HorizontalGridLinesBrush="{StaticResource SilverLine}" 
+               
                SelectionMode="Extended" SelectionUnit="FullRow" 
                ClipboardCopyMode="ExcludeHeader"
                EnableColumnVirtualization="False" EnableRowVirtualization="False" 
                VirtualizingPanel.IsVirtualizing="True"
-               VirtualizingPanel.IsVirtualizingWhenGrouping="True"                               
+               VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+               AutoGenerateColumns="False" 
+               FrozenColumnCount="1" HeadersVisibility="Column"                               
             >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Column 1" />
