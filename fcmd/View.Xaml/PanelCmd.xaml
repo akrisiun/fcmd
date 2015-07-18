@@ -5,14 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:fcmd.View"
              mc:Ignorable="d" 
-             d:DesignHeight="24" d:DesignWidth="300">
+             d:DesignHeight="24" d:DesignWidth="600">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80" />
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width=".5*" />
         </Grid.ColumnDefinitions>
         <Label>Command:</Label>
-        <TextBox Name="cmd" Margin="5,1,5,1"
-                 HorizontalAlignment="Stretch" Grid.Column="1"/>
+        <TextBox Name="selected" Margin="5,1,5,1"
+                 HorizontalAlignment="Stretch" Grid.Column="1" />
+        <ComboBox Name="cmd" Margin="5,1,5,1" IsEditable="True" 
+                 HorizontalAlignment="Stretch" Grid.Column="2" />
     </Grid>
 </UserControl>

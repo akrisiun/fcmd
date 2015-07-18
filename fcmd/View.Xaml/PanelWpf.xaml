@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:fcmd.View.ctrl"
+             xmlns:localXaml="clr-namespace:fcmd.View.Xaml"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -15,7 +16,7 @@
         <Style x:Key="ActiveStyle" TargetType="{x:Type DockPanel}">
             <Setter Property="Background" Value="{x:Static SystemColors.HighlightBrush}" />
         </Style>
-        <Style x:Key="PasiveStyle" TargetType="{x:Type DockPanel}">
+        <Style x:Key="PassiveStyle" TargetType="{x:Type DockPanel}">
             <Setter Property="Background" Value="WhiteSmoke" />
             <!--Value="{x:Static SystemColors.InactiveBorderBrush}"-->
         </Style>
@@ -23,7 +24,7 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="White" />
         </Style>
-        <Style x:Key="TextPasive" TargetType="{x:Type local:TextEntry}">
+        <Style x:Key="TextPassive" TargetType="{x:Type local:TextEntry}">
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="Black" />
         </Style>
@@ -69,7 +70,7 @@
                     Margin="6,4,0,2"
                     HorizontalAlignment="Stretch" Text="Directory ...">
                 </local:TextEntry>
-                <!--Style="{StaticResource TextPasive}"-->
+                <!--Style="{StaticResource TextPassive}"-->
 
                 <local:ButtonWidget Style="{StaticResource Button}"
                     Grid.Column="2"
@@ -101,8 +102,9 @@
                FrozenColumnCount="1" HeadersVisibility="Column"                               
             >
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Column 1" />
-                <DataGridTextColumn Header="Column 2" />
+                <DataGridTextColumn Header="Loading ..."  MinWidth="120" />
+                <DataGridTextColumn Header=" " MinWidth="50" />
+                <DataGridTextColumn Header=" " MinWidth="50" />
             </DataGrid.Columns>
         </local:ListView2Widget>
     </Grid>

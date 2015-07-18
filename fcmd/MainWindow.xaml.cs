@@ -3,6 +3,8 @@ using System;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using fcmd.Model;
+using fcmd.View.ctrl;
+using fcmd.View.Xaml;
 
 namespace fcmd
 {

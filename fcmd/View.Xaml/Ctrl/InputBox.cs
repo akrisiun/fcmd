@@ -7,14 +7,14 @@
 namespace fcmd.View.Xaml
 {
     /// <summary>The dialog box for asking the user</summary>
-    public class InputBox : Xwt.Dialog
+    public class InputBoxXmal : Xwt.Dialog
     {
         Xwt.Label lblQuestion = new Xwt.Label();
         Xwt.TextEntry txtAnwser = new Xwt.TextEntry();
         Xwt.VBox box = new Xwt.VBox();
         public Xwt.Table OtherWidgets = new Xwt.Table();
 
-        public InputBox(string AskText)
+        public InputBoxXmal(string AskText)
         {
             lblQuestion.Text = AskText;
 
@@ -22,7 +22,7 @@ namespace fcmd.View.Xaml
             this.Buttons.Add(Xwt.Command.Cancel);
         }
 
-        public InputBox(string AskText, string DefaultValue)
+        public InputBoxXmal(string AskText, string DefaultValue)
         {
             lblQuestion.Text = AskText;
             txtAnwser.Text = DefaultValue;
@@ -31,7 +31,7 @@ namespace fcmd.View.Xaml
             this.Buttons.Add(Xwt.Command.Cancel);
         }
 
-        public InputBox(string AskText, string DefaultValue, Xwt.Command[] Buttons)
+        public InputBoxXmal(string AskText, string DefaultValue, Xwt.Command[] Buttons)
         {
             lblQuestion.Text = AskText;
             txtAnwser.Text = DefaultValue;

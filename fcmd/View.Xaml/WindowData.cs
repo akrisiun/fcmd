@@ -6,6 +6,9 @@ using fcmd.Controller;
 using fcmd.View.Xaml;
 using pluginner;
 using pluginner.Widgets;
+using System.Threading.Tasks;
+using System.Windows.Threading;
+using fcmd.View;
 
 namespace fcmd.Model
 {
@@ -29,7 +32,7 @@ namespace fcmd.Model
         public class PanelLayoutClass : IPanelLayout
         {
             public IPanel Panel1 {[DebuggerStepThrough] get { return wpfPanel1; } }
-            public IPanel Panel2 {[DebuggerStepThrough] get { return wpfPanel1; } }
+            public IPanel Panel2 {[DebuggerStepThrough] get { return wpfPanel2; } }
 
             public PanelWpf wpfPanel1 { get; protected set; }
             public PanelWpf wpfPanel2 { get; protected set; }
@@ -46,6 +49,7 @@ namespace fcmd.Model
 
                 w.p1 = w.ActivePanelWpf;
                 w.p2 = w.PassivePanelWpf;
+                w.RightPanel.Side = PanelSide.Right;
 
                 return new PanelLayoutClass { wpfPanel1 = w.LeftPanel, wpfPanel2 = w.RightPanel };
             }
@@ -66,10 +70,9 @@ namespace fcmd.Model
             // Console.WriteLine("FOCUS DEBUG: The " + PanelName + " panel (" + NewPanel.FS.CurrentDirectory + ") got focus");
 #endif
 
-            var pasive = Window.PassivePanelWpf.Parent as PanelWpf;
-            pasive.IsActive = false;
-            //  this.ActiveSide = isLeft ? PanelSide.Left : PanelSide.Right;
-
+            var passive = Window.PassivePanelWpf.Parent as PanelWpf;
+            passive.IsActive = false;
+  
             // AssemblyName an = Assembly.GetExecutingAssembly().GetName();
             Window.Title = string.Format(
                 "{0} - {1}",
@@ -142,15 +145,13 @@ namespace fcmd.Model
 
         protected override void OnShown()
         {
-            var visual = this.Backend;
-            var panel1 = this.PanelLayout.Panel1;
+            var panel1 = this.PanelLayout.Panel1 as PanelWpf;
             var panel2 = this.PanelLayout.Panel2 as PanelWpf;
-            panel1.Shown();
-            panel2.Shown();
-
             panel2.IsActive = false;
             panel1.IsActive = true;
-            visual.Shown();
+
+            var visual = this.Backend as WpfBackend;
+            visual.Shown(panel1, panel2);
 
 #if DEBUG
             var active = ActiveSide; // = PanelSide.Left;
@@ -174,6 +175,12 @@ namespace fcmd.Model
         public override object Layout { get { return Window.Content; } }    // was: Xwt.VBox 
 
         public CommanderStatusBar StatusBar { get; protected set; }
+
+        public void LoadDirAsync(string[] argv, TaskScheduler scheduler)
+        {
+            LoadDir(argv);
+            // scheduler.D
+        }
 
         public override void LoadDir(string[] argv)
         {
@@ -216,23 +223,28 @@ namespace fcmd.Model
 
             //default panel
             var window = Window;
+            bool isAccess = (window as DispatcherObject).CheckAccess();
+
             switch (fcmd.Properties.Settings.Default.LastActivePanel)
             {
                 case 1:
-                    p1.ListingView.SetFocus();
+                    if (isAccess)
+                        p1.ListingView.SetFocus();
                     window.ActivePanel = p1;
                     window.PassivePanel = p2;
                     if (argv.Length == 1 && !argv[0].EndsWith(".exe"))
                         p1.LoadDir(argv[0]);
                     break;
                 case 2:
-                    p2.ListingView.SetFocus();
+                    if (isAccess)
+                        p2.ListingView.SetFocus();
                     window.ActivePanel = p2;
                     window.PassivePanel = p1;
                     if (argv.Length == 1) p2.LoadDir(argv[0]);
                     break;
                 default:
-                    p1.ListingView.SetFocus();
+                    if (isAccess)
+                        p1.ListingView.SetFocus();
                     window.ActivePanel = p1;
                     window.PassivePanel = p2;
                     if (argv.Length == 1) p1.LoadDir(argv[0]);

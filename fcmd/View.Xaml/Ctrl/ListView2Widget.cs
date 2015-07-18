@@ -5,12 +5,9 @@ using System.Collections.Generic;
 using System.Windows.Markup;
 using System.Windows.Controls.Primitives;
 using pluginner.Widgets;
-using System.Drawing;
 using System.Windows.Media;
 using DrawingColor = System.Drawing.Color;
-using System.Windows.Input;
-using System.Collections;
-using fcmd.Menu;
+// using fcmd.Menu;
 using System.IO;
 using fcmd.View.Xaml;
 using fcmd.Controller;
@@ -56,8 +53,6 @@ namespace fcmd.View.ctrl
         // no visual data container
         public ListView2Xaml DataObj { get; protected set; }
 
-        // public override IListingView<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj; } }
-
         Xwt.CursorType IListingContainer.Cursor { get; set; } // = CursorType.Wait;
 
         public PanelWpf Panel { get; set; }
@@ -66,7 +61,7 @@ namespace fcmd.View.ctrl
         public ListView2Widget()
         {
             DataObj = new ListView2Xaml(this);
-            DataObj.PointedItem = new PointedItem() { Index = - 1, Item = null }; // <ListView2Item>();
+            DataObj.PointedItem = new PointedItem() { Index = -1, Item = null }; // <ListView2Item>();
             DataContext = DataObj;
         }
 
@@ -130,6 +125,8 @@ namespace fcmd.View.ctrl
         }
 
         public const string fileProcol = "file://";
+
+        #region Select, LoadDir, Columns 
 
         public void Select(ListView2ItemWpf item)
         {
@@ -196,6 +193,8 @@ namespace fcmd.View.ctrl
         {
             return DataObj.DefineColumns(df);
         }
+        
+        #endregion
 
         #region ICollection
 

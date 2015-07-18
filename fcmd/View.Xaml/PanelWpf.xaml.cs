@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows.Controls;
 using fcmd.Controller;
 using fcmd.Model;
+using fcmd.View.ctrl;
 
 namespace fcmd.View.Xaml
 {
@@ -52,14 +53,19 @@ namespace fcmd.View.Xaml
             var act = this.active;
             if (act.HasValue)
             {
-                var style = this.Resources[act.Value ? "ActiveStyle" : "PasiveStyle"] as Style;
-                var textStyle = this.Resources[act.Value ? "TextActive" : "TextPasive"] as Style;
+                var style = this.Resources[act.Value ? "ActiveStyle" : "PassiveStyle"] as Style;
+                var textStyle = this.Resources[act.Value ? "TextActive" : "TextPassive"] as Style;
                 if (style != null) // && Panel.Style != style)
                 {
                     path.Style = textStyle;
                     Panel.Style = style;
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            return "Side=" + Side.ToString() + " Url=" + PanelDataWpf.FS.CurrentDirectory;
         }
     }
 

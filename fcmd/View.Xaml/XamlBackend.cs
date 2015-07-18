@@ -3,6 +3,9 @@ using fcmd.Model;
 using pluginner.Widgets;
 using System;
 using System.Windows.Input;
+using System.Threading;
+using System.Threading.Tasks;
+using fcmd.View.Xaml;
 
 namespace fcmd.View
 {
@@ -19,15 +22,50 @@ namespace fcmd.View
         MainWindow IBackend.Window { get { return main; } }
         protected MainWindow main;
 
-        public void Shown()
+        public void Shown() { }
+
+        public void Shown(PanelWpf panel1, PanelWpf panel2)
         {
-            main.LeftPanel.data.Columns.Clear();
-            main.RightPanel.data.Columns.Clear();
+            panel1.data.Columns.Clear();
+            panel2.data.Columns.Clear();
 
-            main.WindowData.LoadDir(Environment.GetCommandLineArgs());
+            var data = main.WindowData as WindowDataWpf;
+            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            var task = Task.Factory.StartNew(
+                () =>
+                    data.LoadDirAsync(Environment.GetCommandLineArgs(), scheduler)
+                );
 
+            task.ContinueWith(
+                (t) => main.Dispatcher.Invoke(
+                    () => AfterLoadDir(panel1, panel2))
+                );
+        }
+
+        void AfterLoadDir(PanelWpf panel1, PanelWpf panel2)
+        {
+            var view1 = panel1.PanelDataWpf.ListingViewWpf;
+            
+            // if (view.DataItems.Count > 0)
+            view1.SetupColumns();
+            view1.SelectedRow = 0;
+
+            var view2 = panel2.PanelDataWpf.ListingViewWpf;
+            view2.SetupColumns();
+
+            panel1.path.Text = panel1.PanelDataWpf.FS.CurrentDirectory;
+            panel2.path.Text = panel2.PanelDataWpf.FS.CurrentDirectory;
+            //this.ActivePanel.UrlBox.Text = this.ActivePanel.FS.CurrentDirectory;
+            //this.PassivePanel.UrlBox.Text = this.PassivePanel.FS.CurrentDirectory;
+
+            panel2.Shown();
+
+            panel1.Shown();
+            view1.SetFocus();
+            
             // KeyEventHandler  object sender, KeyEventArgs e);
-            main.PreviewKeyDown += (s,e) => this.KeyEvent(s,e);
+            main.PreviewKeyDown 
+                += (s, e) => this.KeyEvent(s, e);
         }
 
         public void InitMenu()
@@ -335,12 +373,6 @@ namespace fcmd.View
                     return;
             }
         }
-
-        public void Init(MainWindow window)
-        {
-            throw new NotImplementedException();
-        }
-
 
     }
 }
