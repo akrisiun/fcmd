@@ -10,6 +10,7 @@ using System.Windows.Threading;
 using System.Collections.Generic;
 using System.Threading;
 using System.Collections.ObjectModel;
+using fcmd.Model;
 
 namespace fcmd.View.Xaml
 {
@@ -19,10 +20,22 @@ namespace fcmd.View.Xaml
     public class FileListPanelWpf : FileListPanel<ListView2ItemWpf>
     {
         public PanelWpf Parent { get; set; }
+        public WindowDataWpf WindowData { [DebuggerStepThrough] get; set; }
+
+        protected EventHandler onFocus;
+        protected bool onFocusSet;
+
+        public override event TypedEvent<string> Navigate;
+        public override event TypedEvent<string> OpenFile;
+
+        public override event EventHandler GotFocus { add { onFocusSet = true; onFocus += value; } remove { onFocus += value; } }
+
+        // original constructor
+        //public FileListPanelXaml(string BookmarkXML = null, string CSS = null,
+        //    string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
 
         public FileListPanelWpf(PanelWpf parent)
         {
-            // base.Parent 
             Parent = parent;
         }
 
@@ -38,10 +51,6 @@ namespace fcmd.View.Xaml
 
             df = DataFieldNumbers.Default();
 
-            //GoRoot = new ButtonWidget { Content = "/" };
-            //GoUp = new ButtonWidget { Content = ".." };
-            // UrlBox = new TextEntry { Text = "" };
-
             GoUp = Parent.cdUp;
             GoRoot = Parent.cdRoot;
             UrlBox = Parent.path;
@@ -51,19 +60,29 @@ namespace fcmd.View.Xaml
             ListingViewWpf.FileList = this;
 
             ListingViewWpf.Side = side;
-            PostInitialize();
         }
 
         public void Focused(object sender, EventArgs e)
         {
-            //if (onFocusSet)
-            //    onFocus(sender, e);
-            // base.OnFocus 
-
-            //  base.GotFocus
+            var side = Parent.Side;
+            if (WindowData != null)
+                WindowData.OnSideFocus(side);
         }
 
-        protected override void WriteDefaultStatusLabel()
+        // ExpandoObject data
+        public override TItem GetValue<TItem>(int Field)
+        {
+            return (TItem)ListingView.PointedItem.Data[Field];
+        }
+
+        public override string GetValue(int Field)
+        {
+            return (string)ListingView.PointedItem.Data[Field];
+        }
+
+        public void BuildUI(string BookmarkXML = null) { }
+
+        protected void WriteDefaultStatusLabel()
         {
             //StatusProgressbar.Visible = false;
             //if (ListingView.SelectedItems.Count < 1)
@@ -72,7 +91,7 @@ namespace fcmd.View.Xaml
             //    StatusBar.Text = MakeStatusbarText(SBtext2);
         }
 
-        protected override string MakeStatusbarText(string Template)
+        protected string MakeStatusbarText(string Template)
         {
             //string txt = Template;
             //if (ListingView.PointedItem != null)
@@ -271,5 +290,9 @@ namespace fcmd.View.Xaml
             ListingWidget.Sensitive = true;
         }
 
+        public override void LoadDir()
+        {
+            LoadDir(null, null);
+        }
     }
 }

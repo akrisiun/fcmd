@@ -21,12 +21,6 @@ namespace fcmd.Model
                 return PanelLayout == null || !PanelLayout.Panel1.IsActive.HasValue ? PanelSide.Undefined
                      : PanelLayout.Panel1.IsActive.Value ? PanelSide.Left : PanelSide.Right;
             }
-            //set
-            //{
-            //    bool isLeft = (value == PanelSide.Left);
-            //    PanelLayout.Panel1.IsActive = isLeft;
-            //    PanelLayout.Panel2.IsActive = !isLeft;
-            //}
         }
 
         public class PanelLayoutClass : IPanelLayout
@@ -59,20 +53,21 @@ namespace fcmd.Model
         /// <summary>Switches the active panel</summary>
         protected override void SwitchPanel(FileListPanel NewPanel)
         {
-            if (NewPanel == Window.ActivePanel) return;
-
-            Window.PassivePanelWpf = WindowWpf.ActivePanelWpf;
-            Window.ActivePanelWpf = NewPanel as FileListPanelWpf;
-
             bool isLeft = (NewPanel == Window.p1);
+            var passiveNow = Window.PassivePanelWpf.Parent as PanelWpf;
+
+            if (NewPanel == Window.ActivePanel && !passiveNow.IsActive.Value) return;
+
+            Window.PassivePanelWpf = isLeft ? Window.p2Wpf : Window.p1Wpf;
+            Window.ActivePanelWpf = NewPanel as FileListPanelWpf;
+            var passive = Window.PassivePanelWpf.Parent as PanelWpf;
+            passive.IsActive = false;
+
 #if DEBUG
             string PanelName = isLeft ? "LEFT" : "RIGHT";
             // Console.WriteLine("FOCUS DEBUG: The " + PanelName + " panel (" + NewPanel.FS.CurrentDirectory + ") got focus");
 #endif
 
-            var passive = Window.PassivePanelWpf.Parent as PanelWpf;
-            passive.IsActive = false;
-  
             // AssemblyName an = Assembly.GetExecutingAssembly().GetName();
             Window.Title = string.Format(
                 "{0} - {1}",
@@ -106,8 +101,9 @@ namespace fcmd.Model
 
             p1.FS = new base_plugins.fs.localFileSystem();
             p2.FS = new base_plugins.fs.localFileSystem();
-            p1.GotFocus += (o, ea) => SwitchPanel(p1);
-            p2.GotFocus += (o, ea) => SwitchPanel(p2);
+
+            //p1.GotFocus += (o, ea) => SwitchPanel(p1);
+            //p2.GotFocus += (o, ea) => SwitchPanel(p2);
         }
 
         protected override void Initialize()
@@ -157,6 +153,14 @@ namespace fcmd.Model
             var active = ActiveSide; // = PanelSide.Left;
             Console.WriteLine(@"DEBUG: MainWindow initialization has been completed. Side=" + active.ToString());
 #endif
+        }
+
+        public override void OnSideFocus(PanelSide newSide)
+        {
+            if (ActiveSide == newSide)
+                return;
+
+            SwitchPanel(newSide == PanelSide.Left ? Window.p1Wpf : Window.p2Wpf);
         }
 
         public MainWindow WindowWpf { get { return Window as MainWindow; } }

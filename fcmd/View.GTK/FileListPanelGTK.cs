@@ -10,20 +10,13 @@ using Xwt;
 
 namespace fcmd.View.GTK
 {
-    public class FileListPanelGTK : FileListPanel<ListView2Canvas>
+    public class FileListPanelGTK : FileListVisual<ListView2Canvas>
     {
         public FileListPanelGTK(string BookmarkXML = null, string CSS = null,
             string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
             : base(BookmarkXML, CSS, InfobarText1, InfobarText2)
         {
         }
-
-        // dublicate backe methods
-        //public void OnGotFocus(ButtonEventArgs ea)
-        //{
-        //    // #if XWT
-        //    base.OnGotFocus(ea);
-        //}
 
         public override IListingContainer ListingWidget
         {
@@ -159,8 +152,6 @@ namespace fcmd.View.GTK
             GoRoot.Clicked += goRootDelegate;
 
         }
-
-
 
         /// <summary>
         /// Load the specifed directory with specifed content into the panel and set view options

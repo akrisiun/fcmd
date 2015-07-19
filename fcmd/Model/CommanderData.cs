@@ -16,7 +16,7 @@ namespace fcmd.Model
 
     public abstract class CommanderData
     {
-        public MainWindow Window { get; set; }
+        public MainWindow Window { [DebuggerStepThrough] get; set; }
         public abstract PanelSide? ActiveSide { get; }
         public abstract IPanelLayout PanelLayout { get; }
 
@@ -37,6 +37,7 @@ namespace fcmd.Model
 
         protected abstract void Initialize();
         protected abstract void OnShown();
+        public abstract void OnSideFocus(PanelSide newSide);
 
         #region Methods
 
@@ -203,26 +204,26 @@ namespace fcmd.Model
             Xwt.Application.Exit();
         }
 
-        /// <summary>The entry form's keyboard keypress handler (except commandbar keypresses)</summary>
-        protected void PanelLayout_KeyReleased(object sender,
-                        // KeyEventArgs e) 
-                        Xwt.KeyEventArgs e)
-        {
-            //#if DEBUG
-            //            FileListPanelWpf p1 = (PanelLayout.Panel1.Content as FileListPanelWpf);
-            //            FileListPanelWpf p2 = (PanelLayout.Panel2.Content as FileListPanelWpf);
-            //            // Console.WriteLine("KEYBOARD DEBUG: " + e.Modifiers + "+" + e.Key + " was pressed. Panels focuses: " + (ActivePanel == p1) + " | " + (ActivePanel == p2));
-            //#endif
-            //            if (e.Key == Key.Return) return;//ENTER presses are handled by other event
+//        /// <summary>The entry form's keyboard keypress handler (except commandbar keypresses)</summary>
+//        protected void PanelLayout_KeyReleased(object sender,
+//                        // KeyEventArgs e) 
+//                        Xwt.KeyEventArgs e)
+//        {
+//            //#if DEBUG
+//            //            FileListPanelWpf p1 = (PanelLayout.Panel1.Content as FileListPanelWpf);
+//            //            FileListPanelWpf p2 = (PanelLayout.Panel2.Content as FileListPanelWpf);
+//            //            // Console.WriteLine("KEYBOARD DEBUG: " + e.Modifiers + "+" + e.Key + " was pressed. Panels focuses: " + (ActivePanel == p1) + " | " + (ActivePanel == p2));
+//            //#endif
+//            //            if (e.Key == Key.Return) return;//ENTER presses are handled by other event
 
-            //            var control = View.Control.Theme as View.WpfBackend;
-            //            control.KeyEvent(Window, e);
+//            //            var control = View.Control.Theme as View.WpfBackend;
+//            //            control.KeyEvent(Window, e);
 
-#if DEBUG
-            Console.WriteLine("KEYBOARD DEBUG: the key wasn't handled");
-#endif
-            e.Handled = true;
-        }
+//#if DEBUG
+//            Console.WriteLine("KEYBOARD DEBUG: the key wasn't handled");
+//#endif
+//            e.Handled = true;
+//        }
 
         /// <summary>Switches the active panel</summary>
         /// <param name="NewPanel">The new active panel</param>

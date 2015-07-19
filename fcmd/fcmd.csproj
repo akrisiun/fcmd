@@ -99,6 +99,7 @@
     <Compile Include="FileList\InputBox.cs" />
     <Compile Include="FileList\Localizator.cs" />
     <Compile Include="FileList\MainWindow-Workers.cs" />
+    <Compile Include="FileList\Panel\DiskBox.cs" />
     <Compile Include="FileList\Panel\FileListPanel.cs" />
     <Compile Include="FileList\Settings.cs" />
     <Compile Include="FileList\SettingsWindow.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="Platform\MessageDialog.cs" />
     <Compile Include="View.GTK\BodyGtk.cs" />
     <Compile Include="View.GTK\FileListPanelGTK.cs" />
+    <Compile Include="View.GTK\FileListVisual.cs" />
     <Compile Include="View.GTK\InputBoxGTK.cs" />
     <Compile Include="View.GTK\MenuGtk.cs" />
     <Compile Include="Platform\Application.cs" />

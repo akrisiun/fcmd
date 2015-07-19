@@ -152,6 +152,14 @@ namespace fcmd.Model
             throw new NotImplementedException();
         }
 
+        public override void OnSideFocus(PanelSide newSide)
+        {
+            if (ActiveSide == newSide)
+                return;
+
+            // SwitchPanel(newSide == PanelSide.Left ? this.PanelLayout.Panel1 : this.PanelLayout.Panel2);
+        }
+
         protected override void KeyBoardHelpInit()
         {
             // TODO: if !this.KeyBar.Visible 

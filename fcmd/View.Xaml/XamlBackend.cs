@@ -53,13 +53,13 @@ namespace fcmd.View
             var view2 = panel2.PanelDataWpf.ListingViewWpf;
             view2.SetupColumns();
 
-            panel1.path.Text = panel1.PanelDataWpf.FS.CurrentDirectory;
-            panel2.path.Text = panel2.PanelDataWpf.FS.CurrentDirectory;
-            //this.ActivePanel.UrlBox.Text = this.ActivePanel.FS.CurrentDirectory;
-            //this.PassivePanel.UrlBox.Text = this.PassivePanel.FS.CurrentDirectory;
+            panel1.PanelDataWpf.UrlBox.Text = panel1.PanelDataWpf.FS.CurrentDirectory;
+            panel2.PanelDataWpf.UrlBox.Text = panel2.PanelDataWpf.FS.CurrentDirectory;
 
+            panel2.PanelDataWpf.WindowData = main.WindowData as WindowDataWpf;
             panel2.Shown();
 
+            panel1.PanelDataWpf.WindowData = main.WindowData as WindowDataWpf;
             panel1.Shown();
             view1.SetFocus();
             

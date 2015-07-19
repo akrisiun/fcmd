@@ -15,7 +15,7 @@
         <Label>Command:</Label>
         <TextBox Name="selected" Margin="5,1,5,1"
                  HorizontalAlignment="Stretch" Grid.Column="1" />
-        <ComboBox Name="cmd" Margin="5,1,5,1" IsEditable="True" 
+        <ComboBox Name="cmd" Margin="5,1,24,1" IsEditable="True" 
                  HorizontalAlignment="Stretch" Grid.Column="2" />
     </Grid>
 </UserControl>

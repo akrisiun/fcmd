@@ -33,8 +33,11 @@ namespace fcmd
         // WPF
         public CommanderData WindowData {[DebuggerStepThrough] get { return DataContext as CommanderData; } }
 
-        public IFileListPanel p1 { get; set; }
-        public IFileListPanel p2 { get; set; }
+        public IFileListPanel p1 {[DebuggerStepThrough] get; set; }
+        public IFileListPanel p2 {[DebuggerStepThrough] get; set; }
+
+        public FileListPanelWpf p1Wpf {[DebuggerStepThrough] get { return p1 as FileListPanelWpf; } }
+        public FileListPanelWpf p2Wpf {[DebuggerStepThrough] get { return p2 as FileListPanelWpf; } }
 
         public static string ProductVersion { get { return "v 0.1a"; } }
 

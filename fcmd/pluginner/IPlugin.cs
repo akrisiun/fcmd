@@ -55,7 +55,7 @@ namespace pluginner
         /// <summary>
         /// This event should be raised to talk something to the File Commander (to be raised by the plugin)
         /// </summary>
-        event TypedEvent<object[]> APICallHost;
+        // event TypedEvent<object[]> APICallHost;
 
         /// <summary>
         /// This property is used to access the current FC User Settings from the Plugin

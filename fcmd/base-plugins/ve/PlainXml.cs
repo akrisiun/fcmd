@@ -145,6 +145,6 @@ namespace fcmd.base_plugins.ve
             throw new NotImplementedException();
         }
 
-        public event TypedEvent<object[]> APICallHost = null;
+        // public event TypedEvent<object[]> APICallHost = null;
     }
 }

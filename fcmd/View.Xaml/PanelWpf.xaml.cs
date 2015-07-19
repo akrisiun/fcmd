@@ -16,7 +16,7 @@ namespace fcmd.View.Xaml
         public FileListPanel PanelData {[DebuggerStepThrough] get { return PanelDataWpf; } }
         public PanelSide Side { get; set; }
 
-        public FileListPanelWpf PanelDataWpf { get; private set; }
+        public FileListPanelWpf PanelDataWpf {[DebuggerStepThrough] get; private set; }
 
         private bool? active;
         public bool? IsActive
@@ -34,19 +34,20 @@ namespace fcmd.View.Xaml
         {
             active = null;
             InitializeComponent();
+            this.path.Text = "";    // Loading...
 
             PanelDataWpf = new FileListPanelWpf(this);
             DataContext = PanelDataWpf;
-
-            GotFocus += (s, e) =>
-            {
-                IsActive = true;
-                PanelDataWpf.OnFocus();
-            };
-
         }
 
-        public void Shown() { }
+        public void Shown()
+        {
+            GotFocus += (s, e) =>
+            {
+                PanelDataWpf.Focused(s,e);
+                IsActive = true;
+            };
+        }
 
         protected void SetStyle()
         {
