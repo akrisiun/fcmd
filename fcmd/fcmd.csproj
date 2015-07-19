@@ -158,13 +158,17 @@
     <Compile Include="View.GTK\GtkBackend.cs" />
     <Compile Include="View.GTK\ListView2Canvas.cs" />
     <Compile Include="View.GTK\WindowDataGtk.cs" />
-    <Compile Include="vm\vmtest.cs" />
+    <Compile Include="vm\PanedTest.cs" />
     <Compile Include="SettingsWindowTabs\swtMainWindowFonts.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CoreGtk3, Version=3.2.5677.13770, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\xwt\bin\CoreGtk3.dll</HintPath>
+    </Reference>
+    <Reference Include="glib3-sharp, Version=3.1.5677.30273, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\xwt\bin\glib3-sharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

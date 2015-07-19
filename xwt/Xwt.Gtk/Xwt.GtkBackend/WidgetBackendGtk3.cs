@@ -29,14 +29,24 @@ using Xwt.Drawing;
 
 namespace Xwt.GtkBackend
 {
-	public partial class WidgetBackend
-	{
-		protected Gtk.IEditable EditableWidget 
-		{
-			get { return Widget as Gtk.IEditable; }
-		}
+    public partial class WidgetBackend
+    {
+        protected Gtk.IEditable EditableWidget
+        {
+            get { return Widget as Gtk.IEditable; }
+        }
 
-		protected virtual void OnSetBackgroundColor (Color color)
+        public void ShowAll()
+        {
+            Widget.ShowAll();
+        }
+
+        public void ShowNow()
+        {
+            Widget.ShowNow();
+        }
+
+        protected virtual void OnSetBackgroundColor (Color color)
 		{
 			Widget.SetBackgroundColor (color);
 		}

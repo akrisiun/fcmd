@@ -118,6 +118,18 @@ namespace fcmd
 #endif
         }
 
+        public void ShowAll()
+        {
+            var end = BackendHost.Backend as Xwt.GtkBackend.WindowBackend;
+            if (end != null)
+            {
+                var gtkWindow = end.Window as Gtk.Window;
+                gtkWindow.ShowAll();
+            }
+            else
+                Show();
+        }
+
         protected override void OnShown()
         {
             // LoadDir(argv);
@@ -387,35 +399,49 @@ namespace fcmd
         private void LayoutInit()
         {
             var Layout = Visual.Layout;
-            Layout.MinWidth = 400;
-            Layout.MinHeight = 300;
+            //Layout.MinWidth = 400;
+            //Layout.MinHeight = 300;
 
-            //[BackendType(typeof(IPanedBackend))]
-            //public class Paned : Widget
-            // var PanelLayout = Visual.PanelLayout as Xwt.HPaned;
-            var PanelLayout = new Xwt.HPaned();
+            ////[BackendType(typeof(IPanedBackend))]
+            ////public class Paned : Widget
+            //// var PanelLayout = Visual.PanelLayout as Xwt.HPaned;
+            //var PanelLayout = new Xwt.HPaned();
 
-            var KeyBoardHelp = Visual.KeyBoardHelp;
+            //var KeyBoardHelp = Visual.KeyBoardHelp;
 
-            Layout.PackStart(PanelLayout, true, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, 0, 0, 0);
-            // Layout.PackStart(KeyBoardHelp, false, Xwt.WidgetPlacement.End, Xwt.WidgetPlacement.Fill, 1, 3, 1, 2);
+            //Layout.PackStart(PanelLayout, true, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, 0, 0, 0);
+            //// Layout.PackStart(KeyBoardHelp, false, Xwt.WidgetPlacement.End, Xwt.WidgetPlacement.Fill, 1, 3, 1, 2);
 
-            this.Content = Layout;
+            //this.Content = Layout;
 
-            var text = new TextEntry { Text = "Hello world", MarginLeft = 5, MarginRight = 5, MinHeight=50, MinWidth= 200 };
-            // this.Content = text;
-            // return;
-
-            PanelLayout.Panel1.Content = text;
-            PanelLayout.Panel2.Content = new TextEntry { Text = "Hello Right side", MarginLeft = 5, MarginRight = 5 };
+            //var text = new TextEntry { Text = "Hello world", MarginLeft = 5, MarginRight = 5, MinHeight=50, MinWidth= 200 };
+            //// this.Content = text;
+            //// return;
 
             var host = this.BackendHost as Xwt.Window.WindowBackendHost;
-            this.Width = 700;
-            // var desired = this.DesiredWidth;
-            PanelLayout.WidthRequest = host.Backend.DesiredSize.Width;
-            PanelLayout.HeightRequest = host.Backend.DesiredSize.Height;
-            //  100; // this.Size.Height - 200;
-            PanelLayout.Visible = true;
+            var windowEnd = host.Backend as Xwt.GtkBackend.WindowBackend; // .WidgetBackend;
+            var gtkWindow = windowEnd.Window as Gtk.Window;
+
+            fcmd.DemoPanes.Test(gtkWindow);
+
+            // this.Content = text;
+            gtkWindow.ShowAll();
+            return;
+
+
+            //PanelLayout.Panel1.Content = text;
+            //PanelLayout.Panel2.Content = new TextEntry { Text = "Hello Right side", MarginLeft = 5, MarginRight = 5 };
+
+            
+            //this.Width = 700;
+            //// var desired = this.DesiredWidth;
+            //PanelLayout.WidthRequest = host.Backend.DesiredSize.Width;
+            //PanelLayout.HeightRequest = host.Backend.DesiredSize.Height;
+            ////  100; // this.Size.Height - 200;
+            //PanelLayout.Visible = true;
+
+            gtkWindow.ShowAll();
+            // windowEnd.ShowAll();
             return;
 
 
