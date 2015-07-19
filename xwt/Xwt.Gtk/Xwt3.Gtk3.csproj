@@ -52,7 +52,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="Xwt3, Version=3.2.0.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+    <Reference Include="Xwt3">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\Xwt3.dll</HintPath>
     </Reference>

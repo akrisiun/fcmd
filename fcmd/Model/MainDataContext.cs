@@ -16,7 +16,7 @@ namespace fcmd
     // Window model data
 
 #if !WPF
-    public partial class MainWindow : Window, ICommanderWindow<ListView2Canvas>
+    public partial class MainWindow // : Window, ICommanderWindow<ListView2Canvas>
     {
         // GTK
 

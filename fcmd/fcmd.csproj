@@ -127,6 +127,7 @@
     <Compile Include="Platform\DebugInfo.cs" />
     <Compile Include="Platform\ICommanderWindow.cs" />
     <Compile Include="Platform\MessageDialog.cs" />
+    <Compile Include="View.GTK\Backend\GtkWindowFrame.cs" />
     <Compile Include="View.GTK\BodyGtk.cs" />
     <Compile Include="View.GTK\Ctrl\InputBoxGtk.cs" />
     <Compile Include="View.GTK\Ctrl\ITextEntryGtk.cs" />
@@ -162,20 +163,20 @@
     <Compile Include="SettingsWindowTabs\swtMainWindowFonts.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="CoreGtk3, Version=3.2.5677.13770, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\xwt\bin\CoreGtk3.dll</HintPath>
-    </Reference>
-    <Reference Include="glib3-sharp, Version=3.1.5677.30273, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=x86">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\xwt\bin\glib3-sharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="CoreGtk3">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\xwt\bin\CoreGtk3.dll</HintPath>
+    </Reference>
+    <Reference Include="glib3-sharp">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\xwt\bin\glib3-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="Xwt3">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
@@ -187,9 +188,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="COPYPASTE.md">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="LICENSE">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -197,7 +195,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="README.md" />
     <None Include="xwt.snk" />
   </ItemGroup>
   <ItemGroup>

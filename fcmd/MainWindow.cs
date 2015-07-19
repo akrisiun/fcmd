@@ -4,6 +4,7 @@
  * (C) 2013-14, Alexander Tauenis (atauenis@yandex.ru)
  * (C) 2014, Evgeny Akhtimirov (wilbit@me.com)
  * Contributors should place own signs here.
+ * (C) 2015, Andrius Krisiunas (akrisiun@gmail.com)
  */
 
 using System;
@@ -13,18 +14,19 @@ using System.Diagnostics;
 using System.Text;
 using System.IO;
 using pluginner.Toolkit;
-using pluginner.Widgets;
 using fcmd.Menu;
 using fcmd.View.GTK;
 using fcmd.Model;
 using pluginner;
-using System.Configuration;
 using fcmd.Platform;
 using Xwt;
+using Xwt.Backends;
+using fcmd.View.GTK.Backend;
 
 namespace fcmd
 {
-    partial class MainWindow : Xwt.Window, ICommanderWindow<ListView2Canvas>
+
+    partial class MainWindow : GtkWindowFrame, ICommanderWindow<ListView2Canvas>
     {
         public static string ProductVersion
         {
@@ -49,12 +51,16 @@ namespace fcmd
 
         public MainGtkVisual Visual;
 
+        public Xwt.GtkBackend.WindowBackend // WindowFrameBackend 
+                BackEndGtk { get { return this.BackendHost.Backend as Xwt.GtkBackend.WindowBackend; } }
+        public Gtk.VBox MainBox { get { return BackEndGtk.MainBox; } }
+
         public class MainGtkVisual
         {
             public Xwt.VBox Layout = new Xwt.VBox();
-            public Xwt.HPaned PanelLayout = new Xwt.HPaned();
+            public Xwt.HPaned PanelLayout;
 
-            public Xwt.HBox KeyBoardHelp = new Xwt.HBox();
+            public Xwt.HBox KeyBoardHelp;
             public KeyboardHelpButton[] KeybHelpButtons = new KeyboardHelpButton[11]; //одна лишняя, которая нумбер [0]
 
             // public List<ListView2.ColumnInfo> LVCols = new List<ListView2.ColumnInfo>();
@@ -64,10 +70,13 @@ namespace fcmd
 
             public void Init(MainWindow window, string BookmarksStoreXml)
             {
+                PanelLayout = new Xwt.HPaned();
+                KeyBoardHelp = new Xwt.HBox();
+
                 // build panels
                 var pan1 = new FileListPanelGtk(BookmarksStoreXml,
-                    fcmd.Properties.Settings.Default.UserTheme, Properties.Settings.Default.InfoBarContent1,
-                    Properties.Settings.Default.InfoBarContent2); //Левая, правая где сторона? Улица, улица, ты, брат, пьяна!
+                        fcmd.Properties.Settings.Default.UserTheme, Properties.Settings.Default.InfoBarContent1,
+                        Properties.Settings.Default.InfoBarContent2); //Левая, правая где сторона? Улица, улица, ты, брат, пьяна!
                 var pan2 = new FileListPanelGtk(BookmarksStoreXml,
                     fcmd.Properties.Settings.Default.UserTheme, Properties.Settings.Default.InfoBarContent1,
                     Properties.Settings.Default.InfoBarContent2);
@@ -92,18 +101,21 @@ namespace fcmd
 
             // this.Icon = Images
             this.PaddingLeft = PaddingRight = PaddingTop = 0;
-            PaddingBottom = PaddingBottom / 3;
+            // PaddingBottom = PaddingBottom / 3;
 
-            TranslateMenu(MainMenu);
             BindMenu();
+            // TranslateMenu(WindowMenu);
             this.MainMenu = WindowMenu;
 
             //apply user's settings
             //window size
-            this.Width = fcmd.Properties.Settings.Default.WinWidth;
-            this.Height = fcmd.Properties.Settings.Default.WinHeight;
+            //this.Width = fcmd.Properties.Settings.Default.WinWidth;
+            //this.Height = fcmd.Properties.Settings.Default.WinHeight;
 
             LayoutInit();
+            if (Visual.PanelLayout != null)
+                Visual.PanelLayout.KeyReleased += PanelLayout_KeyReleased;
+
             // KeyBoardHelpInit();
 
             Localizator.LocalizationChanged += (o, ea) => Localize();
@@ -118,17 +130,106 @@ namespace fcmd
 #endif
         }
 
-        public void ShowAll()
+
+        private void LayoutInit()
         {
-            var end = BackendHost.Backend as Xwt.GtkBackend.WindowBackend;
-            if (end != null)
+            // var Layout = Visual.Layout;
+            //Layout.MinWidth = 400;
+            //Layout.MinHeight = 300;
+
+            //// var PanelLayout = Visual.PanelLayout as Xwt.HPaned;
+            //this.Content = Layout;
+
+            //var PanelLayout = new Xwt.HPaned();
+            //Layout.PackStart(PanelLayout, false, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, 0, 0, 0);
+
+            //var KeyBoardHelp = Visual.KeyBoardHelp;
+            //// Layout.PackStart(KeyBoardHelp, false, Xwt.WidgetPlacement.End, Xwt.WidgetPlacement.Fill, 1, 3, 1, 2);
+
+            //var text = new TextEntry { Text = "Hello world", MarginLeft = 5, MarginRight = 5, MinHeight=50, MinWidth= 200 };
+            //// this.Content = text;
+            //// return;
+
+            var host = this.BackendHost; // as Xwt.Window.WindowBackendHost;
+            var windowEnd = host.Backend as Xwt.GtkBackend.WindowBackend; // .WidgetBackend;
+            var gtkWindow = windowEnd.Window as Gtk.Window;
+
+            fcmd.DemoPanes.Test(this, gtkWindow);
+
+            // this.Content = text;
+            gtkWindow.ShowAll();
+            return;
+
+
+            //PanelLayout.Panel1.Content = text;
+            //PanelLayout.Panel2.Content = new TextEntry { Text = "Hello Right side", MarginLeft = 5, MarginRight = 5 };
+
+
+            //this.Width = 700;
+            //// var desired = this.DesiredWidth;
+            //PanelLayout.WidthRequest = host.Backend.DesiredSize.Width;
+            //PanelLayout.HeightRequest = host.Backend.DesiredSize.Height;
+            ////  100; // this.Size.Height - 200;
+            //PanelLayout.Visible = true;
+
+            // windowEnd.ShowAll();
+            
+            CheckTheme();
+
+            //load bookmarks
+            string BookmarksStore = null;
+            if (fcmd.Properties.Settings.Default.BookmarksFile != null && fcmd.Properties.Settings.Default.BookmarksFile.Length > 0)
             {
-                var gtkWindow = end.Window as Gtk.Window;
-                gtkWindow.ShowAll();
+                BookmarksStore = File.ReadAllText(fcmd.Properties.Settings.Default.BookmarksFile, Encoding.UTF8);
             }
-            else
-                Show();
+
+            Visual.Init(this, BookmarksStore);
+
+            var openFileHandler = new pluginner.TypedEvent<string>(Panel_OpenFile);
+            p1.OpenFile += openFileHandler;
+            p2.OpenFile += openFileHandler;
+
+            // Ankr
+            //LVCols.Add(new ListView2.ColumnInfo { Title = "", Tag = "Icon", Width = 16, Visible = true });
+            //LVCols.Add(new ListView2.ColumnInfo { Title = "URL", Tag = "Path", Width = 0, Visible = false });
+            //LVCols.Add(new ListView2.ColumnInfo
+            //{ Title = Localizator.GetString("FName"), Tag = "FName", Width = 100, Visible = true });
+            //LVCols.Add(new ListView2.ColumnInfo
+            //{ Title = Localizator.GetString("FSize"), Tag = "FSize", Width = 50, Visible = true });
+            //LVCols.Add(new ListView2.ColumnInfo
+            //{ Title = Localizator.GetString("FDate"), Tag = "FDate", Width = 50, Visible = true });
+            //LVCols.Add(new ListView2.ColumnInfo
+            //{ Title = "Directory item info", Tag = "DirItem", Width = 0, Visible = false });
+            // */
+
+            try
+            {
+
+                p1.FS = new base_plugins.fs.localFileSystem();
+                p2.FS = new base_plugins.fs.localFileSystem();
+
+                p1.GotFocus += (o, ea) => SwitchPanel(p1Gtk);
+                p2.GotFocus += (o, ea) => SwitchPanel(p2Gtk);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
         }
+
+
+        //public void ShowAll()
+        //{
+        //    var end = BackendHost.Backend as Xwt.GtkBackend.WindowBackend;
+        //    if (end != null)
+        //    {
+        //        var gtkWindow = end.Window as Gtk.Window;
+        //        gtkWindow.ShowAll();
+        //    }
+        //    else
+        //        Show();
+        //}
 
         protected override void OnShown()
         {
@@ -373,7 +474,6 @@ namespace fcmd
         private void BindMenu()
         {
             this.CloseRequested += MainWindow_CloseRequested;
-            this.Visual.PanelLayout.KeyReleased += PanelLayout_KeyReleased;
 
             WindowMenu.Build();
             WindowMenu.mnuFileView.Clicked += (o, ea) => { PanelLayout_KeyReleased(o, new Xwt.KeyEventArgs(Xwt.Key.F3, Xwt.ModifierKeys.None, false, 0)); };
@@ -395,100 +495,6 @@ namespace fcmd
             WindowMenu.mnuHelpDebug.Clicked += ShowDebugInfo;
             WindowMenu.mnuHelpAbout.Clicked += mnuHelpAbout_Clicked;
         }
-
-        private void LayoutInit()
-        {
-            var Layout = Visual.Layout;
-            //Layout.MinWidth = 400;
-            //Layout.MinHeight = 300;
-
-            ////[BackendType(typeof(IPanedBackend))]
-            ////public class Paned : Widget
-            //// var PanelLayout = Visual.PanelLayout as Xwt.HPaned;
-            //var PanelLayout = new Xwt.HPaned();
-
-            //var KeyBoardHelp = Visual.KeyBoardHelp;
-
-            //Layout.PackStart(PanelLayout, true, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, 0, 0, 0);
-            //// Layout.PackStart(KeyBoardHelp, false, Xwt.WidgetPlacement.End, Xwt.WidgetPlacement.Fill, 1, 3, 1, 2);
-
-            //this.Content = Layout;
-
-            //var text = new TextEntry { Text = "Hello world", MarginLeft = 5, MarginRight = 5, MinHeight=50, MinWidth= 200 };
-            //// this.Content = text;
-            //// return;
-
-            var host = this.BackendHost as Xwt.Window.WindowBackendHost;
-            var windowEnd = host.Backend as Xwt.GtkBackend.WindowBackend; // .WidgetBackend;
-            var gtkWindow = windowEnd.Window as Gtk.Window;
-
-            fcmd.DemoPanes.Test(gtkWindow);
-
-            // this.Content = text;
-            gtkWindow.ShowAll();
-            return;
-
-
-            //PanelLayout.Panel1.Content = text;
-            //PanelLayout.Panel2.Content = new TextEntry { Text = "Hello Right side", MarginLeft = 5, MarginRight = 5 };
-
-            
-            //this.Width = 700;
-            //// var desired = this.DesiredWidth;
-            //PanelLayout.WidthRequest = host.Backend.DesiredSize.Width;
-            //PanelLayout.HeightRequest = host.Backend.DesiredSize.Height;
-            ////  100; // this.Size.Height - 200;
-            //PanelLayout.Visible = true;
-
-            gtkWindow.ShowAll();
-            // windowEnd.ShowAll();
-            return;
-
-
-            CheckTheme();
-
-            //load bookmarks
-            string BookmarksStore = null;
-            if (fcmd.Properties.Settings.Default.BookmarksFile != null && fcmd.Properties.Settings.Default.BookmarksFile.Length > 0)
-            {
-                BookmarksStore = File.ReadAllText(fcmd.Properties.Settings.Default.BookmarksFile, Encoding.UTF8);
-            }
-
-            Visual.Init(this, BookmarksStore);
-
-            var openFileHandler = new pluginner.TypedEvent<string>(Panel_OpenFile);
-            p1.OpenFile += openFileHandler;
-            p2.OpenFile += openFileHandler;
-
-            // Ankr
-            //LVCols.Add(new ListView2.ColumnInfo { Title = "", Tag = "Icon", Width = 16, Visible = true });
-            //LVCols.Add(new ListView2.ColumnInfo { Title = "URL", Tag = "Path", Width = 0, Visible = false });
-            //LVCols.Add(new ListView2.ColumnInfo
-            //{ Title = Localizator.GetString("FName"), Tag = "FName", Width = 100, Visible = true });
-            //LVCols.Add(new ListView2.ColumnInfo
-            //{ Title = Localizator.GetString("FSize"), Tag = "FSize", Width = 50, Visible = true });
-            //LVCols.Add(new ListView2.ColumnInfo
-            //{ Title = Localizator.GetString("FDate"), Tag = "FDate", Width = 50, Visible = true });
-            //LVCols.Add(new ListView2.ColumnInfo
-            //{ Title = "Directory item info", Tag = "DirItem", Width = 0, Visible = false });
-            // */
-
-            try
-            {
-
-                p1.FS = new base_plugins.fs.localFileSystem();
-                p2.FS = new base_plugins.fs.localFileSystem();
-
-                p1.GotFocus += (o, ea) => SwitchPanel(p1Gtk);
-                p2.GotFocus += (o, ea) => SwitchPanel(p2Gtk);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-        }
-
 
         void CheckTheme()
         {

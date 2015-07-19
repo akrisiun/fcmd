@@ -11,21 +11,25 @@ namespace fcmd
     //     [Demo("Paned Widget", "DemoPanes.cs")]
     public class DemoPanes : Gtk.Window
     {
-        public static void Test(Gtk.Window gtkWindow)
+        public static void Test(MainWindow window, Gtk.Window gtkWindow)
         {
-            var style = gtkWindow.StyleContext;
+            // var vbox = new VBox(false, 0);
+            Gtk.VBox vbox = window.MainBox; 
+            window.Padding = 0;
 
-            // VBox vbox = new VBox(false, 0);
-            // gtkWindow.Add(vbox);
-            VBox vbox = (gtkWindow.Children[0]) as VBox;
-            // -- gtkWindow.ContentArea.PackStart(vbox, true, true, 0);
+            // Backend.SetChild((IWidgetBackend)BackendHost.ToolkitEngine.GetSafeBackend(child));
+            var back = window.BackEndGtk;
+            var engine = Xwt.Toolkit.CurrentEngine;
+            if (engine == null)
+                return;
 
-            //VPaned vpaned = new VPaned { BorderWidth = 5 };
+            //VPaned vpaned = new VPaned { BorderWidth = 0 };
+            // vbox.PackStart(vpaned, false, true, 0);      // expand, fill, padding
             //vbox.PackStart(vpaned, true, true, 0);      // expand, fill, padding
 
             HPaned hpaned = new HPaned();
-            // vpaned.Add1(hpaned);
             vbox.Add(hpaned);
+            //  vbox.PackStart(hpaned, true, true, 0);
 
             Frame frame = new Frame() { ShadowType = ShadowType.In };
             frame.SetSizeRequest(60, 60);
@@ -38,15 +42,9 @@ namespace fcmd
             Gtk.Button button = new Button("_Hi there GTK3");
             frame.Add(button);
 
-            // gtkWindow.Resizable = true;
-            // VBox vbox = new VBox(false, 5);
-            // this.ContentArea.PackStart(vbox, true, true, 0);
-            // vbox.BorderWidth = 5;
-
             var f2box = new HBox { BorderWidth = 3 };
             frame2.Add(f2box);
-
-            //f2box.PackStart(new Label("Expander demo. Click on the triangle for details."), false, false, 0);
+            // f2box.PackStart(new Label("Expander demo. Click on the triangle for details."), false, false, 0);
 
             //// Create the expander
             //Expander expander = new Expander("Details");
@@ -55,13 +53,21 @@ namespace fcmd
 
             Gtk.Button button2 = new Button("_Hi there Side2");
             f2box.Add(button2);
+            f2box.PackStart(button2, true, true, 0);
 
+            //var pc = f2box[button2] as Paned.PanedChild;
+            //if (pc != null)
+            //    pc.Resize = true;
+            // bool resize, bool shrink);
+
+            //Paned paned = child.Parent as Paned;
+            //Paned.PanedChild pc = paned[child] as Paned.PanedChild;
+            //pc.Resize = toggle.Active;
             // .AddButton(Stock.Close, ResponseType.Close);
-            // frame2.Add(new Button { Label = "Close.. " });
 
-            gtkWindow.HeightRequest = 200;
-            gtkWindow.WidthRequest = 400;
-            // gtkWindow.ShowNow();
+            gtkWindow.SetSizeRequest(800, 200);
+            hpaned.Child1.SetSizeRequest(398, 200);
+            hpaned.Child2.SetSizeRequest(398, 200);
         }
 
 
@@ -69,23 +75,34 @@ namespace fcmd
 
         public DemoPanes() : base("Panes")
         {
+            var vig1 = this.DefaultWidget;
+
             VBox vbox = new VBox(false, 0);
             Add(vbox);
 
             VPaned vpaned = new VPaned();
             vbox.PackStart(vpaned, true, true, 0);
-            vpaned.BorderWidth = 5;
+            vpaned.BorderWidth = 2;
 
             HPaned hpaned = new HPaned();
-            vpaned.Add1(hpaned);
+            vpaned.Add2(hpaned);
 
             Frame frame = new Frame();
             frame.ShadowType = ShadowType.In;
             frame.SetSizeRequest(60, 60);
-            hpaned.Add2(frame);
+            // hpaned.Add2(frame);
+            hpaned.Add1(frame);
 
             Gtk.Button button = new Button("_Hi there");
             frame.Add(button);
+
+            Frame frame2 = new Frame();
+            frame2.ShadowType = ShadowType.In;
+            frame2.SetSizeRequest(60, 60);
+            hpaned.Add2(frame2);
+
+            Gtk.Button button2 = new Button("_Hi on Right side");
+            frame2.Add(button2);
 
             // Now create toggle buttons to control sizing
             //vbox.PackStart(CreatePaneOptions(hpaned,
@@ -101,6 +118,13 @@ namespace fcmd
             //        false, false, 0);
 
             // ShowAll();
+            vbox.SetSizeRequest(400, 300);
+            hpaned.Child1.SetSizeRequest(200 -3, 300);
+
+            var h = vbox.Halign;  // Fill
+            var v = vbox.Valign;
+            var vexp = vbox.Vexpand;
+            var veset = vbox.VexpandSet;
         }
 
         Frame CreatePaneOptions(Paned paned, string frameLabel,

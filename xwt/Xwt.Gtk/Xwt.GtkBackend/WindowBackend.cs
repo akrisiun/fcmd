@@ -32,9 +32,9 @@ namespace Xwt.GtkBackend
 {
 	public class WindowBackend: WindowFrameBackend, IWindowBackend, IConstraintProvider
 	{
-		Gtk.Alignment alignment;
-		Gtk.MenuBar mainMenu;
-		Gtk.VBox mainBox;
+        protected Gtk.Alignment alignment;
+        protected Gtk.MenuBar mainMenu;
+        protected Gtk.VBox mainBox;
 		
 		public override void Initialize ()
 		{

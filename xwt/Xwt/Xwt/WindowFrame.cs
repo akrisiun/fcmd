@@ -328,7 +328,8 @@ namespace Xwt
             }
         }
 
-        public void Show()
+        // ankr
+        public virtual void Show()
         {
             if (!Visible)
             {

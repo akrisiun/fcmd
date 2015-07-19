@@ -45,7 +45,7 @@ namespace Xwt
 		protected override BackendHost CreateBackendHost ()
 		{
 			return new WindowBackendHost ();
-		}
+        }
 		
 		public Window ()
 		{
