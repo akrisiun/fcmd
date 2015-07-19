@@ -9,15 +9,19 @@ using System.Diagnostics;
 using System.Text;
 using pluginner.Toolkit;
 using pluginner.Widgets;
+using Xwt;
 
 namespace fcmd.base_plugins.ve
 {
     public class BodyWidget : Xwt.Table, IWidget
     {
+        Widget IWidget.Content { get { return null; } set { } }
+
     }
 
     public class FormatMenu : Xwt.Menu, IMenu
     {
+
     }
 
     internal class PlainText : pluginner.IVEPlugin

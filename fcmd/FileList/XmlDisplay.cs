@@ -37,6 +37,8 @@ namespace fcmd
                 layout.Font = Font.WithWeight(Xwt.Drawing.FontWeight.Normal); //для уверенности
                 this.Content = exp;
             }
+
+            Widget IWidget.Content { get { return layout; } set { } }
         }
 
         IWidget Visual { get; set; }

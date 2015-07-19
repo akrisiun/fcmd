@@ -28,6 +28,7 @@ namespace fcmd
 
     using Xwt.Drawing;
     using ColorDrawing = Xwt.Drawing;
+    using fcmd.View.GTK.Ctrl;
 
     public class CommanderStatusBar : Xwt.Label, IContent //  LabelWidget
     {
@@ -50,9 +51,10 @@ namespace fcmd
 
         public IFSPlugin FS { get; set; }
 
-        public abstract IButton GoRoot { get; protected set; }
-        public abstract IButton GoUp { get; protected set; }
-        public abstract ITextEntry UrlBox { get; set; }
+        public abstract IButton GoRoot {[DebuggerStepThrough] get; protected set; }
+        public abstract IButton GoUp {[DebuggerStepThrough] get; protected set; }
+        public abstract ITextEntryGtk UrlBox {[DebuggerStepThrough] get; protected set; }
+        ITextEntry IFileListPanel.UrlBox { get { return UrlBox; } }
 
         public abstract event TypedEvent<string> Navigate;
         public abstract event TypedEvent<string> OpenFile;
@@ -104,7 +106,7 @@ namespace fcmd
         // WPF abstract
         public abstract IButton GoRoot { get; protected set; }
         public abstract IButton GoUp { get; protected set; }
-        public abstract ITextEntry UrlBox { get; set; }
+        public abstract ITextEntry UrlBox { get; }
 
         public abstract event TypedEvent<string> Navigate;
         public abstract event TypedEvent<string> OpenFile;
@@ -116,10 +118,6 @@ namespace fcmd
     public abstract class FileListPanel<T> : FileListPanel, IFileListPanel<T> where T : class, IListView2Visual
     {
         public abstract IListingView<T> ListingView { get; }
-
-        public override IButton GoRoot { get; protected set; }
-        public override IButton GoUp { get; protected set; }
-        public override ITextEntry UrlBox { get; set; }
 
         public abstract IListingContainer ListingWidget { get; }
 

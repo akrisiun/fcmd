@@ -28,31 +28,33 @@ using Xwt.Drawing;
 
 namespace Xwt.Backends
 {
-	public interface IWindowFrameBackend: IBackend
-	{
-		void Initialize (IWindowFrameEventSink eventSink);
-		void Dispose ();
+    public interface IWindowFrameBackend : IBackend
+    {
+        void Initialize(IWindowFrameEventSink eventSink);
+        void Dispose();
 
-		/// <summary>
-		/// Size and position of the window content in screen coordinates
-		/// </summary>
-		Rectangle Bounds { get; set; }
-		void Move (double x, double y);
+        /// <summary>
+        /// Size and position of the window content in screen coordinates
+        /// </summary>
+        Rectangle Bounds { get; set; }
+        void Move(double x, double y);
 
-		/// <summary>
-		/// Sets the size of the window
-		/// </summary>
-		/// <param name='width'>
-		/// New width, or -1 if the width doesn't have to be changed
-		/// </param>
-		/// <param name='height'>
-		/// New height, or -1 if the height doesn't have to be changed
-		/// </param>
-		/// <remarks>
-		/// </remarks>
-		void SetSize (double width, double height);
+        /// <summary>
+        /// Sets the size of the window
+        /// </summary>
+        /// <param name='width'>
+        /// New width, or -1 if the width doesn't have to be changed
+        /// </param>
+        /// <param name='height'>
+        /// New height, or -1 if the height doesn't have to be changed
+        /// </param>
+        /// <remarks>
+        /// </remarks>
+        void SetSize(double width, double height);
+        Size DesiredSize { get; }
+        void SetInitialSize(double width, double height);
 
-		bool Visible { get; set; }
+        bool Visible { get; set; }
 		bool Sensitive { get; set; }
 		string Title { get; set; }		
 		bool Decorated { get; set; }

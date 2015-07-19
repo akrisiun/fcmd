@@ -227,7 +227,19 @@ namespace Xwt.WPFBackend
 			Bounds = r;
 		}
 
-		public virtual Rectangle Bounds {
+        public void SetInitialSize(double width, double height)
+        {
+            window.Width = width;
+            window.Height = height;
+            Context.InvokeUserCode(delegate {
+                eventSink.OnBoundsChanged(Bounds);
+            });
+        }
+
+        public Size DesiredSize { get { return new Xwt.Size(window.Width, window.Height); } } 
+                // .DesiredSize.Width, window.DesiredSize.Height); } }
+
+        public virtual Rectangle Bounds {
 			get {
 				double width = Double.IsNaN (window.Width) ? window.ActualWidth : window.Width;
 				double height = Double.IsNaN (window.Height) ? window.ActualHeight : window.Height;

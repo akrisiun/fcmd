@@ -8,18 +8,15 @@ using fcmd.View;
 using pluginner.Widgets;
 using System.Collections.Generic;
 using pluginner;
+using fcmd.Menu;
+using fcmd.View.GTK;
 
 namespace fcmd.Model
 {
     public class WindowDataGtk : CommanderData
     {
-        public override PanelSide? ActiveSide
-        {
-            get
-            {
-                return null; // TODO
-            }
-        }
+        protected PanelSide? activeSide;
+        public override PanelSide? ActiveSide { get { return activeSide; } }
 
         public class PanelLayoutClass : IPanelLayout
         {
@@ -30,7 +27,6 @@ namespace fcmd.Model
                     throw new NotImplementedException();
                 }
             }
-
             public IPanel Panel2
             {
                 get
@@ -39,11 +35,15 @@ namespace fcmd.Model
                 }
             }
 
-            //public PanelGtk Panel1 { get; protected set; }
-            //public PanelGtk Panel2 { get; protected set; }
+            public FileListPanelGtk Panel1Gtk { get; protected set; }
+            public FileListPanelGtk Panel2Gtk { get; protected set; }
 
             public static PanelLayoutClass Create(MainWindow w)
             {
+                Xwt.HPaned PanelLayout = w.Visual.PanelLayout;
+                var panel1Gtk = PanelLayout.Panel1.Content as FileListPanelGtk; // BodyGtk;
+                var panel2Gtk = PanelLayout.Panel1.Content as FileListPanelGtk;
+
                 // Initialize Undefined sides
                 //w.LeftPanel.PanelData.Initialize(PanelSide.Left);
                 //w.RightPanel.PanelData.Initialize(PanelSide.Right);
@@ -54,10 +54,10 @@ namespace fcmd.Model
 
                 //w.p1 = w.ActivePanelGtk;
                 //w.p2 = w.PassivePanelGtk;
-                //w.WindowData.ActiveSide = PanelSide.Left;
+                (w.WindowData as WindowDataGtk).activeSide = PanelSide.Left;
 
-                return new PanelLayoutClass();
-                // { Panel1 = w.LeftPanel, Panel2 = w.RightPanel };
+                return new PanelLayoutClass()
+                    { Panel1Gtk = panel1Gtk, Panel2Gtk = panel2Gtk };
             }
 
 
@@ -112,32 +112,23 @@ namespace fcmd.Model
 #endif
         }
 
-        public MainWindow WindowGtk { get { return Window as MainWindow; } }
+        public MainWindow WindowGtk {[DebuggerStepThrough] get { return Window as MainWindow; } }
 
-        public
-            object // MenuPanelGtk 
-            MainMenu
-                { get { return null; } } // (Window as MainWindow).Menu; } }
+        public MenuGtk MainMenu
+        { get { return WindowGtk.WindowMenu; } }  
 
-        public object // FileListPanelGtk 
-            ActivePanel
-                { get { return null; } } // return WindowGtk.ActivePanelGtk as FileListPanelGtk; } }
-        public object // FileListPanelGtk 
-            PassivePanel
-                { get { return null; } } //  WindowGtk.PassivePanelGtk as FileListPanelGtk; } }
+        public FileListPanelGtk ActivePanel
+        { get { return PanelLayoutGtk.Panel1Gtk; } }
+        public FileListPanelGtk PassivePanel
+        { get { return PanelLayoutGtk.Panel2Gtk; } }
+                // return null; } } //  WindowGtk.PassivePanelGtk as FileListPanelGtk; } }
 
         public override IPanelLayout PanelLayout { get { return PanelLayoutGtk; } }
         public PanelLayoutClass PanelLayoutGtk { get; protected set; }
 
         public CommanderStatusBar StatusBar { get; protected set; }
 
-        public override object Layout
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        // public override object Layout
 
         public override object KeybHelpButtons
         {
@@ -245,7 +236,7 @@ namespace fcmd.Model
             };
 
             // object p1 = null; // WindowGtk.p1 as FileListPanelGtk;
-                              //if (p1 == null)
+            //if (p1 == null)
             return;
 
             //object p2 = null; // WindowGtk.p2 as FileListPanelGtk;

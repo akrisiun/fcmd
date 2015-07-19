@@ -187,7 +187,8 @@ namespace fcmd.View
 
                     InputBox ibx_qs = new InputBox(Localizator.GetString("QuickSelect"), Filter);
                     Xwt.CheckBox chkRegExp = new Xwt.CheckBox(Localizator.GetString("NameFilterUseRegExp"));
-                    ibx_qs.OtherWidgets.Add(chkRegExp, 0, 0);
+                    // ibx_qs.OtherWidgets.Add(chkRegExp, 0, 0);
+
                     if (!ibx_qs.ShowDialog()) return;
                     Filter = ibx_qs.Result;
                     if (chkRegExp.State == Xwt.CheckBoxState.Off)
@@ -227,7 +228,8 @@ namespace fcmd.View
 
                     InputBox ibx_qus = new InputBox(Localizator.GetString("QuickUnselect"), Filter_qus);
                     Xwt.CheckBox chkRegExp_qus = new Xwt.CheckBox(Localizator.GetString("NameFilterUseRegExp"));
-                    ibx_qus.OtherWidgets.Add(chkRegExp_qus, 0, 0);
+                    // ibx_qus.OtherWidgets.Add(chkRegExp_qus, 0, 0);
+
                     if (!ibx_qus.ShowDialog()) return;
                     Filter_qus = ibx_qus.Result;
                     if (chkRegExp_qus.State == Xwt.CheckBoxState.Off)

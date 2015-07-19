@@ -4,7 +4,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{7D93F45C-E782-4E8B-ABFF-49C5E92B0E13}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>fcmd</RootNamespace>
     <AssemblyName>fcmd</AssemblyName>
     <CodePage>65001</CodePage>
@@ -122,15 +122,16 @@
     <Compile Include="Platform\AiLib\Reflection\ExpandoArray.cs" />
     <Compile Include="Platform\AiLib\Reflection\ExpandoUtils.cs" />
     <Compile Include="Platform\AiLib\Reflection\StringConvert.cs" />
-    <Compile Include="Model\Menu\Menu.cs" />
     <Compile Include="Model\Menu\MenuItemWIthKey.cs" />
     <Compile Include="Platform\Commands.cs" />
+    <Compile Include="Platform\DebugInfo.cs" />
     <Compile Include="Platform\ICommanderWindow.cs" />
     <Compile Include="Platform\MessageDialog.cs" />
     <Compile Include="View.GTK\BodyGtk.cs" />
-    <Compile Include="View.GTK\FileListPanelGTK.cs" />
+    <Compile Include="View.GTK\Ctrl\InputBoxGtk.cs" />
+    <Compile Include="View.GTK\Ctrl\ITextEntryGtk.cs" />
+    <Compile Include="View.GTK\FileListPanelGtk.cs" />
     <Compile Include="View.GTK\FileListVisual.cs" />
-    <Compile Include="View.GTK\InputBoxGTK.cs" />
     <Compile Include="View.GTK\MenuGtk.cs" />
     <Compile Include="Platform\Application.cs" />
     <Compile Include="Platform\ICommand.cs" />

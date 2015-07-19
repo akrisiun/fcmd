@@ -1,133 +1,73 @@
-﻿using fcmd.View.ctrl;
+﻿using fcmd.Controller;
+using pluginner;
 using pluginner.Widgets;
 using System;
-using System.Diagnostics;
-using fcmd.View;
-using fcmd.Controller;
-using pluginner;
-using System.IO;
-using System.Windows.Threading;
 using System.Collections.Generic;
-using System.Threading;
 using System.Collections.ObjectModel;
-using fcmd.Model;
+using System.IO;
+using System.Threading;
+using Xwt;
 
-namespace fcmd.View.Xaml
+namespace fcmd.View.GTK
 {
-    // pluginner.Widgets.ListView2ItemWpf
-    //   ListView2ItemWpf(int rowNumber, int colNumber, string rowTag, ListView2.ColumnInfo[] columns, List<object> data, Font font) 
-
-    public class FileListPanelWpf : FileListPanel<ListView2ItemWpf>
+    public class FileListPanelGtk : FileListVisual<ListView2Canvas>
     {
-        public PanelWpf Parent { get; set; }
-        public WindowDataWpf WindowData { [DebuggerStepThrough] get; set; }
-
-        public override IButton GoRoot { get; protected set; }
-        public override IButton GoUp { get; protected set; }
-        public override ITextEntry UrlBox { get { return Parent.path; } }
-
-        protected EventHandler onFocus;
-        protected bool onFocusSet;
-
-        public override event TypedEvent<string> Navigate;
-        public override event TypedEvent<string> OpenFile;
-
-        public override event EventHandler GotFocus { add { onFocusSet = true; onFocus += value; } remove { onFocus += value; } }
-
-        // original constructor
-        //public FileListPanelXaml(string BookmarkXML = null, string CSS = null,
-        //    string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
-
-        public FileListPanelWpf(PanelWpf parent)
+        public FileListPanelGtk(string BookmarkXML = null, string CSS = null,
+            string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
+            : base(BookmarkXML, CSS, InfobarText1, InfobarText2)
         {
-            Parent = parent;
         }
 
-        public ListView2Widget ListingViewWpf { get; protected set; }
+        #region Implement
 
-        public override IListingView<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj; } }
+        public override IListingContainer ListingWidget 
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
-        public override IListingContainer ListingWidget { get { return ListingViewWpf; } }
+        public override IListingView<ListView2Canvas> ListingView
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         public override void Initialize(PanelSide side)
         {
-            onFocus = new EventHandler(Focused);
-
-            df = DataFieldNumbers.Default();
-
-            GoUp = Parent.cdUp;
-            GoRoot = Parent.cdRoot;
-
-            ListingViewWpf = Parent.data;
-            ListingViewWpf.Panel = Parent as Xaml.PanelWpf;
-            ListingViewWpf.FileList = this;
-
-            ListingViewWpf.Side = side;
+            throw new NotImplementedException();
         }
 
-        public void Focused(object sender, EventArgs e)
+        protected override string MakeStatusbarText(string Template)
         {
-            var side = Parent.Side;
-            if (WindowData != null)
-                WindowData.OnSideFocus(side);
+            throw new NotImplementedException();
         }
 
-        // ExpandoObject data
-        public override TItem GetValue<TItem>(int Field)
+        protected override void WriteDefaultStatusLabel()
         {
-            return (TItem)ListingView.PointedItem.Data[Field];
+            throw new NotImplementedException();
         }
 
-        public override string GetValue(int Field)
-        {
-            return (string)ListingView.PointedItem.Data[Field];
-        }
-
-        public void BuildUI(string BookmarkXML = null) { }
-
-        protected void WriteDefaultStatusLabel()
-        {
-            //StatusProgressbar.Visible = false;
-            //if (ListingView.SelectedItems.Count < 1)
-            //    StatusBar.Text = MakeStatusbarText(SBtext1);
-            //else
-            //    StatusBar.Text = MakeStatusbarText(SBtext2);
-        }
-
-        protected string MakeStatusbarText(string Template)
-        {
-            //string txt = Template;
-            //if (ListingView.PointedItem != null)
-            //{
-            //    DirItem di = (DirItem)ListingView.PointedItem.Data[df.DirItem];
-            //    txt = txt.Replace("{FullName}", di.TextToShow);
-            //    txt = txt.Replace("{AutoSize}", di.Size.KiloMegaGigabyteConvert(Shorten.KB, Shorten.MB, Shorten.GB)); // CurShortenKB, CurShortenMB, CurShortenMB));
-            //    txt = txt.Replace("{Date}", di.Date.ToShortDateString());
-            //    txt = txt.Replace("{Time}", di.Date.ToLocalTime().ToShortTimeString());
-            //    txt = txt.Replace("{SelectedItems}", ListingView.SelectedItems.Count.ToString());
-            //    //todo: add masks SizeB, SizeKB, SizeMB, TimeUTC, Name, Extension
-            //}
-            //return txt;
-            return string.Empty;
-        }
+        #endregion
 
         public override void LoadFs(string URL, ShortenPolicies Shorten)
         {
-            // string URL, SizeDisplayPolicy ShortenKB, SizeDisplayPolicy ShortenMB, SizeDisplayPolicy ShortenGB)
-            // new { KB = ShortenKB, MB = ShortenMB, GB
             SizeDisplayPolicy ShortenKB = Shorten.KB;
             SizeDisplayPolicy ShortenMB = Shorten.MB;
             SizeDisplayPolicy ShortenGB = Shorten.GB;
 
-            bool checkAccess = (UrlBox as DispatcherObject).CheckAccess();
-            if (checkAccess)
-                UrlBox.Text = URL;
+            UrlBox.Text = URL;
+            // ListingView.Clear();
 
             string updir = URL + FS.DirSeparator + "..";
             string rootdir = FS.GetMetadata(URL).RootDirectory;
 
+
             List<DirItem> dis = new List<DirItem>();
-            //dis = FS.DirectoryContent;
+            // dis = FS.DirectoryContent;
 
             var resetHandle = new AutoResetEvent(false);
             Thread DirLoadingThread =
@@ -147,9 +87,11 @@ namespace fcmd.View.Xaml
 
             foreach (DirItem di in dis)
             {
+                // 
                 ICollection<object> Data = new Collection<Object>();
                 List<Boolean> EditableFileds = new List<bool>();
-                //Data.Add(di.IconSmall ?? Image.FromResource("fcmd.Resources.image-missing.png"));
+                //Data.Add(di.IconSmall ??
+                //    Image.FromResource("fcmd.Resources.image-missing.png"));
 
                 EditableFileds.Add(false);
                 Data.Add(di.URL); EditableFileds.Add(false);
@@ -180,9 +122,38 @@ namespace fcmd.View.Xaml
                 }
                 Data.Add(di);
 
-                (ListingView as ListView2Xaml).AddItem(Data, EditableFileds, di.URL);
-                ++counter;
+                ListingView.AddItem(Data, EditableFileds, di.URL);
+
+                const uint per_number = ~(((~(uint)0) >> 10) << 10);
+                if ((++counter & per_number) == 0)
+                {
+                    Application.MainLoop.DispatchPendingEvents();
+                }
             }
+
+            if (goUpDelegate != null)
+            {
+                GoUp.Clicked -= goUpDelegate;
+            }
+
+
+            // WPF problem : no UI thread synchornize
+            goUpDelegate = (o, ea) =>
+            {
+                LoadDir(updir);
+            };
+
+
+            GoUp.Clicked += goUpDelegate;
+            if (goRootDelegate != null)
+            {
+                GoRoot.Clicked -= goRootDelegate;
+            }
+            goRootDelegate = (o, ea) =>
+            {
+                LoadDir(rootdir);
+            };
+            GoRoot.Clicked += goRootDelegate;
 
         }
 
@@ -215,8 +186,8 @@ namespace fcmd.View.Xaml
                 //    hmi.Tag = hm.Items.Count;
                 //    hm.Items.Add(hmi);
                 //}
-                //FS.StatusChanged += FS_StatusChanged;
-                //FS.ProgressChanged += FS_ProgressChanged;
+                FS.StatusChanged += FS_StatusChanged;
+                FS.ProgressChanged += FS_ProgressChanged;
             }
 
             if (URL == "." && FS.CurrentDirectory == null)
@@ -228,6 +199,7 @@ namespace fcmd.View.Xaml
                 return;
             }
 
+            ListingWidget.Cursor = CursorType.Wait;
             ListingWidget.Sensitive = false;
 
             string oldCurDir = FS.CurrentDirectory;
@@ -279,23 +251,20 @@ namespace fcmd.View.Xaml
                 }
             }
 
-            if ((Parent as DispatcherObject).CheckAccess())
+            // #if WPF
+            var view = ListingView;
+            if (view.DataItems.Count > 0)
             {
-                var view = ListingView;
-                if (view.DataItems.Count > 0)
-                {
-                    view.SetupColumns();
-                    view.SelectedRow = 0;
-                }
-                view.SetFocus();
+                view.SetupColumns();
+                view.SelectedRow = 0;
+                // view.ScrollerIn.ScrollTo(0, 0);
             }
 
+            view.SetFocus();
+            //one fixed bug may make many other bugs...уточнить необходимость!
             ListingWidget.Sensitive = true;
+            ListingWidget.Cursor = CursorType.Arrow;
         }
 
-        public override void LoadDir()
-        {
-            LoadDir(null, null);
-        }
     }
 }

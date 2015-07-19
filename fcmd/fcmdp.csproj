@@ -67,6 +67,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
     </Reference>
+    <Reference Include="Xwt3.WPF, Version=0.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\xwt\bin\Xwt3.WPF.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -109,7 +113,6 @@
     <Compile Include="Model\IBackend.cs" />
     <Compile Include="Model\CommanderData.cs" />
     <Compile Include="Platform\ICommanderWindow.cs" />
-    <Compile Include="Model\Menu\Menu.cs" />
     <Compile Include="Model\Menu\MenuItemWIthKey.cs" />
     <Compile Include="Model\MainDataContext.cs" />
     <Compile Include="Platform\Application.cs" />

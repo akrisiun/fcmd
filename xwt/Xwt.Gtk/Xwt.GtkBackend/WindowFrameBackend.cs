@@ -130,6 +130,13 @@ namespace Xwt.GtkBackend
 			Window.Resize ((int)width, (int)height);
 		}
 
+        public virtual void SetInitialSize(double width, double height)
+        {
+            requestedSize = new Size(width, height);
+        }
+
+        public Size DesiredSize { get { return requestedSize; } }
+
 		public Rectangle Bounds {
 			get {
 				int w, h, x, y;
@@ -153,11 +160,12 @@ namespace Xwt.GtkBackend
 			}
 		}
 
-		public Size RequestedSize {
-			get { return requestedSize; }
-		}
+        public Size RequestedSize
+        {
+            get { return requestedSize; }
+        }
 
-		bool IWindowFrameBackend.Visible {
+        bool IWindowFrameBackend.Visible {
 			get {
 				return window.Visible;
 			}

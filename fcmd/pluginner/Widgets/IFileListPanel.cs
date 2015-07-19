@@ -15,8 +15,8 @@ namespace pluginner.Widgets
     {
         IButton GoRoot { get; }
         IButton GoUp { get; }
-        ITextEntry UrlBox { get; set; }
-        IStatusBar StatusBar { get; set; }
+        ITextEntry UrlBox { get; }
+        IStatusBar StatusBar { get; }
 
         IFSPlugin FS { get; }
 

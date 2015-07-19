@@ -269,7 +269,7 @@ namespace fcmd.Model
         #region Bind
 
         public abstract object KeybHelpButtons { get; }
-        public abstract object Layout { get; }
+        // public abstract object Layout { get; }
 
         protected void BindMenu()
         {

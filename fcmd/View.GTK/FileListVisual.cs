@@ -4,6 +4,7 @@ using System.IO;
 using pluginner.Widgets;
 using Xwt;
 using pluginner;
+using fcmd.View.GTK.Ctrl;
 
 namespace fcmd.View.GTK
 {
@@ -13,23 +14,27 @@ namespace fcmd.View.GTK
     {
         #region Properties
 
+        public override IButton GoRoot { get; protected set; }
+        public override IButton GoUp { get; protected set; }
+        public override ITextEntryGtk UrlBox { get; protected set; }
+
         protected EventHandler goRootDelegate = null;
         protected EventHandler goUpDelegate = null;
 
         //public MenuButton BookmarksButton = new MenuButton(Image.FromResource("fcmd.Resources.bookmarks.png"));
         //public MenuButton HistoryButton = new MenuButton(Image.FromResource("fcmd.Resources.history.png"));
 
-        //public LightScroller DiskBox = new LightScroller();
+        public LightScroller DiskBox = new LightScroller();
         public HBox DiskList = new HBox();
         public List<Button> DiskButtons = new List<Button>();
 
         public HBox QuickSearchBox = new HBox();
-        //public TextEntry QuickSearchText = new TextEntry();//по возможность заменить на SearchTextEntry (не раб. на wpf, see xwt bug 330)
-        //public Table StatusTable = new Table();
+        public TextEntry QuickSearchText = new TextEntry();//по возможность заменить на SearchTextEntry (не раб. на wpf, see xwt bug 330)
+        public Table StatusTable = new Table();
 
-        //public ProgressBar StatusProgressbar = new ProgressBar();
-        //TextEntry CLIoutput = new TextEntry { MultiLine = true, ShowFrame = true, Visible = false, HeightRequest = 50 };
-        //TextEntry CLIprompt = new TextEntry();
+        public ProgressBar StatusProgressbar = new ProgressBar();
+        TextEntry CLIoutput = new TextEntry { MultiLine = true, ShowFrame = true, Visible = false, HeightRequest = 50 };
+        TextEntry CLIprompt = new TextEntry();
 
         /// <summary>User navigates into another directory</summary>
         public override event TypedEvent<string> Navigate;
@@ -78,7 +83,7 @@ namespace fcmd.View.GTK
 
         #region Events, Methods
 
-        public void OnGotFocus(ButtonEventArgs ea)
+        public void Focused(ButtonEventArgs ea)
         {
             // base.OnGotFocus(ea);
         }

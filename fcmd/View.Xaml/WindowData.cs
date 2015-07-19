@@ -176,7 +176,7 @@ namespace fcmd.Model
         public override object KeybHelpButtons { get { return null; } }
         // KeyboardHelpButton[] KeybHelpButtons = new KeyboardHelpButton[11];//одна лишняя, которая нумбер [0]
 
-        public override object Layout { get { return Window.Content; } }    // was: Xwt.VBox 
+        // public override object Layout { get { return Window.Content; } }    // was: Xwt.VBox 
 
         public CommanderStatusBar StatusBar { get; protected set; }
 

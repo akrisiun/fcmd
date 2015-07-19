@@ -157,7 +157,9 @@ namespace Xwt
 					heightSet = true;
 					initialBounds.Height = height;
 				}
-			}
+
+                Backend.SetInitialSize(initialBounds.Width, initialBounds.Height);
+            }
 		}
 
 		internal override void SetBackendLocation (double x, double y)
@@ -170,7 +172,9 @@ namespace Xwt
 			}
 		}
 
-		internal override Rectangle BackendBounds
+        public virtual Size InitialSize { get { return initialBounds.Size; } }
+
+        internal override Rectangle BackendBounds
 		{
 			get
 			{

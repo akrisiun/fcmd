@@ -11,13 +11,13 @@ namespace fcmd.FileList
         //Xwt.Label lblQuestion = new Xwt.Label();
         //Xwt.TextEntry txtAnwser = new Xwt.TextEntry();
         //Xwt.VBox box = new Xwt.VBox();
+        //public Xwt.Table OtherWidgets = new Xwt.Table();
 
         public static object Backend { get { return null; }}
 
         public string Answer { get; set; }
         public string Question { get; set; }
 
-        public Xwt.Table OtherWidgets = new Xwt.Table();
 
         public InputBox(string AskText)
         {
