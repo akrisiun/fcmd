@@ -72,9 +72,10 @@ namespace Xwt
 		IBoxBackend Backend {
 			get { return (IBoxBackend) BackendHost.Backend; }
 		}
-		
-		internal Box (Orientation dir)
-		{
+
+        // internal 
+        public Box(Orientation dir)
+        {
 			children = new ChildrenCollection<BoxPlacement> ((WidgetBackendHost)BackendHost);
 			direction = dir;
 		}
@@ -124,15 +125,15 @@ namespace Xwt
 			Pack (widget, expand, vpos, hpos, marginLeft, marginTop, marginRight, marginBottom, margin, PackOrigin.Start);
 		}
 
-		[Obsolete ("BoxMode is going away")]
-		public void PackStart (Widget widget, BoxMode mode)
-		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
-			bool expand = (mode & BoxMode.Expand) != 0;
-			bool fill = (mode & BoxMode.Fill) != 0;
-			PackStart (widget, expand, fill);
-		}
+		//[Obsolete ("BoxMode is going away")]
+		//public void PackStart (Widget widget, BoxMode mode)
+		//{
+		//	if (widget == null)
+		//		throw new ArgumentNullException ("widget");
+		//	bool expand = (mode & BoxMode.Expand) != 0;
+		//	bool fill = (mode & BoxMode.Fill) != 0;
+		//	PackStart (widget, expand, fill);
+		//}
 		
 		public void PackEnd (Widget widget)
 		{
@@ -163,14 +164,13 @@ namespace Xwt
 			Pack (widget, expand, vpos, hpos, marginLeft, marginTop, marginRight, marginBottom, margin, PackOrigin.End);
 		}
 
-		[Obsolete ("BoxMode is going away")]
-		public void PackEnd (Widget widget, BoxMode mode)
-		{
-			bool expand = (mode & BoxMode.Expand) != 0;
-			bool fill = (mode & BoxMode.Fill) != 0;
-			PackEnd (widget, expand, fill);
-		}
-
+		//[Obsolete ("BoxMode is going away")]
+		//public void PackEnd (Widget widget, BoxMode mode)
+		//{
+		//	bool expand = (mode & BoxMode.Expand) != 0;
+		//	bool fill = (mode & BoxMode.Fill) != 0;
+		//	PackEnd (widget, expand, fill);
+		//}
 
 		void Pack (Widget widget, bool expand, WidgetPlacement vpos, WidgetPlacement hpos, double marginLeft, double marginTop, double marginRight, double marginBottom, double margin, PackOrigin ptype)
 		{

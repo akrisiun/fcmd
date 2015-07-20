@@ -32,15 +32,31 @@ using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
-	partial class BoxBackend: WidgetBackend, IBoxBackend
+    // ankr
+	public partial class BoxBackend: WidgetBackend, IBoxBackend
 	{
 		public BoxBackend ()
 		{
 			Widget = new CustomContainer () { Backend = this };
 			Widget.Show ();
 		}
-		
-		new CustomContainer Widget {
+
+        public BoxBackend(CustomContainer container)
+        {
+            container.Backend = this;
+            Widget = container;
+        }
+
+        public BoxBackend(Gtk.Widget gtkObj)
+        {
+            //TODO:
+
+            //container.Backend = this;
+            //Widget = container;
+        }
+
+
+        protected new CustomContainer Widget {
 			get { return (CustomContainer)base.Widget; }
 			set { base.Widget = value; }
 		}

@@ -10,8 +10,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyProduct("CoreGtk3")]
 
 [assembly: AssemblyCompany("Mono")]
-[assembly: AssemblyVersion("3.2.*")]
-[assembly: AssemblyFileVersion("3.2.0.2")]
+[assembly: AssemblyVersion("3.3.*")]
+[assembly: AssemblyFileVersion("3.3.0.2")]
 
 [assembly: AssemblyCopyright("Copyleft 2015")]
 [assembly: AssemblyCulture("")]

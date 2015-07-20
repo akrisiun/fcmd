@@ -37,7 +37,8 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	partial class CustomContainer
+    // ankr
+	public partial class CustomContainer
 	{
 		public void QueueResizeIfRequired()
 		{

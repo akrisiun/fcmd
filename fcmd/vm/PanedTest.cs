@@ -23,13 +23,15 @@ namespace fcmd
             if (engine == null)
                 return;
 
-            //VPaned vpaned = new VPaned { BorderWidth = 0 };
+            VPaned vpaned = new VPaned { BorderWidth = 0 };
             // vbox.PackStart(vpaned, false, true, 0);      // expand, fill, padding
-            //vbox.PackStart(vpaned, true, true, 0);      // expand, fill, padding
+            vbox.Add(vpaned);
+            vbox.PackStart(vpaned, true, true, 0);      // expand, fill, padding
 
             HPaned hpaned = new HPaned();
-            vbox.Add(hpaned);
-            //  vbox.PackStart(hpaned, true, true, 0);
+            // vbox.Add(hpaned);
+            // vbox.PackStart(hpaned, true, true, 0);
+            vpaned.Add(hpaned); // .PackStart(hpaned, true, true, 0);
 
             Frame frame = new Frame() { ShadowType = ShadowType.In };
             frame.SetSizeRequest(60, 60);

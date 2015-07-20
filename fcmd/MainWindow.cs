@@ -26,7 +26,7 @@ using fcmd.View.GTK.Backend;
 namespace fcmd
 {
 
-    partial class MainWindow : GtkWindowFrame, ICommanderWindow<ListView2Canvas>
+    partial class MainWindow : Gtk3WindowFrame, ICommanderWindow<ListView2Canvas>
     {
         public static string ProductVersion
         {
@@ -51,9 +51,11 @@ namespace fcmd
 
         public MainGtkVisual Visual;
 
-        public Xwt.GtkBackend.WindowBackend // WindowFrameBackend 
-                BackEndGtk { get { return this.BackendHost.Backend as Xwt.GtkBackend.WindowBackend; } }
-        public Gtk.VBox MainBox { get { return BackEndGtk.MainBox; } }
+        public Xwt.GtkBackend.WindowBackend BackEndGtk  // WindowFrameBackend 
+        {[DebuggerStepThrough]  get { return this.BackendHost.Backend as Xwt.GtkBackend.WindowBackend; } }
+
+        public Gtk.VBox MainBox
+        {[DebuggerStepThrough] get { return BackEndGtk.MainBox; } }
 
         public class MainGtkVisual
         {
@@ -101,16 +103,11 @@ namespace fcmd
 
             // this.Icon = Images
             this.PaddingLeft = PaddingRight = PaddingTop = 0;
-            // PaddingBottom = PaddingBottom / 3;
+            this.PaddingBottom = PaddingBottom / 3;
 
             BindMenu();
             // TranslateMenu(WindowMenu);
             this.MainMenu = WindowMenu;
-
-            //apply user's settings
-            //window size
-            //this.Width = fcmd.Properties.Settings.Default.WinWidth;
-            //this.Height = fcmd.Properties.Settings.Default.WinHeight;
 
             LayoutInit();
             if (Visual.PanelLayout != null)
@@ -134,14 +131,19 @@ namespace fcmd
         private void LayoutInit()
         {
             // var Layout = Visual.Layout;
-            //Layout.MinWidth = 400;
-            //Layout.MinHeight = 300;
+            var mainBox = this.MainBox;
+            var Layout = new Gtk3Box(mainBox, Orientation.Vertical);
+
+            // Layout.MinWidth = 400;
+            // Layout.MinHeight = 300;
 
             //// var PanelLayout = Visual.PanelLayout as Xwt.HPaned;
             //this.Content = Layout;
 
-            //var PanelLayout = new Xwt.HPaned();
+            var PanelLayout = new Xwt.HPaned();
             //Layout.PackStart(PanelLayout, false, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, 0, 0, 0);
+            var box = Layout.gtkBox;
+            //  box.Add(PanelLayout.GetBackend.)
 
             //var KeyBoardHelp = Visual.KeyBoardHelp;
             //// Layout.PackStart(KeyBoardHelp, false, Xwt.WidgetPlacement.End, Xwt.WidgetPlacement.Fill, 1, 3, 1, 2);
@@ -154,10 +156,10 @@ namespace fcmd
             var windowEnd = host.Backend as Xwt.GtkBackend.WindowBackend; // .WidgetBackend;
             var gtkWindow = windowEnd.Window as Gtk.Window;
 
-            fcmd.DemoPanes.Test(this, gtkWindow);
+            // fcmd.DemoPanes.Test(this, gtkWindow);
 
             // this.Content = text;
-            gtkWindow.ShowAll();
+            // gtkWindow.ShowAll();
             return;
 
 
@@ -173,7 +175,7 @@ namespace fcmd
             //PanelLayout.Visible = true;
 
             // windowEnd.ShowAll();
-            
+
             CheckTheme();
 
             //load bookmarks

@@ -1214,7 +1214,8 @@ namespace Xwt.GtkBackend
 		Gtk.Widget Widget { get; }
 	}
 
-	class WidgetPlacementWrapper: Gtk.Alignment, IConstraintProvider
+    // ankr
+	public class WidgetPlacementWrapper: Gtk.Alignment, IConstraintProvider
 	{
 		public WidgetPlacementWrapper (): base (0, 0, 1, 1)
 		{
