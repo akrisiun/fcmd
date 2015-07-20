@@ -1,4 +1,5 @@
 ﻿using fcmd.Controller;
+using fcmd.Platform;
 using pluginner;
 using pluginner.Widgets;
 using System;
@@ -7,10 +8,25 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Threading;
 using Xwt;
+using Application = Xwt.Application;
+using System.Collections;
 
 namespace fcmd.View.GTK
 {
-    public class FileListPanelGtk : FileListVisual<ListView2Canvas>
+    public abstract class ListingWidgetGTK : IListingContainer, IVisualSensitive    // , pluginner.Widgets.IUI
+    {
+        public abstract IEnumerable ItemsSource { get; set; }
+        public abstract bool Sensitive { get; set; }
+
+        public abstract ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df);
+        public abstract void SetFocus();
+        public abstract void SetupColumns();
+
+        public abstract object Content { get; set; }
+        public abstract Xwt.CursorType Cursor { get; set; } //  { return base.Cursor; } set { base.Cursor = value; } } // = CursorType.Wait;
+    }
+
+    public class FileListPanelGtk : FileListVisual<ListView2Canvas> // ,   IListingContainer
     {
         public FileListPanelGtk(string BookmarkXML = null, string CSS = null,
             string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
@@ -20,7 +36,7 @@ namespace fcmd.View.GTK
 
         #region Implement
 
-        public override IListingContainer ListingWidget 
+        public override ListingWidgetGTK ListingWidget
         {
             get
             {

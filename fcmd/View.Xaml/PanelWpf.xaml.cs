@@ -15,6 +15,7 @@ namespace fcmd.View.Xaml
     {
         public FileListPanel PanelData {[DebuggerStepThrough] get { return PanelDataWpf; } }
         public PanelSide Side { get; set; }
+        public WindowDataWpf WindowData {[DebuggerStepThrough] get { return PanelDataWpf.WindowData; } }
 
         public FileListPanelWpf PanelDataWpf {[DebuggerStepThrough] get; private set; }
 

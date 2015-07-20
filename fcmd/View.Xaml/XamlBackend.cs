@@ -44,13 +44,13 @@ namespace fcmd.View
 
         void AfterLoadDir(PanelWpf panel1, PanelWpf panel2)
         {
-            var view1 = panel1.PanelDataWpf.ListingViewWpf;
+            var view1 = panel1.PanelDataWpf.ListingView;
             
             // if (view.DataItems.Count > 0)
             view1.SetupColumns();
             view1.SelectedRow = 0;
 
-            var view2 = panel2.PanelDataWpf.ListingViewWpf;
+            var view2 = panel2.PanelDataWpf.ListingView;
             view2.SetupColumns();
 
             panel1.PanelDataWpf.UrlBox.Text = panel1.PanelDataWpf.FS.CurrentDirectory;

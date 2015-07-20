@@ -4,11 +4,11 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 using System.Windows.Markup;
 using System.Windows.Controls.Primitives;
-using pluginner.Widgets;
 using System.Windows.Media;
 using DrawingColor = System.Drawing.Color;
-// using fcmd.Menu;
 using System.IO;
+
+using pluginner.Widgets;
 using fcmd.View.Xaml;
 using fcmd.Controller;
 using fcmd.Model;
@@ -17,15 +17,26 @@ namespace fcmd.View.ctrl
 {
     public class PointedItem : IPointedItem<ListView2ItemWpf> // <ListView2Item>
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        public PointedItem() { } // : base(0, 0, "", null, null) // , null)
+
         public int Index { get; set; }
         public ListView2ItemWpf Item { get; set; }
+
+        /// Pointed items
         public IEnumerable<ListView2ItemWpf> Pointed { get; set; }
 
-        public PointedItem() // : base(0, 0, "", null, null) // , null)
-        {
-        }
-
         public object[] Data { get { return Item.Data; } set { Item.Data = value; } }
+
+        /// <summary>
+        ///   returns Full path 
+        /// </summary>
+        public override string ToString()
+        {
+            return Item.FullPath;
+        }
     }
 
     public static class ColorConvert
@@ -47,13 +58,13 @@ namespace fcmd.View.ctrl
         }
     }
 
-    public class ListView2Widget : DataGrid, IListingContainer<ListView2ItemWpf>
-               , IAddChild, IContainItemStorage
+    public class ListView2Widget : DataGrid, IListingContainer<ListView2ItemWpf>, IAddChild, IContainItemStorage
     {
-        // no visual data container
+        // Non visual data container
         public ListView2Xaml DataObj { get; protected set; }
 
-        Xwt.CursorType IListingContainer.Cursor { get; set; } // = CursorType.Wait;
+        // Xwt.CursorType IListingContainer.Cursor { get; set; } // = CursorType.Wait;
+        System.Windows.Input.Cursor Cursor { get; set; } // = CursorType.Wait;
 
         public PanelWpf Panel { get; set; }
         public FileListPanelWpf FileList { get; set; }
@@ -131,7 +142,12 @@ namespace fcmd.View.ctrl
         public void Select(ListView2ItemWpf item)
         {
             this.SelectedRow = DataItems.IndexOf(item);
+        }
+
+        public void SelectLast(ListView2ItemWpf item)
+        {
             PointedItem = new PointedItem() { Item = item, Index = this.SelectedRow };
+            (Panel.WindowData as WindowDataWpf).OnSelectedItem(PointedItem);
         }
 
         public bool SelectEnter(ListView2ItemWpf item)
@@ -193,7 +209,7 @@ namespace fcmd.View.ctrl
         {
             return DataObj.DefineColumns(df);
         }
-        
+
         #endregion
 
         #region ICollection

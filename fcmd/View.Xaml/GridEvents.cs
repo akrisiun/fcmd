@@ -1,4 +1,5 @@
 ﻿using fcmd.View.ctrl;
+using fcmd.View.Xaml;
 using pluginner.Widgets;
 using System.Windows.Input;
 
@@ -11,8 +12,15 @@ namespace fcmd.Model
             @this.SelectionChanged += (s, e) =>
             {
                 var list = e.AddedItems;
+                ListView2ItemWpf lastItem = null;
                 foreach (ListView2ItemWpf item in list)
+                {
                     @this.Select(item);
+                    lastItem = item;
+                }
+
+                if (lastItem != null)
+                    @this.SelectLast(lastItem);
             };
 
             @this.PreviewMouseDoubleClick += (s, e) =>
@@ -42,7 +50,6 @@ namespace fcmd.Model
                 }
             };
         }
-
 
     }
 

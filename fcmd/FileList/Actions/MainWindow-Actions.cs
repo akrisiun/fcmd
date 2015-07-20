@@ -1,20 +1,22 @@
 ﻿/* The File Commander main window
- * File managing operations
+ * The main file manager window
  * (C) The File Commander Team - https://github.com/atauenis/fcmd
  * (C) 2013-14, Alexander Tauenis (atauenis@yandex.ru)
  * (C) 2014, Evgeny Akhtimirov (wilbit@me.com)
  * Contributors should place own signs here.
+ * (C) 2015, Andrius Krisiunas (akrisiun@gmail.com)
  */
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using pluginner.Widgets;
 using Xwt;
 using fcmd.FileList;
+
 #if WPF
-using ListView2Canvas = pluginner.Widgets.ListView2ItemWpf;
+using ListView2Canvas = fcmd.View.Xaml.ListView2ItemWpf;
 #else 
 using ListView2Canvas = fcmd.View.GTK.ListView2Canvas;
 #endif

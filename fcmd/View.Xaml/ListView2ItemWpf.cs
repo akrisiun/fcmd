@@ -1,52 +1,74 @@
 ﻿/* The File Commander - plugin API - ListView2
- * The ListView2 item widget
+ * The ListView2 item widget, Presentation framework version
  * (C) The File Commander Team - https://github.com/atauenis/fcmd
  * (C) 2014, Alexander Tauenis (atauenis@yandex.ru)
  * (C) 2014, Evgeny Akhtimirov (wilbit@me.com)
  * Contributors should place own signs here.
+ * (C) 2015, Andrius Krisiunas (akrisiun@gmail.com) https://github.com/akrisiun/fcmd
  */
 
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
-//using Xwt;
-using Xwt.Drawing;
-//using System.Drawing;
+using System.Drawing;
 using System.Collections;
 using pluginner.Widgets;
 using System.IO;
-using Xwt;
 
-//#if WPF
-//using ListView2Canvas = pluginner.Widgets.ListView2ItemWpf;
-//#endif
-
-namespace pluginner.Widgets
+namespace fcmd.View.Xaml
 {
     // FileList rows data
+    // XWT : public class ListView2Canvas : Canvas, IListView2Visual
 
-#if XWT
-    public class ListView2Canvas : Canvas, IListView2Visual
-    {
-
-        // paramless ctor
-        public ListView2Canvas() : this(-1, -1, null, null, null, font: null) { }
-
-#else
     public class ListView2ItemWpf : IListView2Visual
     {
-#endif
+        #region ctor
 
         // paramless ctor
         public ListView2ItemWpf() : this(-1, -1, null, null, null) { }
+
+        /// <summary>Creates a new ListView2Item</summary>
+        /// <param name="rowNumber">Number of owning row</param>
+        /// <param name="colNumber">Number of owning column</param>
+        /// <param name="rowTag">The item's tag</param>
+        /// <param name="columns">Array of column information</param>
+        /// <param name="data">The data that should be shown in this LV2I</param>
+        /// <param name="font">Which font should be used</param>
+        /// XWT : ListView2Canvas(int rowNumber, int colNumber, string rowTag,
+        ///                ListView2.ColumnInfo[] columns, IEnumerable<Object> data, Font font)
+        public ListView2ItemWpf(int rowNumber, int colNumber, string rowTag,
+            ListView2.ColumnInfo[] columns, IEnumerable<Object> data)
+        {
+            if (data == null)
+                return;
+
+            _Values = data.ToArray();
+            _Cols = columns;
+            Tag = rowTag;
+            // QueueDraw();
+        }
+
+        #endregion
 
         #region Row data and state
 
         /// <summary>Data store</summary>
         protected Object[] _Values;
 
-        public string FullPath { get { return fldFile != ".." ? fldPath : Path.Combine(fldPath, fldFile); } }
+        public string FullPath
+        {
+            get
+            {
+                return // fldFile == ".." ? fldPath :
+                       Path.Combine(
+                            fldPath.StartsWith(Protocol) ? fldPath.Substring(Protocol.Length) : fldPath,
+                            fldFile);
+            }
+        }
+
+        public const string Protocol = "file://";
+
         public string fldPath { get { return Data[0] as string; } }
 
         public string fldFile { get { return Data[1] as string; } }
@@ -59,14 +81,9 @@ namespace pluginner.Widgets
         /// <summary>Selection state</summary>
 		private ListView2.ItemStates _State;
 
-#if GTK
-        /// <summary>"Is the Field Editable" data store</summary>
-        private bool[] _Editables;
-#endif
+        #endregion
 
         #region implement WPF state
-
-#if WPF
 
         public bool CanGetFocus { get { return true; } set {; } }
         public object Content
@@ -98,46 +115,7 @@ namespace pluginner.Widgets
         public ListView2.ColumnInfo[] ColumnData {[DebuggerStepThrough] get { return _Cols; } set { _Cols = value; } }
         // + ListView2.ItemStates State
 
-#endif
-
         #endregion
-
-        #endregion
-
-        /// <summary>Creates a new ListView2Item</summary>
-        /// <param name="rowNumber">Number of owning row</param>
-        /// <param name="colNumber">Number of owning column</param>
-        /// <param name="rowTag">The item's tag</param>
-        /// <param name="columns">Array of column information</param>
-        /// <param name="data">The data that should be shown in this LV2I</param>
-        /// <param name="font">Which font should be used</param>
-
-#if XWT
-        public ListView2Canvas(int rowNumber, int colNumber, string rowTag,
-                ListView2.ColumnInfo[] columns, IEnumerable<Object> data, Font font)
-        {
-            MinHeight = 16;
-            HeightRequest = 16;
-            MinWidth = 500;
-            ExpandHorizontal = true;
-            ExpandVertical = true;
-            //RowNo = rowNumber;
-            //ColNo = colNumber;
-            // _FontToDraw = font;
-
-#else
-        public ListView2ItemWpf(int rowNumber, int colNumber, string rowTag,
-            ListView2.ColumnInfo[] columns, IEnumerable<Object> data)
-        {
-#endif
-            if (data == null)
-                return;
-
-            _Values = data.ToArray();
-            _Cols = columns;
-            Tag = rowTag;
-            QueueDraw();
-        }
 
         #region Properties 
 
@@ -145,7 +123,10 @@ namespace pluginner.Widgets
         public ListView2.ColumnInfo[] Columns
         {
             get { return _Cols; }
-            set { _Cols = value; QueueDraw(); }
+            set
+            {
+                _Cols = value; // QueueDraw(); 
+            }
         }
 
         /// <summary>Status of the item selection</summary>
@@ -194,76 +175,16 @@ namespace pluginner.Widgets
                         //CurFgColor = DefFgColor;
                         break;
                 }
-                QueueDraw();
+                // QueueDraw();
             }
         }
 
         public object Tag { get; set; }
 
-#if !WPF
-        object IListView2Visual.Content
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public object[] Data
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public int? RowIndex
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        public ListView2.ColumnInfo[] ColumnData
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
-        }
-#endif
-
-
         // Cross plaform WPF case
-        protected void QueueDraw() { }
-
-        public void OnDblClick()
-        {
-#if XWT
-            OnButtonPressed(new ButtonEventArgs { MultiplePress = 2 });
-#endif
-        }
+        // protected void QueueDraw() { }
+        // public void OnDblClick()
+        //    OnButtonPressed(new ButtonEventArgs { MultiplePress = 2 });
 
         /// <summary>
         /// Get or set the data. Note that the data should be written fully.
@@ -288,187 +209,30 @@ namespace pluginner.Widgets
 
         #endregion
 
-#if XWT
-        protected override void OnDraw(Context ctx, Rectangle dirtyRect)
-        {
-            base.OnDraw(ctx, dirtyRect);
-            if (_Values.Length > _Cols.Length) return; //if the column count is less than the count of columns in the data, НАХУЙ ТАКУЮ РАБОТУ
-
-            double PosByX = 0;
-            for (int i = 0; i < _Values.Length; i++)
-            {
-                var Value = _Values[i];
-                //if (_Cols[i].Visible)
-                //    Draw(Value, PosByX, ctx, _Cols[i].Width, CurFgColor, _FontToDraw);
-
-                if (_Cols.Length > i && i != _Cols.Length - 1)
-                {
-                    PosByX += _Cols[i].Width;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Draw a information on the ListView2Item
-        /// </summary>
-        /// <param name="What">What should be drawed</param>
-        /// <param name="Where">Where (position by X) should be drawed</param>
-        /// <param name="On">On what Drawing.Context the information should be drawed</param>
-        /// <param name="MaxWidth">The limit of the picture's width</param>
-        /// <param name="TextColor">The text foreground color</param>
-        /// <param name="WhatFont">Which font is used to draw the onject</param>
-        private void Draw(object What, double Where, Context On, double MaxWidth, Color TextColor, Font WhatFont)
-        {
-            if (What.GetType() != typeof(Image)
-                &&
-                What.GetType() != typeof(DirItem))
-            {
-                TextLayout tl = new TextLayout(this)
-                {
-                    Text = What.ToString(),
-                    Font = WhatFont,
-                    Width = MaxWidth,
-                    Trimming = TextTrimming.WordElipsis
-                };
-                On.SetColor(TextColor);
-                On.DrawTextLayout(tl, Where + 4, 0);
-            }
-            if (What is Image)
-            {
-                //On.DrawImage(What as Image, Where + 2, 0); 
-                //undone: need to fix thread violation (presumably, WPF doesn't like that the image is 'assigned' to non-UI thread, and because of this sabotages drawing process)
-            }
-        }
-
-#endif
-
-        // Appearance Append to ItemData {
-        //    Font = Font.SystemSansSerifFont.WithWeight(FontWeight.Heavy),
-        //    PointerBgColor = PointedBgColor,
-        //    PointerFgColor = PointedFgColor,
-        //    SelectionBgColor = SelectedBgColor,
-        //    SelectionFgColor = SelectedFgColor,
-        //    State = ItemStates.Default
-        //};
-
         #region Appeareance
 
-        // todo: dynamic recalculate
+        // protected override void OnDraw(Context ctx, Rectangle dirtyRect)
+        // Draw a information on the ListView2Item
+        // private void Draw(object What, double Where, Context On, double MaxWidth, Color TextColor, Font WhatFont)
+
+        // TODO: dynamic recalculate
         public struct ItemAppeareance
         {
-
             /// <summary>Font the values will be written in</summary>
-            //protected Font _FontToDraw;
-
-            //protected Color DefBgColor;
-            //protected Color DefFgColor;
-            //protected Color PointBgColor;
-            //protected Color PointFgColor;
-            //protected Color SelBgColor;
-            //protected Color SelFgColor;
-
-            //protected Color CurFgColor;
+            // protected Font _FontToDraw;
 
             public Color BackgroundColor { get { return default(Color); } set {; } }
             public Color Foreground { get { return default(Color); } set {; } }
 
-            //public int RowNo = -1;
-            //public int ColNo = -1;
-            public string Tag; //don't forgetting that the lv2 is used only for file list, so the tag can be only a string
+            // public int RowNo = -1;
+            // public int ColNo = -1;
+
+            // public string Tag; //don't forgetting that the lv2 is used only for file list, so the tag can be only a string
 
         }
-
-        //public Color NormalBgColor
-        //{
-        //    get { return DefBgColor; }
-        //    set
-        //    {
-        //        DefBgColor = value;
-        //        if (State == ListView2.ItemStates.Default)
-        //            BackgroundColor = DefBgColor;
-        //    }
-        //}
-
-        //public Color NormalFgColor
-        //{
-        //    get { return DefFgColor; }
-        //    set
-        //    {
-        //        DefFgColor = value;
-        //        if (State == ListView2.ItemStates.Default)
-        //        {
-        //            CurFgColor = value;
-        //            QueueDraw();
-        //        }
-        //    }
-        //}
-
-        //public Color PointerBgColor
-        //{
-        //    get { return PointBgColor; }
-        //    set
-        //    {
-        //        PointBgColor = value;
-        //        if ((int)State == 1)
-        //        {
-        //            BackgroundColor = value;
-        //        }
-        //    }
-        //}
-
-        //public Color PointerFgColor
-        //{
-        //    get { return PointFgColor; }
-        //    set
-        //    {
-        //        PointFgColor = value;
-        //        if ((int)State == 1)
-        //        {
-        //            this.BackgroundColor = value;
-        //        }
-        //    }
-        //}
-
-        //public Color SelectionBgColor
-        //{
-        //    get { return SelBgColor; }
-        //    set
-        //    {
-        //        SelBgColor = value;
-        //        if ((int)State >= 2)
-        //        {
-        //            BackgroundColor = value;
-        //        }
-        //    }
-        //}
-
-        //public Color SelectionFgColor
-        //{
-        //    get { return SelFgColor; }
-        //    set
-        //    {
-        //        SelFgColor = value;
-        //        if ((int)State >= 2)
-        //        {
-        //            BackgroundColor = value;
-        //        }
-        //    }
-        //}
-
-        //        /// <summary>Set the font of the row</summary>
-        //        public
-        //#if XWT
-        //            new 
-        //#endif
-        //            Font Font
-        //        {
-        //            get; set;
-        //        }
 
         #endregion
 
     }
-
-    //  #endregion
 
 }

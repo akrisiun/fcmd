@@ -6,9 +6,12 @@ using System.Drawing;
 
 namespace fcmd.View.ctrl
 {
+    // Xaml TextEntry
+
     public class TextEntry : TextBox, ITextEntry, IInputElement
     {
         public bool CanGetFocus { get { return IsEnabled; } set { IsEnabled = value; } }
+
         public Color BackgroundColor
         {
             get { return ColorConvert.To(Background); }
@@ -17,10 +20,12 @@ namespace fcmd.View.ctrl
 
     }
 
+    // Xaml ComboBox
+
     public class ComboWidget : ComboBox, ITextEntry, IInputElement
     {
-
         public bool CanGetFocus { get { return IsEnabled; } set { IsEnabled = value; } }
+
         public Color BackgroundColor
         {
             get { return ColorConvert.To(Background); }

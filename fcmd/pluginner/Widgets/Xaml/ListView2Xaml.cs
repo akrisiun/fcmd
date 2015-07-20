@@ -6,13 +6,13 @@ using System.Text;
 
 namespace pluginner.Widgets.Xaml
 {
-    public abstract class ListView2Xaml<T> : ListView3, IListingView<T>,   // , -> ListView2Widget
-            IListView2<T>, ICollection<T>, IDisposable
-            where T : class, IListView2Visual
+
+    public abstract class ListView2Xaml<T> : ListView3, IListingView<T>, IListView2<T>, ICollection<T>, IDisposable
+           where T : class, IListView2Visual
     {
         public abstract object Content { get; set; }
         public abstract IList<T> DataItems { get; } // protected set
-        
+
         // public abstract IEnumerable<T> ChoosedRows { get; }
 
         public abstract void Dispose();

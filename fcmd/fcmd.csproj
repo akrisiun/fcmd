@@ -135,7 +135,6 @@
     <Compile Include="Model\IBackend.cs" />
     <Compile Include="Model\IDriveCombo.cs" />
     <Compile Include="Model\IPanelLayout.cs" />
-    <Compile Include="Model\ListView2Wpf.cs" />
     <Compile Include="Model\MainDataContext.cs" />
     <Compile Include="Model\View\Control.cs" />
     <Compile Include="Platform\AiLib\IOFile\DirectoryEnum.cs" />
@@ -150,6 +149,7 @@
     <Compile Include="Platform\Commands.cs" />
     <Compile Include="Platform\DebugInfo.cs" />
     <Compile Include="Platform\ICommanderWindow.cs" />
+    <Compile Include="Platform\IVisualSensitive.cs" />
     <Compile Include="Platform\MessageDialog.cs" />
     <Compile Include="View.GTK\Backend\Gtk3Box.cs" />
     <Compile Include="View.GTK\Backend\Gtk3WindowFrame.cs" />

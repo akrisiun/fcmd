@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace pluginner.Widgets
 {
-    public interface IListingView<T> : IListView2 // , IPointedItem<T>
+    public interface IListingView<T> : IListView2
     {
         IList<T> DataItems { get; }
         IEnumerable<T> ChoosedRows { get; }
@@ -18,16 +18,9 @@ namespace pluginner.Widgets
 
         // List<Object> Data, List<Boolean> EditableFields, string ItemTag = null)
         // IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag = null)
-
         // void LoadDir();
 
         IPointedItem<T> PointedItem { get; set; }
     }
-
-    //public interface IListingView2<T> : IListingView<T>, IListView2<T>, IEnumerable
-    //    where T : IListView2Visual
-    //{
-    //    // ListView2ItemGTK
-    //}
 
 }

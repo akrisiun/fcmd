@@ -5,14 +5,54 @@ using pluginner.Widgets;
 using Xwt;
 using pluginner;
 using fcmd.View.GTK.Ctrl;
+using fcmd.Platform;
 
 namespace fcmd.View.GTK
 {
-
     // GTK visual
-    public abstract class FileListVisual<T> : FileListPanel<T> where T : class, IListView2Visual
+
+    public abstract class FileListVisual<T> : FileListPanel<T>, IVisualSensitive
+        where T : class, IListView2Visual
     {
+        #region ctor
+
+        /// <summary>Initialize the FLP</summary>
+        /// <param name="BookmarkXML">The bookmark database</param>
+        /// <param name="CSS">The user theme (or null if it's need to use internal theme)</param>
+        /// <param name="InfobarText1">The mask for infobar text when a file is selected</param>
+        /// <param name="InfobarText2">The mask for infobar text when no files are selected</param>
+        public FileListVisual(string BookmarkXML = null, string CSS = null,
+            string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
+        {
+            //StatusBar = new CommanderStatusBar() { Content = ("Information bar") };
+            //// StatusBar.Visibility = System.Windows.Visibility.Hidden;
+            //StatusBar.Visible = true;
+
+            SBtext1 = InfobarText1;
+            SBtext2 = InfobarText2;
+            this.BookmarkXML = BookmarkXML;
+            // -> TODO after Shown()
+            PostInitialize();
+        }
+
+        protected void PostInitialize()
+        {
+            // s = new Stylist(CSS);
+            BuildUI(BookmarkXML);
+
+            GoRoot.CanGetFocus = true; // TODO: GoUp.CanGetFocus = BookmarksButton.CanGetFocus = HistoryButton.CanGetFocus = false;
+            string fontFamily = fcmd.Properties.Settings.Default.UserFileListFontFamily;
+
+            //ListingView.FontForFileNames = String.IsNullOrWhiteSpace(fontFamily) ? FontWpf.SystemFont : FontWpf.FromName(fontFamily);
+            // DiskBox.Add ...
+        }
+
+        #endregion
+        
         #region Properties
+
+        // public abstract IListingContainer ListingWidget { get; }
+        public abstract ListingWidgetGTK ListingWidget { get; }
 
         public override IButton GoRoot { get; protected set; }
         public override IButton GoUp { get; protected set; }
@@ -44,40 +84,9 @@ namespace fcmd.View.GTK
         protected string SBtext1, SBtext2;
         // private Stylist s;
 
-        #endregion
-
-        #region ctor
-
-        /// <summary>Initialize the FLP</summary>
-        /// <param name="BookmarkXML">The bookmark database</param>
-        /// <param name="CSS">The user theme (or null if it's need to use internal theme)</param>
-        /// <param name="InfobarText1">The mask for infobar text when a file is selected</param>
-        /// <param name="InfobarText2">The mask for infobar text when no files are selected</param>
-        public FileListVisual(string BookmarkXML = null, string CSS = null,
-            string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
-        {
-            //StatusBar = new CommanderStatusBar() { Content = ("Information bar") };
-            //// StatusBar.Visibility = System.Windows.Visibility.Hidden;
-            //StatusBar.Visible = true;
-
-            SBtext1 = InfobarText1;
-            SBtext2 = InfobarText2;
-            this.BookmarkXML = BookmarkXML;
-            // -> Initialize();
-        }
-
         protected string BookmarkXML;
-        protected void PostInitialize()
-        {
-            // s = new Stylist(CSS);
-            BuildUI(BookmarkXML);
-
-            GoRoot.CanGetFocus = true; // TODO: GoUp.CanGetFocus = BookmarksButton.CanGetFocus = HistoryButton.CanGetFocus = false;
-            string fontFamily = fcmd.Properties.Settings.Default.UserFileListFontFamily;
-
-            //ListingView.FontForFileNames = String.IsNullOrWhiteSpace(fontFamily) ? FontWpf.SystemFont : FontWpf.FromName(fontFamily);
-            // DiskBox.Add ...
-        }
+        bool IVisualSensitive.Sensitive { get { return base.Sensitive; } set { base.Sensitive = value; } }
+        Xwt.CursorType IVisualSensitive.Cursor { get { return base.Cursor; } set { base.Cursor = value; } } // = CursorType.Wait;
 
         #endregion
 
@@ -334,7 +343,7 @@ namespace fcmd.View.GTK
             catch (Exception ex)
             {
                 ListingWidget.Sensitive = true;
-                // ListingWidget.Cursor = CursorType.Arrow;
+                ListingWidget.Cursor = CursorType.Arrow;
 
                 View.MessageDialog.ShowError(ex.Message);
                 Console.WriteLine(ex.Message + "\n" + ex.StackTrace);
@@ -509,5 +518,14 @@ namespace fcmd.View.GTK
         protected abstract void WriteDefaultStatusLabel();
         protected abstract string MakeStatusbarText(string Template);
 
+        public void SetupColumns()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

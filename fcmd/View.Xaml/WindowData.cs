@@ -9,11 +9,15 @@ using pluginner.Widgets;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using fcmd.View;
+using fcmd.View.ctrl;
 
 namespace fcmd.Model
 {
     public class WindowDataWpf : CommanderData
     {
+
+        #region Properties 
+
         public override PanelSide? ActiveSide
         {
             get
@@ -22,6 +26,27 @@ namespace fcmd.Model
                      : PanelLayout.Panel1.IsActive.Value ? PanelSide.Left : PanelSide.Right;
             }
         }
+
+        public MainWindow WindowWpf { get { return Window as MainWindow; } }
+        public MenuPanelWpf MainMenu { get { return (Window as MainWindow).Menu; } }
+
+        public FileListPanelWpf ActivePanel { get { return WindowWpf.ActivePanelWpf as FileListPanelWpf; } }
+        public FileListPanelWpf PassivePanel { get { return WindowWpf.PassivePanelWpf as FileListPanelWpf; } }
+
+        protected PanelLayoutClass _panelLayout { get; set; }
+        public override IPanelLayout PanelLayout { get { return _panelLayout; } }     // was: Xwt.HPaned();
+
+        // public Xwt.HBox KeyBoardHelp = new Xwt.HBox();
+        public override object KeybHelpButtons { get { return null; } }
+        // KeyboardHelpButton[] KeybHelpButtons = new KeyboardHelpButton[11];//одна лишняя, которая нумбер [0]
+
+        // public override object Layout { get { return Window.Content; } }    // was: Xwt.VBox 
+
+        public CommanderStatusBar StatusBar { get; protected set; }
+
+        #endregion
+
+        #region Init, Show 
 
         public class PanelLayoutClass : IPanelLayout
         {
@@ -155,6 +180,8 @@ namespace fcmd.Model
 #endif
         }
 
+        #endregion
+
         public override void OnSideFocus(PanelSide newSide)
         {
             if (ActiveSide == newSide)
@@ -163,22 +190,13 @@ namespace fcmd.Model
             SwitchPanel(newSide == PanelSide.Left ? Window.p1Wpf : Window.p2Wpf);
         }
 
-        public MainWindow WindowWpf { get { return Window as MainWindow; } }
-        public MenuPanelWpf MainMenu { get { return (Window as MainWindow).Menu; } }
+        public override void OnSelectedItem(IPointedItem item)
+        {
+            var cmdPanel = this.WindowWpf.FooterCmd as PanelCmd;
+            cmdPanel.selected.Text = item.ToString();
+        }
 
-        public FileListPanelWpf ActivePanel { get { return WindowWpf.ActivePanelWpf as FileListPanelWpf; } }
-        public FileListPanelWpf PassivePanel { get { return WindowWpf.PassivePanelWpf as FileListPanelWpf; } }
-
-        protected PanelLayoutClass _panelLayout { get; set; }
-        public override IPanelLayout PanelLayout { get { return _panelLayout; } }     // was: Xwt.HPaned();
-
-        // public Xwt.HBox KeyBoardHelp = new Xwt.HBox();
-        public override object KeybHelpButtons { get { return null; } }
-        // KeyboardHelpButton[] KeybHelpButtons = new KeyboardHelpButton[11];//одна лишняя, которая нумбер [0]
-
-        // public override object Layout { get { return Window.Content; } }    // was: Xwt.VBox 
-
-        public CommanderStatusBar StatusBar { get; protected set; }
+        #region LoadDir
 
         public void LoadDirAsync(string[] argv, TaskScheduler scheduler)
         {
@@ -255,6 +273,8 @@ namespace fcmd.Model
                     break;
             }
         }
+
+        #endregion
 
         protected override void KeyBoardHelpInit() { }
     }

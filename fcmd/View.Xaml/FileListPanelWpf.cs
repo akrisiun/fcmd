@@ -20,7 +20,7 @@ namespace fcmd.View.Xaml
     public class FileListPanelWpf : FileListPanel<ListView2ItemWpf>
     {
         public PanelWpf Parent { get; set; }
-        public WindowDataWpf WindowData { [DebuggerStepThrough] get; set; }
+        public WindowDataWpf WindowData {[DebuggerStepThrough] get; set; }
 
         public override IButton GoRoot { get; protected set; }
         public override IButton GoUp { get; protected set; }
@@ -43,11 +43,11 @@ namespace fcmd.View.Xaml
             Parent = parent;
         }
 
-        public ListView2Widget ListingViewWpf { get; protected set; }
+        public ListView2Widget ListingWidget { get { return ListingViewWpf; } }
+        private ListView2Widget ListingViewWpf;
 
-        public override IListingView<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj; } }
+        public override IListingView<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj as ListView2Xaml; } }
 
-        public override IListingContainer ListingWidget { get { return ListingViewWpf; } }
 
         public override void Initialize(PanelSide side)
         {

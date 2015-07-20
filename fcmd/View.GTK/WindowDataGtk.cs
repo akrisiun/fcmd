@@ -57,7 +57,7 @@ namespace fcmd.Model
                 (w.WindowData as WindowDataGtk).activeSide = PanelSide.Left;
 
                 return new PanelLayoutClass()
-                    { Panel1Gtk = panel1Gtk, Panel2Gtk = panel2Gtk };
+                { Panel1Gtk = panel1Gtk, Panel2Gtk = panel2Gtk };
             }
 
 
@@ -70,6 +70,8 @@ namespace fcmd.Model
             // public Xwt.HPaned PanelLayout = new Xwt.HPaned();
 
         }
+
+        #region Events 
 
         protected override void Initialize()
         {
@@ -112,16 +114,31 @@ namespace fcmd.Model
 #endif
         }
 
+        public override void OnSideFocus(PanelSide newSide)
+        {
+            if (ActiveSide == newSide)
+                return;
+
+            // SwitchPanel(newSide == PanelSide.Left ? this.PanelLayout.Panel1 : this.PanelLayout.Panel2);
+        }
+
+        public override void OnSelectedItem(IPointedItem item)
+        {
+        }
+
+        #endregion
+
+        #region Properties
+
         public MainWindow WindowGtk {[DebuggerStepThrough] get { return Window as MainWindow; } }
 
         public MenuGtk MainMenu
-        { get { return WindowGtk.WindowMenu; } }  
+        { get { return WindowGtk.WindowMenu; } }
 
         public FileListPanelGtk ActivePanel
         { get { return PanelLayoutGtk.Panel1Gtk; } }
         public FileListPanelGtk PassivePanel
         { get { return PanelLayoutGtk.Panel2Gtk; } }
-                // return null; } } //  WindowGtk.PassivePanelGtk as FileListPanelGtk; } }
 
         public override IPanelLayout PanelLayout { get { return PanelLayoutGtk; } }
         public PanelLayoutClass PanelLayoutGtk { get; protected set; }
@@ -138,19 +155,14 @@ namespace fcmd.Model
             }
         }
 
+        #endregion
+
         protected override void SwitchPanel(FileListPanel NewPanel)
         {
             throw new NotImplementedException();
         }
 
-        public override void OnSideFocus(PanelSide newSide)
-        {
-            if (ActiveSide == newSide)
-                return;
-
-            // SwitchPanel(newSide == PanelSide.Left ? this.PanelLayout.Panel1 : this.PanelLayout.Panel2);
-        }
-
+  
         protected override void KeyBoardHelpInit()
         {
             // TODO: if !this.KeyBar.Visible 

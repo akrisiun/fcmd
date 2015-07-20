@@ -1,5 +1,4 @@
 ﻿using fcmd.Platform;
-using fcmd.View.ctrl;
 using pluginner.Widgets;
 using System;
 
@@ -11,10 +10,6 @@ namespace fcmd.Controller
         Left = 1,
         Right = 2
     }
-
-    public interface ICommand
-    { }
-
 
     public class ExitCommand : ICommand
     {

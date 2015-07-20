@@ -117,6 +117,7 @@
     <Compile Include="Model\MainDataContext.cs" />
     <Compile Include="Platform\Application.cs" />
     <Compile Include="Platform\ICommand.cs" />
+    <Compile Include="Platform\IVisualSensitive.cs" />
     <Compile Include="pluginfinder.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />
     <Compile Include="SettingsWindowTabs\ISettingsWindowTab.cs" />
@@ -130,7 +131,7 @@
     <Compile Include="Model\View\Control.cs" />
     <Compile Include="View.Xaml\Ctrl\InputBox.cs" />
     <Compile Include="View.Xaml\ListView2ItemWpf.cs" />
-    <Compile Include="Model\ListView2Wpf.cs" />
+    <Compile Include="View.Xaml\ListView2Wpf.cs" />
     <Compile Include="Platform\MessageDialog.cs" />
     <Compile Include="View.Xaml\MenuWpf.cs" />
     <Compile Include="View.Xaml\WindowData.cs" />

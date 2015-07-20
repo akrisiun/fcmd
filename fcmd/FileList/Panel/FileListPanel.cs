@@ -23,6 +23,7 @@ using System.Diagnostics;
 
 namespace fcmd
 {
+
 #if XWT
     // GTK3 Backend
 
@@ -58,7 +59,6 @@ namespace fcmd
 
         public abstract event TypedEvent<string> Navigate;
         public abstract event TypedEvent<string> OpenFile;
-
 
         // T GetValue<T>(int Field)
         public abstract T GetValue<T>(int field);
@@ -119,7 +119,7 @@ namespace fcmd
     {
         public abstract IListingView<T> ListingView { get; }
 
-        public abstract IListingContainer ListingWidget { get; }
+        // public abstract IListingContainer ListingWidget { get; }
 
         public abstract void Initialize(PanelSide side);
 

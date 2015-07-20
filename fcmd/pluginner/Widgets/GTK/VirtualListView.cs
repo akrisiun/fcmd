@@ -14,6 +14,9 @@ using pluginner.Toolkit;
 using pluginner.Widgets;
 using Xwt;
 using Xwt.Drawing;
+
+#if false
+
 using ListView2Item = pluginner.Widgets.ListView2; // ListView2Canvas;
 
 namespace pluginner.Widgets
@@ -135,9 +138,9 @@ namespace pluginner.Widgets
 				double visibleWidth = mySize.Width;
 				double itemWidth = oneItemSize.Width;
 
-				#if DEBUG
+#if DEBUG
 				if (oneItemSize.IsZero){ throw new Exception("Something is wrong! Possibly, FillIn() has been called when GUI isn't ready.");}
-				#endif
+#endif
 
 				VisibleItemsByY = VisibleItemsByX = -1;
 
@@ -368,3 +371,5 @@ namespace pluginner.Widgets
 		}
 	}
 }
+
+#endif

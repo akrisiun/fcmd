@@ -31,25 +31,19 @@ namespace pluginner.Widgets
 
         event TypedEvent<string> Navigate;
         event TypedEvent<string> OpenFile;
-
         event EventHandler GotFocus; // += (o, ea) => SwitchPanel(p1);
     }
 
     public interface IFileListPanel<T> : IFileListPanel where T : class, IListView2Visual
     {
         IListingView<T> ListingView { get; }
+
         // IUIListingView ListingWidget { get; }
     }
 
     // Visual data container
-    public interface IListingContainer : IControl, IListView2
+    public interface IListingContainer : IControl, IListView2  // IVisualSensitive
     {
-#if WPF
-        System.Windows.Input.Cursor Cursor { get; set; } // = CursorType.Wait;
-
-#else
-        Xwt.CursorType Cursor { get; set; } // = CursorType.Wait;
-#endif
         bool Sensitive { get; set; }
         object Content { get; set; }
 
@@ -79,7 +73,7 @@ namespace pluginner.Widgets
 
     public interface IListView2
     {
-        Xwt.Drawing.Font FontForFileNames { get; set; }
+        // Xwt.Drawing.Font FontForFileNames { get; set; }
         void SetFocus();
         void SetupColumns();
 
