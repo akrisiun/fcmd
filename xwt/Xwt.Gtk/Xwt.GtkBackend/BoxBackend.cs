@@ -32,8 +32,7 @@ using System.Collections.Generic;
 
 namespace Xwt.GtkBackend
 {
-    // ankr
-	public partial class BoxBackend: WidgetBackend, IBoxBackend
+    public partial class BoxBackend: WidgetBackend, IBoxBackendFront // IBoxBackend
 	{
 		public BoxBackend ()
 		{
@@ -46,15 +45,6 @@ namespace Xwt.GtkBackend
             container.Backend = this;
             Widget = container;
         }
-
-        public BoxBackend(Gtk.Widget gtkObj)
-        {
-            //TODO:
-
-            //container.Backend = this;
-            //Widget = container;
-        }
-
 
         protected new CustomContainer Widget {
 			get { return (CustomContainer)base.Widget; }
@@ -84,14 +74,21 @@ namespace Xwt.GtkBackend
 				Widget.QueueResizeIfRequired ();
 		}
 	}
-	
-	partial class CustomContainer: Gtk.Container, IGtkContainer
+
+    public interface IBoxBackendFront : IBoxBackend
+    {
+        Widget Frontend { get; }
+    }
+
+    partial class CustomContainer: Gtk.Container, IGtkContainer
 	{
-		public BoxBackend Backend;
-		public bool IsReallocating;
-		Dictionary<Gtk.Widget, WidgetData> children = new Dictionary<Gtk.Widget, WidgetData> ();
+        // public BoxBackend Backend;
+        public IBoxBackendFront Backend;
+
+        public bool IsReallocating;
+		protected Dictionary<Gtk.Widget, WidgetData> children = new Dictionary<Gtk.Widget, WidgetData> ();
 		
-		struct WidgetData
+		protected struct WidgetData
 		{
 			public Rectangle Rect;
 			public Widget Widget;

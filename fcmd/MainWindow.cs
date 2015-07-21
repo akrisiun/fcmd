@@ -133,6 +133,10 @@ namespace fcmd
             // var Layout = Visual.Layout;
             var mainBox = this.MainBox;
             var Layout = new Gtk3Box(mainBox, Orientation.Vertical);
+            // Layout.gtkBox.Parent = this.gtkWindow as Gtk.Window;
+
+            var frame = this.gtkWindow;
+            frame.SetDefaultSize(600, 200);
 
             // Layout.MinWidth = 400;
             // Layout.MinHeight = 300;
@@ -141,16 +145,24 @@ namespace fcmd
             //this.Content = Layout;
 
             var PanelLayout = new Xwt.HPaned();
-            //Layout.PackStart(PanelLayout, false, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, 0, 0, 0);
+            
+            // Layout.PackStart(PanelLayout, false, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, 0, 0, 0);
             var box = Layout.gtkBox;
-            //  box.Add(PanelLayout.GetBackend.)
+
+            var native = PanelLayout.GetBackend().NativeWidget as Gtk.HPaned;
+            box.Add(native);
 
             //var KeyBoardHelp = Visual.KeyBoardHelp;
             //// Layout.PackStart(KeyBoardHelp, false, Xwt.WidgetPlacement.End, Xwt.WidgetPlacement.Fill, 1, 3, 1, 2);
 
-            //var text = new TextEntry { Text = "Hello world", MarginLeft = 5, MarginRight = 5, MinHeight=50, MinWidth= 200 };
-            //// this.Content = text;
-            //// return;
+            var text = new TextEntry { Text = "Hello world", MarginLeft = 5, MarginRight = 5, MinHeight=50, MinWidth= 200 };
+            // PanelLayout.Panel1.Content = text;
+            // Layout.PackStart(text, true, false);
+            var nativeText = text.GetBackend().NativeWidget as Gtk.Entry;
+            native.Add1(nativeText);
+
+            this.gtkWindow.ShowAll();
+            return;
 
             var host = this.BackendHost; // as Xwt.Window.WindowBackendHost;
             var windowEnd = host.Backend as Xwt.GtkBackend.WindowBackend; // .WidgetBackend;
