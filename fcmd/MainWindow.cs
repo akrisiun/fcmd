@@ -132,62 +132,56 @@ namespace fcmd
         {
             // var Layout = Visual.Layout;
             var mainBox = this.MainBox;
-            var Layout = new Gtk3Box(mainBox, Orientation.Vertical);
+
+            // this.Content = new Gtk3Box(mainBox);
+            var Layout = this.Content as Gtk3Box; //  .BackEndGtk  .BackEndGtk.MainBox   new Gtk3Box(mainBox, Orientation.Vertical);
             // Layout.gtkBox.Parent = this.gtkWindow as Gtk.Window;
 
             var frame = this.gtkWindow;
             frame.SetDefaultSize(600, 200);
 
-            // Layout.MinWidth = 400;
-            // Layout.MinHeight = 300;
+            // fcmd.DemoPanes.Test(this, frame);
+            // return;
+            Layout.MinWidth = 400;
+            Layout.MinHeight = 300;
+            //mainBox.PackStart(new Gtk.Entry { Text = "this is Entry" }, false, false, 0);
+            // return;
 
             //// var PanelLayout = Visual.PanelLayout as Xwt.HPaned;
-            //this.Content = Layout;
-
-            var PanelLayout = new Xwt.HPaned();
-            
             // Layout.PackStart(PanelLayout, false, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, 0, 0, 0);
-            var box = Layout.gtkBox;
 
-            var native = PanelLayout.GetBackend().NativeWidget as Gtk.HPaned;
-            box.Add(native);
+            var text = new TextEntry { Text = "Hello world", MarginLeft = 5, MarginRight = 5, MinHeight = 50, MinWidth = 200 };
+            // Layout.PackStart(text, false, false); //  WidgetPlacement.Center);
+            // return;
+
+            var PanelLayout = new Gtk3HPaned();
+            var hpaned = PanelLayout.GetBackend().NativeWidget as Gtk.HPaned;
+
+            // box.Add(native);
+            // 
+            Layout.PackStart(PanelLayout, false, WidgetPlacement.Fill, WidgetPlacement.Fill, 0, 0, 0, 0);
+
+            var nativeText = text.GetBackend().NativeWidget as Gtk.Widget;
+            hpaned.Add1(nativeText);
 
             //var KeyBoardHelp = Visual.KeyBoardHelp;
             //// Layout.PackStart(KeyBoardHelp, false, Xwt.WidgetPlacement.End, Xwt.WidgetPlacement.Fill, 1, 3, 1, 2);
 
-            var text = new TextEntry { Text = "Hello world", MarginLeft = 5, MarginRight = 5, MinHeight=50, MinWidth= 200 };
-            // PanelLayout.Panel1.Content = text;
-            // Layout.PackStart(text, true, false);
-            var nativeText = text.GetBackend().NativeWidget as Gtk.Entry;
-            native.Add1(nativeText);
 
-            this.gtkWindow.ShowAll();
+            Gtk.Frame frame1 = new Gtk.Frame() { ShadowType = Gtk.ShadowType.In };
+            frame1.SetSizeRequest(60, 60);
+            hpaned.Add2(frame1);
+
+            frame1.Add(new Gtk.Entry { Text = "Panel2" });
             return;
 
             var host = this.BackendHost; // as Xwt.Window.WindowBackendHost;
             var windowEnd = host.Backend as Xwt.GtkBackend.WindowBackend; // .WidgetBackend;
             var gtkWindow = windowEnd.Window as Gtk.Window;
 
-            // fcmd.DemoPanes.Test(this, gtkWindow);
+             fcmd.DemoPanes.Test(this, gtkWindow);
 
-            // this.Content = text;
-            // gtkWindow.ShowAll();
             return;
-
-
-            //PanelLayout.Panel1.Content = text;
-            //PanelLayout.Panel2.Content = new TextEntry { Text = "Hello Right side", MarginLeft = 5, MarginRight = 5 };
-
-
-            //this.Width = 700;
-            //// var desired = this.DesiredWidth;
-            //PanelLayout.WidthRequest = host.Backend.DesiredSize.Width;
-            //PanelLayout.HeightRequest = host.Backend.DesiredSize.Height;
-            ////  100; // this.Size.Height - 200;
-            //PanelLayout.Visible = true;
-
-            // windowEnd.ShowAll();
-
             CheckTheme();
 
             //load bookmarks
@@ -247,9 +241,10 @@ namespace fcmd
 
         protected override void OnShown()
         {
+            base.OnShown();
             // LoadDir(argv);
 #if DEBUG
-            Console.WriteLine(@"DEBUG: MainWindow initialization has been completed.");
+            Console.WriteLine(@"DEBUG: MainWindow shown.");
 #endif
         }
 

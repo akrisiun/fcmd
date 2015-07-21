@@ -32,7 +32,7 @@ namespace Xwt.GtkBackend
 {
 	public class WindowBackend: WindowFrameBackend, IWindowBackend, IConstraintProvider
 	{
-        protected Gtk.Alignment alignment;
+        //protected Gtk.Alignment alignment;
         protected Gtk.MenuBar mainMenu;
         protected Gtk.VBox mainBox;
 		
@@ -44,11 +44,14 @@ namespace Xwt.GtkBackend
 		
 		protected virtual Gtk.Widget CreateMainLayout ()
 		{
-			mainBox = new Gtk.VBox ();
-			mainBox.Show ();
-			alignment = new RootWindowAlignment (this);
-			mainBox.PackStart (alignment, true, true, 0);
-			alignment.Show ();
+            if (mainBox == null)
+            {
+                mainBox = new Gtk.VBox();
+                mainBox.Show();
+            }
+			//alignment = new RootWindowAlignment (this);
+			//mainBox.PackStart (alignment, true, true, 0);
+			//alignment.Show ();
 			return mainBox;
 		}
 		
@@ -70,11 +73,11 @@ namespace Xwt.GtkBackend
 
 		public void SetChild (IWidgetBackend child)
 		{
-			if (alignment.Child != null) {
-				WidgetBackend.RemoveChildPlacement (alignment.Child);
-				alignment.Remove (alignment.Child);
-			}
-			alignment.Child = WidgetBackend.GetWidgetWithPlacement (child);
+			//if (alignment.Child != null) {
+			//	WidgetBackend.RemoveChildPlacement (alignment.Child);
+			//	alignment.Remove (alignment.Child);
+			//}
+			//alignment.Child = WidgetBackend.GetWidgetWithPlacement (child);
 		}
 		
 		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
@@ -98,10 +101,10 @@ namespace Xwt.GtkBackend
 
 		public void SetPadding (double left, double top, double right, double bottom)
 		{
-			alignment.LeftPadding = (uint) left;
-			alignment.RightPadding = (uint) right;
-			alignment.TopPadding = (uint) top;
-			alignment.BottomPadding = (uint) bottom;
+			//alignment.LeftPadding = (uint) left;
+			//alignment.RightPadding = (uint) right;
+			//alignment.TopPadding = (uint) top;
+			//alignment.BottomPadding = (uint) bottom;
 		}
 
 		public void SetMinSize (Size s)
@@ -112,8 +115,8 @@ namespace Xwt.GtkBackend
 		public override void SetSize (double width, double height)
 		{
 			base.SetSize (width, height);
-			if (alignment.Child != null)
-				alignment.Child.QueueResize ();
+			//if (alignment.Child != null)
+			//	alignment.Child.QueueResize ();
 		}
 		
 		public void GetConstraints (Gtk.Widget target, out SizeConstraint width, out SizeConstraint height)
@@ -123,9 +126,9 @@ namespace Xwt.GtkBackend
 		}
 	}
 
-	class RootWindowAlignment: Gtk.Alignment, IConstraintProvider
+	public class RootWindowAlignment: Gtk.Alignment, IConstraintProvider
 	{
-		WindowBackend backend;
+		protected WindowBackend backend;
 
 		public RootWindowAlignment (WindowBackend backend): base (0, 0, 1, 1)
 		{

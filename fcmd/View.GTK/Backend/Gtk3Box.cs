@@ -15,7 +15,8 @@ namespace fcmd.View.GTK.Backend
             BackendHost.SetCustomBackend(backend);
         }
 
-        public Gtk3Box(Gtk.Box box, Orientation dir = Orientation.Vertical) : base(dir)
+        public Gtk3Box(Gtk.Box box) : 
+            base(box.Orientation == Gtk.Orientation.Vertical ? Orientation.Vertical : Orientation.Horizontal)
         {
             backend = new Gtk3BoxBackend(box);
             BackendHost.Parent = this;
@@ -24,57 +25,65 @@ namespace fcmd.View.GTK.Backend
 
         protected Gtk3BoxBackend backend;
 
-        // TODO
-        // public Xwt.Window ParentWindow { get { return (Xwt.WindowFrame)base.Parent; } }
-
         public Gtk.Box gtkBox { get { return this.backend.Widget as Gtk.Box; } }
 
-        //protected class GtkWindowBackendHost : WindowFrame.WindowBackendHost { }
 
-        //protected override BackendHost CreateBackendHost()
-        //{
-        //    var host = new GtkWindowBackendHost();
-        //    if (backend == null)
-        //        backend = new GtkBackend();
+        public new void PackStart(Widget widget, bool expand, bool fill)
+        {
+            // base.PackStart(widget);
 
-        //    host.Parent = this;
-        //    host.SetCustomBackend(backend);
-        //    return host;
-        //}
+            var native = widget.GetBackend().NativeWidget as Gtk.Widget;
+            uint padding = Padding ?? 0;
+            gtkBox.PackStart(native, expand, fill, padding);
+        }
 
-        //private GtkBackend backend;
-
-        //protected new GtkWindowBackendHost BackendHost
-        //{
-        //    get { return (GtkWindowBackendHost)base.BackendHost; }
-        //}
+        public uint? Padding { get; set; }
 
     }
 
-    //public class GtkBoxBackend : Xwt.GtkBackend.BoxBackend, IBoxBackend
-	public class Gtk3BoxBackend : Xwt.GtkBackend.WidgetBackend, IBoxBackendFront 
+    //public class Gtk3CustomContainer : CustomContainer
+    //{
+    //    public Gtk.Box Box { get; set; }
+    //}
+
+    // public class GtkBoxBackend : Xwt.GtkBackend.BoxBackend, IBoxBackend
+    public class Gtk3BoxBackend : Xwt.GtkBackend.WidgetBackend, IBoxBackendFront 
     {
         public Gtk3BoxBackend()
         {
-            base.Widget = new CustomContainer() { Backend = this };
+            // base.Widget = new CustomContainer() { Backend = this };
+            Box = new Gtk.Box(Gtk.Orientation.Vertical, 0);
+            Padding = null;
             WidgetContainer.Show();
         }
 
-        public Gtk3BoxBackend(CustomContainer container)
-        {
-            container.Backend = this;
-            base.Widget = container;
-        }
+        //public Gtk3BoxBackend(CustomContainer container)
+        //{
+        //    container.Backend = this;
+        //    base.Widget = container;
+        //}
 
         public Gtk3BoxBackend(Gtk.Box gtkBox)
         {
-            base.Widget = gtkBox;
+            Padding = null;
+            Box = gtkBox;
         }
 
-        public Gtk.Widget GtkWidget
+        public Gtk.Box Box
         {
-            get { return base.Widget; }
+            get { return base.Widget as Gtk.Box; }
+            set { base.Widget = value; }
         }
+
+        public virtual void Pack(object child, bool expand, WidgetPlacement vpos, WidgetPlacement hpos)
+        {
+            var box = Box;
+            Gtk.Widget widget = child as Gtk.Widget;
+            if (widget != null)
+                box.PackStart(widget, expand, fill: vpos == WidgetPlacement.Fill, padding: Padding ?? 0);
+        }
+
+        public uint? Padding { get; set; }
 
         protected CustomContainer WidgetContainer
         {

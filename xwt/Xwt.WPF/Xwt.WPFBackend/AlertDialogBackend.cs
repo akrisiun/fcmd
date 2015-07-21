@@ -83,7 +83,7 @@ namespace Xwt.WPFBackend
 
 				if (message.Icon != null) {
 					var image = new ImageView (message.Icon.WithSize (32,32));
-					mainBox.PackStart (image, vpos: WidgetPlacement.Start);
+					mainBox.PackStart (image, false,  vpos: WidgetPlacement.Start);
 				}
 				VBox box = new VBox () { Margin = 3, MarginLeft = 8, Spacing = 15 };
 				mainBox.PackStart (box, true);

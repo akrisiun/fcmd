@@ -1,21 +1,31 @@
 ﻿using Xwt;
 using Xwt.Backends;
+using Xwt.GtkBackend;
 
 namespace fcmd.View.GTK.Backend
 {
     [BackendType(typeof(GtkBackend))] // default: IWindowBackend))]
     public class Gtk3WindowFrame : Window
     {
-
         public Gtk3WindowFrame() : base()
         {
             Padding = 0;
-            //backend = new GtkBackend();
+            Content = new Gtk3Box(backend.MainBox);
         }
 
         public Gtk.Window gtkWindow { get { return this.backend.Window; } }
 
-        protected class GtkWindowBackendHost : WindowFrame.WindowBackendHost { }
+        #region Host
+
+        protected class GtkWindowBackendHost : WindowFrame.WindowBackendHost {
+
+            public override void OnShown()
+            {
+                base.OnShown();
+                (Parent as Gtk3WindowFrame).IsLoaded = true;
+            }
+
+        }
 
         protected override BackendHost CreateBackendHost()
         {
@@ -25,6 +35,7 @@ namespace fcmd.View.GTK.Backend
 
             host.Parent = this;
             host.SetCustomBackend(backend);
+
             return host;
         }
 
@@ -35,10 +46,24 @@ namespace fcmd.View.GTK.Backend
             get { return (GtkWindowBackendHost)base.BackendHost; }
         }
 
+        #endregion
+
+        protected override void OnShown()
+        {
+            base.OnShown();
+        }
+
+        public bool IsLoaded { get; set; }
+
+        //protected WindowFrame Frontend
+        //public ApplicationContext ApplicationContext
 
         public void ShowAll()
         {
-            backend.Window.ShowAll();
+            if (!gtkWindow.Visible)
+                backend.Window.ShowAll();
+            else
+                backend.Window.Show();
         }
     }
 
@@ -63,7 +88,7 @@ namespace fcmd.View.GTK.Backend
 
     // Backend with fixed MainBox
 
-    public class GtkBackend : Xwt.GtkBackend.WindowBackend
+    public class GtkBackend : Xwt.GtkBackend.WindowBackend, IWindowBackend // IWidgetBackend 
     {
         public GtkBackend() : base() { }
 
@@ -72,16 +97,35 @@ namespace fcmd.View.GTK.Backend
             var x = new WindowX();
             Window = x;
 
-            CreateMainLayout(); // alignment = new RootWindowAlignment(this);
+            // base.Initialize();
+            this.mainBox = new Gtk.VBox(false, 0);
+            Window.Add(this.mainBox);
 
-            var vbox = new Gtk.VBox(false, 0);
-            mainBox = vbox;
-            Window.Add(vbox);
+            var vbox = this.mainBox; //  CreateMainLayout() as  Gtk.VBox; // alignment = new RootWindowAlignment(this);
 
-            GLib.Value val = new GLib.Value(vbox);
-            x.SetProperty("child", val);
-            val.Dispose();
+            //this.alignment = new RootWindowAlignment(this);
+            //alignment = new RootWindowAlignment(this);
+            //mainBox.PackStart(alignment, true, true, 0);
+            //alignment.Show();
+            //return mainBox;
+
+
+            // vbox.Parent = this.alignment;
+
+            // var vbox =  new Gtk.VBox(false, 0);
+            //  var vboxEnd = new Gtk3Box(vbox);
+            // mainBox = vbox;
+            // Window.Add(vbox);
+            // this.SetChild(vboxEnd.GetBackend());
+
+            // GtkAlign = this.alignment;
+            //GLib.Value val = new GLib.Value(vbox);
+            //x.SetProperty("child", val);
+            //val.Dispose();
         }
+
+        // public Gtk.Alignment GtkAlign { get; protected set; }
+
     }
 
 }

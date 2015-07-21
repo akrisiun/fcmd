@@ -1,4 +1,5 @@
-﻿using Gtk;
+﻿using fcmd.View.GTK.Backend;
+using Gtk;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,24 +15,30 @@ namespace fcmd
         public static void Test(MainWindow window, Gtk.Window gtkWindow)
         {
             // var vbox = new VBox(false, 0);
-            Gtk.VBox vbox = window.MainBox; 
+            Gtk.VBox vbox = window.MainBox;
+            // Gtk3Box vboxEnd = window.Content as Gtk3Box;
             window.Padding = 0;
 
-            // Backend.SetChild((IWidgetBackend)BackendHost.ToolkitEngine.GetSafeBackend(child));
             var back = window.BackEndGtk;
             var engine = Xwt.Toolkit.CurrentEngine;
             if (engine == null)
                 return;
 
-            VPaned vpaned = new VPaned { BorderWidth = 0 };
-            // vbox.PackStart(vpaned, false, true, 0);      // expand, fill, padding
-            vbox.Add(vpaned);
-            vbox.PackStart(vpaned, true, true, 0);      // expand, fill, padding
+            //VPaned vpaned = new VPaned { BorderWidth = 0 };
+            //// vbox.PackStart(vpaned, false, true, 0);      // expand, fill, padding
+            //vbox.Add(vpaned);
+            //vbox.PackStart(vpaned, true, true, 0);      // expand, fill, padding
 
+            vbox.PackStart(new Gtk.Entry { Text = "this is Entry" }, false, false, 0);
+            return;
+
+            // return;
             HPaned hpaned = new HPaned();
             // vbox.Add(hpaned);
-            // vbox.PackStart(hpaned, true, true, 0);
-            vpaned.Add(hpaned); // .PackStart(hpaned, true, true, 0);
+            vbox.PackStart(hpaned, true, true, 0);
+
+            // hpaned.Parent = vbox;
+            // vpaned.Add(hpaned); // .PackStart(hpaned, true, true, 0);
 
             Frame frame = new Frame() { ShadowType = ShadowType.In };
             frame.SetSizeRequest(60, 60);
@@ -46,6 +53,7 @@ namespace fcmd
 
             var f2box = new HBox { BorderWidth = 3 };
             frame2.Add(f2box);
+
             // f2box.PackStart(new Label("Expander demo. Click on the triangle for details."), false, false, 0);
 
             //// Create the expander
@@ -54,7 +62,6 @@ namespace fcmd
             //f2box.PackStart(expander, false, false, 0);
 
             Gtk.Button button2 = new Button("_Hi there Side2");
-            f2box.Add(button2);
             f2box.PackStart(button2, true, true, 0);
 
             //var pc = f2box[button2] as Paned.PanedChild;

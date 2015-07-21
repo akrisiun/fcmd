@@ -33,7 +33,10 @@ namespace Xwt.Backends
 		void Add (IWidgetBackend widget);
 		void Remove (IWidgetBackend widget);
 		void SetAllocation (IWidgetBackend[] widget, Rectangle[] rect);
-	}
+
+        // ankr: for Gtk3 pack fix
+        void Pack(object child, bool expand, WidgetPlacement vpos, WidgetPlacement hpos);
+    }
 	
 	public enum Orientation
 	{

@@ -90,16 +90,16 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\xwt\lib\CoreGtk3.dll</HintPath>
     </Reference>
+    <Reference Include="glib3-sharp">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\xwt\lib\glib3-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="glib3-sharp">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\xwt\bin\glib3-sharp.dll</HintPath>
-    </Reference>
     <Reference Include="Xwt3">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
@@ -152,6 +152,8 @@
     <Compile Include="Platform\IVisualSensitive.cs" />
     <Compile Include="Platform\MessageDialog.cs" />
     <Compile Include="View.GTK\Backend\Gtk3Box.cs" />
+    <Compile Include="View.GTK\Backend\Gtk3Entry.cs" />
+    <Compile Include="View.GTK\Backend\Gtk3HPaned.cs" />
     <Compile Include="View.GTK\Backend\Gtk3WindowFrame.cs" />
     <Compile Include="View.GTK\BodyGtk.cs" />
     <Compile Include="View.GTK\Ctrl\InputBoxGtk.cs" />

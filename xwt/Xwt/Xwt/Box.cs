@@ -110,32 +110,43 @@ namespace Xwt
 			Pack (widget, expand, WidgetPlacement.Fill, PackOrigin.Start);
 		}
 
-		public void PackStart (Widget widget, bool expand, bool fill)
-		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
-			WidgetPlacement align = fill ? WidgetPlacement.Fill : WidgetPlacement.Center;
-			Pack (widget, expand, align, PackOrigin.Start);
-		}
+        // ankr: disable : gtk3 problems
+        public void PackStart(Widget widget, bool expand, bool fill)
+        {
+            if (widget == null)
+                throw new ArgumentNullException("widget");
+            WidgetPlacement align = fill ? WidgetPlacement.Fill : WidgetPlacement.Center;
+            Pack(widget, expand, align, PackOrigin.Start);
 
-		public void PackStart (Widget widget, bool expand = false, WidgetPlacement vpos = WidgetPlacement.Fill, WidgetPlacement hpos = WidgetPlacement.Fill, double marginLeft = -1, double marginTop = -1, double marginRight = -1, double marginBottom = -1, double margin = -1)
-		{
-			if (widget == null)
-				throw new ArgumentNullException ("widget");
-			Pack (widget, expand, vpos, hpos, marginLeft, marginTop, marginRight, marginBottom, margin, PackOrigin.Start);
-		}
+            var child = widget.GetBackend().NativeWidget;
+            if (child != null)
+                (Backend as IBoxBackend).Pack(child, expand, 
+                         fill ? WidgetPlacement.Fill : WidgetPlacement.Start, hpos: WidgetPlacement.Fill);
+        }
 
-		//[Obsolete ("BoxMode is going away")]
-		//public void PackStart (Widget widget, BoxMode mode)
-		//{
-		//	if (widget == null)
-		//		throw new ArgumentNullException ("widget");
-		//	bool expand = (mode & BoxMode.Expand) != 0;
-		//	bool fill = (mode & BoxMode.Fill) != 0;
-		//	PackStart (widget, expand, fill);
-		//}
-		
-		public void PackEnd (Widget widget)
+        // ankr: disable : gtk3 problems
+        public virtual void PackStart(Widget widget, bool expand = false, WidgetPlacement vpos = WidgetPlacement.Fill, WidgetPlacement hpos = WidgetPlacement.Fill, double marginLeft = -1, double marginTop = -1, double marginRight = -1, double marginBottom = -1, double margin = -1)
+        {
+            if (widget == null)
+                throw new ArgumentNullException("widget");
+            Pack(widget, expand, vpos, hpos, marginLeft, marginTop, marginRight, marginBottom, margin, PackOrigin.Start);
+
+            var child = widget.GetBackend().NativeWidget;
+            if (child != null)
+               (Backend as IBoxBackend).Pack(child, expand, vpos, hpos);
+        }
+
+        //[Obsolete ("BoxMode is going away")]
+        //public void PackStart (Widget widget, BoxMode mode)
+        //{
+        //	if (widget == null)
+        //		throw new ArgumentNullException ("widget");
+        //	bool expand = (mode & BoxMode.Expand) != 0;
+        //	bool fill = (mode & BoxMode.Fill) != 0;
+        //	PackStart (widget, expand, fill);
+        //}
+
+        public void PackEnd (Widget widget)
 		{
 			if (widget == null)
 				throw new ArgumentNullException ("widget");

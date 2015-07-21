@@ -61,8 +61,19 @@ namespace Xwt.GtkBackend
 		{
 			Widget.Remove (GetWidget (widget));
 		}
-		
-		public void SetAllocation (IWidgetBackend[] widgets, Rectangle[] rects)
+
+        // ankr
+        public virtual void Pack(object native, bool expand, WidgetPlacement vpos, WidgetPlacement hpos)
+        {
+            Gtk.Widget child = native as Gtk.Widget;
+            Gtk.Box box = base.Widget as Gtk.Box;
+            if (child != null && box != null)
+                box.PackStart(child, expand, vpos == WidgetPlacement.Fill, Padding ?? 0);
+        }
+
+        public uint? Padding { get; set; }
+
+        public void SetAllocation (IWidgetBackend[] widgets, Rectangle[] rects)
 		{
 			bool changed = false;
 			for (int n=0; n<widgets.Length; n++) {
@@ -82,6 +93,7 @@ namespace Xwt.GtkBackend
 
     partial class CustomContainer: Gtk.Container, IGtkContainer
 	{
+        // ankr:
         // public BoxBackend Backend;
         public IBoxBackendFront Backend;
 
@@ -93,7 +105,7 @@ namespace Xwt.GtkBackend
 			public Rectangle Rect;
 			public Widget Widget;
 		}
-		
+
 		public CustomContainer ()
 		{
 			this.FixContainerLeak ();

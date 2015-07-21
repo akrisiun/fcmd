@@ -62,11 +62,14 @@ namespace Xwt.WPFBackend
 		{
 			Widget.SetAllocation (widget, rect);
 		}
-	}
 
-	// A Canvas cannot be used, as manually setting Width/Height disables the
-	// expected behavior of DesiredSize (used in the GetPreferredSize* methods).
-	public class CustomPanel : SWC.Panel, IWpfWidget
+        // just for Gtk3
+        void IBoxBackend.Pack(object child, bool expand, WidgetPlacement vpos, WidgetPlacement hpos) { }
+    }
+
+    // A Canvas cannot be used, as manually setting Width/Height disables the
+    // expected behavior of DesiredSize (used in the GetPreferredSize* methods).
+    public class CustomPanel : SWC.Panel, IWpfWidget
 	{
 		IWidgetBackend [] widgets;
 		Rectangle [] rects;
