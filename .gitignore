@@ -27,3 +27,8 @@ monomac/monomac/
 xwt/Test/
 xwt/TestApps/
 xwt/lib/nunit.framework.xml
+
+Debug/
+x1/
+MyPlayground.playground/
+*.gz
