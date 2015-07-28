@@ -72,7 +72,11 @@ namespace Xwt
 		EventHandler dragLeave;
 		EventHandler<KeyEventArgs> keyPressed;
 		EventHandler<KeyEventArgs> keyReleased;
+
+#if !MAC
 		EventHandler<TextInputEventArgs> textInput;
+#endif
+
 		EventHandler mouseEntered;
 		EventHandler mouseExited;
 		EventHandler<ButtonEventArgs> buttonPressed;
@@ -180,11 +184,13 @@ namespace Xwt
 				Parent.OnKeyReleased (args);
 			}
 
+#if !MAC
 			void IWidgetEventSink.OnTextInput (TextInputEventArgs args)
 			{
 				Parent.OnTextInput (args);
 			}
-			
+#endif
+
 			Size IWidgetEventSink.GetPreferredSize (SizeConstraint widthConstraint, SizeConstraint heightConstraint)
 			{
 				return Parent.OnGetPreferredSize (widthConstraint, heightConstraint);
@@ -1117,6 +1123,7 @@ namespace Xwt
 				keyReleased (this, args);
 		}
 
+#if !MAC
 		/// <summary>
 		/// Raises the preview text input event.
 		/// </summary>
@@ -1132,6 +1139,7 @@ namespace Xwt
 			if (textInput != null)
 				textInput (this, args);
 		}
+#endif
 
 		/// <summary>
 		/// Raises the got focus event.
@@ -1948,6 +1956,7 @@ namespace Xwt
 			}
 		}
 
+#if !MAC
 		/// <summary>
 		/// Raised when a text has been entered.
 		/// </summary>
@@ -1961,7 +1970,8 @@ namespace Xwt
 				BackendHost.OnAfterEventRemove (WidgetEvent.TextInput, textInput);
 			}
 		}
-		
+#endif
+
 		/// <summary>
 		/// Raised when the widget gets the focus
 		/// </summary>

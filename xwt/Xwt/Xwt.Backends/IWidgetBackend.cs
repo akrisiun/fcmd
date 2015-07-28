@@ -286,12 +286,13 @@ namespace Xwt.Backends
 		/// <param name="args">The Key arguments.</param>
 		void OnKeyReleased (KeyEventArgs args);
 
+#if !MAC
 		/// <summary>
 		/// Notifies the frontend that a text has been entered.
 		/// </summary>
 		/// <param name="args">The text input arguments.</param>
 		void OnTextInput (TextInputEventArgs args);
-
+#endif
 		/// <summary>
 		/// Notifies the frontend that the widget has received the focus.
 		/// </summary>

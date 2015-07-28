@@ -38,9 +38,9 @@ the software may be modified without restrictions");
 					case PlatformID.Win32NT:
 						Application.Initialize(ToolkitType.Wpf);
 						break;
-					case PlatformID.MacOSX:
-						Application.Initialize(ToolkitType.Cocoa);
-						break;
+					// case PlatformID.MacOSX:
+					// 	Application.Initialize(ToolkitType.Cocoa);
+					// 	break;
 #endif
                     default:
                         if (!Environment.Is64BitProcess)
@@ -56,6 +56,9 @@ the software may be modified without restrictions");
                 {
                     errmsg += "\n" + ex.InnerException.InnerException.Message;
                 }
+
+				Console.WriteLine(errmsg);
+				Console.WriteLine(ex.StackTrace);
 
                 Xwt.MessageDialog.ShowError(
                         errmsg + Environment.NewLine +

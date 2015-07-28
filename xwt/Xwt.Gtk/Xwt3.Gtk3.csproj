@@ -11,6 +11,7 @@
     <AssemblyOriginatorKeyFile>..\xwt.snk</AssemblyOriginatorKeyFile>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <UseMSBuildEngine>False</UseMSBuildEngine>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
@@ -28,23 +29,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="atk3-sharp">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\atk3-sharp.dll</HintPath>
     </Reference>
     <Reference Include="cairo3-sharp">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\cairo3-sharp.dll</HintPath>
     </Reference>
     <Reference Include="CoreGtk3">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\CoreGtk3.dll</HintPath>
     </Reference>
     <Reference Include="gio3-sharp">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\gio3-sharp.dll</HintPath>
     </Reference>
     <Reference Include="glib3-sharp">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\glib3-sharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
@@ -53,7 +49,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="Xwt3">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\bin\Xwt3.dll</HintPath>
     </Reference>
   </ItemGroup>

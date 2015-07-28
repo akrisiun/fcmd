@@ -30,18 +30,17 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <UseMSBuildEngine>False</UseMSBuildEngine>
     <TargetFrameworkVersion Condition=" '$(OS)' == 'Unix' ">v4.5</TargetFrameworkVersion>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <TargetFrameworkProfile />
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
+    <DefineConstants>DEBUG;XWT;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
@@ -62,6 +61,7 @@
     <LangVersion>5</LangVersion>
     <DefineConstants>TRACE;DEBUG;XWT;GTK;</DefineConstants>
     <Prefer32Bit>false</Prefer32Bit>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -71,6 +71,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>5</LangVersion>
     <Prefer32Bit>false</Prefer32Bit>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -83,15 +84,19 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <Prefer32Bit>false</Prefer32Bit>
+    <OutputPath>bin\Release</OutputPath>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <WarningLevel>4</WarningLevel>
+    <Optimize>false</Optimize>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <LangVersion>5</LangVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <Reference Include="CoreGtk3">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\xwt\lib\CoreGtk3.dll</HintPath>
     </Reference>
     <Reference Include="glib3-sharp">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\xwt\lib\glib3-sharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
@@ -101,11 +106,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Xwt3">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
     </Reference>
     <Reference Include="Xwt3.Gtk3">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\xwt\bin\Xwt3.Gtk3.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -241,6 +244,10 @@
     <ProjectReference Include="pluginner\pluginner.csproj">
       <Project>{88785B26-D617-4BE9-B449-F7CE77444794}</Project>
       <Name>pluginner</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xwt\Xwt.CoreGtk3\Base\atk\atk3.csproj">
+      <Project>{42FE871A-D8CF-4B29-9AFF-B02454E6C976}</Project>
+      <Name>atk3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

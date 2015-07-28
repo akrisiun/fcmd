@@ -151,8 +151,22 @@ namespace Xwt.Mac
 		public virtual bool HasFocus {
 			get { return false; }
 		}
+
+		// ankr
+		protected Size initialSize = new Size(0, 0);
+		public virtual Size DesiredSize { 
+			get { 
+				return initialSize;
+			}
+		}
+
+		// Xwt.Backends.IWindowFrameBackend.
+  	    public virtual void SetInitialSize(double x, double y)
+		{
+			initialSize = new Size(x, y);
+		}
 		
-		public void SetFocus ()
+		public virtual void SetFocus ()
 		{
 		}
 

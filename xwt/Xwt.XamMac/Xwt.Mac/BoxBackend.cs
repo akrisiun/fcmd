@@ -73,6 +73,13 @@ namespace Xwt.Mac
 				w.NeedsDisplay = true;
 			}
 		}
+
+		// ankr: for Gtk3 pack fix
+		public void Pack(object child, bool expand, WidgetPlacement vpos, WidgetPlacement hpos)
+		{
+			// TODO
+		}
+
 	}
 }
 

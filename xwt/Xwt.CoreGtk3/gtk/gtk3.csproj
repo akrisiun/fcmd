@@ -3,8 +3,6 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{94045F11-4266-40B4-910F-298985AF69D5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <RootNamespace>gtk</RootNamespace>
@@ -945,32 +943,6 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Base\atk\atk.csproj">
-      <Project>{42fe871a-d8cf-4b29-9aff-b02454e6c976}</Project>
-      <Name>atk</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Base\cairo\cairo.csproj">
-      <Project>{364577db-9728-4951-ac2c-edf7a6fcc09d}</Project>
-      <Name>cairo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Base\gio\gio.csproj">
-      <Project>{1c3bb17b-336d-432a-8952-4e979bc90867}</Project>
-      <Name>gio</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Base\glib\glib.csproj">
-      <Project>{3bf1d531-8840-4f15-8066-a9788d8c398b}</Project>
-      <Name>glib</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Base\pango\pango.csproj">
-      <Project>{ff422d8c-562f-4ea6-8590-9d1a5cd40ad4}</Project>
-      <Name>pango</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\gdk\gdk.csproj">
-      <Project>{58346cc6-de93-45b4-8093-3508bd5daa12}</Project>
-      <Name>gdk</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-sharp.dll.config">
