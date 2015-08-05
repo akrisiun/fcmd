@@ -943,6 +943,21 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="gio3-sharp">
+      <HintPath>..\..\lib\gio3-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="glib3-sharp">
+      <HintPath>..\..\lib\glib3-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="cairo3-sharp">
+      <HintPath>..\..\lib\cairo3-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="atk3-sharp">
+      <HintPath>..\..\lib\atk3-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="CoreGtk3">
+      <HintPath>..\..\lib\CoreGtk3.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="gtk-sharp.dll.config">

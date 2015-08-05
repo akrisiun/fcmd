@@ -23,9 +23,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Org.Mentalis.Security">
-      <HintPath>..\SharpSSH\bin\Org.Mentalis.Security.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
@@ -33,9 +30,11 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
-    <Reference Include="Xwt3, Version=3.2.0.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Xwt3">
       <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
+    </Reference>
+    <Reference Include="Org.Mentalis.Security">
+      <HintPath>..\SharpSSH\SharpSSH\bin\Org.Mentalis.Security.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -44,13 +43,13 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharpSSH\SharpSSH\SharpSSH.csproj">
-      <Project>{d27cf69d-4681-492a-be4d-d3d209104423}</Project>
-      <Name>SharpSSH</Name>
-    </ProjectReference>
     <ProjectReference Include="..\fcmd\pluginner\pluginner.csproj">
       <Project>{88785B26-D617-4BE9-B449-F7CE77444794}</Project>
       <Name>pluginner</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpSSH\SharpSSH.csproj">
+      <Project>{D27CF69D-4681-492A-BE4D-D3D209104423}</Project>
+      <Name>SharpSSH</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
