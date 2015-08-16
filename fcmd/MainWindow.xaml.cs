@@ -1,23 +1,37 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.IO.Packaging;
+using System.Net.Mime;
+using System.Resources;
+using System.Threading;
 using System.Windows;
+using System.Windows.Markup;
 using System.Windows.Media.Imaging;
-//using fcmd.Platform;
-//using fcmd.Model;
-//using fcmd.View.ctrl;
-//using fcmd.View.Xaml;
+using System.Windows.Navigation; 
+#if !VS13
+[assembly: NeutralResourcesLanguageAttribute("en", UltimateResourceFallbackLocation.MainAssembly)]
+#endif
 
 namespace fcmd
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, IComponentConnector
     {
+        public static bool AppLoading { get; set; }
+
+        static MainWindow() { AppLoading = true; }
         public MainWindow()
         {
             Xwt.Application.Initialize(Xwt.ToolkitType.Wpf);
             Xwt.Toolkit.Load(Xwt.ToolkitType.Wpf).Invoke(() => InitializeXwt());
-                // Initialize() being your own custom method.This is actually what the MixedGtkMacTest does.
+            // Initialize() being your own custom method.This is actually what the MixedGtkMacTest does.
+
+            ResourceManager rm = new ResourceManager("Resources", typeof(MainWindow).Assembly);
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture; // .CreateSpecificCulture("fr-FR");
 
             InitializeComponent();
 
@@ -31,9 +45,70 @@ namespace fcmd
 
             this.Init();    // View.WindowDataStatic.Init(this);
 
-            this.Closed += (s, e) => 
+            this.Closed += (s, e) =>
                  Platform.Application.Current.Shutdown();
         }
+
+#if !VS || __MonoCS__
+        // http://developer.xamarin.com/guides/android/under_the_hood/build_process/
+        // System.Windows.Markup.IComponentConnector
+
+        internal fcmd.View.Xaml.MenuPanelWpf Menu;
+        internal fcmd.View.Xaml.PanelCmd FooterCmd;
+        internal fcmd.View.Xaml.PanelWpf LeftPanel;
+        internal fcmd.View.Xaml.PanelWpf RightPanel;
+        internal System.Windows.Controls.GridSplitter panelSplitter;
+
+        private bool _contentLoaded;
+
+
+        public void InitializeComponent()
+        {
+            if (_contentLoaded)
+            {
+                return;
+            }
+            _contentLoaded = true;
+
+            System.Uri resourceLocator = new System.Uri("/fcmdp;component/mainwindow.xaml", System.UriKind.Relative);
+            System.Windows.Application.LoadComponent(this, resourceLocator);
+
+         //   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
+         //at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture, Boolean wrapUnmanagedMemStream)
+         //at MS.Internal.AppModel.ResourcePart.EnsureResourceLocationSet()
+         //at MS.Internal.AppModel.ResourcePart.GetContentTypeCore()
+         //at System.IO.Packaging.PackagePart.get_ContentType()
+         //at System.Windows.Application.LoadComponent(Object component, Uri resourceLocator)
+        }
+
+        internal System.Delegate _CreateDelegate(System.Type delegateType, string handler)
+        {
+            return System.Delegate.CreateDelegate(delegateType, this, handler);
+        }
+
+        void IComponentConnector.Connect(int connectionId, object target)
+        {
+            switch (connectionId)
+            {
+                case 1:
+                    this.Menu = ((fcmd.View.Xaml.MenuPanelWpf)(target));
+                    return;
+                case 2:
+                    this.FooterCmd = ((fcmd.View.Xaml.PanelCmd)(target));
+                    return;
+                case 3:
+                    this.LeftPanel = ((fcmd.View.Xaml.PanelWpf)(target));
+                    return;
+                case 4:
+                    this.RightPanel = ((fcmd.View.Xaml.PanelWpf)(target));
+                    return;
+                case 5:
+                    this.panelSplitter = ((System.Windows.Controls.GridSplitter)(target));
+                    return;
+            }
+            this._contentLoaded = true;
+        }
+#endif
 
         void InitializeXwt()
         {

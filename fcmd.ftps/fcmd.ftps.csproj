@@ -33,8 +33,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
-    <Reference Include="Xwt3, Version=3.2.0.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Xwt3">
       <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -45,7 +44,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SharpSSH\SharpSSH\SharpSSH.csproj">
-      <Project>{d27cf69d-4681-492a-be4d-d3d209104423}</Project>
+      <Project>{D27CF69D-4681-492A-BE4D-D3D209104423}</Project>
       <Name>SharpSSH</Name>
     </ProjectReference>
     <ProjectReference Include="..\fcmd\pluginner\pluginner.csproj">

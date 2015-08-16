@@ -3,6 +3,8 @@ using fcmd.View.Xaml;
 using pluginner.Widgets;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
 using Xwt.Drawing;
 
 // #if WPF
@@ -11,12 +13,29 @@ using Xwt.Drawing;
 namespace fcmd.View.ctrl
 {
     // FilePanel non Visual
-  
+    public class ListObservable : ObservableCollection<ListView2ItemWpf>, IList<ListView2ItemWpf>
+    {
+
+    }
+
     public class ListView2Xaml : pluginner.Widgets.Xaml.ListView2Xaml<ListView2ItemWpf>, IListingView<ListView2ItemWpf>, IVisualSensitive
     {
         public ListView2Xaml(IListingContainer<ListView2ItemWpf> parent) : base(parent)
         {
-            _Items = new List<ListView2ItemWpf>();
+            _Items = new ListObservable();
+        }
+
+        public void AddItemDirectory(object[] Data, IEnumerable<bool> EditableFields, string ItemTag)
+        {
+            var lvi = ListView2ItemWpf.DirectoryItem(_Items.Count, Data, EditableFields, ItemTag);
+            Add(lvi);
+        }
+
+        public override void AddItem(IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag)
+        {
+            // base.AddItem(Data, EditableFields, ItemTag);
+            var lvi = ListView2ItemWpf.FileItem(_Items.Count, Data, EditableFields, ItemTag);
+            Add(lvi);
         }
 
         #region Items array
@@ -26,13 +45,13 @@ namespace fcmd.View.ctrl
         //public override object Content { get { return null; } set {; } }
         public override Font FontForFileNames { get; set; }
 
-        protected List<ListView2ItemWpf> _Items;
-        public override IList<ListView2ItemWpf> DataItems { get { return _Items; } }
-
-        //public IPointedItem<ListView2ItemWpf> PointedItem { get; set; }
+        protected ListObservable _Items;
+        public override IList<ListView2ItemWpf> DataItems { [DebuggerStepThrough] get { return _Items; } }
 
         public override object Content { get; set; }
 
+        //TODO:
+        //public IPointedItem<ListView2ItemWpf> PointedItem { get; set; }
         //public override Xwt.Drawing.Font FontForFileNames
         //public int SelectedRow { get; set; } 
         //public int Count

@@ -11,6 +11,24 @@ using Xwt;
 
 namespace pluginner.Toolkit
 {
+
+    public enum OS
+    {
+        Windows,
+        Linux,
+        Mac,
+        Android,
+        IOS,
+    }
+
+    public enum Architecture
+    {
+        x64,
+        x86,
+        arm,
+        mips,
+    }
+
     // ReSharper disable once InconsistentNaming
     public static class OSVersionEx
     {
@@ -28,6 +46,57 @@ namespace pluginner.Toolkit
                 default:
                     throw new NotSupportedException(
                         string.Format("Not supported value {0} for {1} type", platform.ToString(), typeof(PlatformID)));
+            }
+        }
+
+        public static bool IsWindows
+        {
+            get { return Environment.OSVersion.Platform != PlatformID.Unix && Environment.OSVersion.Platform != PlatformID.MacOSX; }
+        }
+
+        public static bool IsPosix { get { return !IsWindows; } }
+        // public static OS OS;
+
+        //public static void HideConsole()
+        //{
+        //    IntPtr hwnd = InternalWindows.GetConsoleWindow();
+        //    InternalWindows.ShowWindow(hwnd, SW_HIDE);
+        //}
+
+        //[DllImport("libc")]
+        //static extern int uname(IntPtr buf);
+
+        public static bool IsMono { get { return Type.GetType("Mono.Runtime") != null; } }
+
+        public static bool Is64Bit { get { return Environment.Is64BitProcess; } }
+        public static bool Is32Bit { get { return !Environment.Is64BitProcess; } }
+
+
+        public static bool PlatformX86 { get { return Architecture.Contains("AMD") || Architecture.Contains("X86"); } }
+        public static bool PlatformARM { get { return false; } }    // TODO
+        public static string Architecture
+        {
+            get
+            {
+                string _Architecture = string.Empty;
+                if (!IsPosix)
+                    _Architecture = Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
+
+                // else
+                // {
+                //		try
+                //		{
+                //			var Result = ProcessUtils.ExecuteCommand("uname", "-m");
+                //                _Architecture = Result.OutputString;
+                return _Architecture;
+            }
+        }
+
+        public static bool Is64BitProcess
+        {
+            get
+            {
+                return Environment.Is64BitProcess;
             }
         }
 

@@ -26,7 +26,11 @@ namespace fcmd.View
 
         static void UnhandledException(object sender, UnhandledExceptionEventArgs evt)
         {
-
+            var ex = evt.ExceptionObject as Exception;
+            System.Console.WriteLine(ex.Message);
+#if WPF
+            System.Windows.MessageBox.Show(ex.Message);
+#endif
         }
     }
 

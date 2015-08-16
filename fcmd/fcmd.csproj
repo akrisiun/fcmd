@@ -38,7 +38,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>DEBUG;XWT;</DefineConstants>
+    <DefineConstants>DEBUG;XWT;GTK;GTK3;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -51,6 +51,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>5</LangVersion>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>x86</PlatformTarget>
@@ -111,6 +112,9 @@
     <Reference Include="Xwt3.Gtk3">
       <HintPath>..\xwt\bin\Xwt3.Gtk3.dll</HintPath>
     </Reference>
+    <Reference Include="atk3-sharp">
+      <HintPath>..\xwt\lib\atk3-sharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="base-plugins\fs\localFileSystem-CLI.cs" />
@@ -161,8 +165,8 @@
     <Compile Include="View.GTK\BodyGtk.cs" />
     <Compile Include="View.GTK\Ctrl\InputBoxGtk.cs" />
     <Compile Include="View.GTK\Ctrl\ITextEntryGtk.cs" />
-    <Compile Include="View.GTK\FileListPanelGtk.cs" />
-    <Compile Include="View.GTK\FileListVisual.cs" />
+    <Compile Include="View.GTK\ListPanel\FileListPanelGtk.cs" />
+    <Compile Include="View.GTK\ListPanel\FileListVisual.cs" />
     <Compile Include="View.GTK\MenuGtk.cs" />
     <Compile Include="Platform\Application.cs" />
     <Compile Include="Platform\ICommand.cs" />
@@ -187,7 +191,7 @@
     <Compile Include="SettingsWindowTabs\swtViewerEditor.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="View.GTK\GtkBackend.cs" />
-    <Compile Include="View.GTK\ListView2Canvas.cs" />
+    <Compile Include="View.GTK\ListPanel\ListView2Canvas.cs" />
     <Compile Include="View.GTK\WindowDataGtk.cs" />
     <Compile Include="vm\PanedTest.cs" />
     <Compile Include="SettingsWindowTabs\swtMainWindowFonts.cs" />
@@ -244,10 +248,6 @@
     <ProjectReference Include="pluginner\pluginner.csproj">
       <Project>{88785B26-D617-4BE9-B449-F7CE77444794}</Project>
       <Name>pluginner</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\xwt\Xwt.CoreGtk3\Base\atk\atk3.csproj">
-      <Project>{42FE871A-D8CF-4B29-9AFF-B02454E6C976}</Project>
-      <Name>atk3</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -31,3 +31,4 @@ xwt/lib/nunit.framework.xml
 *.gz
 
 *.pdb
+packages/

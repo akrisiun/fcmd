@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Collections.ObjectModel;
 using fcmd.Model;
+using fs = fcmd.base_plugins.fs;
 
 namespace fcmd.View.Xaml
 {
@@ -29,8 +30,10 @@ namespace fcmd.View.Xaml
         protected EventHandler onFocus;
         protected bool onFocusSet;
 
+#pragma warning disable 0649, 0414  // is assigned but is never used
         public override event TypedEvent<string> Navigate;
         public override event TypedEvent<string> OpenFile;
+#pragma warning restore 0649, 0414  
 
         public override event EventHandler GotFocus { add { onFocusSet = true; onFocus += value; } remove { onFocus += value; } }
 
@@ -113,8 +116,6 @@ namespace fcmd.View.Xaml
 
         public override void LoadFs(string URL, ShortenPolicies Shorten)
         {
-            // string URL, SizeDisplayPolicy ShortenKB, SizeDisplayPolicy ShortenMB, SizeDisplayPolicy ShortenGB)
-            // new { KB = ShortenKB, MB = ShortenMB, GB
             SizeDisplayPolicy ShortenKB = Shorten.KB;
             SizeDisplayPolicy ShortenMB = Shorten.MB;
             SizeDisplayPolicy ShortenGB = Shorten.GB;
@@ -125,49 +126,67 @@ namespace fcmd.View.Xaml
 
             string updir = URL + FS.DirSeparator + "..";
             string rootdir = FS.GetMetadata(URL).RootDirectory;
+            FS.RootDirectory = FS.Prefix + FS.NoPrefix(rootdir);
 
             List<DirItem> dis = new List<DirItem>();
+
             //dis = FS.DirectoryContent;
+//#if DEBUG
+//            if (!MainWindow.AppLoading)
+//            { } // break
+//#endif
 
             var resetHandle = new AutoResetEvent(false);
             Thread DirLoadingThread =
                 new Thread(delegate ()
                 {
-                    FS.GetDirectoryContent(ref dis, new FileSystemOperationStatus());
+                    if (FS is fs.localFileSystem)
+                    {
+                        var fsLoc = FS as fs.localFileSystem;
+                        fsLoc.GetDirectoryContent(ref dis, new FileSystemOperationStatus());
+                    }
+                    else
+                        FS.GetDirectoryContent(ref dis, new FileSystemOperationStatus());
+
                     resetHandle.Set();
                 });
 
             DirLoadingThread.Start();
             var sucess = resetHandle.WaitOne(timeout: TimeSpan.FromSeconds(10)); // 10 secs
                                                                                  // wait loop: do { } while (DirLoadingThread.ThreadState == ThreadState.Running);
+            uint counter = 0;
+            var lv = ListingView as ListView2Xaml;
+            if (lv.Count > 0)
+                lv.Clear();
+
             if (dis.Count == 0)
                 return;
-
-            uint counter = 0;
 
             foreach (DirItem di in dis)
             {
                 ICollection<object> Data = new Collection<Object>();
-                List<Boolean> EditableFileds = new List<bool>();
+                List<Boolean> EditableFields = new List<bool>();
                 //Data.Add(di.IconSmall ?? Image.FromResource("fcmd.Resources.image-missing.png"));
 
-                EditableFileds.Add(false);
-                Data.Add(di.URL); EditableFileds.Add(false);
-                Data.Add(di.TextToShow); EditableFileds.Add(true);
+                EditableFields.Add(false);
+                Data.Add(di.URL); EditableFields.Add(false);
+                Data.Add(di.TextToShow); EditableFields.Add(true);
+
                 if (di.TextToShow == "..")
                 {//parent dir
-                    Data.Add("<↑ UP>"); EditableFileds.Add(false);
-                    EditableFileds[2] = false;
+                    Data.Add("<↑ UP>"); EditableFields.Add(false);
+                    EditableFields[2] = false;
                     Data.Add(
                         FS.GetMetadata(di.URL).LastWriteTimeUTC.ToLocalTime());
 
-                    EditableFileds.Add(false);
+                    EditableFields.Add(false);
                     updir = di.URL;
+                    // di.IsDirectory = true;
                 }
                 else if (di.IsDirectory)
                 {//dir
-                    Data.Add("<DIR>"); EditableFileds.Add(false);
-                    Data.Add(di.Date); EditableFileds.Add(false);
+                    Data.Add("<DIR>"); EditableFields.Add(false);
+                    Data.Add(di.Date); EditableFields.Add(false);
                 }
                 else
                 {//file
@@ -175,16 +194,31 @@ namespace fcmd.View.Xaml
                         di.Size.KiloMegaGigabyteConvert(
                             ShortenKB, ShortenMB, ShortenGB));
 
-                    EditableFileds.Add(false);
-                    Data.Add(di.Date); EditableFileds.Add(false);
+                    EditableFields.Add(false);
+                    Data.Add(di.Date); EditableFields.Add(false);
                 }
+
+                Data.Add(di.IsDirectory);
                 Data.Add(di);
 
-                (ListingView as ListView2Xaml).AddItem(Data, EditableFileds, di.URL);
+                if (!di.IsDirectory)
+                    lv.AddItem(Data, EditableFields, di.URL);
+                else
+                {
+                    object[] array = new object[Data.Count]; Data.CopyTo(array, 0);
+                    lv.AddItemDirectory(Data: array, EditableFields: EditableFields, ItemTag: di.URL);
+                }
+
                 ++counter;
             }
 
         }
+
+        public const int idxDatetime = 3;
+        public const int idxDirectory = 4;
+        public const int idxDI = 5;
+
+        public const int idxCOUNT = 6;
 
         /// <summary>
         /// Load the specifed directory with specifed content into the panel and set view options
@@ -222,9 +256,7 @@ namespace fcmd.View.Xaml
             if (URL == "." && FS.CurrentDirectory == null)
             {
                 LoadDir(
-                    "file://" + Directory.GetCurrentDirectory(),
-                    Shorten // new { KB = ShortenKB, MB = ShortenMB, GB = ShortenGB }
-                );
+                    fs.localFileSystem.FilePrefix + Directory.GetCurrentDirectory(), Shorten);
                 return;
             }
 

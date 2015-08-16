@@ -66,6 +66,8 @@ namespace fcmd.View
             // KeyEventHandler  object sender, KeyEventArgs e);
             main.PreviewKeyDown 
                 += (s, e) => this.KeyEvent(s, e);
+
+            MainWindow.AppLoading = false;
         }
 
         public void InitMenu()

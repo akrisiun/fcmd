@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using fcmd.View;
 using fcmd.View.ctrl;
+using Directory = System.IO.Directory;
+using fcmd.base_plugins.fs;
 
 namespace fcmd.Model
 {
@@ -133,7 +135,6 @@ namespace fcmd.Model
 
         protected override void Initialize()
         {
-            // argv = System.Environment.GetCommandLineArgs();
             var window = Window as MainWindow;
             window.Title = "File Commander";
 
@@ -187,6 +188,7 @@ namespace fcmd.Model
             if (ActiveSide == newSide)
                 return;
 
+            Window.ActivePanelWpf = null;
             SwitchPanel(newSide == PanelSide.Left ? Window.p1Wpf : Window.p2Wpf);
         }
 
@@ -221,27 +223,16 @@ namespace fcmd.Model
 
             var p2 = WindowWpf.p2 as FileListPanelWpf;
 
-            //load last directory or the current directory if the last directory hasn't remembered
+            // load last directory or the current directory if the last directory hasn't remembered
             if (Properties.Settings.Default.Panel1URL.Length != 0)
-            {
                 p1.LoadDir(Properties.Settings.Default.Panel1URL, Shorten);
-            }
             else
-            {
-                p1.LoadDir("file://" + System.IO.Directory.GetCurrentDirectory(), Shorten);
-                // ConvertSDP(Policies[0]), ConvertSDP(Policies[1]), ConvertSDP(Policies[2]));
-            }
+                p1.LoadDir(localFileSystem.FilePrefix + System.IO.Directory.GetCurrentDirectory(), Shorten);
 
             if (Properties.Settings.Default.Panel2URL.Length != 0)
-            {
-                p2.LoadDir(Properties.Settings.Default.Panel2URL,
-                    Shorten); // ConvertSDP(Policies[0]), ConvertSDP(Policies[1]), ConvertSDP(Policies[2]));
-            }
+                p2.LoadDir(Properties.Settings.Default.Panel2URL, Shorten);
             else
-            {
-                p2.LoadDir("file://" + System.IO.Directory.GetCurrentDirectory(),
-                    Shorten); // ConvertSDP(Policies[0]), ConvertSDP(Policies[1]), ConvertSDP(Policies[2]));
-            }
+                p2.LoadDir(localFileSystem.FilePrefix + Directory.GetCurrentDirectory(), Shorten);
 
             //default panel
             var window = Window;

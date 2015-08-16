@@ -61,6 +61,7 @@ namespace fcmd.base_plugins.fs
             currentDirectory = url;
             _CheckProtocol(url);
 
+            this.RootDirectory = "/";   // TODO
             Uri URI = new Uri(url);
 
             if (ftp == null)
@@ -157,6 +158,19 @@ namespace fcmd.base_plugins.fs
             set { LoadDir(value); }
         }
 
+        public string Prefix { get { return "ftp://"; } }   // TODO: ftps://
+
+        public string RootDirectory { get; set; }
+        //get { return currentDirectory.Substring(1); }   // TODO "/"
+
+        public string NoPrefix(string dir)
+        {
+            if (dir.Contains("://"))
+                return dir.Substring(dir.IndexOf("://") + 3);
+
+            return dir;
+        }
+
         public bool FileExists(string URL)
         {
             return directoryContent.Any(di => di.URL == URL);
@@ -251,6 +265,7 @@ namespace fcmd.base_plugins.fs
             get { return "/"; }
         }
 
+#pragma warning disable 0649, 0414  // is assigned but never used
         public event TypedEvent<string> StatusChanged;
 
         public event TypedEvent<double> ProgressChanged;
@@ -260,6 +275,7 @@ namespace fcmd.base_plugins.fs
         public event TypedEvent<string> CLIstderrDataReceived;
 
         public event TypedEvent<string> CLIpromptChanged;
+#pragma warning restore 0169  
 
         public void CLIstdinWriteLine(string StdIn)
         {
@@ -288,7 +304,9 @@ namespace fcmd.base_plugins.fs
             return null;
         }
 
+#pragma warning disable 0649, 0414  // is assigned but never used
         public event TypedEvent<object[]> APICallHost;
+#pragma warning restore 0649, 0414  
 
         #endregion
 

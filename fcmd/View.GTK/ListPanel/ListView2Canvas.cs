@@ -11,17 +11,10 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
-//using Xwt;
 using Xwt.Drawing;
-//using System.Drawing;
-using System.Collections;
 using pluginner.Widgets;
 using System.IO;
 using Xwt;
-
-//using pluginner.Widgets;
-//using System;
-//using Xwt;
 
 namespace fcmd.View.GTK
 {
@@ -140,6 +133,7 @@ namespace fcmd.View.GTK
         /// <summary>Selection state</summary>
 		private ListView2.ItemStates _State;
 
+#pragma warning disable 0649, 0414, 0169  // is assigned but never used
         /// <summary>"Is the Field Editable" data store</summary>
         private bool[] _Editables;
 
@@ -259,7 +253,9 @@ namespace fcmd.View.GTK
             }
         }
 
+#if !XWT
         public object Tag { get; set; }
+#endif
 
         //#if !WPF
         // object IListView2Visual.Content

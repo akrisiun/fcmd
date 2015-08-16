@@ -15,6 +15,7 @@ using System.Drawing;
 using System.Collections;
 using pluginner.Widgets;
 using System.IO;
+using fcmd.base_plugins.fs;
 
 namespace fcmd.View.Xaml
 {
@@ -27,6 +28,18 @@ namespace fcmd.View.Xaml
 
         // paramless ctor
         public ListView2ItemWpf() : this(-1, -1, null, null, null) { }
+
+        public static ListView2ItemWpf FileItem(int rowIndex, IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag = null)
+        {
+            return new ListView2ItemWpf(rowIndex, -1, ItemTag, null, Data);
+        }
+
+        public static ListView2ItemWpf DirectoryItem(int rowIndex, object[] Data, IEnumerable<bool> EditableFields, string ItemTag = null)
+        {
+            Debug.Assert((bool)(Data[FileListPanelWpf.idxDirectory]) == true);
+            //ListView2ItemWpf.cs:line 38 cast invalid 
+            return new ListView2ItemWpf(ItemTag, Data, null, -1); // , , -1, ItemTag, null, Data);
+        }
 
         /// <summary>Creates a new ListView2Item</summary>
         /// <param name="rowNumber">Number of owning row</param>
@@ -43,17 +56,31 @@ namespace fcmd.View.Xaml
             if (data == null)
                 return;
 
-            _Values = data.ToArray();
+            // _Values = data.ToArray();  -- not efective Linq.Enumerable
+            _Values = new object[FileListPanelWpf.idxCOUNT];   // == 6
+            if (data is ICollection)
+                (data as ICollection).CopyTo(_Values, 0);
+            else
+                _Values = System.Linq.Enumerable.ToArray<object>(data);
+
             _Cols = columns;
             Tag = rowTag;
             // QueueDraw();
         }
 
+        public ListView2ItemWpf(string rowTag, object[] data
+            , ListView2.ColumnInfo[] columns = null, int rowNumber = -1)
+        {
+            _Values = data;
+            _Cols = columns;
+            Tag = rowTag;
+        }
+
         #endregion
 
-        #region Row data and state
+            #region Row data and state
 
-        /// <summary>Data store</summary>
+            /// <summary>Data store</summary>
         protected Object[] _Values;
 
         public string FullPath
@@ -61,21 +88,24 @@ namespace fcmd.View.Xaml
             get
             {
                 return // fldFile == ".." ? fldPath :
+                       (IsDirectory) ? fldPath :
                        Path.Combine(
-                            fldPath.StartsWith(Protocol) ? fldPath.Substring(Protocol.Length) : fldPath,
+                            fldPath.StartsWith(localFileSystem.FilePrefix) ? fldPath.Substring(localFileSystem.FilePrefix.Length) : fldPath,
                             fldFile);
             }
         }
 
-        public const string Protocol = "file://";
+        // public const string Protocol = "file://"; -> localFileSystem.FilePrefix
 
         public string fldPath { get { return Data[0] as string; } }
 
         public string fldFile { get { return Data[1] as string; } }
         public string fldSize { get { return Data[2].ToString(); } }
         public string fldModified { get { return Data[3].ToString(); } }
-        // df.
 
+        public bool IsDirectory { get { return (bool)Data[4]; } }
+        
+        // df.
         /// <summary>Column info store</summary>
         private ListView2.ColumnInfo[] _Cols;
         /// <summary>Selection state</summary>
