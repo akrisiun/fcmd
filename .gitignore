@@ -6,6 +6,7 @@ obj/
 fcmd/stolen-opensource-libs/
 release/
 bin/
+packages/
 *.exe
 *.dll
 *.exe.config
@@ -27,5 +28,6 @@ monomac/monomac/
 xwt/Test/
 xwt/TestApps/
 xwt/lib/nunit.framework.xml
-
+.git/
+.svn/
 *.gz

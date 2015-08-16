@@ -18,6 +18,7 @@ test-results
 .libs/
 .arch/
 generated-stamp
-
 lib/*.exe
 packages/
+.git/
+.settings/
