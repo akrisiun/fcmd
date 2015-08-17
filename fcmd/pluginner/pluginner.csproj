@@ -53,6 +53,10 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Xwt3">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\xwt\bin\Xwt3.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ShortenPolicies.cs" />
@@ -148,10 +152,4 @@
     <None Include="xwt.snk" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <ProjectReference Include="..\..\xwt\Xwt\Xwt3.csproj">
-      <Project>{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}</Project>
-      <Name>Xwt3</Name>
-    </ProjectReference>
-  </ItemGroup>
 </Project>
