@@ -18,8 +18,10 @@ namespace fcmd
 #if !WPF
     public partial class MainWindow // : Window, ICommanderWindow<ListView2Canvas>
     {
-        // GTK
+        public static bool AppLoading { get; set; }
+        static MainWindow() { AppLoading = true; }
 
+        // GTK
         public CommanderData WindowData { get; private set; }
 
         IFileListPanel ICommanderWindow.p1 { get; set; }
@@ -32,6 +34,7 @@ namespace fcmd
 
         // WPF
         public CommanderData WindowData {[DebuggerStepThrough] get { return DataContext as CommanderData; } }
+        public WindowDataWpf WindowDataWpf {[DebuggerStepThrough] get { return DataContext as WindowDataWpf; } }
 
         public IFileListPanel p1 {[DebuggerStepThrough] get; set; }
         public IFileListPanel p2 {[DebuggerStepThrough] get; set; }

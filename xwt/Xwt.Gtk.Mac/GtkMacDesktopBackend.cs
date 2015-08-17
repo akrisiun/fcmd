@@ -44,6 +44,7 @@ namespace Xwt.Gtk.Mac
 			systemVersion = Carbon.Gestalt ("sysv");
 		}
 
+        // reference Glib.Object in glib3-sharp + gio3-sharp
 		public static Gdk.Pixbuf GetPixbufFromNSImage (NSImage icon, int width, int height)
 		{
 			// var rect = new  CGRect (0, 0, width, height);

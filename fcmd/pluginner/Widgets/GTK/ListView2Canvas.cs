@@ -16,6 +16,7 @@ namespace pluginner.Widgets.GTK
 
         //private int LastRow;
         //private int LastCol;
+#pragma warning disable 0649, 0414  // is assigned but never used
         private ListView2.Views _View = ListView2.Views.Details;
 
         // private bool Color2; //для обеспечения чередования цветов строк
@@ -36,6 +37,7 @@ namespace pluginner.Widgets.GTK
         // public Font FontForFileNames = null;
 
         //For virtual mode
+#pragma warning disable 0649, 0414  // is assigned but never used
         int VisibleItemsByY = -1;
         int VisibleItemsByX = -1;
 

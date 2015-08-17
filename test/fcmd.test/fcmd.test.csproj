@@ -35,7 +35,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\fcmd\stolen-opensource-libs\Microsoft.VisualStudio.QualityTools.UnitTestFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
@@ -43,11 +50,7 @@
         <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
       </ItemGroup>
     </When>
-    <Otherwise>
-      <ItemGroup>
-        <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework" />
-      </ItemGroup>
-    </Otherwise>
+    <Otherwise />
   </Choose>
   <ItemGroup>
     <Compile Include="UnitTest1.cs" />
@@ -58,13 +61,33 @@
       <Project>{3ab3b3a1-55cb-41d2-b303-b38a64bfe122}</Project>
       <Name>fcmd.ftps</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\fcmd\fcmdp.csproj">
+      <Project>{40506ff6-cd02-40ff-bf9f-d9702baede5b}</Project>
+      <Name>fcmdp</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\fcmd\pluginner\pluginner.csproj">
       <Project>{88785b26-d617-4be9-b449-f7ce77444794}</Project>
       <Name>pluginner</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\xwt\Xwt\Xwt.csproj">
+    <ProjectReference Include="..\..\SharpSSH\SharpSSH\SharpSSH.csproj">
+      <Project>{d27cf69d-4681-492a-be4d-d3d209104423}</Project>
+      <Name>SharpSSH</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\xwt\Xwt.CoreGtk3\CoreGtk3.csproj">
+      <Project>{9e4b0803-5255-43aa-9c68-0cbdf76db564}</Project>
+      <Name>CoreGtk3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\xwt\Xwt.Gtk\Xwt3.Gtk3.csproj">
+      <Project>{3b25fd1f-ceba-4450-8893-dc330fdb56a7}</Project>
+      <Name>Xwt3.Gtk3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\xwt\Xwt.WPF\Xwt3.WPF.csproj">
+      <Project>{c93d746e-1586-4d4f-b411-bf5a966e6a08}</Project>
+      <Name>Xwt3.WPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\xwt\Xwt\Xwt3.csproj">
       <Project>{92494904-35fa-4dc9-bde9-3a3e87ac49d3}</Project>
-      <Name>Xwt</Name>
+      <Name>Xwt3</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

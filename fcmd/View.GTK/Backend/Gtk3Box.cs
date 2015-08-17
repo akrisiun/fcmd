@@ -32,7 +32,7 @@ namespace fcmd.View.GTK.Backend
         {
             // base.PackStart(widget);
 
-            var native = widget.GetBackend().NativeWidget as Gtk.Widget;
+            var native = widget.XBackend().NativeWidget as Gtk.Widget;
             uint padding = Padding ?? 0;
             gtkBox.PackStart(native, expand, fill, padding);
         }

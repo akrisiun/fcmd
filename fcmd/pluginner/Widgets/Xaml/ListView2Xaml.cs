@@ -39,7 +39,7 @@ namespace pluginner.Widgets.Xaml
         /// <param name="Data">The item's content</param>
         /// <param name="EditableFields">List of editable fields</param>
         /// <param name="ItemTag">The tag for the new item (optional)</param>
-        public void AddItem(IEnumerable<Object> Data, IEnumerable<Boolean> EditableFields, string ItemTag = null)
+        public virtual void AddItem(IEnumerable<Object> Data, IEnumerable<Boolean> EditableFields, string ItemTag = null)
         {
             T lvi = Activator.CreateInstance<T>();
             if (lvi == null)
@@ -87,7 +87,7 @@ namespace pluginner.Widgets.Xaml
 
         /// <summary>Add a new T into this ListView2</summary>
         /// <param name="Item">The new T</param>
-        private void AddItem(T Item)
+        protected void AddItem(T Item)
         {
             Add(Item);
 #if XWT
@@ -142,8 +142,8 @@ namespace pluginner.Widgets.Xaml
         public virtual void Clear()
         {
             //Grid.Clear();
-            DataItems.Clear();
             // LastRow = LastCol = 0;
+            DataItems.Clear();
             PointedItem = null;
         }
 
@@ -151,15 +151,14 @@ namespace pluginner.Widgets.Xaml
 
         #region Selection methods
 
-        public void Unselect() { Unselect(null); }
-        // void IListingView<T>.
+        //   void IListingView.SetFocus()
 
         public void Select(object item)
         {
             this.Select(item as T);
         }
 
-        //   void IListingView.SetFocus()
+        public void Unselect() { Unselect(null); }
 
         /// <summary>Clear selection of row</summary>
         /// <param name="Item">The row or null if need to unselect all</param>

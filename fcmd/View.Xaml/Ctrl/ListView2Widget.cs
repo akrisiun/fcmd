@@ -64,7 +64,7 @@ namespace fcmd.View.ctrl
         public ListView2Xaml DataObj { get; protected set; }
 
         // Xwt.CursorType IListingContainer.Cursor { get; set; } // = CursorType.Wait;
-        System.Windows.Input.Cursor Cursor { get; set; } // = CursorType.Wait;
+        // System.Windows.Input.Cursor Cursor { get; set; } // = CursorType.Wait;
 
         public PanelWpf Panel { get; set; }
         public FileListPanelWpf FileList { get; set; }
@@ -76,10 +76,19 @@ namespace fcmd.View.ctrl
             DataContext = DataObj;
         }
 
-        public virtual void Bind()  // TODO
+        bool bound = false;
+        public virtual void Bind()
         {
+            if (bound) return;
             // DataGrid bind
             this.BindGridEvents();
+            bound = true;
+        }
+        public virtual void UnBind()
+        {
+            if (!bound) return;
+            bound = false;
+            this.UnBindGridEvents();
         }
 
         // Visual properties
@@ -131,11 +140,15 @@ namespace fcmd.View.ctrl
 
         public void SetFocus()
         {
+            // if (!MainWindow.AppLoading) { }
+            if (!CanGetFocus)
+                return;
+
             // DataGrid got focus
             Focus();
         }
 
-        public const string fileProcol = "file://";
+        string fileProcol { get { return base_plugins.fs.localFileSystem.FilePrefix; } } // => "file://"
 
         #region Select, LoadDir, Columns 
 
@@ -153,13 +166,15 @@ namespace fcmd.View.ctrl
         public bool SelectEnter(ListView2ItemWpf item)
         {
             var fullpath = item.FullPath.StartsWith(fileProcol)
-                    ? Path.GetFullPath(item.FullPath.Substring(fileProcol.Length)) : null;
+                    ? Path.GetFullPath(item.FullPath.Substring(fileProcol.Length)) : 
+                      (item.RowIndex == 0 ?  item.FullPath : null);
             if (fullpath != null && Directory.Exists(fullpath))
             {
                 LoadDir(fullpath);
                 return true;
             }
-            else if (item.FullPath.Contains("://"))
+            else if (item.FullPath.Contains(Path.DirectorySeparatorChar.ToString()) 
+                     && Directory.Exists(item.FullPath))
             {
                 LoadDir(item.FullPath);
                 return true;
@@ -169,31 +184,35 @@ namespace fcmd.View.ctrl
 
         public void LoadDir(string path)
         {
-            try
-            {
+            UnBind();
+            //try {
+
                 this.ItemsSource = null;
-                if (path.Contains("://") && !path.Contains(fileProcol))
-                    this.FileList.LoadDir(path, null);
-                else
-                {
+                //if (path.Contains("://") && !path.Contains(fileProcol))
+                //    this.FileList.LoadDir(path, null);
+                //else
+                //{
                     var fullpath = path.StartsWith(fileProcol)
                         ? Path.GetFullPath(path.Substring(fileProcol.Length)) : Path.GetFullPath(path);
                     Directory.SetCurrentDirectory(fullpath);
                     this.FileList.LoadDir(fileProcol + fullpath, null);
-                }
-            }
-            catch (Exception ex) { MessageDialog.ShowError(ex.Message); }
+                //}
+                Bind();
+
+            //}
+            //catch (Exception ex) { MessageDialog.ShowError(ex.Message); }
         }
 
         public void SetupColumns()
         {
             var items = DataObj.DataItems;  // .ItemsForGrid();
+
             if (this.Columns.Count == 0)
             {
-                this.Bind();
-
                 ListView2.ColumnInfo[] definitions = DefineColumns(null);
                 this.ToDataSource<object>(items, definitions);
+
+                this.Bind();
             }
             else
             {

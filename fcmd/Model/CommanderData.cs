@@ -9,6 +9,7 @@ using fcmd.Controller;
 using fcmd.View;
 using pluginner;
 using fcmd.FileList;
+using fcmd.base_plugins.fs;
 
 namespace fcmd.Model
 {
@@ -101,12 +102,12 @@ namespace fcmd.Model
 
         protected void Panel_OpenFile(string data)
         {
-            if (data.StartsWith("file://") && System.IO.File.Exists(data.Replace("file://", "")))
+            if (data.StartsWith(localFileSystem.FilePrefix) && System.IO.File.Exists(data.Replace(localFileSystem.FilePrefix, string.Empty)))
             {
                 try
                 {
                     System.Diagnostics.Process proc = new System.Diagnostics.Process();
-                    proc.StartInfo.FileName = data.Replace("file://", "");
+                    proc.StartInfo.FileName = data.Replace(localFileSystem.FilePrefix, string.Empty);
                     proc.StartInfo.UseShellExecute = true;
                     proc.Start();
                 }

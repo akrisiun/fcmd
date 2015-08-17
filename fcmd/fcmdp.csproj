@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -11,20 +11,22 @@
     <AssemblyName>fcmdp</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
+    <StartupObject>fcmd.App</StartupObject>
+    <CodePage>65001</CodePage>
   </PropertyGroup>
+  <!--
+      <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+  -->
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;WPF;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WPF;VS;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
@@ -36,13 +38,10 @@
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>FavIcon.ico</ApplicationIcon>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>xwt.snk</AssemblyOriginatorKeyFile>
@@ -57,18 +56,14 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
+    <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="Xwt3, Version=3.2.0.1, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Xwt3">
       <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
     </Reference>
-    <Reference Include="Xwt3.WPF, Version=0.1.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Xwt3.WPF">
       <HintPath>..\xwt\bin\Xwt3.WPF.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -130,8 +125,8 @@
     <Compile Include="Platform\Commands.cs" />
     <Compile Include="Model\View\Control.cs" />
     <Compile Include="View.Xaml\Ctrl\InputBox.cs" />
-    <Compile Include="View.Xaml\ListView2ItemWpf.cs" />
-    <Compile Include="View.Xaml\ListView2Wpf.cs" />
+    <Compile Include="View.Xaml\ListPanel\ListView2ItemWpf.cs" />
+    <Compile Include="View.Xaml\ListPanel\ListView2Wpf.cs" />
     <Compile Include="Platform\MessageDialog.cs" />
     <Compile Include="View.Xaml\MenuWpf.cs" />
     <Compile Include="View.Xaml\WindowData.cs" />
@@ -141,7 +136,7 @@
     <Compile Include="View.Xaml\Ctrl\LabelWidget.cs" />
     <Compile Include="View.Xaml\Ctrl\ListView2Widget.cs" />
     <Compile Include="View.Xaml\Ctrl\TextEntry.cs" />
-    <Compile Include="View.Xaml\FileListPanelWpf.cs" />
+    <Compile Include="View.Xaml\ListPanel\FileListPanelWpf.cs" />
     <Compile Include="View.Xaml\GridEvents.cs" />
     <Compile Include="View.Xaml\MenuPanelWpf.xaml.cs">
       <DependentUpon>MenuPanelWpf.xaml</DependentUpon>
@@ -149,7 +144,7 @@
     <Compile Include="View.Xaml\PanelCmd.xaml.cs">
       <DependentUpon>PanelCmd.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View.Xaml\PanelWpf.xaml.cs">
+    <Compile Include="View.Xaml\ListPanel\PanelWpf.xaml.cs">
       <DependentUpon>PanelWpf.xaml</DependentUpon>
     </Compile>
     <Compile Include="View.Xaml\WpfMenu.cs" />
@@ -174,7 +169,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View.Xaml\PanelWpf.xaml">
+    <Page Include="View.Xaml\ListPanel\PanelWpf.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -204,7 +199,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="pluginner\pluginner.csproj">
-      <Project>{88785b26-d617-4be9-b449-f7ce77444794}</Project>
+      <Project>{88785B26-D617-4BE9-B449-F7CE77444794}</Project>
       <Name>pluginner</Name>
     </ProjectReference>
   </ItemGroup>

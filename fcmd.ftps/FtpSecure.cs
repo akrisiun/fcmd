@@ -43,10 +43,12 @@ namespace fcmd.ftps
                 Connect(url);
         }
 
-        private void LoadDir(string url)
+        protected void LoadDir(string url)
         {
             currentDirectory = url;
             _CheckProtocol(url);
+
+            RootDirectory = Prefix + "/";
 
             Uri URI = new Uri(url);
 
@@ -166,8 +168,8 @@ namespace fcmd.ftps
                             ? Utilities.GetContentType(filename.Substring(filename.LastIndexOf('.') + 1))
                             : "application/octet-stream";
 
-                        if (Toolkit.CurrentEngine != null)
-                            di.IconSmall = Utilities.GetIconForMIME(di.MIMEType);
+                        //if (Toolkit.CurrentEngine != null)
+                        //    di.IconSmall = Utilities.GetIconForMIME(di.MIMEType);
                     }
                     di.Date = DateTime.Parse(
                         m.Groups["month"].Value + " " + m.Groups["day"].Value + " " + 
@@ -288,6 +290,17 @@ namespace fcmd.ftps
             set { LoadDir(value); }
         }
 
+        public string Prefix { get { return "ftp://"; } }   // TODO
+        public string RootDirectory { get; set; }
+
+        public string NoPrefix(string dir)
+        {
+            if (dir != null && dir.StartsWith(Prefix))
+                return dir.Substring(Prefix.Length);
+
+            return dir;
+        }
+
         public bool FileExists(string URL)
         {
             return dirContent.Any(di => di.URL == URL);
@@ -382,8 +395,8 @@ namespace fcmd.ftps
             get { return "/"; }
         }
 
+#pragma warning disable 0649, 0414  // is assigned but never used
         public event TypedEvent<string> StatusChanged = null;
-
         public event TypedEvent<double> ProgressChanged = null;
 
         public void CLIstdinWriteLine(string StdIn)

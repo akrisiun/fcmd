@@ -155,13 +155,13 @@ namespace fcmd
             // return;
 
             var PanelLayout = new Gtk3HPaned();
-            var hpaned = PanelLayout.GetBackend().NativeWidget as Gtk.HPaned;
+            var hpaned = PanelLayout.XBackend().NativeWidget as Gtk.HPaned;
 
             // box.Add(native);
             // 
             Layout.PackStart(PanelLayout, false, WidgetPlacement.Fill, WidgetPlacement.Fill, 0, 0, 0, 0);
 
-            var nativeText = text.GetBackend().NativeWidget as Gtk.Widget;
+            var nativeText = text.XBackend().NativeWidget as Gtk.Widget;
             hpaned.Add1(nativeText);
 
             //var KeyBoardHelp = Visual.KeyBoardHelp;

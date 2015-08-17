@@ -18,6 +18,8 @@ namespace fcmd.base_plugins.fs
 {
     public partial class localFileSystem : pluginner.IFSPlugin
     {
+        public const string FilePrefix = "file://";
+
         /* ЗАМЕТКА РАЗРАБОТЧИКУ				DEVELOPER NOTES
 		 * В данном файле содержится код	This file contanis the local FS
 		 * плагина доступа к локальным ФС.	adapter for the File Commander.
@@ -27,9 +29,12 @@ namespace fcmd.base_plugins.fs
 		 */
         public string Name { get { return Localizator.GetString("LocalFSVer"); } }
         public string Version { get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
-        public string Author { get { return "A.T."; } }
+        public string Author { get { return "A.T.;ankr"; } }
+
         public System.Configuration.Configuration FCConfig { set { } } //it can be a placeholder because the LFS can use the fcmd.Properties.Settings...
         public IEnumerable<pluginner.DirItem> DirectoryContent { get { return DirContent; } } //возврат директории в FC
+
+#pragma warning disable 0649, 0414  // is assigned but never used
         public event pluginner.TypedEvent<string> StatusChanged;
         public event pluginner.TypedEvent<double> ProgressChanged;
         public event pluginner.TypedEvent<object[]> APICallHost = null;
@@ -59,37 +64,51 @@ namespace fcmd.base_plugins.fs
         }
 
         List<pluginner.DirItem> DirContent = new List<pluginner.DirItem>();
-        string CurDir;
+
+        #region dir
+
+        protected string curDir;
+        protected string rootDir;
 
         public void GetDirectoryContent(ref List<pluginner.DirItem> output, FileSystemOperationStatus FSOS)
         {
 #if DEBUG
-            Console.WriteLine("DEBUG: {0} Loading the {1} has been started", DateTime.Now.ToLongTimeString(), CurDir);
+            Console.WriteLine("DEBUG: {0} Loading the {1} has been started", DateTime.Now.ToLongTimeString(), curDir);
 #endif
             DirContent.Clear();
-            string InternalURL = CurDir.Replace("file://", "");
+            string InternalURL = curDir.Replace(localFileSystem.FilePrefix, string.Empty);
             FSOS.StatusMessage = string.Format(Localizator.GetString("DoingListdir"), "", InternalURL);
 
             pluginner.DirItem tmpVar = new pluginner.DirItem();
 
-            // string[] files = System.IO.Directory.GetFiles(InternalURL);
-            var files = AiLib.IOFile.DirectoryEnum.ReadFilesInfo(InternalURL);
+            // 
+            string[] filesNames;
+            IEnumerable<FileDataInfo> files = null;
+
+            if (!OSVersionEx.IsWindows)
+                filesNames = System.IO.Directory.GetFiles(InternalURL);
+            else
+                files = AiLib.IOFile.DirectoryEnum.ReadFilesInfo(InternalURL);
+
             string[] dirs = System.IO.Directory.GetDirectories(InternalURL);
 
-            // float FileWeight = 1 / ((float)files.Length + (float)dirs.Length);
-            float Progress = 0;
-
-            //элемент "вверх по древу"
-            DirectoryInfo curdir = new DirectoryInfo(InternalURL);
-            if (curdir.Parent != null)
+            // UpDir element : элемент "вверх по древу"
+            DirectoryInfo currentdir = new DirectoryInfo(InternalURL);
+            if (currentdir.Parent != null)
             {
-                tmpVar.URL = "file://" + curdir.Parent.FullName;
+                tmpVar.URL = localFileSystem.FilePrefix + currentdir.Parent.FullName;   //  "file://"
+
+                // if (!MainWindow.AppLoading) { }
+
                 tmpVar.TextToShow = "..";
                 tmpVar.MIMEType = "x-fcmd/up";
-                tmpVar.IconSmall = Utilities.GetIconForMIME("x-fcmd/up");
+                // tmpVar.IconSmall = Utilities.GetIconForMIME("x-fcmd/up");
+                tmpVar.IsDirectory = true;
                 output.Add(tmpVar);
             }
 
+            float Progress = 0;
+            // float FileWeight = 1 / ((float)files.Length + (float)dirs.Length);
             // uint counter = 0;
             // 2 ** 10 ~= 1000 (is about 1000)
             // so dispatching will be done every time 1000 files will have been looked throught
@@ -100,15 +119,16 @@ namespace fcmd.base_plugins.fs
             // ankr
             // const uint update_every = ~(((~(uint)0) >> 10) << 10);
 
-            foreach (string curDir in dirs)
+            foreach (string directory in dirs)
             {
                 //перебираю каталоги
-                DirectoryInfo di = new DirectoryInfo(curDir);
+                DirectoryInfo di = new DirectoryInfo(directory);
                 tmpVar.IsDirectory = true;
-                tmpVar.URL = "file://" + curDir;
+                tmpVar.URL = localFileSystem.FilePrefix + directory;
                 tmpVar.TextToShow = di.Name;
                 tmpVar.Date = di.CreationTime;
-                if (di.Name.StartsWith("."))
+
+                if (di.Name.StartsWith("."))        // .git, .vs, .svn and other ignores
                 {
                     tmpVar.Hidden = true;
                 }
@@ -116,26 +136,29 @@ namespace fcmd.base_plugins.fs
                 {
                     tmpVar.Hidden = false;
                 }
+
                 tmpVar.MIMEType = "x-fcmd/directory";
-                tmpVar.IconSmall = Utilities.GetIconForMIME("x-fcmd/directory");
+                //tmpVar.IconSmall = Utilities.GetIconForMIME("x-fcmd/directory");
 
                 output.Add(tmpVar);
-                // Progress += FileWeight;
                 FSOS.CompletePercents = (int)Progress * 100;
+
+                // Progress += FileWeight;
                 /*if ((++counter & update_every) == 0)
 				{
 					Xwt.Application.MainLoop.DispatchPendingEvents();
 				}*/
             }
 
-            foreach (DirectoryEnum.FileDataInfo curFile in files)
+            if (files != null)
+            foreach (FileDataInfo curFile in files)
             {
                 //FileInfo fi = new FileInfo(curFile);
 
                 tmpVar.IsDirectory = false;
                 var Name = curFile.Name;
 
-                tmpVar.URL = "file://" + Path.Combine(InternalURL, Name).Replace('\\', '/');
+                tmpVar.URL = localFileSystem.FilePrefix + Path.Combine(InternalURL, Name).Replace('\\', '/');
                 tmpVar.TextToShow = curFile.cFileName; // fi.Name;
                 tmpVar.Date = curFile.LastWriteTime;   // fi.LastWriteTime;
                 tmpVar.Size = curFile.Length;          // fi.Length;
@@ -178,25 +201,38 @@ namespace fcmd.base_plugins.fs
 
         public string CurrentDirectory
         {
-            get { return CurDir; }
+            get { return curDir; }
             set
             {
-                CurDir = value;
-                //ReadDirectory(value);
+                curDir = value;
             }
         }
 
+        public string Prefix { get { return FilePrefix; } }
+
+        public string RootDirectory
+        {
+            get { return rootDir; }
+            set { rootDir = value.Contains(Prefix) ? value : Prefix + value; }
+        }
+        // return OSVersionEx.IsWindows
+
         private void _CheckProtocol(string url)
         { //проверка на то, чтобы нечаянно через localfs не попытались зайти в ftp, webdav, реестр и т.п. :-)
-            if (!url.StartsWith("file:")) throw new pluginner.PleaseSwitchPluginException();
+            if (!url.StartsWith(Prefix))
+                throw new pluginner.PleaseSwitchPluginException();
         }
+
+        #endregion
+
+        #region Methods
 
         public string DirSeparator { get { return Path.DirectorySeparatorChar.ToString(); } }
 
         public bool FileExists(string URL)
         {//проверить наличие файла
             _CheckProtocol(URL);
-            string InternalURL = URL.Replace("file://", "");
+            string InternalURL = URL.Replace(localFileSystem.FilePrefix, string.Empty);
             if (File.Exists(InternalURL)) return true; //файл е?
             return false; //та ничого нэма! [не забываем, что return xxx прекращает выполнение подпрограммы]
         }
@@ -204,7 +240,7 @@ namespace fcmd.base_plugins.fs
         public bool DirectoryExists(string URL)
         {//проверить наличие папки
             _CheckProtocol(URL);
-            string InternalURL = URL.Replace("file://", "");
+            string InternalURL = URL.Replace(localFileSystem.FilePrefix, string.Empty);
             if (Directory.Exists(InternalURL)) return true; //каталох е?
             return false; //та ничого нэма! [не забываем, что return xxx прекращает выполнение подпрограммы]
         }
@@ -214,7 +250,7 @@ namespace fcmd.base_plugins.fs
         //{//прочитать каталог и загнать в DirectoryContent
         //    _CheckProtocol(url);
         //    DirContent.Clear();
-        //    string InternalURL = url.Replace("file://", "");
+        //    string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
         //    RaiseStatusChanged(string.Format(Localizator.GetString("DoingListdir"), "", InternalURL));
 
         //    pluginner.DirItem tmpVar = new pluginner.DirItem();
@@ -228,7 +264,7 @@ namespace fcmd.base_plugins.fs
         //    DirectoryInfo curdir = new DirectoryInfo(InternalURL);
         //    if (curdir.Parent != null)
         //    {
-        //        tmpVar.URL = "file://" + curdir.Parent.FullName;
+        //        tmpVar.URL = localFileSystem.FilePrefix + curdir.Parent.FullName;
         //        tmpVar.TextToShow = "..";
         //        tmpVar.MIMEType = "x-fcmd/up";
         //        tmpVar.IconSmall = Utilities.GetIconForMIME("x-fcmd/up");
@@ -248,7 +284,7 @@ namespace fcmd.base_plugins.fs
         //        //перебираю каталоги
         //        DirectoryInfo di = new DirectoryInfo(curDir);
         //        tmpVar.IsDirectory = true;
-        //        tmpVar.URL = "file://" + curDir;
+        //        tmpVar.URL = localFileSystem.FilePrefix + curDir;
         //        tmpVar.TextToShow = di.Name;
         //        tmpVar.Date = di.CreationTime;
         //        if (di.Name.StartsWith("."))
@@ -275,7 +311,7 @@ namespace fcmd.base_plugins.fs
         //    {
         //        FileInfo fi = new FileInfo(curFile);
         //        tmpVar.IsDirectory = false;
-        //        tmpVar.URL = "file://" + curFile;
+        //        tmpVar.URL = localFileSystem.FilePrefix + curFile;
         //        tmpVar.TextToShow = fi.Name;
         //        tmpVar.Date = fi.LastWriteTime;
         //        tmpVar.Size = fi.Length;
@@ -315,7 +351,7 @@ namespace fcmd.base_plugins.fs
         public bool CanBeRead(string url)
         { //проверить файл/папку "URL" на читаемость
             _CheckProtocol(url);
-            string InternalURL = url.Replace("file://", "");
+            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
 
             try
             {
@@ -341,7 +377,7 @@ namespace fcmd.base_plugins.fs
         {
             string url = Metadata.FullURL;
             _CheckProtocol(url);
-            string InternalURL = url.Replace("file://", "");
+            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
 
             if (!Directory.Exists(InternalURL) && !File.Exists(InternalURL))
             {
@@ -365,7 +401,7 @@ namespace fcmd.base_plugins.fs
         public void Touch(string URL)
         {
             _CheckProtocol(URL);
-            string InternalURL = URL.Replace("file://", "");
+            string InternalURL = URL.Replace(localFileSystem.FilePrefix, string.Empty);
 
             pluginner.FSEntryMetadata newmd = new pluginner.FSEntryMetadata();
             newmd.FullURL = InternalURL;
@@ -377,7 +413,7 @@ namespace fcmd.base_plugins.fs
         public System.IO.Stream GetFileStream(string url, bool Lock = false)
         { //запрос потока для файла
             _CheckProtocol(url);
-            string InternalURL = url.Replace("file://", "");
+            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
 
             FileAccess fa = (Lock ? FileAccess.ReadWrite : FileAccess.Read);
 
@@ -387,7 +423,7 @@ namespace fcmd.base_plugins.fs
         public byte[] GetFileContent(string url)
         {
             _CheckProtocol(url);
-            string InternalURL = url.Replace("file://", "");
+            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
             FileStream fistr = new FileStream(InternalURL, FileMode.Open, FileAccess.Read, FileShare.Read);
             BinaryReader bire = new BinaryReader(fistr);
             int Length = 0;
@@ -401,7 +437,7 @@ namespace fcmd.base_plugins.fs
         public void WriteFileContent(string url, Int32 Start, byte[] Content)
         {
             _CheckProtocol(url);
-            string InternalURL = url.Replace("file://", "");
+            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
 
             FileStream fistr = new FileStream(InternalURL, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             BinaryWriter biwr = new BinaryWriter(fistr);
@@ -411,7 +447,7 @@ namespace fcmd.base_plugins.fs
         public void DeleteFile(string url)
         {//удалить файл
             _CheckProtocol(url);
-            string InternalURL = url.Replace("file://", "");
+            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
 
             File.Delete(InternalURL);
         }
@@ -419,7 +455,7 @@ namespace fcmd.base_plugins.fs
         public void DeleteDirectory(string url, bool TryFirst)
         {//удалить папку
             _CheckProtocol(url);
-            string InternalURL = url.Replace("file://", "");
+            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
             if (TryFirst)
             {
                 if (!CheckForDeletePossiblity(InternalURL)) throw new pluginner.ThisDirCannotBeRemovedException();
@@ -430,7 +466,7 @@ namespace fcmd.base_plugins.fs
         public void CreateDirectory(string url)
         {//создать каталог
             _CheckProtocol(url);
-            string InternalURL = url.Replace("file://", "");
+            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
 
             Directory.CreateDirectory(InternalURL);
         }
@@ -476,8 +512,8 @@ namespace fcmd.base_plugins.fs
         public void MoveFile(string source, string destination)
         {
             _CheckProtocol(source);
-            string internalSource = source.Replace("file://", "");
-            string internalDestination = destination.Replace("file://", "");
+            string internalSource = source.Replace(localFileSystem.FilePrefix, string.Empty);
+            string internalDestination = destination.Replace(localFileSystem.FilePrefix, string.Empty);
 
             File.Move(internalSource, internalDestination);
         }
@@ -485,16 +521,18 @@ namespace fcmd.base_plugins.fs
         public void MoveDirectory(string source, string destination)
         {
             _CheckProtocol(source);
-            string internalSource = source.Replace("file://", "");
-            string internalDestination = destination.Replace("file://", "");
+            string internalSource = source.Replace(localFileSystem.FilePrefix, string.Empty);
+            string internalDestination = destination.Replace(localFileSystem.FilePrefix, string.Empty);
 
             Directory.Move(internalSource, internalDestination);
         }
 
+        #endregion
+
         public pluginner.FSEntryMetadata GetMetadata(string url)
         {
             _CheckProtocol(url);
-            string InternalURL = url.Replace("file://", "");
+            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
             pluginner.FSEntryMetadata lego = new pluginner.FSEntryMetadata();
             FileInfo metadatasource = new FileInfo(InternalURL);
 
@@ -502,8 +540,8 @@ namespace fcmd.base_plugins.fs
             lego.FullURL = url;
             try
             {
-                lego.UpperDirectory = "file://" + metadatasource.DirectoryName;
-                lego.RootDirectory = "file://" + metadatasource.Directory.Root.FullName;
+                lego.UpperDirectory = localFileSystem.FilePrefix + metadatasource.DirectoryName;
+                lego.RootDirectory = localFileSystem.FilePrefix + metadatasource.Directory.Root.FullName;
                 lego.Attrubutes = metadatasource.Attributes;
                 lego.CreationTimeUTC = metadatasource.CreationTimeUtc;
                 lego.IsReadOnly = metadatasource.IsReadOnly;
@@ -515,6 +553,8 @@ namespace fcmd.base_plugins.fs
 
             return lego;
         }
+
+        #region api
 
         public int[] APICompatibility
         {
@@ -529,6 +569,8 @@ namespace fcmd.base_plugins.fs
         {
             return null;
         }
+
+        #endregion
 
         /// <summary> Send new feedback data to UI</summary>
         /// <param name="Progress">The new progress value (or -1.79769e+308 if it should stay w/o changes): from 0.0 to 1.0 (or > 1.0 to hide the bar)</param>

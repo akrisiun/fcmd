@@ -296,7 +296,7 @@ namespace Xwt.WPFBackend
 
 		public byte[] PixelData;
 		public int Stride;
-		public bool PixelWritePending;
+		// public bool PixelWritePending;
 
 		ImageFrame[] frames;
 

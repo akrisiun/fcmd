@@ -46,7 +46,14 @@ namespace fcmd.base_plugins.fs
 		Process CLIproc = new Process();
 		Boolean CLIsomethingIsRunning = false;
 
-		public void CLIstdinWriteLine(string StdIn)
+        public string NoPrefix(string dir)
+        {
+            if (dir != null && dir.StartsWith(FilePrefix))
+                return dir.Substring(FilePrefix.Length);
+            return dir;
+        }
+
+        public void CLIstdinWriteLine(string StdIn)
 		{
 			if (!CLIsomethingIsRunning) {
 				try
@@ -58,7 +65,7 @@ namespace fcmd.base_plugins.fs
 						psi = new ProcessStartInfo(StdIn.Substring(0, ParamStart), StdIn.Substring(ParamStart + 1));
 					else
 						psi = new ProcessStartInfo(StdIn);
-					psi.WorkingDirectory = CurrentDirectory.Replace("file://", "");
+					psi.WorkingDirectory = NoPrefix(CurrentDirectory);
 					psi.RedirectStandardOutput = true;
 					psi.RedirectStandardInput = true;
 					psi.RedirectStandardError = true;
@@ -88,7 +95,7 @@ namespace fcmd.base_plugins.fs
 					}
 					CLIsomethingIsRunning = false;
 					Console.WriteLine("Stopped: " + procname);
-					RaiseCLIpromptChanged("FC: " + CurrentDirectory.Replace("file://","") + ">");
+					RaiseCLIpromptChanged("FC: " + CurrentDirectory.Replace(localFileSystem.FilePrefix, string.Empty) + ">");
 				}
 				catch (Exception ex)
 				{

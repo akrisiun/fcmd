@@ -15,31 +15,53 @@ namespace fcmd.View
     {
         public void Init(ICommanderWindow window)
         {
+            args = Environment.GetCommandLineArgs();
+
             main = window as MainWindow;
             InitMenu();
         }
 
         MainWindow IBackend.Window { get { return main; } }
+
         protected MainWindow main;
+        public string[] args;
 
         public void Shown() { }
 
-        public void Shown(PanelWpf panel1, PanelWpf panel2)
+        public void Clear()
         {
+            var panel1 = main.LeftPanel;
+            var panel2 = main.RightPanel;
+
             panel1.data.Columns.Clear();
             panel2.data.Columns.Clear();
+        }
+
+        public void Shown(PanelWpf panel1, PanelWpf panel2)
+        {
+            Clear();
 
             var data = main.WindowData as WindowDataWpf;
             var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
             var task = Task.Factory.StartNew(
                 () =>
-                    data.LoadDirAsync(Environment.GetCommandLineArgs(), scheduler)
+                    data.LoadDirAsync(args, scheduler)
                 );
 
             task.ContinueWith(
                 (t) => main.Dispatcher.Invoke(
                     () => AfterLoadDir(panel1, panel2))
                 );
+        }
+
+        public void LoadDirSynchonous()
+        {
+            var data = main.WindowData as WindowDataWpf;
+            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            data.LoadDirAsync(args, scheduler);
+
+            var panel1 = main.LeftPanel; var panel2 = main.RightPanel;
+            AfterLoadDir(panel1, panel2);
         }
 
         void AfterLoadDir(PanelWpf panel1, PanelWpf panel2)
@@ -66,6 +88,8 @@ namespace fcmd.View
             // KeyEventHandler  object sender, KeyEventArgs e);
             main.PreviewKeyDown 
                 += (s, e) => this.KeyEvent(s, e);
+
+            MainWindow.AppLoading = false;
         }
 
         public void InitMenu()

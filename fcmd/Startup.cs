@@ -38,10 +38,9 @@ the software may be modified without restrictions");
 					case PlatformID.Win32NT:
 						Application.Initialize(ToolkitType.Wpf);
 						break;
-					case PlatformID.MacOSX:
-					 	// Application.Initialize(ToolkitType.Cocoa);
-						Application.Initialize(ToolkitType.XamMac);		// Gtk3.Mac
-					 	break;
+					// case PlatformID.MacOSX:
+					// 	Application.Initialize(ToolkitType.Cocoa);
+					// 	break;
 #endif
                     default:
                         if (!Environment.Is64BitProcess)

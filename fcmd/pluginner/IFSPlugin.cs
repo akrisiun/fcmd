@@ -38,6 +38,11 @@ namespace pluginner
         /// </value>
         string CurrentDirectory { get; set; }
 
+        string RootDirectory { get; set; }
+        string Prefix { get; }
+
+        string NoPrefix(string dir);
+
         /// <summary>
         /// Determines whether at the specified URL exists a file
         /// </summary>
