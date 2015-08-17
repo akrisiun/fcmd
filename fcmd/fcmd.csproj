@@ -162,6 +162,7 @@
     <Compile Include="View.GTK\Backend\Gtk3Entry.cs" />
     <Compile Include="View.GTK\Backend\Gtk3HPaned.cs" />
     <Compile Include="View.GTK\Backend\Gtk3WindowFrame.cs" />
+    <Compile Include="View.GTK\Backend\IGtk3.cs" />
     <Compile Include="View.GTK\BodyGtk.cs" />
     <Compile Include="View.GTK\Ctrl\InputBoxGtk.cs" />
     <Compile Include="View.GTK\Ctrl\ITextEntryGtk.cs" />
