@@ -28,7 +28,7 @@ namespace pluginner
         /// </summary>
         /// <param name="output">The List that should be filled with directory content</param>
         /// <param name="FSOS">Operation status</param>
-        void GetDirectoryContent(ref List<DirItem> output, FileSystemOperationStatus FSOS);
+        IEnumerable<DirItem> GetDirectoryContent(FileSystemOperationStatus FSOS);
 
         /// <summary>
         /// Gets or sets the current directory.

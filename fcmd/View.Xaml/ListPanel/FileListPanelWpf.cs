@@ -128,43 +128,50 @@ namespace fcmd.View.Xaml
             string rootdir = FS.GetMetadata(URL).RootDirectory;
             FS.RootDirectory = FS.Prefix + FS.NoPrefix(rootdir);
 
-            List<DirItem> dis = new List<DirItem>();
-
-            //dis = FS.DirectoryContent;
-//#if DEBUG
-//            if (!MainWindow.AppLoading)
-//            { } // break
-//#endif
+            IEnumerable<DirItem> dis;
+            //#if DEBUG
+            //            if (!MainWindow.AppLoading)
+            //            { } // break
+            //#endif
 
             var resetHandle = new AutoResetEvent(false);
+            var lv = ListingView as ListView2Xaml;
+
             Thread DirLoadingThread =
                 new Thread(delegate ()
                 {
                     if (FS is fs.localFileSystem)
                     {
                         var fsLoc = FS as fs.localFileSystem;
-                        fsLoc.GetDirectoryContent(ref dis, new FileSystemOperationStatus());
+                        dis = fsLoc.GetDirectoryContent(new FileSystemOperationStatus());
                     }
                     else
-                        FS.GetDirectoryContent(ref dis, new FileSystemOperationStatus());
+                        dis = FS.GetDirectoryContent(new FileSystemOperationStatus());
 
+                    if (dis != null)
+                    {
+                        if (lv.Count > 0)
+                            lv.Clear();
+
+                        uint counter = 0;
+                        foreach (DirItem di in dis)
+                        {
+                            AddItem(lv, di);
+                            counter++;
+                        }
+
+                    }
                     resetHandle.Set();
                 });
 
             DirLoadingThread.Start();
             var sucess = resetHandle.WaitOne(timeout: TimeSpan.FromSeconds(10)); // 10 secs
                                                                                  // wait loop: do { } while (DirLoadingThread.ThreadState == ThreadState.Running);
-            uint counter = 0;
-            var lv = ListingView as ListView2Xaml;
-            if (lv.Count > 0)
-                lv.Clear();
+        }
 
-            if (dis.Count == 0)
-                return;
+        AddItem(lv, di);
 
-            foreach (DirItem di in dis)
-            {
-                ICollection<object> Data = new Collection<Object>();
+        ICollection<object> Data = new Collection<Object>();
                 List<Boolean> EditableFields = new List<bool>();
                 //Data.Add(di.IconSmall ?? Image.FromResource("fcmd.Resources.image-missing.png"));
 
@@ -233,12 +240,6 @@ namespace fcmd.View.Xaml
 
             if (FS == null) throw new InvalidOperationException("No filesystem is binded to this FileListPanel");
 
-            //неспешное TODO:придумать, куда лучше закорячить; не забываем, что во время работы 
-            //FS может меняться полностью
-            //FS.CLIstdoutDataReceived += FS_CLIstdoutDataReceived;
-            //FS.CLIstderrDataReceived += (stderr) => { CLIoutput.Text += "\n" + stderr; Utilities.ShowWarning(stderr); };
-            //FS.CLIpromptChanged += FS_CLIpromptChanged;
-
             if (FS.CurrentDirectory == null)
             {
                 //if this is first call in the session (the FLP is just initialized)
@@ -255,16 +256,38 @@ namespace fcmd.View.Xaml
 
             if (URL == "." && FS.CurrentDirectory == null)
             {
-                LoadDir(
-                    fs.localFileSystem.FilePrefix + Directory.GetCurrentDirectory(), Shorten);
+                LoadDir(fs.localFileSystem.FilePrefix + Directory.GetCurrentDirectory(), Shorten);
                 return;
             }
 
             ListingWidget.Sensitive = false;
 
+            LoadFsWithPlugin(URL);
+
+            if ((Parent as DispatcherObject).CheckAccess())
+            {
+                var view = ListingView;
+                if (view.DataItems.Count > 0)
+                {
+                    view.SetupColumns();
+                    view.SelectedRow = 0;
+                }
+                view.SetFocus();
+            }
+
+            ListingWidget.Sensitive = true;
+        }
+
+        protected void LoadFsWithPlugin(string URL)
+        {
+
             string oldCurDir = FS.CurrentDirectory;
 
             bool loadPlugin = false;
+
+            if (!URL.Contains("://"))
+                URL = FS.Prefix + FS.NoPrefix(URL);
+
             try
             {
                 FS.CurrentDirectory = URL;
@@ -295,7 +318,7 @@ namespace fcmd.View.Xaml
                 {
                     pluginfinder pf = new pluginfinder();
                     FS = pf.GetFSplugin(URL);
-                    LoadDir(URL, Shorten);
+                    LoadDir(URL, ShortenPolicy);
                 }
                 catch (Exception ex)
                 {
@@ -310,19 +333,6 @@ namespace fcmd.View.Xaml
                     }
                 }
             }
-
-            if ((Parent as DispatcherObject).CheckAccess())
-            {
-                var view = ListingView;
-                if (view.DataItems.Count > 0)
-                {
-                    view.SetupColumns();
-                    view.SelectedRow = 0;
-                }
-                view.SetFocus();
-            }
-
-            ListingWidget.Sensitive = true;
         }
 
         public override void LoadDir()

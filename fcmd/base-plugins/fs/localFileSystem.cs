@@ -70,7 +70,8 @@ namespace fcmd.base_plugins.fs
         protected string curDir;
         protected string rootDir;
 
-        public void GetDirectoryContent(ref List<pluginner.DirItem> output, FileSystemOperationStatus FSOS)
+        // public void GetDirectoryContent(ref List<pluginner.DirItem> output, FileSystemOperationStatus FSOS)
+        public IEnumerable<pluginner.DirItem> GetDirectoryContent(FileSystemOperationStatus FSOS)
         {
 #if DEBUG
             Console.WriteLine("DEBUG: {0} Loading the {1} has been started", DateTime.Now.ToLongTimeString(), curDir);
@@ -104,7 +105,8 @@ namespace fcmd.base_plugins.fs
                 tmpVar.MIMEType = "x-fcmd/up";
                 // tmpVar.IconSmall = Utilities.GetIconForMIME("x-fcmd/up");
                 tmpVar.IsDirectory = true;
-                output.Add(tmpVar);
+                // output.Add(tmpVar);
+                yield return tmpVar;
             }
 
             float Progress = 0;
@@ -244,109 +246,6 @@ namespace fcmd.base_plugins.fs
             if (Directory.Exists(InternalURL)) return true; //каталох е?
             return false; //та ничого нэма! [не забываем, что return xxx прекращает выполнение подпрограммы]
         }
-
-        //[Obsolete("Replaced with GetDirectoryContent")]
-        //public void ReadDirectory(string url)
-        //{//прочитать каталог и загнать в DirectoryContent
-        //    _CheckProtocol(url);
-        //    DirContent.Clear();
-        //    string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
-        //    RaiseStatusChanged(string.Format(Localizator.GetString("DoingListdir"), "", InternalURL));
-
-        //    pluginner.DirItem tmpVar = new pluginner.DirItem();
-
-        //    string[] files = System.IO.Directory.GetFiles(InternalURL);
-        //    string[] dirs = System.IO.Directory.GetDirectories(InternalURL);
-        //    float FileWeight = 1 / ((float)files.Length + (float)dirs.Length);
-        //    float Progress = 0;
-
-        //    //элемент "вверх по древу"
-        //    DirectoryInfo curdir = new DirectoryInfo(InternalURL);
-        //    if (curdir.Parent != null)
-        //    {
-        //        tmpVar.URL = localFileSystem.FilePrefix + curdir.Parent.FullName;
-        //        tmpVar.TextToShow = "..";
-        //        tmpVar.MIMEType = "x-fcmd/up";
-        //        tmpVar.IconSmall = Utilities.GetIconForMIME("x-fcmd/up");
-        //        DirContent.Add(tmpVar);
-        //    }
-
-        //    uint counter = 0;
-        //    // 2 ** 10 ~= 1000 (is about 1000)
-        //    // so dispatching will be done every time 1000 files will have been looked throught
-        //    // update_every == 00...0011...11 in binary format and count of '1' is 10
-        //    // so (++counter & update_every) == 0 will be true after every 2 ** 10 ~= 1000
-        //    // passed files
-        //    const uint update_every = ~(((~(uint)0) >> 10) << 10);
-
-        //    foreach (string curDir in dirs)
-        //    {
-        //        //перебираю каталоги
-        //        DirectoryInfo di = new DirectoryInfo(curDir);
-        //        tmpVar.IsDirectory = true;
-        //        tmpVar.URL = localFileSystem.FilePrefix + curDir;
-        //        tmpVar.TextToShow = di.Name;
-        //        tmpVar.Date = di.CreationTime;
-        //        if (di.Name.StartsWith("."))
-        //        {
-        //            tmpVar.Hidden = true;
-        //        }
-        //        else
-        //        {
-        //            tmpVar.Hidden = false;
-        //        }
-        //        tmpVar.MIMEType = "x-fcmd/directory";
-        //        tmpVar.IconSmall = Utilities.GetIconForMIME("x-fcmd/directory");
-
-        //        DirContent.Add(tmpVar);
-        //        Progress += FileWeight;
-        //        RaiseProgressChanged(Progress);
-        //        if ((++counter & update_every) == 0)
-        //        {
-        //            Xwt.Application.MainLoop.DispatchPendingEvents();
-        //        }
-        //    }
-
-        //    foreach (string curFile in files)
-        //    {
-        //        FileInfo fi = new FileInfo(curFile);
-        //        tmpVar.IsDirectory = false;
-        //        tmpVar.URL = localFileSystem.FilePrefix + curFile;
-        //        tmpVar.TextToShow = fi.Name;
-        //        tmpVar.Date = fi.LastWriteTime;
-        //        tmpVar.Size = fi.Length;
-        //        if (fi.Name.StartsWith("."))
-        //        {
-        //            tmpVar.Hidden = true;
-        //        }
-        //        else
-        //        {
-        //            tmpVar.Hidden = false;
-        //        }
-
-        //        if (curFile.LastIndexOf('.') > 0)
-        //            tmpVar.MIMEType = Utilities.GetContentType(curFile.Substring(curFile.LastIndexOf('.') + 1));
-        //        else
-        //            tmpVar.MIMEType = "application/octet-stream";
-
-        //        tmpVar.IconSmall = Utilities.GetIconForMIME(tmpVar.MIMEType);
-
-        //        DirContent.Add(tmpVar);
-        //        Progress += FileWeight;
-        //        if (Progress <= 1)
-        //        {
-        //            RaiseProgressChanged(Progress);
-        //        }
-        //        if ((++counter & update_every) == 0)
-        //        {
-        //            Xwt.Application.MainLoop.DispatchPendingEvents();
-        //        }
-        //    }
-        //    RaiseProgressChanged(2);
-        //    RaiseStatusChanged("");
-
-        //    RaiseCLIpromptChanged("FC: " + InternalURL + ">");
-        //}
 
         public bool CanBeRead(string url)
         { //проверить файл/папку "URL" на читаемость
