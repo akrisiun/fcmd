@@ -41,7 +41,7 @@ namespace fcmd.base_plugins.fs
 
         protected void RaiseProgressChanged(double data)
         {
-            Application.Invoke(delegate ()
+            Application.Invoke(delegate()
             {
                 var handler = ProgressChanged;
                 if (handler != null)
@@ -53,7 +53,7 @@ namespace fcmd.base_plugins.fs
 
         protected void RaiseStatusChanged(string data)
         {
-            Application.Invoke(delegate ()
+            Application.Invoke(delegate()
             {
                 var handler = StatusChanged;
                 if (handler != null)
@@ -141,8 +141,9 @@ namespace fcmd.base_plugins.fs
 
                 tmpVar.MIMEType = "x-fcmd/directory";
                 //tmpVar.IconSmall = Utilities.GetIconForMIME("x-fcmd/directory");
+                //output.Add(tmpVar);
+                yield return tmpVar;
 
-                output.Add(tmpVar);
                 FSOS.CompletePercents = (int)Progress * 100;
 
                 // Progress += FileWeight;
@@ -153,46 +154,47 @@ namespace fcmd.base_plugins.fs
             }
 
             if (files != null)
-            foreach (FileDataInfo curFile in files)
-            {
-                //FileInfo fi = new FileInfo(curFile);
-
-                tmpVar.IsDirectory = false;
-                var Name = curFile.Name;
-
-                tmpVar.URL = localFileSystem.FilePrefix + Path.Combine(InternalURL, Name).Replace('\\', '/');
-                tmpVar.TextToShow = curFile.cFileName; // fi.Name;
-                tmpVar.Date = curFile.LastWriteTime;   // fi.LastWriteTime;
-                tmpVar.Size = curFile.Length;          // fi.Length;
-
-                if (Name.StartsWith("."))
+                foreach (FileDataInfo curFile in files)
                 {
-                    tmpVar.Hidden = true;
-                }
-                else
-                {
-                    tmpVar.Hidden = false;
-                }
+                    //FileInfo fi = new FileInfo(curFile);
 
-                if (Name.LastIndexOf('.') > 0)
-                    tmpVar.MIMEType = Utilities.GetContentType(
-                        Name.Substring(Name.LastIndexOf('.') + 1));
-                else
-                    tmpVar.MIMEType = "application/octet-stream";
+                    tmpVar.IsDirectory = false;
+                    var Name = curFile.Name;
 
-                // tmpVar.IconSmall = Utilities.GetIconForMIME(tmpVar.MIMEType);
+                    tmpVar.URL = localFileSystem.FilePrefix + Path.Combine(InternalURL, Name).Replace('\\', '/');
+                    tmpVar.TextToShow = curFile.cFileName; // fi.Name;
+                    tmpVar.Date = curFile.LastWriteTime;   // fi.LastWriteTime;
+                    tmpVar.Size = curFile.Length;          // fi.Length;
 
-                output.Add(tmpVar);
-                // Progress += FileWeight;
-                if (Progress <= 1)
-                {
-                    FSOS.CompletePercents = (int)Progress * 100;
+                    if (Name.StartsWith("."))
+                    {
+                        tmpVar.Hidden = true;
+                    }
+                    else
+                    {
+                        tmpVar.Hidden = false;
+                    }
+
+                    if (Name.LastIndexOf('.') > 0)
+                        tmpVar.MIMEType = Utilities.GetContentType(
+                            Name.Substring(Name.LastIndexOf('.') + 1));
+                    else
+                        tmpVar.MIMEType = "application/octet-stream";
+
+                    // tmpVar.IconSmall = Utilities.GetIconForMIME(tmpVar.MIMEType);
+                    // output.Add(tmpVar);
+                    yield return tmpVar;
+
+                    // Progress += FileWeight;
+                    if (Progress <= 1)
+                    {
+                        FSOS.CompletePercents = (int)Progress * 100;
+                    }
+                    /*if ((++counter & update_every) == 0)
+                    {
+                        //Xwt.Application.MainLoop.DispatchPendingEvents();
+                    }*/
                 }
-                /*if ((++counter & update_every) == 0)
-				{
-					//Xwt.Application.MainLoop.DispatchPendingEvents();
-				}*/
-            }
 
 
             RaiseCLIpromptChanged("FC: " + InternalURL + ">");

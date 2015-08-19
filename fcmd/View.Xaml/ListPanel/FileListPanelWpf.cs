@@ -12,6 +12,7 @@ using System.Threading;
 using System.Collections.ObjectModel;
 using fcmd.Model;
 using fs = fcmd.base_plugins.fs;
+using System.Collections;
 
 namespace fcmd.View.Xaml
 {
@@ -21,7 +22,7 @@ namespace fcmd.View.Xaml
     public class FileListPanelWpf : FileListPanel<ListView2ItemWpf>
     {
         public PanelWpf Parent { get; set; }
-        public WindowDataWpf WindowData {[DebuggerStepThrough] get; set; }
+        public WindowDataWpf WindowData { [DebuggerStepThrough] get; set; }
 
         public override IButton GoRoot { get; protected set; }
         public override IButton GoUp { get; protected set; }
@@ -33,7 +34,7 @@ namespace fcmd.View.Xaml
 #pragma warning disable 0649, 0414  // is assigned but is never used
         public override event TypedEvent<string> Navigate;
         public override event TypedEvent<string> OpenFile;
-#pragma warning restore 0649, 0414  
+#pragma warning restore 0649, 0414
 
         public override event EventHandler GotFocus { add { onFocusSet = true; onFocus += value; } remove { onFocus += value; } }
 
@@ -116,10 +117,6 @@ namespace fcmd.View.Xaml
 
         public override void LoadFs(string URL, ShortenPolicies Shorten)
         {
-            SizeDisplayPolicy ShortenKB = Shorten.KB;
-            SizeDisplayPolicy ShortenMB = Shorten.MB;
-            SizeDisplayPolicy ShortenGB = Shorten.GB;
-
             bool checkAccess = (UrlBox as DispatcherObject).CheckAccess();
             if (checkAccess)
                 UrlBox.Text = URL;
@@ -128,18 +125,14 @@ namespace fcmd.View.Xaml
             string rootdir = FS.GetMetadata(URL).RootDirectory;
             FS.RootDirectory = FS.Prefix + FS.NoPrefix(rootdir);
 
-            IEnumerable<DirItem> dis;
-            //#if DEBUG
-            //            if (!MainWindow.AppLoading)
-            //            { } // break
-            //#endif
-
             var resetHandle = new AutoResetEvent(false);
+            IList<Tuple<string, object[], IEnumerable<bool>>> disData = null;
             var lv = ListingView as ListView2Xaml;
 
             Thread DirLoadingThread =
-                new Thread(delegate ()
+                new Thread(delegate()
                 {
+                    IEnumerable<DirItem> dis;
                     if (FS is fs.localFileSystem)
                     {
                         var fsLoc = FS as fs.localFileSystem;
@@ -148,77 +141,87 @@ namespace fcmd.View.Xaml
                     else
                         dis = FS.GetDirectoryContent(new FileSystemOperationStatus());
 
-                    if (dis != null)
+                    disData = new Collection<Tuple<string, object[], IEnumerable<bool>>>();
+                    var num = dis.GetEnumerator();
+                    while (num.MoveNext())
                     {
-                        if (lv.Count > 0)
-                            lv.Clear();
-
-                        uint counter = 0;
-                        foreach (DirItem di in dis)
-                        {
-                            AddItem(lv, di);
-                            counter++;
-                        }
-
+                        DirItem di = num.Current;
+                        disData.Add(AddItem(di, Shorten));
                     }
                     resetHandle.Set();
                 });
 
             DirLoadingThread.Start();
             var sucess = resetHandle.WaitOne(timeout: TimeSpan.FromSeconds(10)); // 10 secs
-                                                                                 // wait loop: do { } while (DirLoadingThread.ThreadState == ThreadState.Running);
-        }
 
-        AddItem(lv, di);
+            if (disData == null)
+                return;
+            if (lv.Count > 0)
+                lv.Clear();
 
-        ICollection<object> Data = new Collection<Object>();
-                List<Boolean> EditableFields = new List<bool>();
-                //Data.Add(di.IconSmall ?? Image.FromResource("fcmd.Resources.image-missing.png"));
+            uint counter = 0;
+            var disDataRead = new ReadOnlyCollection<Tuple<string, object[], IEnumerable<bool>>>(disData);
+            foreach (var tuple in disDataRead)
+            {
+                //if (di.TextToShow == "..")
+                //    updir = di.URL;
 
-                EditableFields.Add(false);
-                Data.Add(di.URL); EditableFields.Add(false);
-                Data.Add(di.TextToShow); EditableFields.Add(true);
-
-                if (di.TextToShow == "..")
-                {//parent dir
-                    Data.Add("<↑ UP>"); EditableFields.Add(false);
-                    EditableFields[2] = false;
-                    Data.Add(
-                        FS.GetMetadata(di.URL).LastWriteTimeUTC.ToLocalTime());
-
-                    EditableFields.Add(false);
-                    updir = di.URL;
-                    // di.IsDirectory = true;
-                }
-                else if (di.IsDirectory)
-                {//dir
-                    Data.Add("<DIR>"); EditableFields.Add(false);
-                    Data.Add(di.Date); EditableFields.Add(false);
-                }
+                bool IsDirectory = (bool)tuple.Item2[idxDirectory];
+                if (!IsDirectory)
+                    lv.AddItemFile(tuple.Item2, tuple.Item3, tuple.Item1);
                 else
-                {//file
-                    Data.Add(
-                        di.Size.KiloMegaGigabyteConvert(
-                            ShortenKB, ShortenMB, ShortenGB));
+                    lv.AddItemDirectory(Data: tuple.Item2, EditableFields: tuple.Item3, ItemTag: tuple.Item1);
 
-                    EditableFields.Add(false);
-                    Data.Add(di.Date); EditableFields.Add(false);
-                }
-
-                Data.Add(di.IsDirectory);
-                Data.Add(di);
-
-                if (!di.IsDirectory)
-                    lv.AddItem(Data, EditableFields, di.URL);
-                else
-                {
-                    object[] array = new object[Data.Count]; Data.CopyTo(array, 0);
-                    lv.AddItemDirectory(Data: array, EditableFields: EditableFields, ItemTag: di.URL);
-                }
-
-                ++counter;
+                counter++;
             }
 
+        }
+
+        Tuple<string, object[], IEnumerable<bool>> AddItem(DirItem di, ShortenPolicies Shorten)
+        {
+            SizeDisplayPolicy ShortenKB = Shorten.KB;
+            SizeDisplayPolicy ShortenMB = Shorten.MB;
+            SizeDisplayPolicy ShortenGB = Shorten.GB;
+
+            ICollection<object> Data = new Collection<Object>();
+            List<Boolean> EditableFields = new List<bool>();
+            //Data.Add(di.IconSmall ?? Image.FromResource("fcmd.Resources.image-missing.png"));
+
+            EditableFields.Add(false);
+            Data.Add(di.URL); EditableFields.Add(false);
+            Data.Add(di.TextToShow); EditableFields.Add(true);
+
+            if (di.TextToShow == "..")
+            {//parent dir
+                Data.Add("<↑ UP>"); EditableFields.Add(false);
+                EditableFields[2] = false;
+                Data.Add(
+                    FS.GetMetadata(di.URL).LastWriteTimeUTC.ToLocalTime());
+
+                EditableFields.Add(false);
+                // updir = di.URL;
+                // di.IsDirectory = true;
+            }
+            else if (di.IsDirectory)
+            {//dir
+                Data.Add("<DIR>"); EditableFields.Add(false);
+                Data.Add(di.Date); EditableFields.Add(false);
+            }
+            else
+            {//file
+                Data.Add(
+                    di.Size.KiloMegaGigabyteConvert(
+                        ShortenKB, ShortenMB, ShortenGB));
+
+                EditableFields.Add(false);
+                Data.Add(di.Date); EditableFields.Add(false);
+            }
+
+            Data.Add(di.IsDirectory);
+            Data.Add(di);
+
+            object[] array = new object[Data.Count]; Data.CopyTo(array, 0);
+            return new Tuple<string, object[], IEnumerable<bool>>(di.TextToShow, array, EditableFields);
         }
 
         public const int idxDatetime = 3;

@@ -31,10 +31,16 @@ namespace fcmd.View.ctrl
             Add(lvi);
         }
 
+        public void AddItemFile(object[] Data, IEnumerable<bool> EditableFields, string ItemTag)
+        {
+            var lvi = ListView2ItemWpf.FileItem(_Items.Count, Data, EditableFields, ItemTag);
+            Add(lvi);
+        }
+
         public override void AddItem(IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag)
         {
             // base.AddItem(Data, EditableFields, ItemTag);
-            var lvi = ListView2ItemWpf.FileItem(_Items.Count, Data, EditableFields, ItemTag);
+            var lvi = ListView2ItemWpf.FileItem(_Items.Count, Data as object[], EditableFields, ItemTag);
             Add(lvi);
         }
 

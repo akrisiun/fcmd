@@ -81,22 +81,20 @@ namespace fcmd.View.GTK
             string updir = URL + FS.DirSeparator + "..";
             string rootdir = FS.GetMetadata(URL).RootDirectory;
 
-
-            List<DirItem> dis = new List<DirItem>();
-            // dis = FS.DirectoryContent;
+            IEnumerable<DirItem> dis = System.Linq.Enumerable.Empty<DirItem>();
 
             var resetHandle = new AutoResetEvent(false);
             Thread DirLoadingThread =
                 new Thread(delegate ()
                 {
-                    FS.GetDirectoryContent(ref dis, new FileSystemOperationStatus());
+                    dis = FS.GetDirectoryContent(new FileSystemOperationStatus());
                     resetHandle.Set();
                 });
 
             DirLoadingThread.Start();
             var sucess = resetHandle.WaitOne(timeout: TimeSpan.FromSeconds(10)); // 10 secs
                                                                                  // wait loop: do { } while (DirLoadingThread.ThreadState == ThreadState.Running);
-            if (dis.Count == 0)
+            if (dis == null)
                 return;
 
             uint counter = 0;

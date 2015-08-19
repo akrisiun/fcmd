@@ -279,9 +279,10 @@ namespace fcmd.ftps
             get { return dirContent; }
         }
 
-        public void GetDirectoryContent(ref List<pluginner.DirItem> output, FileSystemOperationStatus FSOS)
+        public IEnumerable<pluginner.DirItem> GetDirectoryContent(FileSystemOperationStatus FSOS)
         {
-            output = dirContent;
+            var output = dirContent;
+            return output;
         }
 
         public string CurrentDirectory

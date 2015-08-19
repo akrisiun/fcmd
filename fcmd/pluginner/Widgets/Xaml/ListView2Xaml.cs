@@ -143,6 +143,8 @@ namespace pluginner.Widgets.Xaml
         {
             //Grid.Clear();
             // LastRow = LastCol = 0;
+            
+            // not support changes from different thread.
             DataItems.Clear();
             PointedItem = null;
         }

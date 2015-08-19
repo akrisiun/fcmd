@@ -29,9 +29,9 @@ namespace fcmd.View.Xaml
         // paramless ctor
         public ListView2ItemWpf() : this(-1, -1, null, null, null) { }
 
-        public static ListView2ItemWpf FileItem(int rowIndex, IEnumerable<object> Data, IEnumerable<bool> EditableFields, string ItemTag = null)
+        public static ListView2ItemWpf FileItem(int rowIndex, object[] Data, IEnumerable<bool> EditableFields, string ItemTag = null)
         {
-            return new ListView2ItemWpf(rowIndex, -1, ItemTag, null, Data);
+            return new ListView2ItemWpf(ItemTag, Data, null, -1);
         }
 
         public static ListView2ItemWpf DirectoryItem(int rowIndex, object[] Data, IEnumerable<bool> EditableFields, string ItemTag = null)

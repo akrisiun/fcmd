@@ -147,9 +147,10 @@ namespace fcmd.base_plugins.fs
             get { return directoryContent; }
         }
 
-        public void GetDirectoryContent(ref List<pluginner.DirItem> output, FileSystemOperationStatus FSOS)
+        public IEnumerable<pluginner.DirItem> GetDirectoryContent(FileSystemOperationStatus FSOS)
         {
-            output = directoryContent;
+            var output = directoryContent;
+            return output;
         }
 
         public string CurrentDirectory
