@@ -93,7 +93,6 @@ namespace fcmd.Model
 
 #if DEBUG
             string PanelName = isLeft ? "LEFT" : "RIGHT";
-            // Console.WriteLine("FOCUS DEBUG: The " + PanelName + " panel (" + NewPanel.FS.CurrentDirectory + ") got focus");
 #endif
 
             // AssemblyName an = Assembly.GetExecutingAssembly().GetName();
@@ -162,7 +161,7 @@ namespace fcmd.Model
             Window.Height = Convert.ToInt16(fcmd.Properties.Settings.Default.WinHeight);
 
 #if DEBUG
-            Console.WriteLine(@"DEBUG: MainWindow initialization has been completed.");
+            App.ConsoleWriteLine(@"DEBUG: MainWindow initialization has been completed.");
 #endif
         }
 
@@ -178,7 +177,7 @@ namespace fcmd.Model
 
 #if DEBUG
             var active = ActiveSide; // = PanelSide.Left;
-            Console.WriteLine(@"DEBUG: MainWindow initialization has been completed. Side=" + active.ToString());
+            App.ConsoleWriteLine(@"DEBUG: MainWindow initialization has been completed. Side=" + active.ToString());
 #endif
         }
 

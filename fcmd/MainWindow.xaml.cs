@@ -26,9 +26,12 @@ namespace fcmd
         static MainWindow() { AppLoading = true; }
         public MainWindow()
         {
+            App.ConsoleWriteLine("Xwt InitializeApp");
             Xwt.Application.Initialize(Xwt.ToolkitType.Wpf);
-            Xwt.Toolkit.Load(Xwt.ToolkitType.Wpf).Invoke(() => InitializeXwt());
+            Xwt.Toolkit.Load(Xwt.ToolkitType.Wpf)
+                .Invoke(() => InitializeXwt());
             // Initialize() being your own custom method.This is actually what the MixedGtkMacTest does.
+            App.ConsoleWriteLine("Xwt InitializeApp Stage#2");
 
             ResourceManager rm = new ResourceManager("Resources", typeof(MainWindow).Assembly);
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture; // .CreateSpecificCulture("fr-FR");
@@ -43,10 +46,12 @@ namespace fcmd
             }
             catch { }
 
+            App.ConsoleWriteLine("MainWindow Init");
             this.Init();    // View.WindowDataStatic.Init(this);
 
             this.Closed += (s, e) =>
                  Platform.Application.Current.Shutdown();
+
         }
 
 #if !VS || __MonoCS__
@@ -113,6 +118,7 @@ namespace fcmd
         void InitializeXwt()
         {
             // Xwt init success
+            App.ConsoleWriteLine("InitializeXwt Stage#3");
         }
     }
 }

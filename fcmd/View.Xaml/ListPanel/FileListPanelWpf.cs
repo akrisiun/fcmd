@@ -267,18 +267,31 @@ namespace fcmd.View.Xaml
 
             LoadFsWithPlugin(URL);
 
+            ListingWidget.Sensitive = true;
+        }
+
+        public virtual void LoadDirThen(string URL, ShortenPolicies? Shorten = null, Action then = null)
+        {
+            LoadDir(URL, Shorten);
+
             if ((Parent as DispatcherObject).CheckAccess())
             {
+                App.ConsoleWriteLine("Dispacher UI " + URL);
+
                 var view = ListingView;
                 if (view.DataItems.Count > 0)
                 {
                     view.SetupColumns();
                     view.SelectedRow = 0;
                 }
+
+                if (then != null)
+                    then();
+
                 view.SetFocus();
+                App.ConsoleWriteLine("Dispacher UI Focused " + URL);
             }
 
-            ListingWidget.Sensitive = true;
         }
 
         protected void LoadFsWithPlugin(string URL)

@@ -13,6 +13,7 @@ namespace fcmd
     {
         static App()
         {
+            ConsoleWriteLine("App load");
             // debugger entry init
             CommanderBackend.Startup();
         }
@@ -23,15 +24,26 @@ namespace fcmd
 
         public void App_Startup(object sender, System.Windows.StartupEventArgs e = null)
         {
+            ConsoleWriteLine("App Startup");
+
             this.MainWindow = new MainWindow();
             if (!fcmd.MainWindow.AppLoading)
                 return;    // test unit case
 
+            ConsoleWriteLine("App Show");
             this.MainWindow.Show();
+
+            ConsoleWriteLine("App AfterShow");
         }
 
         ICommanderWindow IApplication.MainWindow {  get { return MainWindow as ICommanderWindow; } }
 
+        public static void ConsoleWriteLine(string line)
+        {
+#if DEBUG
+            Console.WriteLine(String.Format("{0:HH:mm:ss.fff} {1}", DateTime.Now, line));
+#endif
+        }
 
 #if !VS || __MonoCS__
         public void InitializeComponent() {

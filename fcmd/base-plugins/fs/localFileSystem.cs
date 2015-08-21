@@ -74,7 +74,7 @@ namespace fcmd.base_plugins.fs
         public IEnumerable<pluginner.DirItem> GetDirectoryContent(FileSystemOperationStatus FSOS)
         {
 #if DEBUG
-            Console.WriteLine("DEBUG: {0} Loading the {1} has been started", DateTime.Now.ToLongTimeString(), curDir);
+            Console.WriteLine("{0:HH:mm:ss.fff} DEBUG: Loading the {1} has been started", DateTime.Now, curDir);
 #endif
             DirContent.Clear();
             string InternalURL = curDir.Replace(localFileSystem.FilePrefix, string.Empty);
@@ -199,7 +199,7 @@ namespace fcmd.base_plugins.fs
 
             RaiseCLIpromptChanged("FC: " + InternalURL + ">");
 #if DEBUG
-            Console.WriteLine("DEBUG: {0} Loading the {1} has been completed", DateTime.Now.ToLongTimeString(), InternalURL);
+            Console.WriteLine("{0:HH:mm:ss.fff} DEBUG: Loading the {1} has been completed", DateTime.Now, InternalURL);
 #endif
         }
 

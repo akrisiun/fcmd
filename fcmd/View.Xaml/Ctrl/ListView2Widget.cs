@@ -184,6 +184,8 @@ namespace fcmd.View.ctrl
 
         public void LoadDir(string path)
         {
+            App.ConsoleWriteLine("Widget:LoadDir " + path);
+
             UnBind();
             //try {
 
@@ -195,9 +197,10 @@ namespace fcmd.View.ctrl
                     var fullpath = path.StartsWith(fileProcol)
                         ? Path.GetFullPath(path.Substring(fileProcol.Length)) : Path.GetFullPath(path);
                     Directory.SetCurrentDirectory(fullpath);
-                    this.FileList.LoadDir(fileProcol + fullpath, null);
+
+                    this.FileList.LoadDirThen(fileProcol + fullpath, null, () => Bind());
                 //}
-                Bind();
+                // Bind();
 
             //}
             //catch (Exception ex) { MessageDialog.ShowError(ex.Message); }
