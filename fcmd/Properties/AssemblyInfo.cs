@@ -29,10 +29,10 @@ using System.Runtime.InteropServices;
 //	  Build Number
 //	  Revision
 //
-[assembly: AssemblyVersion("0.5")]
-[assembly: AssemblyFileVersion("0.5")]
-[assembly: AssemblyTitleAttribute("The File Commander")]
+[assembly: AssemblyVersion("0.6.1")]
+[assembly: AssemblyFileVersion("0.6.1")]
+[assembly: AssemblyTitle("File Commander")]
 [assembly: AssemblyDescriptionAttribute("Two panel file manager (like Total Commander)")]
-[assembly: AssemblyCompanyAttribute("github.com/atauenis/fcmd")]
-[assembly: AssemblyCopyrightAttribute("(C) 2013-14, A.T. and other contributors")]
+[assembly: AssemblyCompany("github.com/akrisiun/fcmd")]
+[assembly: AssemblyCopyright("(C) 2013-15, A.T., A.K. and other contributors")]
 [assembly: AssemblyProductAttribute("File Commander")]

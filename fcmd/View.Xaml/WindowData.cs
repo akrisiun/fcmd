@@ -177,7 +177,7 @@ namespace fcmd.Model
             panel1.IsActive = true;
 
             var loaderTask = (Backend as WpfBackend).LoaderTask;
-            if (loaderTask != null && loaderTask.Status == TaskStatus.RanToCompletion)
+            if (loaderTask == null || loaderTask.Status == TaskStatus.RanToCompletion)
                 FinishShown(this);
             else
                 loaderTask.ContinueWith(

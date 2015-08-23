@@ -46,7 +46,9 @@ namespace fcmd.test
                 }
                 catch (Exception)
                 {
-                    AppDomain.CreateDomain("second");
+                    var dom =  AppDomain.CreateDomain("second");
+                    //  dom.DomainManager.InitializeNewDomain(new AppDomainSetup() { ApplicationName = "Second " });
+
                     app = new fcmd.App();
                     app.Exit += App_Exit;
                     app.App_Startup(app); ;
@@ -69,7 +71,7 @@ namespace fcmd.test
             {
                 app.MainWindow.Visibility = Visibility.Visible;
                 app.MainWindow.Focus();
-                app.Run();
+                //  app.Run();
             }
         }
 
@@ -107,6 +109,7 @@ namespace fcmd.test
 
             AppRun();
             Console.WriteLine("success");
+            main.Close();
         }
 
         [TestMethod]
@@ -133,7 +136,12 @@ namespace fcmd.test
             if (!main.IsVisible)
                 AppRun();
 
+            MainWindow.AllowShutdown = true;
+            app.Run();
+            if (app == null)
+                return;
             app.MainWindow = null;
+            main.Close();
         }
 
         [TestMethod]
