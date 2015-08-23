@@ -1,14 +1,25 @@
-### Building on Windows 
+### Building for Windows 
 
 Download gtk+-bundle_3.6 (or higher version) from http://www.gtk.org/download/win32.php  
 Get Vagrant Ubuntu trusty (14.02) enviroment, connect with ssh, install mono 4.0 enviroment.
+https://github.com/mono/gtk-sharp
+
+You will need ubuntu (or debian) machine to generate from .dll libraries export .cs files
+Ubuntu Trusty x86_64 version:
+
 ```
+apt-cache search libgtk-3
+sudo apt-get install libgtk-3-dev -y
 git clone https://github.com/mono/gtk-sharp.git gtk-sharp
 cd gtk-sharp
-sudo apt-get install libtool autoconf make
+
 ./autogen.sh
 make
+# monodevelop
+sudo apt-get install build-essential automake checkinstall intltool git
+sudo apt-get install mono-complete mono-addins-utils
 ```
+
 That way you will get gtk-sharp generated .cs files. Then can return to Windows Visual Studio.  
 Build with msbuild:  
 ```
