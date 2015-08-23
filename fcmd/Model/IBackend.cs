@@ -1,4 +1,6 @@
 ﻿using fcmd.Model;
+using System;
+using Xwt;
 
 namespace fcmd
 {
@@ -16,5 +18,9 @@ namespace fcmd
 
         void Localize();
         void Shown();
+
+        void ShowMessage(string message, params object[] args);
+        void ShowError(Exception error, string message, params object[] args);
+        bool? ShowConfirm(string message, Xwt.ConfirmationMessage details);
     }
 }

@@ -35,14 +35,20 @@ namespace pluginner.Widgets
     {
     }
 
-    public interface IButton // : IRelayCommand  ICommand
+    public interface IRelayCommand
     {
-        object Content { get; set; }
+        bool CanExecute(object parameter);
+        void Execute(object parameter);
+    }
+
+    public interface IButton : IControl //   ICommand
+    {
         string Text { get; set; }
 
         event EventHandler Clicked; // { add; remove; } // ; set; }
 
         bool CanGetFocus { get; set; }
+        IRelayCommand Command {get; set; }
     }
 
 #if WPF
@@ -51,10 +57,24 @@ namespace pluginner.Widgets
         bool CanGetFocus { get; set; }  // -> IsEnabled
         Color BackgroundColor { get; set; }
     }
-#else 
-    public interface IControl
-    {
 
+    public interface IUIDispacher
+    {
+        object Dispacher { get; }
+    }
+
+
+#else 
+
+    public interface IUIDispacher
+    {
+        object Dispacher { get; }
+        bool CheckAccess();  // check UI thread
+    }
+
+    public interface IControl : IUIDispacher
+    {
+        object Content { get; set; }
     }
 #endif
 

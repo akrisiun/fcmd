@@ -12,10 +12,11 @@ using pluginner.Widgets;
 using fcmd.View.Xaml;
 using fcmd.Controller;
 using fcmd.Model;
+using System.Windows.Threading;
 
 namespace fcmd.View.ctrl
 {
-    public class PointedItem : IPointedItem<ListView2ItemWpf> // <ListView2Item>
+    public class PointedItem : IPointedItem<ListItemXaml> // <ListView2Item>
     {
         /// <summary>
         /// Constructor
@@ -23,10 +24,10 @@ namespace fcmd.View.ctrl
         public PointedItem() { } // : base(0, 0, "", null, null) // , null)
 
         public int Index { get; set; }
-        public ListView2ItemWpf Item { get; set; }
+        public ListItemXaml Item { get; set; }
 
         /// Pointed items
-        public IEnumerable<ListView2ItemWpf> Pointed { get; set; }
+        public IEnumerable<ListItemXaml> Pointed { get; set; }
 
         public object[] Data { get { return Item.Data; } set { Item.Data = value; } }
 
@@ -58,28 +59,32 @@ namespace fcmd.View.ctrl
         }
     }
 
-    public class ListView2Widget : DataGrid, IListingContainer<ListView2ItemWpf>, IAddChild, IContainItemStorage
+    public class ListView2Widget : DataGrid, IListingContainer<ListItemXaml>, IAddChild, IContainItemStorage, IControl, IUIDispacher
     {
         // Non visual data container
-        public ListView2Xaml DataObj { get; protected set; }
-
-        // Xwt.CursorType IListingContainer.Cursor { get; set; } // = CursorType.Wait;
-        // System.Windows.Input.Cursor Cursor { get; set; } // = CursorType.Wait;
+        public ListFiltered2Xaml DataObj { get; protected set; }
 
         public PanelWpf Panel { get; set; }
         public FileListPanelWpf FileList { get; set; }
 
         public ListView2Widget()
         {
-            DataObj = new ListView2Xaml(this);
+            DataObj = new ListFiltered2Xaml(this);
             DataObj.PointedItem = new PointedItem() { Index = -1, Item = null }; // <ListView2Item>();
             DataContext = DataObj;
         }
 
+        object IUIDispacher.Dispacher { get { return this.Dispatcher as Dispatcher; } }
+        bool IUIDispacher.CheckAccess() { return (this as DispatcherObject).CheckAccess(); }
+
         bool bound = false;
         public virtual void Bind()
         {
+            if (this.ItemsSource == null)
+                this.ItemsSource = DataObj.DataItems;
+
             if (bound) return;
+
             // DataGrid bind
             this.BindGridEvents();
             bound = true;
@@ -89,6 +94,17 @@ namespace fcmd.View.ctrl
             if (!bound) return;
             bound = false;
             this.UnBindGridEvents();
+        }
+
+        public virtual void CloneList(ListView2Widget source)
+        {
+            var target = this.DataItems;
+            if (target.Count > 0)
+                target.Clear();
+
+            var dataObj = DataObj;
+            dataObj.Clone(source.DataObj);
+            dataObj.Finish();
         }
 
         // Visual properties
@@ -104,11 +120,11 @@ namespace fcmd.View.ctrl
 
         public int SelectedRow { get; set; }
 
-        public IList<ListView2ItemWpf> DataItems { get { return DataObj.DataItems; } }
+        public IList<ListItemXaml> DataItems { get { return DataObj.DataItems; } }
 
         // Enumerable ItemsSource -> ItemsControl
-        public IEnumerable<ListView2ItemWpf> ChoosedRows { get; set; }
-        public IPointedItem<ListView2ItemWpf> PointedItem { get; set; }
+        public IEnumerable<ListItemXaml> ChoosedRows { get; set; }
+        public IPointedItem<ListItemXaml> PointedItem { get; set; }
 
         public PanelSide Side { get; set; }
         public string urlFull { get { return FileList.FS.CurrentDirectory; } }
@@ -152,28 +168,35 @@ namespace fcmd.View.ctrl
 
         #region Select, LoadDir, Columns 
 
-        public void Select(ListView2ItemWpf item)
+        public void Select(ListItemXaml item)
         {
             this.SelectedRow = DataItems.IndexOf(item);
         }
 
-        public void SelectLast(ListView2ItemWpf item)
+        public void SelectLast(ListItemXaml item)
         {
             PointedItem = new PointedItem() { Item = item, Index = this.SelectedRow };
-            (Panel.WindowData as WindowDataWpf).OnSelectedItem(PointedItem);
+            var data = Panel.WindowData as WindowDataWpf;
+            if (data != null)
+                data.OnSelectedItem(PointedItem);
+            else
+                App.ConsoleWriteLine("found Panel.WindowData null"); // BUG!!!
         }
 
-        public bool SelectEnter(ListView2ItemWpf item)
+        public bool SelectEnter(ListItemXaml item)
         {
             var fullpath = item.FullPath.StartsWith(fileProcol)
-                    ? Path.GetFullPath(item.FullPath.Substring(fileProcol.Length)) : 
-                      (item.RowIndex == 0 ?  item.FullPath : null);
+                    ? Path.GetFullPath(item.FullPath.Substring(fileProcol.Length)) :
+                      (item.RowIndex == 0 ? item.FullPath : null);
             if (fullpath != null && Directory.Exists(fullpath))
             {
+                if (!fullpath.EndsWith(Path.DirectorySeparatorChar.ToString())) //  AltDirectorySeparatorChar))
+                    fullpath += Path.DirectorySeparatorChar.ToString();
+
                 LoadDir(fullpath);
                 return true;
             }
-            else if (item.FullPath.Contains(Path.DirectorySeparatorChar.ToString()) 
+            else if (item.FullPath.Contains(Path.DirectorySeparatorChar.ToString())
                      && Directory.Exists(item.FullPath))
             {
                 LoadDir(item.FullPath);
@@ -184,47 +207,46 @@ namespace fcmd.View.ctrl
 
         public void LoadDir(string path)
         {
-            App.ConsoleWriteLine("Widget:LoadDir " + path);
-
             UnBind();
-            //try {
-
-                this.ItemsSource = null;
-                //if (path.Contains("://") && !path.Contains(fileProcol))
-                //    this.FileList.LoadDir(path, null);
-                //else
-                //{
-                    var fullpath = path.StartsWith(fileProcol)
+            string fullpath = null;
+            try
+            {
+                fullpath = path.StartsWith(fileProcol)
                         ? Path.GetFullPath(path.Substring(fileProcol.Length)) : Path.GetFullPath(path);
-                    Directory.SetCurrentDirectory(fullpath);
+                Directory.SetCurrentDirectory(fullpath);
+            }
+            catch (Exception ex) { MessageDialog.ShowError(ex.Message); }
 
-                    this.FileList.LoadDirThen(fileProcol + fullpath, null, () => Bind());
-                //}
-                // Bind();
+            if (string.IsNullOrWhiteSpace(fullpath))
+                return;
 
-            //}
-            //catch (Exception ex) { MessageDialog.ShowError(ex.Message); }
+            App.ConsoleWriteLine("Widget:LoadDir " + fullpath);
+
+            this.ItemsSource = null;
+
+            var PanelDataWpf = (this.Panel as PanelWpf).PanelDataWpf as FileListPanelWpf;
+            PanelDataWpf.UrlBox.Text = this.FileList.FS.Prefix + fullpath;
+
+            this.FileList.LoadDirThen(fileProcol + fullpath, null,
+                () => Bind());
         }
+
+        public bool ColumnsSet { get; private set; } //  return this.Columns.Count > 1; } }
 
         public void SetupColumns()
         {
-            var items = DataObj.DataItems;  // .ItemsForGrid();
+            var items = DataObj.DataItems;
 
-            if (this.Columns.Count == 0)
+            if (!ColumnsSet)
             {
+                ColumnsSet = true;
                 ListView2.ColumnInfo[] definitions = DefineColumns(null);
                 this.ToDataSource<object>(items, definitions);
 
                 this.Bind();
             }
             else
-            {
-                try
-                {
-                    this.ItemsSource = items;
-                }
-                catch (Exception) { }
-            }
+                this.ItemsSource = items;
         }
 
         public ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df)
@@ -241,22 +263,22 @@ namespace fcmd.View.ctrl
             DataObj.AddItem(Data, EditableFields, ItemTag);
         }
 
-        public void Add(ListView2ItemWpf item)
+        public void Add(ListItemXaml item)
         {
             DataObj.Add(item);
         }
 
-        public bool Contains(ListView2ItemWpf item)
+        public bool Contains(ListItemXaml item)
         {
             return DataObj.Contains(item);
         }
 
-        public void CopyTo(ListView2ItemWpf[] array, int arrayIndex)
+        public void CopyTo(ListItemXaml[] array, int arrayIndex)
         {
             DataObj.CopyTo(array, arrayIndex);
         }
 
-        public bool Remove(ListView2ItemWpf item)
+        public bool Remove(ListItemXaml item)
         {
             return DataObj.Remove(item);
         }

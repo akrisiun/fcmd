@@ -19,10 +19,10 @@ namespace fcmd.View.Xaml
     // pluginner.Widgets.ListView2ItemWpf
     //   ListView2ItemWpf(int rowNumber, int colNumber, string rowTag, ListView2.ColumnInfo[] columns, List<object> data, Font font) 
 
-    public class FileListPanelWpf : FileListPanel<ListView2ItemWpf>
+    public class FileListPanelWpf : FileListPanel<ListItemXaml>
     {
         public PanelWpf Parent { get; set; }
-        public WindowDataWpf WindowData { [DebuggerStepThrough] get; set; }
+        public WindowDataWpf WindowData {[DebuggerStepThrough] get; set; }
 
         public override IButton GoRoot { get; protected set; }
         public override IButton GoUp { get; protected set; }
@@ -50,8 +50,7 @@ namespace fcmd.View.Xaml
         public ListView2Widget ListingWidget { get { return ListingViewWpf; } }
         private ListView2Widget ListingViewWpf;
 
-        public override IListingView<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj as ListView2Xaml; } }
-
+        public override IListingView<ListItemXaml> ListingView { get { return ListingViewWpf.DataObj as ListFiltered2Xaml; } }
 
         public override void Initialize(PanelSide side)
         {
@@ -74,6 +73,8 @@ namespace fcmd.View.Xaml
             var side = Parent.Side;
             if (WindowData != null)
                 WindowData.OnSideFocus(side);
+
+            ListingWidget.Bind();   // additional bind (after loading error)
         }
 
         // ExpandoObject data
@@ -126,11 +127,10 @@ namespace fcmd.View.Xaml
             FS.RootDirectory = FS.Prefix + FS.NoPrefix(rootdir);
 
             var resetHandle = new AutoResetEvent(false);
-            IList<Tuple<string, object[], IEnumerable<bool>>> disData = null;
-            var lv = ListingView as ListView2Xaml;
+            var lv = ListingView as ListFiltered2Xaml;
 
             Thread DirLoadingThread =
-                new Thread(delegate()
+                new Thread(delegate ()
                 {
                     IEnumerable<DirItem> dis;
                     if (FS is fs.localFileSystem)
@@ -141,12 +141,25 @@ namespace fcmd.View.Xaml
                     else
                         dis = FS.GetDirectoryContent(new FileSystemOperationStatus());
 
-                    disData = new Collection<Tuple<string, object[], IEnumerable<bool>>>();
+                    //  IList<Tuple<string, object[], IEnumerable<bool>>> disData = null;
+                    //  disData = new Collection<Tuple<string, object[], IEnumerable<bool>>>();
+
                     var num = dis.GetEnumerator();
-                    while (num.MoveNext())
+                    if (num != null && num.MoveNext())     // if first item found
                     {
-                        DirItem di = num.Current;
-                        disData.Add(AddItem(di, Shorten));
+                        // first item
+                        lv.Unbind();
+
+                        var url = FS.CurrentDirectory;
+                        do
+                        {
+                            DirItem di = num.Current;
+                            object[] data = new object[idxCOUNT];
+                            FillItem(ref data, di, Shorten);
+
+                            lv.AddData(data);
+                        }
+                        while (num.MoveNext());
                     }
                     resetHandle.Set();
                 });
@@ -154,28 +167,47 @@ namespace fcmd.View.Xaml
             DirLoadingThread.Start();
             var sucess = resetHandle.WaitOne(timeout: TimeSpan.FromSeconds(10)); // 10 secs
 
-            if (disData == null)
-                return;
-            if (lv.Count > 0)
-                lv.Clear();
-
-            uint counter = 0;
-            var disDataRead = new ReadOnlyCollection<Tuple<string, object[], IEnumerable<bool>>>(disData);
-            foreach (var tuple in disDataRead)
-            {
-                //if (di.TextToShow == "..")
-                //    updir = di.URL;
-
-                bool IsDirectory = (bool)tuple.Item2[idxDirectory];
-                if (!IsDirectory)
-                    lv.AddItemFile(tuple.Item2, tuple.Item3, tuple.Item1);
-                else
-                    lv.AddItemDirectory(Data: tuple.Item2, EditableFields: tuple.Item3, ItemTag: tuple.Item1);
-
-                counter++;
-            }
-
+            lv.Finish();
         }
+
+        void FillItem(ref object[] Data, DirItem di, ShortenPolicies Shorten)
+        {
+            SizeDisplayPolicy ShortenKB = Shorten.KB;
+            SizeDisplayPolicy ShortenMB = Shorten.MB;
+            SizeDisplayPolicy ShortenGB = Shorten.GB;
+
+            // Data[]: URL, Name, Size, DateTime, IsDirectory, (optional #6 DirItem)
+            Data[idxUrl] = di.URL;
+            Data[idxName] = di.TextToShow;
+
+            if (di.TextToShow == "..")
+            { //parent dir
+                Data[idxSize] = "<↑ UP>";
+                Data[idxDatetime] = FS.GetMetadata(di.URL).LastWriteTimeUTC.ToLocalTime();
+                Data[idxIsDirectory] = true;
+            }
+            else if (di.IsDirectory)
+            {//dir
+                Data[idxSize] = "<DIR>";
+                Data[idxDatetime] = di.Date;
+                Data[idxIsDirectory] = true;
+            }
+            else
+            {
+                Data[idxSize] = di.Size.KiloMegaGigabyteConvert(ShortenKB, ShortenMB, ShortenGB);
+                Data[idxDatetime] = di.Date;
+                Data[idxIsDirectory] = false;
+            }
+        }
+
+        public const int idxUrl = 0;
+        public const int idxName = 1;
+        public const int idxSize = 2;
+        public const int idxDatetime = 3;
+        public const int idxIsDirectory = 4;
+
+        // public const int idxDI = 5;
+        public const int idxCOUNT = 5; // 6;
 
         Tuple<string, object[], IEnumerable<bool>> AddItem(DirItem di, ShortenPolicies Shorten)
         {
@@ -224,12 +256,6 @@ namespace fcmd.View.Xaml
             return new Tuple<string, object[], IEnumerable<bool>>(di.TextToShow, array, EditableFields);
         }
 
-        public const int idxDatetime = 3;
-        public const int idxDirectory = 4;
-        public const int idxDI = 5;
-
-        public const int idxCOUNT = 6;
-
         /// <summary>
         /// Load the specifed directory with specifed content into the panel and set view options
         /// </summary>
@@ -245,6 +271,8 @@ namespace fcmd.View.Xaml
 
             if (FS.CurrentDirectory == null)
             {
+                //TODO History
+
                 //if this is first call in the session (the FLP is just initialized)
                 //using (Xwt.Menu hm = HistoryButton.Menu)
                 //{
@@ -263,7 +291,13 @@ namespace fcmd.View.Xaml
                 return;
             }
 
+            string dir = FS.NoPrefix(URL);
+            Directory.SetCurrentDirectory(dir);
+
             ListingWidget.Sensitive = false;
+
+            if (UrlBox.CheckAccess())
+                UrlBox.Text = URL;
 
             LoadFsWithPlugin(URL);
 
@@ -274,11 +308,17 @@ namespace fcmd.View.Xaml
         {
             LoadDir(URL, Shorten);
 
-            if ((Parent as DispatcherObject).CheckAccess())
+            if (this.FS.LastError != null)
+            {
+                fcmd.App.BackendWpf.ShowError(FS.LastError);
+                return;
+            }
+
+            var view = ListingView;
+            if (!view.ColumnsSet && (Parent as DispatcherObject).CheckAccess())
             {
                 App.ConsoleWriteLine("Dispacher UI " + URL);
 
-                var view = ListingView;
                 if (view.DataItems.Count > 0)
                 {
                     view.SetupColumns();
@@ -288,6 +328,7 @@ namespace fcmd.View.Xaml
                 if (then != null)
                     then();
 
+                this.Parent.Update();
                 view.SetFocus();
                 App.ConsoleWriteLine("Dispacher UI Focused " + URL);
             }

@@ -32,3 +32,5 @@ xwt/lib/nunit.framework.xml
 .svn/
 *.gz
 *.pdb
+*.psess
+*.vspx

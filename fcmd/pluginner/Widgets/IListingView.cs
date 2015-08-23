@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 
 namespace pluginner.Widgets
 {
     public interface IListingView<T> : IListView2
     {
-        IList<T> DataItems { get; }
+        ObservableCollection<T> DataItems { get; }
         IEnumerable<T> ChoosedRows { get; }
 
         void Select(object items);

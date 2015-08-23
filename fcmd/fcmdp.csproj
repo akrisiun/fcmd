@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{40506FF6-CD02-40FF-BF9F-D9702BAEDE5B}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>fcmd</RootNamespace>
     <AssemblyName>fcmdp</AssemblyName>
@@ -125,8 +125,9 @@
     <Compile Include="Platform\Commands.cs" />
     <Compile Include="Model\View\Control.cs" />
     <Compile Include="View.Xaml\Ctrl\InputBox.cs" />
-    <Compile Include="View.Xaml\ListPanel\ListView2ItemWpf.cs" />
-    <Compile Include="View.Xaml\ListPanel\ListView2Wpf.cs" />
+    <Compile Include="View.Xaml\ListPanel\ListFiltered2Xaml.cs" />
+    <Compile Include="View.Xaml\ListPanel\ListObservable.cs" />
+    <Compile Include="View.Xaml\ListPanel\ListItemXaml.cs" />
     <Compile Include="Platform\MessageDialog.cs" />
     <Compile Include="View.Xaml\MenuWpf.cs" />
     <Compile Include="View.Xaml\WindowData.cs" />

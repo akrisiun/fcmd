@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Controls;
 using pluginner.Widgets;
+using System.Windows.Threading;
+using System.Windows.Input;
 
 namespace fcmd.View.ctrl
 {
@@ -13,9 +15,14 @@ namespace fcmd.View.ctrl
         {
             if (Text != null)
                 Content = Text;
+
+
         }
 
-        // public string Name { get; set; }
+        IRelayCommand IButton.Command { get { return this.Command as IRelayCommand; } set { base.Command = value as  ICommand; } }
+
+        object IUIDispacher.Dispacher { get { return this.Dispatcher as Dispatcher; } }
+        bool IUIDispacher.CheckAccess() { return (this as DispatcherObject).CheckAccess(); }
 
         public string Text
         {
@@ -29,11 +36,11 @@ namespace fcmd.View.ctrl
         {
             if (clicked != null)
                 clicked(this, EventArgs.Empty);
-            else
-                if (Command != null && Command.CanExecute(null))
+
+            if (Command != null && Command.CanExecute(null))
                 Command.Execute(null);
 
-            //  base.OnClick();
+            base.OnClick();
         }
 
         EventHandler clicked;

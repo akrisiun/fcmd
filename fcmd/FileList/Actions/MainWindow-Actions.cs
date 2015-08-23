@@ -16,7 +16,7 @@ using Xwt;
 using fcmd.FileList;
 
 #if WPF
-using ListView2Canvas = fcmd.View.Xaml.ListView2ItemWpf;
+using ListView2Canvas = fcmd.View.Xaml.ListItemXaml;
 #else 
 using ListView2Canvas = fcmd.View.GTK.ListView2Canvas;
 #endif

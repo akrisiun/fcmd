@@ -2,7 +2,7 @@
 
 namespace fcmd.Platform
 {
-    // public override IListingView<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj as ListView2Xaml; } }
+    // public override IListingView<ListView2ItemWpf> ListingView { get { return ListingViewWpf.DataObj as ListFiltered2Xaml; } }
 
     public interface IVisualSensitive : IListView2 // IListingView // class ListView3Xaml : ListView3
     {

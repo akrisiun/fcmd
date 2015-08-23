@@ -95,12 +95,19 @@
                
                SelectionMode="Extended" SelectionUnit="FullRow" 
                ClipboardCopyMode="ExcludeHeader"
-               EnableColumnVirtualization="False" EnableRowVirtualization="False" 
+               EnableRowVirtualization="True" 
                VirtualizingPanel.IsVirtualizing="True"
                VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+               VirtualizingPanel.VirtualizationMode="Recycling"
                AutoGenerateColumns="False" 
                FrozenColumnCount="1" HeadersVisibility="Column"                               
             >
+            <!--
+                        EnableColumnVirtualization="True" 
+            
+            EnableColumnVirtualization="True" EnableRowVirtualization="True" 
+               VirtualizingPanel.IsVirtualizing="True"
+               VirtualizingPanel.IsVirtualizingWhenGrouping="True"-->
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Loading ..."  MinWidth="120" />
                 <DataGridTextColumn Header=" " MinWidth="50" />

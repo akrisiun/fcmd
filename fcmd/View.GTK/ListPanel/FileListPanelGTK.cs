@@ -21,6 +21,7 @@ namespace fcmd.View.GTK
         public abstract ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df);
         public abstract void SetFocus();
         public abstract void SetupColumns();
+        public abstract bool ColumnsSet { get; }
 
         public abstract object Content { get; set; }
         public abstract Xwt.CursorType Cursor { get; set; } //  { return base.Cursor; } set { base.Cursor = value; } } // = CursorType.Wait;

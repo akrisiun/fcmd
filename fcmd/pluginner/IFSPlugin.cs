@@ -79,6 +79,11 @@ namespace pluginner
         FSEntryMetadata GetMetadata(string URL);
 
         /// <summary>
+        /// Last directory or item read failure
+        /// </summary>
+        Exception LastError { get; set; }
+
+        /// <summary>
         /// Get the file's full content
         /// </summary>
         /// <param name="URL">The URL of the file</param>

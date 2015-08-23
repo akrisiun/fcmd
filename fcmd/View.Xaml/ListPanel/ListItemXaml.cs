@@ -22,23 +22,23 @@ namespace fcmd.View.Xaml
     // FileList rows data
     // XWT : public class ListView2Canvas : Canvas, IListView2Visual
 
-    public class ListView2ItemWpf : IListView2Visual
+    public class ListItemXaml : IListView2Visual
     {
         #region ctor
 
         // paramless ctor
-        public ListView2ItemWpf() : this(-1, -1, null, null, null) { }
+        public ListItemXaml() : this(-1, -1, null, null, null) { }
 
-        public static ListView2ItemWpf FileItem(int rowIndex, object[] Data, IEnumerable<bool> EditableFields, string ItemTag = null)
+        public static ListItemXaml FileItem(int rowIndex, object[] Data, IEnumerable<bool> EditableFields, string ItemTag = null)
         {
-            return new ListView2ItemWpf(ItemTag, Data, null, -1);
+            return new ListItemXaml(ItemTag, Data, null, -1);
         }
 
-        public static ListView2ItemWpf DirectoryItem(int rowIndex, object[] Data, IEnumerable<bool> EditableFields, string ItemTag = null)
+        public static ListItemXaml DirectoryItem(int rowIndex, object[] Data, IEnumerable<bool> EditableFields, string ItemTag = null)
         {
-            Debug.Assert((bool)(Data[FileListPanelWpf.idxDirectory]) == true);
-            //ListView2ItemWpf.cs:line 38 cast invalid 
-            return new ListView2ItemWpf(ItemTag, Data, null, -1); // , , -1, ItemTag, null, Data);
+            Debug.Assert((bool)(Data[FileListPanelWpf.idxIsDirectory]) == true);
+
+            return new ListItemXaml(ItemTag, Data, null, -1);
         }
 
         /// <summary>Creates a new ListView2Item</summary>
@@ -48,28 +48,25 @@ namespace fcmd.View.Xaml
         /// <param name="columns">Array of column information</param>
         /// <param name="data">The data that should be shown in this LV2I</param>
         /// <param name="font">Which font should be used</param>
-        /// XWT : ListView2Canvas(int rowNumber, int colNumber, string rowTag,
-        ///                ListView2.ColumnInfo[] columns, IEnumerable<Object> data, Font font)
-        public ListView2ItemWpf(int rowNumber, int colNumber, string rowTag,
+        public ListItemXaml(int rowNumber, int colNumber, string rowTag,
             ListView2.ColumnInfo[] columns, IEnumerable<Object> data)
         {
             if (data == null)
                 return;
 
-            // _Values = data.ToArray();  -- not efective Linq.Enumerable
             _Values = new object[FileListPanelWpf.idxCOUNT];   // == 6
             if (data is ICollection)
                 (data as ICollection).CopyTo(_Values, 0);
             else
+                // ToArray() -- not efective Linq.Enumerable
                 _Values = System.Linq.Enumerable.ToArray<object>(data);
 
             _Cols = columns;
             Tag = rowTag;
-            // QueueDraw();
         }
 
-        public ListView2ItemWpf(string rowTag, object[] data
-            , ListView2.ColumnInfo[] columns = null, int rowNumber = -1)
+        public ListItemXaml(string rowTag, object[] data,
+            ListView2.ColumnInfo[] columns = null, int rowNumber = -1)
         {
             _Values = data;
             _Cols = columns;
@@ -78,9 +75,9 @@ namespace fcmd.View.Xaml
 
         #endregion
 
-            #region Row data and state
+        #region Row data and state
 
-            /// <summary>Data store</summary>
+        /// <summary>Data store</summary>
         protected Object[] _Values;
 
         public string FullPath
@@ -95,7 +92,7 @@ namespace fcmd.View.Xaml
             }
         }
 
-        // public const string Protocol = "file://"; -> localFileSystem.FilePrefix
+        // Protocol = "file://"; -> localFileSystem.FilePrefix
 
         public string fldPath { get { return Data[0] as string; } }
 
@@ -104,7 +101,7 @@ namespace fcmd.View.Xaml
         public string fldModified { get { return Data[3].ToString(); } }
 
         public bool IsDirectory { get { return (bool)Data[4]; } }
-        
+
         // df.
         /// <summary>Column info store</summary>
         private ListView2.ColumnInfo[] _Cols;
@@ -155,7 +152,8 @@ namespace fcmd.View.Xaml
             get { return _Cols; }
             set
             {
-                _Cols = value; // QueueDraw(); 
+                _Cols = value;
+                // gtk: QueueDraw()
             }
         }
 
@@ -177,86 +175,27 @@ namespace fcmd.View.Xaml
                     //    CurFgColor = SelFgColor;
                     //    break;
                     case ListView2.ItemStates.PointedAndSelected:
-
-                        //todo: replace this buggy algorythm with better one
-                        //дело в том, что xwt немного путает одинаковые цвета,
-                        //на минимальные доли, но этого достаточно для color1!=color2
-
-                        //if (PointBgColor == NormalBgColor)
-                        //{
-                        //    BackgroundColor = SelectionBgColor;
-                        //    CurFgColor = SelectionFgColor;
-                        //}
-                        //else
-                        //{
-                        //    BackgroundColor =
-                        //        SelBgColor.BlendWith(
-                        //        PointBgColor, 0.5
-                        //        );
-                        //    CurFgColor =
-                        //        SelFgColor.BlendWith(
-                        //        PointFgColor, 0.5
-                        //        );
-
-                        //}
                         break;
                     default:
                         //BackgroundColor = DefBgColor;
                         //CurFgColor = DefFgColor;
                         break;
                 }
-                // QueueDraw();
             }
         }
 
         public object Tag { get; set; }
 
-        // Cross plaform WPF case
-        // protected void QueueDraw() { }
-        // public void OnDblClick()
-        //    OnButtonPressed(new ButtonEventArgs { MultiplePress = 2 });
-
-        /// <summary>
-        /// Get or set the data. Note that the data should be written fully.
-        /// </summary>
-        //  was:public List<Object>
-        //public IEnumerable<object> DataL
-        //{
-        //    get { return _Values.AsEnumerable<object>(); } // .ToList(); }
-        //    set
-        //    {
-        //        if (_Cols == null)
-        //        {
-        //            throw new Exception("Please set columns first!");
-        //        }
-        //        _Values = Enumerable.ToArray<object>(value); // . value.ToArray();
-        //        QueueDraw();
-        //    }
-        //}
-
-        // [Obsolete("Not obsolete, but not implemented yet, do not use at now!")]
-        // public event TypedEvent<EditableLabel> EditComplete = null;
 
         #endregion
 
         #region Appeareance
 
-        // protected override void OnDraw(Context ctx, Rectangle dirtyRect)
-        // Draw a information on the ListView2Item
-        // private void Draw(object What, double Where, Context On, double MaxWidth, Color TextColor, Font WhatFont)
-
         // TODO: dynamic recalculate
         public struct ItemAppeareance
         {
-            /// <summary>Font the values will be written in</summary>
-            // protected Font _FontToDraw;
-
             public Color BackgroundColor { get { return default(Color); } set {; } }
             public Color Foreground { get { return default(Color); } set {; } }
-
-            // public int RowNo = -1;
-            // public int ColNo = -1;
-
             // public string Tag; //don't forgetting that the lv2 is used only for file list, so the tag can be only a string
 
         }

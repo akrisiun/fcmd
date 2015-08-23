@@ -140,7 +140,8 @@ namespace fcmd.Model
 
             window.LVCols = new List<IColumnInfo>();
 
-            Backend.Init(window);
+            if (Backend != null)
+                Backend.Init(window);
             _panelLayout = PanelLayoutClass.Create(window);
 
             TranslateMenu(MainMenu);
@@ -153,7 +154,8 @@ namespace fcmd.Model
 
             Localizator.LocalizationChanged += (o, ea)
                 => Localize();
-            Localize();
+            if (Backend != null)
+                Localize();
 
             //apply user's settings
             //window size
@@ -167,13 +169,19 @@ namespace fcmd.Model
 
         protected override void OnShown()
         {
+            App.ConsoleWriteLine(@"DEBUG: MainWindow Begin Loaded");
+
             var panel1 = this.PanelLayout.Panel1 as PanelWpf;
             var panel2 = this.PanelLayout.Panel2 as PanelWpf;
             panel2.IsActive = false;
             panel1.IsActive = true;
 
-            var visual = this.Backend as WpfBackend;
-            visual.Shown(panel1, panel2);
+            var loaderTask = (Backend as WpfBackend).LoaderTask;
+            if (loaderTask != null && loaderTask.Status == TaskStatus.RanToCompletion)
+                FinishShown(this);
+            else
+                loaderTask.ContinueWith(
+                    (t) => FinishShown(this));
 
 #if DEBUG
             var active = ActiveSide; // = PanelSide.Left;
@@ -181,7 +189,27 @@ namespace fcmd.Model
 #endif
         }
 
+        public static void FinishShown(WindowDataWpf @this)
+        {
+            var visual = @this.Backend as WpfBackend;
+            var panel1 = @this.PanelLayout.Panel1 as PanelWpf;
+            var panel2 = @this.PanelLayout.Panel2 as PanelWpf;
+
+            visual.Shown(panel1, panel2);
+            visual.LoaderTask = null;
+        }
+
         #endregion
+
+        public Task Preload()
+        {
+            var panel1 = this.PanelLayout.Panel1 as PanelWpf;
+            var panel2 = this.PanelLayout.Panel2 as PanelWpf;
+            var visual = this.Backend as WpfBackend;
+
+            var task = visual.LoadTask(panel1, panel2);
+            return task;
+        }
 
         public override void OnSideFocus(PanelSide newSide)
         {
@@ -232,7 +260,21 @@ namespace fcmd.Model
             if (Properties.Settings.Default.Panel2URL.Length != 0)
                 p2.LoadDir(Properties.Settings.Default.Panel2URL, Shorten);
             else
-                p2.LoadDir(localFileSystem.FilePrefix + Directory.GetCurrentDirectory(), Shorten);
+            {
+                string dir = Directory.GetCurrentDirectory();
+                string url2 = String.Concat(localFileSystem.FilePrefix, dir);
+                if (p1.FS.CurrentDirectory == url2)
+                {
+                    var source = p1.ListingWidget;
+                    var target = p2.ListingWidget;
+
+                    p2.FS.CurrentDirectory = url2;
+                    p2.FS.RootDirectory = p2.FS.Prefix + p2.FS.NoPrefix(Directory.GetDirectoryRoot(dir));
+                    target.CloneList(source);
+                }
+                else
+                    p2.LoadDir(url2, Shorten);
+            }
 
             //default panel
             var window = Window;
@@ -245,22 +287,22 @@ namespace fcmd.Model
                         p1.ListingView.SetFocus();
                     window.ActivePanel = p1;
                     window.PassivePanel = p2;
-                    if (argv.Length == 1 && !argv[0].EndsWith(".exe"))
-                        p1.LoadDir(argv[0]);
+                    //if (argv.Length == 1 && !argv[0].EndsWith(".exe"))
+                    //    p1.LoadDir(argv[0]);
                     break;
                 case 2:
                     if (isAccess)
                         p2.ListingView.SetFocus();
                     window.ActivePanel = p2;
                     window.PassivePanel = p1;
-                    if (argv.Length == 1) p2.LoadDir(argv[0]);
+                    //if (argv.Length == 1) p2.LoadDir(argv[0]);
                     break;
                 default:
                     if (isAccess)
                         p1.ListingView.SetFocus();
                     window.ActivePanel = p1;
                     window.PassivePanel = p2;
-                    if (argv.Length == 1) p1.LoadDir(argv[0]);
+                    //if (argv.Length == 1) p1.LoadDir(argv[0]);
                     break;
             }
         }

@@ -27,6 +27,8 @@ namespace fcmd.ftps
         private List<DirItem> dirContent = new List<DirItem>();
         private string hostname;
 
+        public Exception LastError { get; set; }
+
         private static Regex FtpListDirectoryDetailsRegex
             = new Regex(@".*(?<month>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))\s*(?<day>[0-9]*)\s*(?<yearTime>([0-9]|:)*)\s*(?<fileName>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase); //undone: add style switching (windows, unix, etc)
 

@@ -1,39 +1,40 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Collections.ObjectModel;
 
 namespace pluginner.Widgets.Xaml
 {
-
     public abstract class ListView2Xaml<T> : ListView3, IListingView<T>, IListView2<T>, ICollection<T>, IDisposable
            where T : class, IListView2Visual
     {
-        public abstract object Content { get; set; }
-        public abstract IList<T> DataItems { get; } // protected set
-
-        // public abstract IEnumerable<T> ChoosedRows { get; }
-
-        public abstract void Dispose();
-
-        public IListingContainer<T> Parent { get; protected set; }
-
         public ListView2Xaml(IListingContainer<T> parent) : base()
         {
             Parent = parent;
         }
 
+        #region abstract + implement
+
+        public abstract object Content { get; set; }
+        public abstract ObservableCollection<T> DataItems { get; } // protected set
+        ICollection<T> IListView2<T>.DataItems { get { return DataItems; } }
+
+        public abstract void Dispose();
+
         public int Count { get { return DataItems.Count; } }
-        public bool IsReadOnly { get { return DataItems.IsReadOnly; } }
+        public bool IsReadOnly { get { return true; } } // (DataItems as IList<T>).IsReadOnly; } }
 
         public object Tag { get; set; }
-        public int SelectedRow { get { new NotImplementedException("no SelectedRow"); return -1; } set {; } }
 
+        public IListingContainer<T> Parent { get; protected set; }
+        public int SelectedRow { get { new NotImplementedException("no SelectedRow"); return -1; } set {; } }
         public bool Sensitive { get; set; }
+
 #if WPF
         public System.Windows.Input.CursorType Cursor { get; set; }
 #endif
+        
+        #endregion
 
         /// <summary>Add a new item</summary>
         /// <param name="Data">The item's content</param>
@@ -143,14 +144,13 @@ namespace pluginner.Widgets.Xaml
         {
             //Grid.Clear();
             // LastRow = LastCol = 0;
-            
+
             // not support changes from different thread.
             DataItems.Clear();
             PointedItem = null;
         }
 
         #endregion
-
         #region Selection methods
 
         //   void IListingView.SetFocus()
@@ -233,7 +233,6 @@ namespace pluginner.Widgets.Xaml
         }
 
         #endregion
-
         #region PUBLIC EVENTS
 
         public event TypedEvent<T> PointerMoved;
@@ -369,7 +368,6 @@ namespace pluginner.Widgets.Xaml
         }
 
         #endregion
-
 
         // ListView2Xaml
         public static ListView2.ColumnInfo[] DefaultXamlColumns()

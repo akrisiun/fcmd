@@ -39,6 +39,8 @@ namespace fcmd.base_plugins.fs
         public event pluginner.TypedEvent<double> ProgressChanged;
         public event pluginner.TypedEvent<object[]> APICallHost = null;
 
+        public Exception LastError { get; set; }
+
         protected void RaiseProgressChanged(double data)
         {
             Application.Invoke(delegate()
@@ -74,8 +76,9 @@ namespace fcmd.base_plugins.fs
         public IEnumerable<pluginner.DirItem> GetDirectoryContent(FileSystemOperationStatus FSOS)
         {
 #if DEBUG
-            Console.WriteLine("{0:HH:mm:ss.fff} DEBUG: Loading the {1} has been started", DateTime.Now, curDir);
+            Console.WriteLine("{0:HH:mm:ss.fff} DEBUG: Loading started {1} ", DateTime.Now, curDir);
 #endif
+            LastError = null;
             DirContent.Clear();
             string InternalURL = curDir.Replace(localFileSystem.FilePrefix, string.Empty);
             FSOS.StatusMessage = string.Format(Localizator.GetString("DoingListdir"), "", InternalURL);
@@ -91,7 +94,17 @@ namespace fcmd.base_plugins.fs
             else
                 files = AiLib.IOFile.DirectoryEnum.ReadFilesInfo(InternalURL);
 
-            string[] dirs = System.IO.Directory.GetDirectories(InternalURL);
+            string[] dirs = null;
+            Exception error = null;
+            try {
+                dirs = System.IO.Directory.GetDirectories(InternalURL);
+            }
+            catch (Exception ex) { error = ex; }    // access denied
+            if (error != null)
+            {
+                this.LastError = error;
+                yield break; // return System.Linq.Enumerable.Empty<pluginner.DirItem>();
+            }
 
             // UpDir element : элемент "вверх по древу"
             DirectoryInfo currentdir = new DirectoryInfo(InternalURL);
@@ -199,7 +212,7 @@ namespace fcmd.base_plugins.fs
 
             RaiseCLIpromptChanged("FC: " + InternalURL + ">");
 #if DEBUG
-            Console.WriteLine("{0:HH:mm:ss.fff} DEBUG: Loading the {1} has been completed", DateTime.Now, InternalURL);
+            Console.WriteLine("{0:HH:mm:ss.fff} DEBUG: Loading completed {1}", DateTime.Now, InternalURL);
 #endif
         }
 
@@ -441,8 +454,13 @@ namespace fcmd.base_plugins.fs
             lego.FullURL = url;
             try
             {
-                lego.UpperDirectory = localFileSystem.FilePrefix + metadatasource.DirectoryName;
-                lego.RootDirectory = localFileSystem.FilePrefix + metadatasource.Directory.Root.FullName;
+                if (string.IsNullOrWhiteSpace(lego.Name))
+                    lego.Name = Path.GetDirectoryName(InternalURL) ?? InternalURL;  // Root dir
+
+                var dirName = metadatasource.DirectoryName ?? InternalURL;
+                lego.UpperDirectory = localFileSystem.FilePrefix + dirName;
+                lego.RootDirectory = localFileSystem.FilePrefix + Path.GetPathRoot(dirName);
+                                     // + metadatasource.Directory.Root.FullName;
                 lego.Attrubutes = metadatasource.Attributes;
                 lego.CreationTimeUTC = metadatasource.CreationTimeUtc;
                 lego.IsReadOnly = metadatasource.IsReadOnly;

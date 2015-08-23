@@ -35,6 +35,9 @@ namespace fcmd.View.Xaml
         public PanelWpf()
         {
             active = null;
+
+            App.ConsoleWriteLine("PanelWpf ctor");
+
             InitializeComponent();
             this.path.Text = "";    // Loading...
 
@@ -124,6 +127,11 @@ namespace fcmd.View.Xaml
         public override string ToString()
         {
             return "Side=" + Side.ToString() + " Url=" + PanelDataWpf.FS.CurrentDirectory;
+        }
+
+        public void Update()
+        {
+            PanelDataWpf.UrlBox.Text = PanelDataWpf.FS.CurrentDirectory;
         }
     }
 

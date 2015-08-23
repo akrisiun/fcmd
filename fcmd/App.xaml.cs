@@ -18,7 +18,13 @@ namespace fcmd
             CommanderBackend.Startup();
         }
 
-        public App() {
+        public static App Instance { get; set; }
+
+        public static fcmd.View.WpfBackend BackendWpf { get { return CommanderBackend.Current as WpfBackend; } }
+
+        public App()
+        {
+            Instance = this;
             this.Startup += App_Startup;
         }
 
@@ -26,17 +32,26 @@ namespace fcmd
         {
             ConsoleWriteLine("App Startup");
 
-            this.MainWindow = new MainWindow();
+            var main = new MainWindow();
+            this.MainWindow = main;
             if (!fcmd.MainWindow.AppLoading)
                 return;    // test unit case
 
+            var task = main.PreloadAsync();
+
             ConsoleWriteLine("App Show");
-            this.MainWindow.Show();
+            main.Show();
+
+            if (task.Exception != null)
+                App.ConsoleWriteLine("Error " + task.Exception.Message
+                    + Environment.NewLine + task.Exception.StackTrace);
 
             ConsoleWriteLine("App AfterShow");
         }
 
-        ICommanderWindow IApplication.MainWindow {  get { return MainWindow as ICommanderWindow; } }
+        ICommanderWindow IApplication.MainWindow { get { return MainWindow as ICommanderWindow; } }
+
+        public IBackend Backend { get { return CommanderBackend.Current; } }
 
         public static void ConsoleWriteLine(string line)
         {

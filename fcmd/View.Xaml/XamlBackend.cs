@@ -6,6 +6,8 @@ using System.Windows.Input;
 using System.Threading;
 using System.Threading.Tasks;
 using fcmd.View.Xaml;
+using System.Windows;
+using fcmd.View.ctrl;
 
 namespace fcmd.View
 {
@@ -23,7 +25,33 @@ namespace fcmd.View
 
         MainWindow IBackend.Window { get { return main; } }
 
+        public void ShowMessage(string message, params object[] args)
+        {
+            var msgText = String.Format(message, args);
+            System.Windows.MessageBox.Show(owner: main, messageBoxText: msgText, caption: (main == null ? null : main.Title));
+        }
+        public void ShowError(Exception error, string message = null, params object[] args)
+        {
+            string errorMessage = message;
+            errorMessage += error.Message;
+
+            App.ConsoleWriteLine(errorMessage);
+
+            System.Windows.MessageBox.Show(owner: main, messageBoxText: errorMessage, caption: main.Title, button: System.Windows.MessageBoxButton.OK);
+        }
+
+        public bool? ShowConfirm(string message, Xwt.ConfirmationMessage details = null)
+        {
+            // MessageBoxResult Show(Window owner, string messageBoxText, string caption, MessageBoxButton button, MessageBoxImage icon, MessageBoxResult defaultResult)
+            MessageBoxResult result = System.Windows.MessageBox.Show(owner: main, messageBoxText: message, 
+                button: MessageBoxButton.YesNo, defaultResult: MessageBoxResult.Yes, 
+                icon: MessageBoxImage.Asterisk, caption: null);
+
+            return result == MessageBoxResult.None ? null : (bool?)(result == MessageBoxResult.Yes);
+        }
+
         protected MainWindow main;
+        protected WindowDataWpf data;
         public string[] args;
 
         public void Shown() { }
@@ -37,27 +65,49 @@ namespace fcmd.View
             panel2.data.Columns.Clear();
         }
 
-        public void Shown(PanelWpf panel1, PanelWpf panel2)
+        public Task LoaderTask { get; set; }
+
+        public Task LoadTask(PanelWpf panel1, PanelWpf panel2)
         {
+            data = main.WindowDataWpf as WindowDataWpf;
             Clear();
 
-            var data = main.WindowData as WindowDataWpf;
-            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            TaskScheduler scheduler = TaskScheduler.FromCurrentSynchronizationContext();
             var task = Task.Factory.StartNew(
-                () =>
-                    data.LoadDirAsync(args, scheduler)
+                () => LoadDirAsync(scheduler)
                 );
 
-            task.ContinueWith(
-                (t) => main.Dispatcher.Invoke(
-                    () => AfterLoadDir(panel1, panel2))
-                );
+            LoaderTask = task;
+            return task;
+        }
+
+        public void Shown(PanelWpf panel1, PanelWpf panel2)
+        {
+            var task = LoaderTask;
+            if (task != null && task.Status == TaskStatus.Running)
+                task.ContinueWith(
+                    (t) => main.Dispatcher.Invoke(
+                        () => AfterLoadDir(panel1, panel2))
+                    );
+            else if (!main.CheckAccess())
+                main.Dispatcher.Invoke(
+                    () => AfterLoadDir(panel1, panel2));
+            else
+                AfterLoadDir(panel1, panel2);
+        }
+
+        public void LoadDirAsync(TaskScheduler scheduler)
+        {
+            App.ConsoleWriteLine("DEBUG LoadDirAsync");
+
+            var data = this.data;
+            data.LoadDirAsync(args, scheduler);
         }
 
         public void LoadDirSynchonous()
         {
-            var data = main.WindowData as WindowDataWpf;
-            var scheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            data = main.WindowData as WindowDataWpf;
+            var scheduler = TaskScheduler.Current; //  .FromCurrentSynchronizationContext();
             data.LoadDirAsync(args, scheduler);
 
             var panel1 = main.LeftPanel; var panel2 = main.RightPanel;
@@ -66,14 +116,21 @@ namespace fcmd.View
 
         void AfterLoadDir(PanelWpf panel1, PanelWpf panel2)
         {
-            var view1 = panel1.PanelDataWpf.ListingView;
-            
-            // if (view.DataItems.Count > 0)
-            view1.SetupColumns();
+            App.ConsoleWriteLine("DEBUG AfterLoadDir");
+            this.LoaderTask = null;
+
+            if (!panel1.CheckAccess())
+                throw new InvalidProgramException("LoadDir after error");
+
+            var view1 = panel1.PanelDataWpf.ListingView as ListFiltered2Xaml;
+
+            if (!view1.ColumnsSet)
+                view1.SetupColumns();
             view1.SelectedRow = 0;
 
             var view2 = panel2.PanelDataWpf.ListingView;
-            view2.SetupColumns();
+            if (!view2.ColumnsSet)
+                view2.SetupColumns();
 
             panel1.PanelDataWpf.UrlBox.Text = panel1.PanelDataWpf.FS.CurrentDirectory;
             panel2.PanelDataWpf.UrlBox.Text = panel2.PanelDataWpf.FS.CurrentDirectory;
@@ -84,9 +141,9 @@ namespace fcmd.View
             panel1.PanelDataWpf.WindowData = main.WindowData as WindowDataWpf;
             panel1.Shown();
             view1.SetFocus();
-            
+
             // KeyEventHandler  object sender, KeyEventArgs e);
-            main.PreviewKeyDown 
+            main.PreviewKeyDown
                 += (s, e) => this.KeyEvent(s, e);
 
             MainWindow.AppLoading = false;

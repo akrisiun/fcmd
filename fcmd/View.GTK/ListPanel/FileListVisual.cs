@@ -518,6 +518,7 @@ namespace fcmd.View.GTK
         protected abstract void WriteDefaultStatusLabel();
         protected abstract string MakeStatusbarText(string Template);
 
+        public bool ColumnsSet { get; set; }
         public void SetupColumns()
         {
             throw new NotImplementedException();

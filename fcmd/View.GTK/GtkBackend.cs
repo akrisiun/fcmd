@@ -365,5 +365,30 @@ namespace fcmd.View
         {
             throw new NotImplementedException();
         }
+
+        public void ShowMessage(string message, params object[] args)
+        {
+            var msgText = string.Format(message, args);
+            Xwt.MessageDialog.ShowMessage(msgText);
+        }
+        public void ShowError(Exception error, string message, params object[] args)
+        {
+            string errorText = String.Concat(message ?? string.Empty, error.Message);
+            System.Console.WriteLine(errorText);
+            var lines = error.StackTrace.Split(Environment.NewLine.ToCharArray());
+            var top5 = System.Linq.Enumerable.Take(lines, 5).GetEnumerator();
+            while (top5.MoveNext())
+                Console.WriteLine(top5.Current as string);
+
+            Xwt.MessageDialog.ShowError(errorText);
+        }
+
+        public bool? ShowConfirm(string message, Xwt.ConfirmationMessage details = null)
+        {
+            Xwt.MessageDialog.RootWindow = fcmd.MainWindow.Current;
+            var msg = details ?? new Xwt.ConfirmationMessage { Text = message };
+            bool yes = Xwt.MessageDialog.Confirm(msg);
+            return yes;
+        }
     }
 }

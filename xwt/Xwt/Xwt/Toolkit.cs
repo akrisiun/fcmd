@@ -29,6 +29,7 @@ using Xwt.Drawing;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
 namespace Xwt
 {
@@ -256,13 +257,19 @@ namespace Xwt
 		{
             var type = typePass;
 			int i = type.IndexOf (',');
-            var split = type.Split(",".ToCharArray()); // type.Substring (i+1).Trim ();
+            var split = type.Split(",".ToCharArray());
+
             string assembly = split[1].Trim() + ".dll";
-            type = split[0].Trim();  // type.Substring (0, i).Trim ();
+            if (!File.Exists(assembly))
+            {
+                var asmExecuting = Assembly.GetExecutingAssembly();
+                if (asmExecuting != null)
+                    assembly = String.Concat(Path.GetDirectoryName(asmExecuting.Location), Path.DirectorySeparatorChar, assembly);
+            }
+            type = split[0].Trim();
 			try {
-                // Assembly asmBase = Assembly.LoadFrom("Xwt3.dll");
                 Assembly asm = Assembly.LoadFrom(assembly);
-                // Assembly.Load (assembly);
+
                 if (asm != null) {
 
                     //if (assembly.Contains("Xwt3.Gtk3"))
@@ -274,8 +281,8 @@ namespace Xwt
                     //    Assembly.LoadFrom("CoreGtk3.dll");
                     //}
 
-                    Type t = asm.GetType (type);
                     // located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)
+                    Type t = asm.GetType (type);
 
                     if (t != null) {
 						backend = (ToolkitEngineBackend) Activator.CreateInstance (t);

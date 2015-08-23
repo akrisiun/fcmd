@@ -17,23 +17,28 @@ namespace fcmd.base_plugins.fs
 {
 	partial class localFileSystem
 	{
-		public event pluginner.TypedEvent<string> CLIstdoutDataReceived;
-		public event pluginner.TypedEvent<string> CLIstderrDataReceived;
-		public event pluginner.TypedEvent<string> CLIpromptChanged;
+#pragma warning disable 0649, 0414  // is assigned but never used
 
-		protected void RaiseCLIpromptChanged(string data)
+        public event pluginner.TypedEvent<string> CLIstdoutDataReceived;
+        public event pluginner.TypedEvent<string> CLIstderrDataReceived;
+        public event pluginner.TypedEvent<string> CLIpromptChanged;
+
+        protected void RaiseCLIpromptChanged(string data)
 		{
-			Application.Invoke(delegate()
+#if !WPF
+            Application.Invoke(delegate()
 			{
 				var handler = CLIpromptChanged;
 				if (handler != null) {
 					handler(data);
 				}
 			});
+#endif
 		}
 
 		protected void RaiseCLIstderrDataReceived(string data)
 		{
+#if !WPF
 			Application.Invoke(delegate()
 			{
 				var handler = CLIstderrDataReceived;
@@ -41,10 +46,10 @@ namespace fcmd.base_plugins.fs
 					handler(data);
 				}
 			});
-		}
+#endif
+        }
 
-		Process CLIproc = new Process();
-		Boolean CLIsomethingIsRunning = false;
+        Process CLIproc = new Process();
 
         public string NoPrefix(string dir)
         {
@@ -55,6 +60,7 @@ namespace fcmd.base_plugins.fs
 
         public void CLIstdinWriteLine(string StdIn)
 		{
+#if !WPF
 			if (!CLIsomethingIsRunning) {
 				try
 				{
@@ -118,15 +124,20 @@ namespace fcmd.base_plugins.fs
 			else {
 				CLIproc.StandardInput.WriteLine(StdIn);
 			}
+#endif
 		}
+
+#if !WPF
+		Boolean CLIsomethingIsRunning = false;
 
 		private void CLIproc_Exited(object sender, EventArgs e)
 		{
 			CLIsomethingIsRunning = false;
 			CLIproc.EnableRaisingEvents = false;//на всякий случай :-)
 		}
+#endif
 
-		private void CLIproc_ErrorDataReceived(object sender, DataReceivedEventArgs e)
+        private void CLIproc_ErrorDataReceived(object sender, DataReceivedEventArgs e)
 		{
 			if (CLIproc.HasExited || e.Data == null) {
 				return;

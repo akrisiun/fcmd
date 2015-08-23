@@ -38,6 +38,7 @@ namespace pluginner.Widgets
         public ItemStates State { get; set; }
         public abstract ColumnInfo[] DefineColumns(DataFieldNumbers df);
         public abstract void SetupColumns();
+        public abstract bool ColumnsSet { get; }
 #endif
 
         #region ENUMS & STRUCTS
@@ -87,6 +88,7 @@ namespace pluginner.Widgets
         public abstract Xwt.Drawing.Font FontForFileNames { get; set; }
         public abstract void SetFocus();
         public abstract void SetupColumns();
+        public abstract bool ColumnsSet { get; }
 
         public abstract ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df);
 

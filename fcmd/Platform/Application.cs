@@ -16,6 +16,8 @@ namespace fcmd.Platform
         void Shutdown();
 
         ICommanderWindow MainWindow { get; }
+
+        IBackend Backend { get; }
     }
 
     public class Application

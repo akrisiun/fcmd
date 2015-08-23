@@ -42,16 +42,15 @@ namespace pluginner.Widgets
     }
 
     // Visual data container
-    public interface IListingContainer : IControl, IListView2  // IVisualSensitive
+    public interface IListingContainer : IListView2  // IVisualSensitive
     {
         bool Sensitive { get; set; }
-        object Content { get; set; }
 
         IEnumerable ItemsSource { get; set; }
     }
 
     // DataGrid for Xaml
-    public interface IListingContainer<T> : IListingContainer
+    public interface IListingContainer<T> : IListingContainer, IControl
     {
         void Bind();
     }
@@ -76,6 +75,7 @@ namespace pluginner.Widgets
         // Xwt.Drawing.Font FontForFileNames { get; set; }
         void SetFocus();
         void SetupColumns();
+        bool ColumnsSet { get; }
 
         ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df);
     }
@@ -88,7 +88,8 @@ namespace pluginner.Widgets
 
         void Select(T item);
 
-        IList<T> DataItems { get; }
+        ICollection<T> DataItems { get; }
+
         void AddItem(IEnumerable<Object> Data, IEnumerable<Boolean> EditableFields, string ItemTag = null);
         // void AddItem(T item); -> Add()
     }

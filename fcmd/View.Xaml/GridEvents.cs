@@ -4,9 +4,26 @@ using pluginner.Widgets;
 using System.Windows;
 using System.Windows.Input;
 using fcmd.base_plugins.fs;
+using System;
 
 namespace fcmd.Model
 {
+    public abstract class Command : ICommand, IRelayCommand 
+    {
+        public bool Enabled { get; set; }
+        public Action Action { get; set; }
+        public FrameworkElement Target { get; set; }
+
+        public event EventHandler CanExecuteChanged;
+
+        public virtual bool CanExecute(object parameter = null) { return Enabled; } //  && Target != null && Target.CheckAccess(); }
+        public virtual void Execute(object parameter = null) { if (Action != null) Action(); }
+    }
+
+    public class ChdirUpCommand : Command { }
+
+    public class ChRootCommand : Command { }
+
     public static class GridEvents
     {
         public static void BindGridEvents(this ListView2Widget @this)
@@ -14,15 +31,39 @@ namespace fcmd.Model
             @this.SelectionChanged += SelectionChanged;
             @this.PreviewMouseDoubleClick += PreviewMouseDoubleClick;
 
-            @this.Panel.path.DataContext = @this;
-            @this.Panel.cdUp.DataContext = @this;
-            @this.Panel.cdRoot.DataContext = @this;
-            @this.Panel.path.KeyDown += Path_KeyDown;
-            @this.Panel.cdUp.PreviewMouseDown += CdUp_PreviewMouseDown;
-            @this.Panel.cdRoot.PreviewMouseLeftButtonDown += CdRoot_PreviewMouseLeftButtonDown;
+            var panel = @this.Panel;
+            panel.path.DataContext = @this;
+            //panel.cdUp.DataContext = @this;
+            //panel.cdRoot.DataContext = @this;
+            panel.path.KeyDown += Path_KeyDown;
 
-            @this.Panel.data.Tag = @this;
-            @this.Panel.data.PreviewKeyDown += Data_PreviewKeyDown;
+            if (panel.cdUp.Command == null)
+            {
+                panel.cdUp.Command = new ChdirUpCommand { Target = @this, Action = () => CdUp_PreviewMouseDown(@this), Enabled = true };
+                //panel.cdUp.PreviewMouseDown += (s, e) =>
+                //{
+                //    if (@this.Panel.cdUp.Command.CanExecute(null))
+                //    {
+                //        e.Handled = true;
+                //        CdUp_PreviewMouseDown(@this);
+                //    };
+                //};
+            }
+            else
+                (panel.cdUp.Command as Command).Enabled = true;
+
+            if (panel.cdRoot.Command == null)
+            {
+                panel.cdRoot.Command =
+                    new ChRootCommand { Target = @this, Action = () => CdRoot_PreviewMouseLeftButtonDown(@this), Enabled = true };
+
+                //panel.cdRoot.Clicked
+            }
+            else
+                (panel.cdRoot.Command as Command).Enabled = true;
+
+            panel.data.Tag = @this;
+            panel.data.PreviewKeyDown += Data_PreviewKeyDown;
         }
 
         public static void UnBindGridEvents(this ListView2Widget @this)
@@ -30,34 +71,38 @@ namespace fcmd.Model
             @this.SelectionChanged -= SelectionChanged;
             @this.PreviewMouseDoubleClick -= PreviewMouseDoubleClick;
 
-            @this.Panel.path.KeyDown -= Path_KeyDown;
-            @this.Panel.cdUp.PreviewMouseLeftButtonDown -= CdUp_PreviewMouseDown;
-            @this.Panel.cdRoot.PreviewMouseLeftButtonDown -= CdRoot_PreviewMouseLeftButtonDown;
-            @this.Panel.data.PreviewKeyDown -= Data_PreviewKeyDown;
+            var panel = @this.Panel;
+            panel.path.KeyDown -= Path_KeyDown;
+            //@this.Panel.cdUp.PreviewMouseLeftButtonDown -= CdUp_PreviewMouseDown;
+            //@this.Panel.cdRoot.PreviewMouseLeftButtonDown -= CdRoot_PreviewMouseLeftButtonDown;
+            (panel.cdUp.Command as Command).Enabled = false;
+            (panel.cdRoot.Command as Command).Enabled = false;
+
+            panel.data.PreviewKeyDown -= Data_PreviewKeyDown;
         }
 
-        private static void CdRoot_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private static void CdRoot_PreviewMouseLeftButtonDown(ListView2Widget @this) // object sender, MouseButtonEventArgs e)
         {
-            var @this = (sender as FrameworkElement).DataContext as ListView2Widget;
+            // var @this = (sender as FrameworkElement).DataContext as ListView2Widget;
             var FS = @this.FileList.FS;
 
             var path = FS.NoPrefix(FS.RootDirectory);
-            if (path.Length == 0)
+            if (path == null || path.Length == 0)
             {
                 MessageBox.Show("directory Root error");
                 return;
             }
             @this.LoadDir(path);
-            e.Handled = true;
+            // e.Handled = true;
         }
 
-        private static void CdUp_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private static void CdUp_PreviewMouseDown(ListView2Widget @this) // object sender, MouseButtonEventArgs e)
         {
-            var @this = (sender as FrameworkElement).DataContext as ListView2Widget;
+            // var @this = (sender as FrameworkElement).DataContext as ListView2Widget;
             var FS = @this.FileList.FS;
             var path = FS.NoPrefix(FS.CurrentDirectory + FS.DirSeparator + "..");
             @this.LoadDir(path);
-            e.Handled = true;
+            //  e.Handled = true;
         }
 
         private static void Path_KeyDown(object sender, KeyEventArgs e)
@@ -74,7 +119,7 @@ namespace fcmd.Model
         static void PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var @this = sender as ListView2Widget;
-            if (@this.SelectEnter(@this.SelectedItem as ListView2ItemWpf))
+            if (@this.SelectEnter(@this.SelectedItem as ListItemXaml))
                 e.Handled = true;
         }
 
@@ -82,7 +127,7 @@ namespace fcmd.Model
         private static void Data_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             var @this = (sender as FrameworkElement).Tag as ListView2Widget;
-            if (e.Key == Key.Enter && @this.SelectEnter(@this.SelectedItem as ListView2ItemWpf))
+            if (e.Key == Key.Enter && @this.SelectEnter(@this.SelectedItem as ListItemXaml))
                 e.Handled = true;
         }
 
@@ -91,8 +136,8 @@ namespace fcmd.Model
         {
             var @this = sender as ListView2Widget;
             var list = e.AddedItems;
-            ListView2ItemWpf lastItem = null;
-            foreach (ListView2ItemWpf item in list)
+            ListItemXaml lastItem = null;
+            foreach (ListItemXaml item in list)
             {
                 @this.Select(item);
                 lastItem = item;

@@ -23,18 +23,12 @@ namespace fcmd
     {
         public static bool AppLoading { get; set; }
 
-        static MainWindow() { AppLoading = true; }
+        static MainWindow() { AppLoading = true; AllowShutdown = true; }
+
         public MainWindow()
         {
-            App.ConsoleWriteLine("Xwt InitializeApp");
-            Xwt.Application.Initialize(Xwt.ToolkitType.Wpf);
-            Xwt.Toolkit.Load(Xwt.ToolkitType.Wpf)
-                .Invoke(() => InitializeXwt());
-            // Initialize() being your own custom method.This is actually what the MixedGtkMacTest does.
-            App.ConsoleWriteLine("Xwt InitializeApp Stage#2");
-
             ResourceManager rm = new ResourceManager("Resources", typeof(MainWindow).Assembly);
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture; // .CreateSpecificCulture("fr-FR");
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
             InitializeComponent();
 
@@ -46,12 +40,26 @@ namespace fcmd
             }
             catch { }
 
+            App.ConsoleWriteLine("Xwt InitializeApp");
+            Xwt.Application.Initialize(Xwt.ToolkitType.Wpf);
+            Xwt.Toolkit.Load(Xwt.ToolkitType.Wpf)
+                .Invoke(() => InitializeXwt());
+            // Initialize() being your own custom method.This is actually what the MixedGtkMacTest does.
+            App.ConsoleWriteLine("Xwt InitializeApp Stage#2");
+
             App.ConsoleWriteLine("MainWindow Init");
             this.Init();    // View.WindowDataStatic.Init(this);
 
-            this.Closed += (s, e) =>
-                 Platform.Application.Current.Shutdown();
+            this.Closed += MainWindow_Closed;
+        }
 
+        public static bool AllowShutdown { get; set; }    // for test unit or multiple MainWindow
+
+        void MainWindow_Closed(object sender, EventArgs e)
+        {
+            if (App.Instance != null && !AllowShutdown)
+                return;
+            Platform.Application.Current.Shutdown();
         }
 
 #if !VS || __MonoCS__

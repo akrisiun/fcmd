@@ -25,6 +25,8 @@ namespace fcmd.base_plugins.fs
 
         private static Regex FtpListDirectoryDetailsRegex; //undone: add style switching (windows, unix, etc)
 
+        public Exception LastError { get; set; }
+
         public FTPFileSystem()
         {
             currentDirectory = string.Empty;

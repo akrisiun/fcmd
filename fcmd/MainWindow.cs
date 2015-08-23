@@ -95,8 +95,12 @@ namespace fcmd
 
         public string[] argv;
 
+        public static MainWindow Current { get; set; }
+
         public MainWindow(string[] argv)
         {
+            Current = this;
+
             this.argv = argv;
             this.Title = "File Commander";
             this.Visual = new MainGtkVisual();

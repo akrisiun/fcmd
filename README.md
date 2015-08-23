@@ -1,5 +1,16 @@
-The File Commander
-====
+### Building
+
+```
+git clone https://github.com/akrisiun/fcmd.git fcmd
+cd fcmd
+build
+```
+msbuild.cmd
+`
+"c:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe" "%1" "%2" %3 /verbosity:m
+`
+
+### original doc: The File Commander
 
 A customizable and extendable cross-platform two-panel file manager - The File Commander.
 
@@ -18,7 +29,7 @@ New contributions are welcome! For full info, see the README-DEV.md file.
 
 System requirements: Windows XP or newer, Linux or Mac; Microsoft .NET Framework v4.X or Mono Runtime 3.2+. GTK# 3 is required if you're using Linux or BSD environment.
 
-##How to compile:
+## How to compile:
 
 1. Get the sources by cloning the Git repo: `$ git clone https://github.com/atauenis/fcmd.git`
 2. Compile the fcmd.sln solution by using msbuild, xbuild or their GUI shells - Visual Studio 2010+, MonoDevelop 4.0+ or Xamarin Studio. The build target configuration: Release, x86.

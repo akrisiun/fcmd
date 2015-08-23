@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using pluginner.Widgets;
 using System.Drawing;
+using System.Windows.Threading;
 
 namespace fcmd.View.ctrl
 {
@@ -18,6 +19,9 @@ namespace fcmd.View.ctrl
             set { throw new NotImplementedException("no Background for TextEntry"); }
         }
 
+        object IControl.Content { get { return this.DataContext; } set { this.DataContext = value; } }
+        object IUIDispacher.Dispacher { get { return this.Dispatcher as Dispatcher; } }
+        bool IUIDispacher.CheckAccess() { return (this as DispatcherObject).CheckAccess(); }
     }
 
     // Xaml ComboBox
@@ -31,6 +35,10 @@ namespace fcmd.View.ctrl
             get { return ColorConvert.To(Background); }
             set { throw new NotImplementedException("no Background for TextEntry"); }
         }
+
+        object IControl.Content { get { return this.DataContext; } set { this.DataContext = value; } }
+        object IUIDispacher.Dispacher { get { return this.Dispatcher as Dispatcher; } }
+        bool IUIDispacher.CheckAccess() { return (this as DispatcherObject).CheckAccess(); }
 
     }
 

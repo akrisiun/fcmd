@@ -254,6 +254,8 @@ namespace pluginner.Widgets.GTK
             throw new NotImplementedException();
         }
 
+        public override bool ColumnsSet { get { return false; } }
+
     }
 
 }
