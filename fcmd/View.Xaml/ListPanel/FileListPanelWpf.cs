@@ -150,6 +150,7 @@ namespace fcmd.View.Xaml
                         // first item
                         lv.Unbind();
 
+                        FS.CurrentDirectory = Environment.CurrentDirectory;
                         var url = FS.CurrentDirectory;
                         do
                         {
@@ -168,6 +169,10 @@ namespace fcmd.View.Xaml
             var sucess = resetHandle.WaitOne(timeout: TimeSpan.FromSeconds(10)); // 10 secs
 
             lv.Finish();
+
+            var finalURL = FS.CurrentDirectory;
+            if (checkAccess)
+                UrlBox.Text = finalURL;
         }
 
         void FillItem(ref object[] Data, DirItem di, ShortenPolicies Shorten)

@@ -156,12 +156,25 @@ namespace fcmd.View.ctrl
 
         public void SetFocus()
         {
-            // if (!MainWindow.AppLoading) { }
             if (!CanGetFocus)
                 return;
 
             // DataGrid got focus
             Focus();
+        }
+
+        // change DataGridColumn.With from Auto to Actual
+        public static void DataGridColumnWidths(DataGrid dataGrid)
+        {
+            if (dataGrid.Columns.Count > 0)
+            {
+                var numerator = dataGrid.Columns.GetEnumerator();
+                while (numerator.MoveNext())
+                {
+                    var item = numerator.Current;
+                    item.Width = item.ActualWidth;
+                }
+            }
         }
 
         string fileProcol { get { return base_plugins.fs.localFileSystem.FilePrefix; } } // => "file://"

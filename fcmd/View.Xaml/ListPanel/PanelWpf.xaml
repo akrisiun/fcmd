@@ -49,7 +49,8 @@
             <ColumnDefinition Width="24" />
         </Grid.ColumnDefinitions>
 
-        <DockPanel x:Name="Panel" Style="{StaticResource ActiveStyle}"
+        <DockPanel x:Name="Panel" x:FieldModifier="public"
+                   Style="{StaticResource ActiveStyle}"
                    HorizontalAlignment="Stretch" Grid.ColumnSpan="2">
                    <!--Style="{StaticResource ActiveStyle}"-->
             <Grid>
@@ -61,16 +62,16 @@
                     <ColumnDefinition Width="24" />
                 </Grid.ColumnDefinitions>
 
-                <local:ComboWidget x:Name="combo"
+                <local:ComboWidget x:Name="combo" x:FieldModifier="public"
                     Grid.Column="0"
                 />
 
-                <local:TextEntry x:Name="path" BorderThickness="0"
+                <local:TextEntry x:Name="path" x:FieldModifier="public"
+                    BorderThickness="0"
                     Grid.Column="1"
-                    Margin="6,4,0,2"
+                    Margin="6 4 0 2"
                     HorizontalAlignment="Stretch" Text="Directory ...">
                 </local:TextEntry>
-                <!--Style="{StaticResource TextPassive}"-->
 
                 <local:ButtonWidget Style="{StaticResource Button}"
                     Grid.Column="2"
@@ -86,7 +87,8 @@
             </Grid>
         </DockPanel>
 
-        <local:ListView2Widget x:Name="data" Grid.Row="1" Grid.ColumnSpan="2"
+        <local:ListView2Widget x:Name="data" x:FieldModifier="public"
+                               Grid.Row="1" Grid.ColumnSpan="2"
                ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto" 
                IsReadOnly="True" 
                RowHeight="23"

@@ -102,6 +102,10 @@ namespace fcmd.View.Xaml
 
         public void Shown()
         {
+            ListView2Widget.DataGridColumnWidths(this.data);
+
+            Bind.PanelDirCombo(this.combo, this, this.Side);
+
             GotFocus += (s, e) =>
             {
                 PanelDataWpf.Focused(s,e);
@@ -132,6 +136,8 @@ namespace fcmd.View.Xaml
         public void Update()
         {
             PanelDataWpf.UrlBox.Text = PanelDataWpf.FS.CurrentDirectory;
+
+            Bind.PanelDirUpdate(this.combo, this, this.Side);
         }
     }
 

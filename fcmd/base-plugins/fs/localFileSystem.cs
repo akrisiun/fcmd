@@ -221,7 +221,8 @@ namespace fcmd.base_plugins.fs
             get { return curDir; }
             set
             {
-                curDir = value;
+                if (!string.IsNullOrWhiteSpace(value))
+                    curDir = value.StartsWith(Prefix) ? value : Prefix + value ;
             }
         }
 

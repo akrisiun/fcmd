@@ -113,6 +113,7 @@
     <Compile Include="Platform\Application.cs" />
     <Compile Include="Platform\ICommand.cs" />
     <Compile Include="Platform\IVisualSensitive.cs" />
+    <Compile Include="Platform\Process.cs" />
     <Compile Include="pluginfinder.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />
     <Compile Include="SettingsWindowTabs\ISettingsWindowTab.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="SettingsWindowTabs\swtViewerEditor.cs" />
     <Compile Include="Platform\Commands.cs" />
     <Compile Include="Model\View\Control.cs" />
+    <Compile Include="View.Xaml\Bind.cs" />
     <Compile Include="View.Xaml\Ctrl\InputBox.cs" />
     <Compile Include="View.Xaml\ListPanel\ListFiltered2Xaml.cs" />
     <Compile Include="View.Xaml\ListPanel\ListObservable.cs" />

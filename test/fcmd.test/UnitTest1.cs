@@ -47,7 +47,6 @@ namespace fcmd.test
                 catch (Exception)
                 {
                     var dom =  AppDomain.CreateDomain("second");
-                    //  dom.DomainManager.InitializeNewDomain(new AppDomainSetup() { ApplicationName = "Second " });
 
                     app = new fcmd.App();
                     app.Exit += App_Exit;
