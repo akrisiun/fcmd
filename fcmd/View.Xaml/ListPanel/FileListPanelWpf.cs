@@ -31,7 +31,7 @@ namespace fcmd.View.Xaml
         protected EventHandler onFocus;
         protected bool onFocusSet;
 
-#pragma warning disable 0649, 0414  // is assigned but is never used
+#pragma warning disable 0649, 0414, 0067  // is assigned but never used
         public override event TypedEvent<string> Navigate;
         public override event TypedEvent<string> OpenFile;
 #pragma warning restore 0649, 0414
@@ -47,8 +47,8 @@ namespace fcmd.View.Xaml
             Parent = parent;
         }
 
-        public ListView2Widget ListingWidget { get { return ListingViewWpf; } }
-        private ListView2Widget ListingViewWpf;
+        public ListView2DataGrid ListingWidget { get { return ListingViewWpf; } }
+        private ListView2DataGrid ListingViewWpf;
 
         public override IListingView<ListItemXaml> ListingView { get { return ListingViewWpf.DataObj as ListFiltered2Xaml; } }
 

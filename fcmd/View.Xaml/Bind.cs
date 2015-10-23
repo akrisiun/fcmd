@@ -5,6 +5,7 @@ using System.Windows.Controls;
 using fcmd.Controller;
 using System.Collections.ObjectModel;
 using System.IO;
+using fcmd.Model;
 
 namespace fcmd.View.Xaml
 {

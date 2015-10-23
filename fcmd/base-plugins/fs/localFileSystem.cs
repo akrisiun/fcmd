@@ -34,7 +34,7 @@ namespace fcmd.base_plugins.fs
         public System.Configuration.Configuration FCConfig { set { } } //it can be a placeholder because the LFS can use the fcmd.Properties.Settings...
         public IEnumerable<pluginner.DirItem> DirectoryContent { get { return DirContent; } } //возврат директории в FC
 
-#pragma warning disable 0649, 0414  // is assigned but never used
+#pragma warning disable 0649, 0414, 0067  // is assigned but never used
         public event pluginner.TypedEvent<string> StatusChanged;
         public event pluginner.TypedEvent<double> ProgressChanged;
         public event pluginner.TypedEvent<object[]> APICallHost = null;

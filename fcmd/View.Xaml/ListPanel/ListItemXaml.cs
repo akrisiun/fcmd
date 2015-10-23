@@ -186,6 +186,10 @@ namespace fcmd.View.Xaml
 
         public object Tag { get; set; }
 
+        public override string ToString()
+        {
+            return _Values.Length > 0 ? _Values[0] as string : Tag as string;
+        }
 
         #endregion
 
@@ -196,8 +200,6 @@ namespace fcmd.View.Xaml
         {
             public Color BackgroundColor { get { return default(Color); } set {; } }
             public Color Foreground { get { return default(Color); } set {; } }
-            // public string Tag; //don't forgetting that the lv2 is used only for file list, so the tag can be only a string
-
         }
 
         #endregion

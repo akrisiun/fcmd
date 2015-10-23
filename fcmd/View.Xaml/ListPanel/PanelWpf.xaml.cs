@@ -102,7 +102,7 @@ namespace fcmd.View.Xaml
 
         public void Shown()
         {
-            ListView2Widget.DataGridColumnWidths(this.data);
+            ListView2DataGrid.DataGridColumnWidths(this.data);
 
             Bind.PanelDirCombo(this.combo, this, this.Side);
 

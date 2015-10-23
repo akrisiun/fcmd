@@ -156,7 +156,7 @@ namespace fcmd.test
 
             backend.args = new string[] { dir };
             backend.LoadDirSynchonous();
-            var listing = data.ActivePanel.ListingWidget as ListView2Widget; // .ListingView as ListFiltered2Xaml;
+            var listing = data.ActivePanel.ListingWidget as ListView2DataGrid; // .ListingView as ListFiltered2Xaml;
             listing.SetupColumns();
 
             backend.Shown();

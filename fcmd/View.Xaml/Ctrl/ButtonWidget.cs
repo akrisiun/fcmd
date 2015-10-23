@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using pluginner.Widgets;
 using System.Windows.Threading;
 using System.Windows.Input;
+using fcmd.Platform;
 
 namespace fcmd.View.ctrl
 {
@@ -15,11 +16,12 @@ namespace fcmd.View.ctrl
         {
             if (Text != null)
                 Content = Text;
-
-
         }
 
-        IRelayCommand IButton.Command { get { return this.Command as IRelayCommand; } set { base.Command = value as  ICommand; } }
+        pluginner.Widgets.ICommand IButton.Command { 
+            get { return this.Command as pluginner.Widgets.ICommand; } 
+            set { base.Command = value as IRelayCommand; } 
+        }
 
         object IUIDispacher.Dispacher { get { return this.Dispatcher as Dispatcher; } }
         bool IUIDispacher.CheckAccess() { return (this as DispatcherObject).CheckAccess(); }

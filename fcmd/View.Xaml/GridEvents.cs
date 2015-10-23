@@ -8,12 +8,16 @@ using System;
 
 namespace fcmd.Model
 {
+    using ICommand = System.Windows.Input.ICommand;
+    using fcmd.Platform;
+
     public abstract class Command : ICommand, IRelayCommand 
     {
         public bool Enabled { get; set; }
         public Action Action { get; set; }
         public FrameworkElement Target { get; set; }
 
+#pragma warning disable 0649, 0067, 0414
         public event EventHandler CanExecuteChanged;
 
         public virtual bool CanExecute(object parameter = null) { return Enabled; } //  && Target != null && Target.CheckAccess(); }
@@ -26,7 +30,7 @@ namespace fcmd.Model
 
     public static class GridEvents
     {
-        public static void BindGridEvents(this ListView2Widget @this)
+        public static void BindGridEvents(this ListView2DataGrid @this)
         {
             @this.SelectionChanged += SelectionChanged;
             @this.PreviewMouseDoubleClick += PreviewMouseDoubleClick;
@@ -66,7 +70,7 @@ namespace fcmd.Model
             panel.data.PreviewKeyDown += Data_PreviewKeyDown;
         }
 
-        public static void UnBindGridEvents(this ListView2Widget @this)
+        public static void UnBindGridEvents(this ListView2DataGrid @this)
         {
             @this.SelectionChanged -= SelectionChanged;
             @this.PreviewMouseDoubleClick -= PreviewMouseDoubleClick;
@@ -81,7 +85,7 @@ namespace fcmd.Model
             panel.data.PreviewKeyDown -= Data_PreviewKeyDown;
         }
 
-        private static void CdRoot_PreviewMouseLeftButtonDown(ListView2Widget @this) // object sender, MouseButtonEventArgs e)
+        private static void CdRoot_PreviewMouseLeftButtonDown(ListView2DataGrid @this) // object sender, MouseButtonEventArgs e)
         {
             // var @this = (sender as FrameworkElement).DataContext as ListView2Widget;
             var FS = @this.FileList.FS;
@@ -96,7 +100,7 @@ namespace fcmd.Model
             // e.Handled = true;
         }
 
-        private static void CdUp_PreviewMouseDown(ListView2Widget @this) // object sender, MouseButtonEventArgs e)
+        private static void CdUp_PreviewMouseDown(ListView2DataGrid @this) // object sender, MouseButtonEventArgs e)
         {
             // var @this = (sender as FrameworkElement).DataContext as ListView2Widget;
             var FS = @this.FileList.FS;
@@ -107,7 +111,7 @@ namespace fcmd.Model
 
         private static void Path_KeyDown(object sender, KeyEventArgs e)
         {
-            var @this = (sender as FrameworkElement).DataContext as ListView2Widget;
+            var @this = (sender as FrameworkElement).DataContext as ListView2DataGrid;
             if (e.Key == Key.Enter)
             {
                 var path = (e.Source as TextEntry).Text.Replace(localFileSystem.FilePrefix, "");
@@ -118,7 +122,7 @@ namespace fcmd.Model
 
         static void PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            var @this = sender as ListView2Widget;
+            var @this = sender as ListView2DataGrid;
             if (@this.SelectEnter(@this.SelectedItem as ListItemXaml))
                 e.Handled = true;
         }
@@ -126,7 +130,7 @@ namespace fcmd.Model
 
         private static void Data_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            var @this = (sender as FrameworkElement).Tag as ListView2Widget;
+            var @this = (sender as FrameworkElement).Tag as ListView2DataGrid;
             if (e.Key == Key.Enter && @this.SelectEnter(@this.SelectedItem as ListItemXaml))
                 e.Handled = true;
         }
@@ -134,7 +138,7 @@ namespace fcmd.Model
 
         static void SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            var @this = sender as ListView2Widget;
+            var @this = sender as ListView2DataGrid;
             var list = e.AddedItems;
             ListItemXaml lastItem = null;
             foreach (ListItemXaml item in list)

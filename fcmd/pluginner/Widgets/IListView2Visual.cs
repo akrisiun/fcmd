@@ -35,12 +35,6 @@ namespace pluginner.Widgets
     {
     }
 
-    public interface IRelayCommand
-    {
-        bool CanExecute(object parameter);
-        void Execute(object parameter);
-    }
-
     public interface IButton : IControl //   ICommand
     {
         string Text { get; set; }
@@ -48,7 +42,7 @@ namespace pluginner.Widgets
         event EventHandler Clicked; // { add; remove; } // ; set; }
 
         bool CanGetFocus { get; set; }
-        IRelayCommand Command {get; set; }
+        ICommand Command {get; set; }
     }
 
 #if WPF

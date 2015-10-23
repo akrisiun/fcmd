@@ -1,0 +1,131 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pluginner", "fcmd\pluginner\pluginner.csproj", "{88785B26-D617-4BE9-B449-F7CE77444794}"
+	ProjectSection(ProjectDependencies) = postProject
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3} = {92494904-35FA-4DC9-BDE9-3A3E87AC49D3}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{B830A447-2CD2-4244-9798-B7C680F01885}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt3.WPF", "xwt\Xwt.WPF\Xwt3.WPF.csproj", "{C93D746E-1586-4D4F-B411-BF5A966E6A08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xwt3", "xwt\Xwt\Xwt3.csproj", "{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpSSH", "SharpSSH\SharpSSH\SharpSSH.csproj", "{D27CF69D-4681-492A-BE4D-D3D209104423}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fcmd.ftps", "fcmd.ftps\fcmd.ftps.csproj", "{3AB3B3A1-55CB-41D2-B303-B38A64BFE122}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fcmdp", "fcmd\fcmdp.csproj", "{40506FF6-CD02-40FF-BF9F-D9702BAEDE5B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fcmd.test", "test\fcmd.test\fcmd.test.csproj", "{1ED77C1F-0475-45D3-BBB9-E0B94D801EB9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{14D0AEC9-AD3F-4ADA-899F-3DAA301B50D1}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Splat.Net45", "reactive\spat\Splat.Net45.csproj", "{570239BA-1F17-4569-9E9F-FBC6883E2B6B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{88785B26-D617-4BE9-B449-F7CE77444794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88785B26-D617-4BE9-B449-F7CE77444794}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88785B26-D617-4BE9-B449-F7CE77444794}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{88785B26-D617-4BE9-B449-F7CE77444794}.Debug|x86.Build.0 = Debug|Any CPU
+		{88785B26-D617-4BE9-B449-F7CE77444794}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{88785B26-D617-4BE9-B449-F7CE77444794}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{88785B26-D617-4BE9-B449-F7CE77444794}.Release|x86.ActiveCfg = Debug|Any CPU
+		{88785B26-D617-4BE9-B449-F7CE77444794}.Release|x86.Build.0 = Debug|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Debug|x86.Build.0 = Debug|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Release|x86.ActiveCfg = Release|Any CPU
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08}.Release|x86.Build.0 = Release|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Debug|x86.Build.0 = Debug|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Release|x86.ActiveCfg = Debug|Any CPU
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3}.Release|x86.Build.0 = Debug|Any CPU
+		{D27CF69D-4681-492A-BE4D-D3D209104423}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D27CF69D-4681-492A-BE4D-D3D209104423}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D27CF69D-4681-492A-BE4D-D3D209104423}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D27CF69D-4681-492A-BE4D-D3D209104423}.Debug|x86.Build.0 = Debug|Any CPU
+		{D27CF69D-4681-492A-BE4D-D3D209104423}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{D27CF69D-4681-492A-BE4D-D3D209104423}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{D27CF69D-4681-492A-BE4D-D3D209104423}.Release|x86.ActiveCfg = Debug|Any CPU
+		{D27CF69D-4681-492A-BE4D-D3D209104423}.Release|x86.Build.0 = Debug|Any CPU
+		{3AB3B3A1-55CB-41D2-B303-B38A64BFE122}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AB3B3A1-55CB-41D2-B303-B38A64BFE122}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3AB3B3A1-55CB-41D2-B303-B38A64BFE122}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{3AB3B3A1-55CB-41D2-B303-B38A64BFE122}.Debug|x86.Build.0 = Debug|Any CPU
+		{3AB3B3A1-55CB-41D2-B303-B38A64BFE122}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{3AB3B3A1-55CB-41D2-B303-B38A64BFE122}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{3AB3B3A1-55CB-41D2-B303-B38A64BFE122}.Release|x86.ActiveCfg = Debug|Any CPU
+		{3AB3B3A1-55CB-41D2-B303-B38A64BFE122}.Release|x86.Build.0 = Debug|Any CPU
+		{40506FF6-CD02-40FF-BF9F-D9702BAEDE5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40506FF6-CD02-40FF-BF9F-D9702BAEDE5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40506FF6-CD02-40FF-BF9F-D9702BAEDE5B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{40506FF6-CD02-40FF-BF9F-D9702BAEDE5B}.Debug|x86.Build.0 = Debug|Any CPU
+		{40506FF6-CD02-40FF-BF9F-D9702BAEDE5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40506FF6-CD02-40FF-BF9F-D9702BAEDE5B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40506FF6-CD02-40FF-BF9F-D9702BAEDE5B}.Release|x86.ActiveCfg = Release|Any CPU
+		{40506FF6-CD02-40FF-BF9F-D9702BAEDE5B}.Release|x86.Build.0 = Release|Any CPU
+		{1ED77C1F-0475-45D3-BBB9-E0B94D801EB9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ED77C1F-0475-45D3-BBB9-E0B94D801EB9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ED77C1F-0475-45D3-BBB9-E0B94D801EB9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1ED77C1F-0475-45D3-BBB9-E0B94D801EB9}.Debug|x86.Build.0 = Debug|Any CPU
+		{1ED77C1F-0475-45D3-BBB9-E0B94D801EB9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ED77C1F-0475-45D3-BBB9-E0B94D801EB9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1ED77C1F-0475-45D3-BBB9-E0B94D801EB9}.Release|x86.ActiveCfg = Release|Any CPU
+		{1ED77C1F-0475-45D3-BBB9-E0B94D801EB9}.Release|x86.Build.0 = Release|Any CPU
+		{570239BA-1F17-4569-9E9F-FBC6883E2B6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{570239BA-1F17-4569-9E9F-FBC6883E2B6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{570239BA-1F17-4569-9E9F-FBC6883E2B6B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{570239BA-1F17-4569-9E9F-FBC6883E2B6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{570239BA-1F17-4569-9E9F-FBC6883E2B6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{570239BA-1F17-4569-9E9F-FBC6883E2B6B}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C93D746E-1586-4D4F-B411-BF5A966E6A08} = {B830A447-2CD2-4244-9798-B7C680F01885}
+		{92494904-35FA-4DC9-BDE9-3A3E87AC49D3} = {B830A447-2CD2-4244-9798-B7C680F01885}
+		{D27CF69D-4681-492A-BE4D-D3D209104423} = {B830A447-2CD2-4244-9798-B7C680F01885}
+		{1ED77C1F-0475-45D3-BBB9-E0B94D801EB9} = {14D0AEC9-AD3F-4ADA-899F-3DAA301B50D1}
+		{570239BA-1F17-4569-9E9F-FBC6883E2B6B} = {B830A447-2CD2-4244-9798-B7C680F01885}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.inheritsSet = null
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.BeforeMethodDeclarationParentheses = False
+		$2.BeforeMethodCallParentheses = False
+		$2.BeforeConstructorDeclarationParentheses = False
+		$2.BeforeIndexerDeclarationBracket = False
+		$2.BeforeDelegateDeclarationParentheses = False
+		$2.AfterDelegateDeclarationParameterComma = True
+		$2.NewParentheses = False
+		$2.SpacesBeforeBrackets = False
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+	EndGlobalSection
+EndGlobal

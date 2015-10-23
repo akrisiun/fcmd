@@ -4,16 +4,9 @@ using System;
 
 namespace fcmd.Controller
 {
-    public enum PanelSide
+    public class ExitCommand : IRelayCommand
     {
-        Undefined = 0,
-        Left = 1,
-        Right = 2
-    }
-
-    public class ExitCommand : ICommand
-    {
-#pragma warning disable 0649, 0414  // is assigned but never used
+#pragma warning disable 0649, 0067, 0414  // is assigned but never used
         public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter) { return true; }
@@ -29,7 +22,7 @@ namespace fcmd.Controller
         }
     }
 
-    public class EventCommand : ICommand
+    public class EventCommand : IRelayCommand
     {
         public Action<object> ExecuteCmd { get; set; }
         public Object Target { get; set; }

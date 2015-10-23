@@ -73,6 +73,7 @@
     <Compile Include="Widgets\GTK\EditableLabel.cs" />
     <Compile Include="Widgets\GTK\ListView2Canvas.cs" />
     <Compile Include="Widgets\GTK\HeavyScroller.cs" />
+    <Compile Include="Widgets\ICommand.cs" />
     <Compile Include="Widgets\IContent.cs" />
     <Compile Include="Widgets\IFileListPanel.cs" />
     <Compile Include="Widgets\IListingView.cs" />

@@ -32,7 +32,7 @@ namespace fcmd.base_plugins.ve
         public string Author { get { return "Alexander Tauenis"; } }
         public System.Configuration.Configuration FCConfig { set { } } //it can be a placeholder because the PT can use the fcmd.Properties.Settings...
 
-#pragma warning disable 0649, 0414  // is assigned but never used
+#pragma warning disable 0649, 0414, 0067  // is assigned but never used
         public event pluginner.TypedEvent<object[]> APICallHost = null;
 
         #endregion

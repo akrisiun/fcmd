@@ -75,6 +75,7 @@
     <Compile Include="FileList\InputBox.cs" />
     <Compile Include="Model\IDriveCombo.cs" />
     <Compile Include="Model\IPanelLayout.cs" />
+    <Compile Include="Model\PanelSide.cs" />
     <Compile Include="Platform\AiLib\IOFile\DirectoryEnum.cs" />
     <Compile Include="Platform\AiLib\IOFile\Iterator.cs" />
     <Compile Include="Platform\AiLib\IOFile\PathHelpers.cs" />
@@ -126,19 +127,20 @@
     <Compile Include="Platform\Commands.cs" />
     <Compile Include="Model\View\Control.cs" />
     <Compile Include="View.Xaml\Bind.cs" />
-    <Compile Include="View.Xaml\Ctrl\InputBox.cs" />
+    <Compile Include="View.Xaml\ctrl\InputBox.cs" />
+    <Compile Include="View.Xaml\ctrl\ListView2DataGrid.cs" />
     <Compile Include="View.Xaml\ListPanel\ListFiltered2Xaml.cs" />
     <Compile Include="View.Xaml\ListPanel\ListObservable.cs" />
     <Compile Include="View.Xaml\ListPanel\ListItemXaml.cs" />
     <Compile Include="Platform\MessageDialog.cs" />
     <Compile Include="View.Xaml\MenuWpf.cs" />
     <Compile Include="View.Xaml\WindowData.cs" />
-    <Compile Include="View.Xaml\Ctrl\ButtonWidget.cs" />
-    <Compile Include="View.Xaml\Ctrl\DataGridBackend.cs" />
-    <Compile Include="View.Xaml\Ctrl\FontWpf.cs" />
-    <Compile Include="View.Xaml\Ctrl\LabelWidget.cs" />
-    <Compile Include="View.Xaml\Ctrl\ListView2Widget.cs" />
-    <Compile Include="View.Xaml\Ctrl\TextEntry.cs" />
+    <Compile Include="View.Xaml\ctrl\ButtonWidget.cs" />
+    <Compile Include="View.Xaml\ctrl\DataGridBackend.cs" />
+    <Compile Include="View.Xaml\ctrl\FontWpf.cs" />
+    <Compile Include="View.Xaml\ctrl\LabelWidget.cs" />
+    <Compile Include="View.Xaml\ctrl\PointedItem.cs" />
+    <Compile Include="View.Xaml\ctrl\TextEntry.cs" />
     <Compile Include="View.Xaml\ListPanel\FileListPanelWpf.cs" />
     <Compile Include="View.Xaml\GridEvents.cs" />
     <Compile Include="View.Xaml\MenuPanelWpf.xaml.cs">
@@ -201,6 +203,10 @@
     <EmbeddedResource Include="Properties\Resources.resx" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\reactive\spat\Splat.Net45.csproj">
+      <Project>{570239ba-1f17-4569-9e9f-fbc6883e2b6b}</Project>
+      <Name>Splat.Net45</Name>
+    </ProjectReference>
     <ProjectReference Include="pluginner\pluginner.csproj">
       <Project>{88785B26-D617-4BE9-B449-F7CE77444794}</Project>
       <Name>pluginner</Name>

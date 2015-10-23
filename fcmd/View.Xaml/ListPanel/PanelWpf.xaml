@@ -87,7 +87,7 @@
             </Grid>
         </DockPanel>
 
-        <local:ListView2Widget x:Name="data" x:FieldModifier="public"
+        <local:ListView2DataGrid x:Name="data" x:FieldModifier="public"
                                Grid.Row="1" Grid.ColumnSpan="2"
                ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto" 
                IsReadOnly="True" 
@@ -115,6 +115,6 @@
                 <DataGridTextColumn Header=" " MinWidth="50" />
                 <DataGridTextColumn Header=" " MinWidth="50" />
             </DataGrid.Columns>
-        </local:ListView2Widget>
+        </local:ListView2DataGrid>
     </Grid>
 </UserControl>

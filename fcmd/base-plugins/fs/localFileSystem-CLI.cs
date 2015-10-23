@@ -16,8 +16,8 @@ using pluginner.Toolkit;
 namespace fcmd.base_plugins.fs
 {
 	partial class localFileSystem
-	{
-#pragma warning disable 0649, 0414  // is assigned but never used
+    {
+#pragma warning disable 0649, 0414, 0067  // is assigned but never used
 
         public event pluginner.TypedEvent<string> CLIstdoutDataReceived;
         public event pluginner.TypedEvent<string> CLIstderrDataReceived;

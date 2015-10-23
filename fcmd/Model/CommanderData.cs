@@ -280,7 +280,7 @@ namespace fcmd.Model
 
         protected void BindMenu()
         {
-            // Menu.MenuWpf.Bind(Window);
+            Menu.MenuWpf.Bind(Window);
 
             //this.CloseRequested += MainWindow_CloseRequested;
             //PanelLayout.KeyReleased += PanelLayout_KeyReleased;

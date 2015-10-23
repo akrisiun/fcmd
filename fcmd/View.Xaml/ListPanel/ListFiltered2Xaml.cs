@@ -10,6 +10,8 @@ using System.Windows.Threading;
 using System.Threading;
 using System.Threading.Tasks;
 using Xwt.Drawing;
+using System.ComponentModel;
+using System.Globalization;
 
 namespace fcmd.View.ctrl
 {
@@ -21,9 +23,12 @@ namespace fcmd.View.ctrl
         public ListSearchResult2Xaml(IListingContainer<ListItemXaml> parent) : base(parent) { }
     }
 
-    public class ListFiltered2Xaml : pluginner.Widgets.Xaml.ListView2Xaml<ListItemXaml>, IListingView<ListItemXaml>, IVisualSensitive, IListingContainer
+    public class ListFiltered2Xaml : pluginner.Widgets.Xaml.ListView2Xaml<ListItemXaml>,
+        ICollectionView,
+        IListingView<ListItemXaml>, IVisualSensitive, IListingContainer
     {
-        public ListFiltered2Xaml(IListingContainer<ListItemXaml> parent) : base(parent)
+        public ListFiltered2Xaml(IListingContainer<ListItemXaml> parent)
+            : base(parent)
         {
             filtered = new ListObservable();
             origin = new Collection<object[]>();
@@ -91,7 +96,7 @@ namespace fcmd.View.ctrl
                         AddItemFile(list, rec, null, tag);
                 }
 
-                var parent = list.Parent as ListView2Widget;
+                var parent = list.Parent as ListView2DataGrid;
                 parent.ItemsSource = null;
                 if (!parent.ColumnsSet)
                     parent.SetupColumns();
@@ -123,13 +128,14 @@ namespace fcmd.View.ctrl
 
         public System.Windows.Input.Cursor Cursor { get; set; }
 
-        public override object Content { get { return filtered; } set {; } }
+        public override object Content { get { return filtered; } set { ; } }
         public override Font FontForFileNames { get; set; }
 
         protected ListObservable filtered;
         public override ObservableCollection<ListItemXaml> DataItems
         {
-            [DebuggerStepThrough] get { return filtered; }
+            [DebuggerStepThrough]
+            get { return filtered; }
         }
 
         IEnumerable IListingContainer.ItemsSource { get { return filtered; } set { } }
@@ -188,7 +194,7 @@ namespace fcmd.View.ctrl
         public override void SetupColumns()
         {
 #if WPF
-            var parent = Parent as ListView2Widget;
+            var parent = Parent as ListView2DataGrid;
             if (!parent.ColumnsSet)
                 parent.SetupColumns();
 #endif
@@ -208,6 +214,111 @@ namespace fcmd.View.ctrl
 
         #endregion
 
+        #region WPF ICollectionView
+
+        public bool CanFilter { get { return true; } }
+        public bool CanGroup { get { return false; } }
+        public bool CanSort { get { return true; } }
+
+        public bool Contains(object item)
+        {
+            return this.filtered.Contains(item as ListItemXaml);
+        }
+
+        public System.Globalization.CultureInfo Culture
+        {
+            get { return CultureInfo.DefaultThreadCurrentUICulture; }
+            set { CultureInfo.DefaultThreadCurrentUICulture = value; }
+        }
+
+#pragma warning disable 0649, 0414, 0067  // is assigned but never used
+        public event EventHandler CurrentChanged;
+        public event CurrentChangingEventHandler CurrentChanging;
+
+        public object CurrentItem
+        {
+            get { return this.filtered[CurrentPosition]; }
+        }
+
+        public int CurrentPosition { get; protected set; }
+
+        public IDisposable DeferRefresh()
+        {
+            return filtered;
+        }
+
+        public Predicate<object> Filter { get; set; }
+        public ObservableCollection<GroupDescription> GroupDescriptions { get { return null; } }
+        public ReadOnlyObservableCollection<object> Groups { get { return null; } }
+
+        public bool IsCurrentAfterLast
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool IsCurrentBeforeFirst
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public bool IsEmpty
+        {
+            get { return !filtered.GetEnumerator().MoveNext(); }
+        }
+
+        public bool MoveCurrentTo(object item)
+        {
+            return true;
+        }
+
+        public bool MoveCurrentToFirst()
+        {
+            return true;
+        }
+
+        public bool MoveCurrentToLast()
+        {
+            return true;
+        }
+
+        public bool MoveCurrentToNext()
+        {
+            return true;
+        }
+
+        public bool MoveCurrentToPosition(int position)
+        {
+            return true;
+        }
+
+        public bool MoveCurrentToPrevious()
+        {
+            return true;
+        }
+
+        public void Refresh()
+        {
+
+        }
+
+        public SortDescriptionCollection SortDescriptions
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public IEnumerable SourceCollection
+        {
+            get { return this.filtered; }
+        }
+
+        //public new IEnumerator GetEnumerator()
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+        public event System.Collections.Specialized.NotifyCollectionChangedEventHandler CollectionChanged;
+
+        #endregion
     }
 
 }

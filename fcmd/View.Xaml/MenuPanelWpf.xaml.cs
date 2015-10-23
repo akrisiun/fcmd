@@ -1,13 +1,47 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
 using System.Windows.Markup;
+using System.Diagnostics;
 
 namespace fcmd.View.Xaml
 {
+    public interface IXamlMenu 
+    {
+        MenuItem mnuCommands {get;}
+
+        MenuItem mnuCommandsView {get;}
+        MenuItem mnuCommandsEdit {get;}
+
+        MenuItem mnuCommandsCopy  {get;}
+		MenuItem mnuCommandsMove {get;}
+		MenuItem mnuCommandsMkDir {get;}
+		MenuItem mnuCommandsDelete {get;}
+		MenuItem mnuCommandsFindFiles {get;}
+        MenuItem itemExit {get;}
+
+        MenuItem mnuOptions {get;}
+    }
+
+
     /// <summary>
     /// Interaction logic for MenuWpf.xaml
     /// </summary>
-    public partial class MenuPanelWpf : UserControl, IComponentConnector
+    public partial class MenuPanelWpf : UserControl, IComponentConnector, IXamlMenu
     {
+        MenuItem IXamlMenu.mnuCommands { [DebuggerStepThrough] get { return this.mnuCommands; } }
+
+        MenuItem IXamlMenu.mnuCommandsView { [DebuggerStepThrough] get { return this.mnuCommandsView; } }
+        MenuItem IXamlMenu.mnuCommandsEdit { [DebuggerStepThrough] get { return this.mnuCommandsEdit; } }
+
+        MenuItem IXamlMenu.mnuCommandsCopy { [DebuggerStepThrough] get { return this.mnuCommandsCopy; } }
+        MenuItem IXamlMenu.mnuCommandsMove { [DebuggerStepThrough] get { return this.mnuCommandsMove; } }
+        MenuItem IXamlMenu.mnuCommandsMkDir { [DebuggerStepThrough] get { return this.mnuCommandsMkDir; } }
+        MenuItem IXamlMenu.mnuCommandsDelete { [DebuggerStepThrough] get { return this.mnuCommandsDelete; } }
+        MenuItem IXamlMenu.mnuCommandsFindFiles { [DebuggerStepThrough] get { return this.mnuCommandsFindFiles; } }
+        MenuItem IXamlMenu.itemExit { [DebuggerStepThrough] get { return this.itemExit; } }
+
+        MenuItem IXamlMenu.mnuOptions { [DebuggerStepThrough] get { return this.mnuOptions; } }
+
         public MenuPanelWpf()
         {
             InitializeComponent();

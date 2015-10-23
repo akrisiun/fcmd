@@ -73,6 +73,7 @@ namespace fcmd
     using ColorDrawing = System.Drawing;
     // using CursorType = System.Windows.Input.Cursor;
     using System.Windows;
+    using fcmd.Model;
 
     public abstract class CommanderStatusBar : UIElement, IInputElement, IContent, IStatusBar
     {
@@ -119,7 +120,7 @@ namespace fcmd
     {
         public abstract IListingView<T> ListingView { get; }
 
-        // public abstract IListingContainer ListingWidget { get; }
+        // public abstract IListingContainer Container { get; }
 
         public abstract void Initialize(PanelSide side);
 

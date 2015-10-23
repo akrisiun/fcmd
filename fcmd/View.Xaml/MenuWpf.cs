@@ -1,9 +1,10 @@
-﻿using fcmd.View;
+﻿using fcmd.Controller;
+using fcmd.View;
+using fcmd.View.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
-// using System.Windows.Controls;
 using System.Windows.Input;
 using Xwt;
 
@@ -13,7 +14,9 @@ namespace fcmd.Menu
     {
         public static void Bind(MainWindow window)
         {
-            //MenuPanelWpf menu = window.Menu;
+            MenuPanelWpf menu = window.Menu;
+
+            menu.itemExit.Command = new ExitCommand();
 
             //menu.itemExit.Command = cmdExit.Command;    // F10
             //menu.itemExit.InputGestureText = "F10";
@@ -58,8 +61,8 @@ namespace fcmd.Menu
         private static MainWindow MainWindow {  get {
                 return System.Windows.Application.Current.MainWindow as MainWindow; } }
 
-        public static CommandBinding cmdExit = null;
-            //new CommandBinding { Command = new ExitCommand() };
+        // public static CommandBinding cmdExit { get { return new CommandBinding { Command = new ExitCommand() }; } }
+
 #endif
 
         //public static void ExitExecuted(object sender, ExecutedRoutedEventArgs e)

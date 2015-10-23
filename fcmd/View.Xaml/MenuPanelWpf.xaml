@@ -17,29 +17,57 @@
 
     <StackPanel Grid.ColumnSpan="3" Background="WhiteSmoke"
                 Orientation="Vertical" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <!--<Menu x:Name="menu"  IsMainMenu="True"-->
-        <Menu x:Name="menuBar" HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="250">
-            <MenuItem x:Name="mnuLeft" Header="_Left">
+        <Menu x:Name="menuBar"  x:FieldModifier="public" IsMainMenu="True"
+              HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="250">
+            <MenuItem x:Name="mnuLeft" x:FieldModifier="public"
+                      Header="_Left">
                 <MenuItem Header="Three..." HorizontalAlignment="Left"
 			      />
             </MenuItem>
-            <MenuItem x:Name="mnuCommands"
+            <MenuItem x:Name="mnuCommands" x:FieldModifier="public"
                       Header="_Commands">
-                <MenuItem Header="_Copy .."  InputGestureText="F5" Width="140"
+                <MenuItem x:Name="mnuCommandsView" x:FieldModifier="public"
+                          Header="_View .."  InputGestureText="F3" MinWidth="200"
                           HorizontalAlignment="Left"
 			        />
-                <MenuItem Header="_Move .." InputGestureText="F6" Width="140"
+                <MenuItem x:Name="mnuCommandsEdit" x:FieldModifier="public"
+                          Header="_Edit .."  InputGestureText="F4" MinWidth="140"
                           HorizontalAlignment="Left"
 			        />
                 <Separator HorizontalAlignment="Left"/>
-                <MenuItem x:Name="itemExit" Header="_Exit .." InputGestureText="F10"
-                          Width="140"
+                <MenuItem x:Name="mnuCommandsCopy" x:FieldModifier="public"
+                          Header="_Copy .."  InputGestureText="F5" MinWidth="140"
+                          HorizontalAlignment="Left"
+			        />
+                <MenuItem x:Name="mnuCommandsMove" x:FieldModifier="public"
+                          Header="_Move .." InputGestureText="F6" MinWidth="140"
+                          HorizontalAlignment="Left"
+			        />
+                <MenuItem x:Name="mnuCommandsMkDir" x:FieldModifier="public"
+                          Header="_MkDir.." InputGestureText="F7" MinWidth="140"
+                          HorizontalAlignment="Left"
+			        />
+                <MenuItem x:Name="mnuCommandsDelete" x:FieldModifier="public"
+                          Header="_Delete.." InputGestureText="F8" MinWidth="140"
+                          HorizontalAlignment="Left"
+			        />
+                <MenuItem x:Name="mnuCommandsFindFiles" x:FieldModifier="public"
+                          Header="_Find files .." InputGestureText="Alt+F7" MinWidth="200"
+                          HorizontalAlignment="Left"
+			        />
+                <Separator HorizontalAlignment="Left"/>
+                <MenuItem x:Name="itemExit"  x:FieldModifier="public"
+                          Header="_Exit .." InputGestureText="F10"
+                          MinWidth="140"
 			        />
             </MenuItem>
-            <MenuItem x:Name="mnuOptions" Header="_Options" >
-                <MenuItem x:Name="itemAbout" Header="_About" />
+            <MenuItem x:Name="mnuOptions" x:FieldModifier="public"
+                      Header="_Options" >
+                <MenuItem x:Name="itemAbout"  x:FieldModifier="public"
+                          Header="_About" />
             </MenuItem>
-            <MenuItem x:Name="mnuRight" Header="_Right" 
+            <MenuItem x:Name="mnuRight"  x:FieldModifier="public"
+                      Header="_Right" 
                       HorizontalAlignment="Right" />
         </Menu>
     </StackPanel> 

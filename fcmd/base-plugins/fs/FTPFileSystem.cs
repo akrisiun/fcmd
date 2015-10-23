@@ -268,7 +268,7 @@ namespace fcmd.base_plugins.fs
             get { return "/"; }
         }
 
-#pragma warning disable 0649, 0414  // is assigned but never used
+#pragma warning disable 0649, 0414, 0067  // is assigned but never used
         public event TypedEvent<string> StatusChanged;
 
         public event TypedEvent<double> ProgressChanged;
