@@ -141,14 +141,12 @@ namespace fcmd.View.Xaml
                     else
                         dis = FS.GetDirectoryContent(new FileSystemOperationStatus());
 
-                    //  IList<Tuple<string, object[], IEnumerable<bool>>> disData = null;
-                    //  disData = new Collection<Tuple<string, object[], IEnumerable<bool>>>();
-
                     var num = dis.GetEnumerator();
                     if (num != null && num.MoveNext())     // if first item found
                     {
-                        // first item
-                        lv.Unbind();
+                        // after first item
+                        if (lv.Count > 0)
+                            lv.ClearData(); // origin clear
 
                         FS.CurrentDirectory = Environment.CurrentDirectory;
                         var url = FS.CurrentDirectory;
@@ -166,7 +164,7 @@ namespace fcmd.View.Xaml
                 });
 
             DirLoadingThread.Start();
-            var sucess = resetHandle.WaitOne(timeout: TimeSpan.FromSeconds(10)); // 10 secs
+            var success = resetHandle.WaitOne(timeout: TimeSpan.FromSeconds(10)); // 10 secs
 
             lv.Finish();
 
@@ -174,6 +172,8 @@ namespace fcmd.View.Xaml
             if (checkAccess)
                 UrlBox.Text = finalURL;
         }
+
+        #region Load
 
         void FillItem(ref object[] Data, DirItem di, ShortenPolicies Shorten)
         {
@@ -365,7 +365,8 @@ namespace fcmd.View.Xaml
                 else if (ex is NullReferenceException || ex.InnerException != null)
                 {
                     MessageDialog.ShowWarning(ex.Message,
-                        ex.StackTrace + "\nInner exception: " + ex.InnerException.Message ?? "none");
+                        ex.StackTrace
+                        + (ex.InnerException != null ? "\nInner exception: " + ex.InnerException.Message ?? "none" : ""));
                 }
                 else
                 {
@@ -401,5 +402,8 @@ namespace fcmd.View.Xaml
         {
             LoadDir(null, null);
         }
+
+        #endregion
+
     }
 }

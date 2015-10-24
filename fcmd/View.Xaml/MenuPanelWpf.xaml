@@ -27,38 +27,38 @@
             <MenuItem x:Name="mnuCommands" x:FieldModifier="public"
                       Header="_Commands">
                 <MenuItem x:Name="mnuCommandsView" x:FieldModifier="public"
-                          Header="_View .."  InputGestureText="F3" MinWidth="200"
+                          Header="_View"  InputGestureText="F3" MinWidth="180"
                           HorizontalAlignment="Left"
 			        />
                 <MenuItem x:Name="mnuCommandsEdit" x:FieldModifier="public"
-                          Header="_Edit .."  InputGestureText="F4" MinWidth="140"
+                          Header="_Edit"  InputGestureText="F4" MinWidth="180"
                           HorizontalAlignment="Left"
 			        />
                 <Separator HorizontalAlignment="Left"/>
                 <MenuItem x:Name="mnuCommandsCopy" x:FieldModifier="public"
-                          Header="_Copy .."  InputGestureText="F5" MinWidth="140"
+                          Header="_Copy .."  InputGestureText="F5" MinWidth="180"
                           HorizontalAlignment="Left"
 			        />
                 <MenuItem x:Name="mnuCommandsMove" x:FieldModifier="public"
-                          Header="_Move .." InputGestureText="F6" MinWidth="140"
+                          Header="_Move .." InputGestureText="F6" MinWidth="180"
                           HorizontalAlignment="Left"
 			        />
                 <MenuItem x:Name="mnuCommandsMkDir" x:FieldModifier="public"
-                          Header="_MkDir.." InputGestureText="F7" MinWidth="140"
+                          Header="_MkDir.." InputGestureText="F7" MinWidth="180"
                           HorizontalAlignment="Left"
 			        />
                 <MenuItem x:Name="mnuCommandsDelete" x:FieldModifier="public"
-                          Header="_Delete.." InputGestureText="F8" MinWidth="140"
+                          Header="_Delete.." InputGestureText="F8" MinWidth="180"
                           HorizontalAlignment="Left"
 			        />
                 <MenuItem x:Name="mnuCommandsFindFiles" x:FieldModifier="public"
-                          Header="_Find files .." InputGestureText="Alt+F7" MinWidth="200"
+                          Header="_Find files .." InputGestureText="Alt+F7" MinWidth="180"
                           HorizontalAlignment="Left"
 			        />
                 <Separator HorizontalAlignment="Left"/>
                 <MenuItem x:Name="itemExit"  x:FieldModifier="public"
                           Header="_Exit .." InputGestureText="F10"
-                          MinWidth="140"
+                          MinWidth="180"
 			        />
             </MenuItem>
             <MenuItem x:Name="mnuOptions" x:FieldModifier="public"

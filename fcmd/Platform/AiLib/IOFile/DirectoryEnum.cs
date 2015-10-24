@@ -7,22 +7,6 @@ namespace AiLib.IOFile
 {
     public static class DirectoryEnum
     {
-        //public static IEnumerable<string> ReadFiles(string path,
-        //        String searchPattern = "*.*", SearchOption searchOption = SearchOption.TopDirectoryOnly)
-        //{
-        //    var resultHandler = new StringResultHandler(true, includeDirs: false);
-        //    if (Environment.OSVersion.Platform == PlatformID.Win32NT)
-        //    {
-        //        var iterator =
-        //            new Win32FileSystemEnumerableIterator<string>(path, null,
-        //                searchPattern, searchOption, resultHandler);
-        //        var numer = iterator.GetEnumerator();
-
-        //        while (numer.MoveNext())
-        //            yield return Path.Combine(path, numer.Current);
-        //    }
-        //}
-
         public static IEnumerable<FileDataInfo> ReadFilesInfo(string path,
                        String searchPattern = "*.*", SearchOption searchOption = SearchOption.TopDirectoryOnly)
         {
@@ -35,6 +19,8 @@ namespace AiLib.IOFile
 
                 while (numer.MoveNext())
                     yield return numer.Current;
+
+                yield break;
             }
 
             var numerate = System.IO.Directory.EnumerateFiles(path, searchPattern, searchOption);
@@ -58,7 +44,7 @@ namespace AiLib.IOFile
         internal ulong dwFileAttributes;
         internal ulong nFileSizeLow;
 
-        //[MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+        // [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
         internal string cFileName;
 
         public string Name { get { return cFileName; } }

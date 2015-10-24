@@ -26,18 +26,27 @@ namespace fcmd.View.ctrl
                 columns.Add(item);
             }
 
-            // ItemsControl
-            IEnumerable result = list as IEnumerable;
-
             grid.AutoGenerateColumns = false;
             grid.IsReadOnly = grid.IsReadOnly;
+
+            return list as IEnumerable;
+        }
+
+        public static DataGrid SetItemsSource(this DataGrid dataGrid, IEnumerable list)
+        { 
+            // ItemsControl
+            IEnumerable result = list;
+            if (result == null)
+                return dataGrid;
+
             try
             {
-                grid.ItemsSource = result;
+                dataGrid.SetValue(ItemsControl.ItemsSourceProperty, result);
+                // .ItemsSource = result;
             }
             catch (Exception) {; } // Invalid Operation in PresentationFramework.dll
 
-            return result;
+            return dataGrid;
         }
 
     }

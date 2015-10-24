@@ -82,7 +82,7 @@ namespace pluginner.Widgets.Xaml
         public abstract bool Remove(T item);
         public abstract void CopyTo(T[] item, int arrayIndex);
 
-        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); }
+        IEnumerator IEnumerable.GetEnumerator() { return DataItems.GetEnumerator(); }
         public IEnumerator<T> GetEnumerator() { return DataItems.GetEnumerator(); }
 
 

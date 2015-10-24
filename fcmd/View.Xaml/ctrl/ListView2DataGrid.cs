@@ -15,8 +15,7 @@ using fcmd.Model;
 using System.Windows.Threading;
 using System.Windows;
 using System.Collections;
-using System.ComponentModel;
-using System.Windows.Data;
+using System.Diagnostics.Contracts;
 
 namespace fcmd.View.ctrl
 {
@@ -26,9 +25,9 @@ namespace fcmd.View.ctrl
         #region ctor
 
         // Non visual data container
-        public ListFiltered2Xaml DataObj { get; protected set; }
-        public PanelWpf Panel { get; set; }
-        public FileListPanelWpf FileList { get; set; }
+        public ListFiltered2Xaml DataObj {[DebuggerStepThrough] get; protected set; }
+        public PanelWpf Panel {[DebuggerStepThrough] get; set; }
+        public FileListPanelWpf FileList {[DebuggerStepThrough] get; set; }
 
         public ListView2DataGrid()
         {
@@ -47,19 +46,27 @@ namespace fcmd.View.ctrl
         bool bound = false;
         public virtual void Bind()
         {
-            if (this.ItemsSource == null)
-                this.ItemsSource = DataObj.DataItems;
+            if (bound && this.ItemsSource == null)
+            {
+                Contract.Assert(DataObj.DataSource == this);
+                DataObj.BindUpdate(); // this.ItemsSource = DataObj.DataItems;
+            }
 
             if (bound) return;
+
+            DataObj.BindGrid(this);
 
             // DataGrid bind
             this.BindGridEvents();
             bound = true;
         }
+
         public virtual void UnBind()
         {
             if (!bound) return;
             bound = false;
+
+            DataObj.UnBindGrid();
             this.UnBindGridEvents();
         }
 
@@ -114,6 +121,7 @@ namespace fcmd.View.ctrl
 
         public void Clear()
         {
+            // ItemsSource = null;
             // if (DataObj != null && DataObj.Count > 0)
         }
 
@@ -167,6 +175,9 @@ namespace fcmd.View.ctrl
 
         public bool SelectEnter(ListItemXaml item)
         {
+            if (item == null)
+                return false;
+
             var fullpath = item.FullPath.StartsWith(fileProcol)
                     ? Path.GetFullPath(item.FullPath.Substring(fileProcol.Length)) :
                       (item.RowIndex == 0 ? item.FullPath : null);
@@ -217,18 +228,20 @@ namespace fcmd.View.ctrl
 
         public void SetupColumns()
         {
-            var items = DataObj.DataItems;
-
             if (!ColumnsSet)
             {
                 ColumnsSet = true;
                 ListView2.ColumnInfo[] definitions = DefineColumns(null);
+
+                var items = DataObj;
                 this.ToDataSource<object>(items, definitions);
 
                 this.Bind();
             }
             else
-                this.ItemsSource = items;
+                DataObj.BindUpdate();
+
+            Contract.Assert(this.ItemsSource != null);
         }
 
         public ListView2.ColumnInfo[] DefineColumns(DataFieldNumbers df)
@@ -275,51 +288,28 @@ namespace fcmd.View.ctrl
 
         #region Sort
 
-        public static readonly DependencyProperty CustomSorterProperty =
-              DependencyProperty.RegisterAttached("CustomSorter", typeof(ICustomSorter), typeof(DataGridColumn));
+        //public static readonly DependencyProperty CustomSorterProperty =
+        //      DependencyProperty.RegisterAttached("CustomSorter", typeof(ICustomSorter), typeof(DataGridColumn));
 
         protected override void OnSorting(DataGridSortingEventArgs eventArgs)
         {
-            this.ItemsSource = null;
+            //this.ItemsSource = null;
             base.OnSorting(eventArgs);
 
-            this.ItemsSource = this.DataObj.DataItems;
+            //DataObj.BindItemsSource(this);
+        }
+
+        // SetCollectionView
+        protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)
+        {
+            try
+            {
+                base.OnItemsSourceChanged(oldValue, newValue);
+            }
+            catch (Exception ex) { Console.WriteLine(ex); }
         }
 
         #endregion
-    }
-
-    // http://stackoverflow.com/questions/18122751/wpf-datagrid-customsort-for-each-column/18218963#18218963
-    public interface ICustomSorter : IComparer
-    {
-        ListSortDirection SortDirection { get; set; }
-    }
-
-    public class SortBehavior
-    {
-        static void HandleCustomSorting(object sender, DataGridSortingEventArgs e)
-        {
-            var dataGrid = sender as DataGrid;
-            if (dataGrid == null) // || !GetAllowCustomSort(dataGrid)) 
-                return;
-
-            var listColView = dataGrid.ItemsSource as ListCollectionView;
-            if (listColView == null)
-                throw new Exception("The DataGrid's ItemsSource property must be of type, ListCollectionView");
-
-            // Sanity check
-            ICustomSorter sorter = null; // GetCustomSorter(e.Column);
-            if (sorter == null) return;
-
-            e.Handled = true;
-            var direction = (e.Column.SortDirection != ListSortDirection.Ascending)
-                                ? ListSortDirection.Ascending
-                                : ListSortDirection.Descending;
-
-            e.Column.SortDirection = sorter.SortDirection = direction;
-            listColView.CustomSort = sorter;
-        }
-
     }
 
 }

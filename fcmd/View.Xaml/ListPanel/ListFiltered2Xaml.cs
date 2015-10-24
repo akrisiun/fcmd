@@ -12,11 +12,13 @@ using System.Threading.Tasks;
 using Xwt.Drawing;
 using System.ComponentModel;
 using System.Globalization;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Diagnostics.Contracts;
 
 namespace fcmd.View.ctrl
 {
     // clone of ListView2Xaml : filtered list (top 1000 items)
-
     // TODO
     public abstract class ListSearchResult2Xaml : pluginner.Widgets.Xaml.ListView2Xaml<ListItemXaml> // IListingView<ListItemXaml>, IVisualSensitive, IListingContainer
     {
@@ -24,19 +26,83 @@ namespace fcmd.View.ctrl
     }
 
     public class ListFiltered2Xaml : pluginner.Widgets.Xaml.ListView2Xaml<ListItemXaml>,
-        ICollectionView,
         IListingView<ListItemXaml>, IVisualSensitive, IListingContainer
     {
+        private static object _syncLock;
+        private bool locked;
+        protected ListView2DataGrid DataGrid;
+        public DataGrid DataSource { get { return DataGrid; } }
+
         public ListFiltered2Xaml(IListingContainer<ListItemXaml> parent)
             : base(parent)
         {
+            locked = true;
+            _syncLock = new object();
+
             filtered = new ListObservable();
             origin = new Collection<object[]>();
+        }
+
+        public void BindGrid(ListView2DataGrid dataGrid)
+        {
+            DataGrid = dataGrid;
+            if (dataGrid.ItemsSource == null)
+                BindUpdate();
+
+            // http://10rem.net/blog/2012/01/20/wpf-45-cross-thread-collection-synchronization-redux
+            // Enable the cross acces to this collection elsewhere
+            locked = false;
+            BindingOperations.EnableCollectionSynchronization(dataGrid.Items, _syncLock);
+            // ViewManager.Current.RegisterCollectionSynchronizationCallback(dataGrid.Items, _syncLock, null);
+
+            dataGrid.Sorting += SortBehavior.EventHandler;
+        }
+
+        public void UnBindGrid()
+        {
+            var dataGrid = DataGrid;
+            if (dataGrid == null || locked)
+                return;
+
+            locked = true;
+            BindingOperations.DisableCollectionSynchronization(dataGrid.Items);
+            dataGrid.Sorting -= SortBehavior.EventHandler;
+
+            if (dataGrid.ItemsSource == null)
+                return;
+            dataGrid.ClearValue(ItemsControl.ItemsSourceProperty);
+        }
+
+        public void BindUpdate()
+        {
+            var dataGrid = DataGrid;
+            if (!dataGrid.CheckAccess())
+                return;
+
+            // data.ItemsSource = this.DataItems; // .DataItems;
+            Contract.Assert(this.DataItems != null);
+            dataGrid.SetValue(ItemsControl.ItemsSourceProperty, this.DataItems);
+        }
+
+        public void BindItemsSource(ListView2DataGrid dataGrid)
+        {
+            this.DataGrid = dataGrid;
+            dataGrid.SetValue(ItemsControl.ItemsSourceProperty, this.DataItems);
         }
 
         #region Filter List
 
         public void Unbind()
+        {
+            bool uiAccess = DataGrid != null && DataGrid.CheckAccess();
+            if (!uiAccess)
+                return;
+
+            UnBindGrid();
+            filtered.Clear();
+        }
+
+        public void ClearData()
         {
             origin.Clear();
         }
@@ -49,8 +115,7 @@ namespace fcmd.View.ctrl
 
         public void Finish()
         {
-            // UI tread
-            if (this.Parent.CheckAccess())
+            if (this.Parent.CheckAccess())      // UI tread
                 Requery.Take(this, origin);
             else
                 (this.Parent.Dispacher as System.Windows.Threading.Dispatcher).Invoke(
@@ -68,7 +133,6 @@ namespace fcmd.View.ctrl
 
         public const int maxWPFRecords = 4000;  // for DataGrid WPF
         protected IList<object[]> origin;
-        // public IEnumerator<object[]> Source { get { return origin == null ? null : origin.GetEnumerator(); } }
 
         internal class Requery
         {
@@ -77,8 +141,8 @@ namespace fcmd.View.ctrl
             public static void Take(ListFiltered2Xaml list, IList<object[]> origin,
                 int maxCount = maxWPFRecords)
             {
-                list.Parent.ItemsSource = null;
-                list.filtered.Clear();
+                if (list.Parent.ItemsSource != null || list.filtered.Count > 0)
+                    list.Unbind();
 
                 var numer = origin.GetEnumerator();
                 int index = -1;
@@ -96,8 +160,11 @@ namespace fcmd.View.ctrl
                         AddItemFile(list, rec, null, tag);
                 }
 
+                if (list.Count == 0)
+                {
+                }
+
                 var parent = list.Parent as ListView2DataGrid;
-                parent.ItemsSource = null;
                 if (!parent.ColumnsSet)
                     parent.SetupColumns();
                 else
@@ -128,14 +195,15 @@ namespace fcmd.View.ctrl
 
         public System.Windows.Input.Cursor Cursor { get; set; }
 
-        public override object Content { get { return filtered; } set { ; } }
+        public override object Content { get { return filtered; } set {; } }
         public override Font FontForFileNames { get; set; }
 
         protected ListObservable filtered;
         public override ObservableCollection<ListItemXaml> DataItems
         {
             [DebuggerStepThrough]
-            get { return filtered; }
+            get
+            { return filtered; }
         }
 
         IEnumerable IListingContainer.ItemsSource { get { return filtered; } set { } }
@@ -165,8 +233,12 @@ namespace fcmd.View.ctrl
 
         public override void Add(ListItemXaml item)
         {
-            item.RowIndex = filtered.Count;
-            filtered.Add(item);
+            lock (_syncLock)
+            {
+
+                item.RowIndex = filtered.Count;
+                filtered.Add(item);
+            }
         }
 
         public override bool Contains(ListItemXaml item)
@@ -214,112 +286,86 @@ namespace fcmd.View.ctrl
 
         #endregion
 
-        #region WPF ICollectionView
-
-        public bool CanFilter { get { return true; } }
-        public bool CanGroup { get { return false; } }
-        public bool CanSort { get { return true; } }
-
-        public bool Contains(object item)
-        {
-            return this.filtered.Contains(item as ListItemXaml);
-        }
-
-        public System.Globalization.CultureInfo Culture
-        {
-            get { return CultureInfo.DefaultThreadCurrentUICulture; }
-            set { CultureInfo.DefaultThreadCurrentUICulture = value; }
-        }
-
-#pragma warning disable 0649, 0414, 0067  // is assigned but never used
-        public event EventHandler CurrentChanged;
-        public event CurrentChangingEventHandler CurrentChanging;
-
-        public object CurrentItem
-        {
-            get { return this.filtered[CurrentPosition]; }
-        }
-
-        public int CurrentPosition { get; protected set; }
-
-        public IDisposable DeferRefresh()
-        {
-            return filtered;
-        }
-
-        public Predicate<object> Filter { get; set; }
-        public ObservableCollection<GroupDescription> GroupDescriptions { get { return null; } }
-        public ReadOnlyObservableCollection<object> Groups { get { return null; } }
-
-        public bool IsCurrentAfterLast
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool IsCurrentBeforeFirst
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public bool IsEmpty
-        {
-            get { return !filtered.GetEnumerator().MoveNext(); }
-        }
-
-        public bool MoveCurrentTo(object item)
-        {
-            return true;
-        }
-
-        public bool MoveCurrentToFirst()
-        {
-            return true;
-        }
-
-        public bool MoveCurrentToLast()
-        {
-            return true;
-        }
-
-        public bool MoveCurrentToNext()
-        {
-            return true;
-        }
-
-        public bool MoveCurrentToPosition(int position)
-        {
-            return true;
-        }
-
-        public bool MoveCurrentToPrevious()
-        {
-            return true;
-        }
-
-        public void Refresh()
-        {
-
-        }
-
-        public SortDescriptionCollection SortDescriptions
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public IEnumerable SourceCollection
-        {
-            get { return this.filtered; }
-        }
-
-        //public new IEnumerator GetEnumerator()
-        //{
-        //    throw new NotImplementedException();
-        //}
-
-        public event System.Collections.Specialized.NotifyCollectionChangedEventHandler CollectionChanged;
-
-        #endregion
     }
 
-}
 
+    // http://stackoverflow.com/questions/18122751/wpf-datagrid-customsort-for-each-column/18218963#
+    // http://mikestedman.blogspot.lt/2012/07/wpf-datagrid-custom-column-sorting.html
+    public interface IDirectionComparer : IComparer
+    {
+        ListSortDirection SortDirection { get; set; }
+    }
+
+    public static class SortBehavior
+    {
+        static SortBehavior() { EventHandler = new DataGridSortingEventHandler(Handler); }
+        public static DataGridSortingEventHandler EventHandler { get; private set; }
+
+        private static void Handler(object sender, DataGridSortingEventArgs e)
+        {
+            var dataGrid = sender as DataGrid;
+            if (dataGrid == null) // || !GetAllowCustomSort(dataGrid)) 
+                return;
+
+            //var listColView = dataGrid.ItemsSource as ListCollectionView;
+            //if (listColView == null)
+            //    throw new Exception("The DataGrid's ItemsSource property must be of type, ListCollectionView");
+
+            //use a ListCollectionView to do the sort. 
+            var source = dataGrid.GetValue(ItemsControl.ItemsSourceProperty);
+            ListCollectionView listColView = (ListCollectionView)CollectionViewSource.GetDefaultView(source);
+
+            // Sanity check <ListItemXaml>
+            var path = e.Column.SortMemberPath;
+            int index = path == "fldSize" ? 1 : path == "fldModified" ? 2 : 0;
+            var direction = (e.Column.SortDirection != ListSortDirection.Ascending)
+                                ? ListSortDirection.Ascending
+                                : ListSortDirection.Descending;
+
+            IDirectionComparer sorter = new FilterComparer { SortDirection = direction, Index = index };
+            e.Handled = true;
+
+            e.Column.SortDirection = direction;
+            listColView.CustomSort = sorter;
+        }
+    }
+
+
+    public class FilterComparer : IDirectionComparer
+    {
+        public ListSortDirection SortDirection { get; set; }
+        public int Index { get; set; }
+
+        public int Compare(object a, object b)
+        {
+            var objA = a as ListItemXaml;
+            if (objA.Tag as string == "..")
+                return -1; // SortDirection == ListSortDirection.Ascending ? 1 : -1;
+            var objB = b as ListItemXaml;
+
+            string valueA = objA.Data[Index] as string;
+            string valueB = objB.Data[Index] as string;
+            if (objA.IsDirectory != objB.IsDirectory)
+            {
+                if (objA.IsDirectory)
+                    return SortDirection == ListSortDirection.Ascending ? 1 : -1;
+                return SortDirection == ListSortDirection.Descending ? 1 : -1;
+                // * valueA.CompareTo(valueB);
+            }
+            if (objB.Tag as string == "..")
+                return 1;
+
+
+            if (SortDirection == ListSortDirection.Ascending)
+            {
+                return valueA.CompareTo(valueB);
+            }
+            else
+            {
+                return valueB.CompareTo(valueA);
+            }
+        }
+    }
+
+
+}
