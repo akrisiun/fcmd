@@ -6,15 +6,22 @@
  * 2015, Andrius Krisiunas (akrisiun@gmail.com)
  */
 
+using pluginner.Widgets;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
-// using Xwt;
 using Xwt.Drawing;
 
 namespace pluginner
 {
+    public interface IVisualPlugin : IFSPlugin
+    {
+        IControl UIControl { get; }
+
+        IControl AttachToPanel(IFileListPanel panel, IControl uiControl, object element /* WebBrowser */);
+    }
+
     /// <summary>Interface for filesystem & archive plugins.</summary>
     public interface IFSPlugin : IPlugin
     {
@@ -351,4 +358,41 @@ namespace pluginner
     }
     #endregion
 
+    /* brief:
+    public interface IFSPlugin : IPlugin
+    {
+        IEnumerable<DirItem> DirectoryContent { get; }
+        IEnumerable<DirItem> GetDirectoryContent(FileSystemOperationStatus FSOS);
+
+        string CurrentDirectory { get; set; }
+        string RootDirectory { get; set; }
+        string Prefix { get; }
+        string NoPrefix(string dir);
+        bool FileExists(string URL);
+        bool DirectoryExists(string URL);
+        bool CanBeRead(string URL);
+        FSEntryMetadata GetMetadata(string URL);
+
+        Exception LastError { get; set; }
+        byte[] GetFileContent(string URL);
+        Stream GetFileStream(string URL, bool Write = false);
+        void WriteFileContent(string URL, Int32 Start, byte[] Content);
+        void Touch(FSEntryMetadata metadata);
+        void Touch(string URL);
+        void DeleteFile(string URL);
+        void MoveFile(string oldURL, string newURL);
+        void DeleteDirectory(string URL, bool TrySafe);
+        void CreateDirectory(string URL);
+        void MoveDirectory(string OldURL, string NewURL);
+        string DirSeparator { get; }
+
+        void CLIstdinWriteLine(string StdIn);
+
+        event TypedEvent<string> StatusChanged;
+        event TypedEvent<double> ProgressChanged;
+        event TypedEvent<string> CLIstdoutDataReceived;
+        event TypedEvent<string> CLIstderrDataReceived;
+        event TypedEvent<string> CLIpromptChanged;
+    }
+    */
 }

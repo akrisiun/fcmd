@@ -34,3 +34,4 @@ xwt/lib/nunit.framework.xml
 *.pdb
 *.psess
 *.vspx
+web/

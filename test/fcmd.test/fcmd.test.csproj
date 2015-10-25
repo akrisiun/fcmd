@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>fcmd.test</RootNamespace>
     <AssemblyName>fcmd.test</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -63,6 +63,10 @@
     <ProjectReference Include="..\..\fcmd.ftps\fcmd.ftps.csproj">
       <Project>{3ab3b3a1-55cb-41d2-b303-b38a64bfe122}</Project>
       <Name>fcmd.ftps</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\fcmd.http\fcmd.http.csproj">
+      <Project>{c6bf2171-f02b-47b0-acb0-a1ebbac373ab}</Project>
+      <Name>fcmd.http</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\fcmd\fcmdp.csproj">
       <Project>{40506ff6-cd02-40ff-bf9f-d9702baede5b}</Project>

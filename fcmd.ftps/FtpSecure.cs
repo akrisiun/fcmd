@@ -13,12 +13,14 @@ using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using Xwt;
 
-namespace fcmd.ftps
+namespace fcmd.http
 {
     public class FtpSecure : IFSPlugin
     {
+        #region Properties
+
         // System.Net.FtpWebRequest
-        // private FTPClient ftp;
+        // old: FTPClient ftp;
         protected FtpWebRequest ftp;
         protected bool IsSsl = true;
         protected bool success = false;
@@ -31,6 +33,10 @@ namespace fcmd.ftps
 
         private static Regex FtpListDirectoryDetailsRegex
             = new Regex(@".*(?<month>(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec))\s*(?<day>[0-9]*)\s*(?<yearTime>([0-9]|:)*)\s*(?<fileName>.*)", RegexOptions.Compiled | RegexOptions.IgnoreCase); //undone: add style switching (windows, unix, etc)
+
+        #endregion
+
+        #region Ftps specifics
 
         private void _CheckProtocol(string url)
         {
@@ -51,20 +57,12 @@ namespace fcmd.ftps
             _CheckProtocol(url);
 
             RootDirectory = Prefix + "/";
-
             Uri URI = new Uri(url);
-
             if (ftp == null || !success)
                 Connect(url);
 
             success = false;
-
-            //Socket sck = ftp.GetDataSocket();//possible ftpexception, todo add try...catch
-            //ftp.SendCommand("CWD " + URI.PathAndQuery);
-            //ftp.SendCommand("TYPE A");
-            //ftp.SendCommand("LIST", out ListResult);
-
-            FtpWebRequest ftpRequest = this.ftp; // (FtpWebRequest)WebRequest.Create(myUrl);
+            FtpWebRequest ftpRequest = this.ftp;
             ftpRequest.Proxy = FtpWebRequest.DefaultWebProxy;
 
             // http://stackoverflow.com/questions/4584789/connecting-ftp-server-with-credentials
@@ -85,10 +83,7 @@ namespace fcmd.ftps
             ftpRequest.EnableSsl = IsSsl;
             ftpRequest.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
             FtpWebResponse directoryListResponse = (FtpWebResponse)ftpRequest.GetResponse();
-            // using (FtpWebResponse ftpResponse = (FtpWebResponse)ftpRequest.GetResponse())
-            //  StreamReader sr = new StreamReader(new NetworkStream(sck));
 
-            string directoryListing = string.Empty;
             Stream req = null;
             StreamReader sr = null;
             List<DirItem> dirContent = null;
@@ -110,8 +105,7 @@ namespace fcmd.ftps
 
             dirContent = dirContent ?? new List<DirItem>();
 
-            //todo: элемент "вверх по древу"
-            /*
+            /* TODO: элемент "вверх по древу"
             if (URI.PathAndQuery != "/")
             {
                 string upDirUrl = "ftp://" + URI.Host + ":" + URI.Port + URI.PathAndQuery;
@@ -124,6 +118,19 @@ namespace fcmd.ftps
                 directoryContent.Add(updir);
             }*/
 
+            directoryListing = string.Empty;
+            ReadStream(sr, URI);
+
+            this.dirContent = dirContent;
+            req.Dispose();
+            directoryListResponse.Dispose();
+            success = true;
+        }
+
+        private string directoryListing;
+
+        void ReadStream(StreamReader sr, Uri URI)
+        {
             while (!sr.EndOfStream)
             {
                 string CurItem = sr.ReadLine();
@@ -143,8 +150,8 @@ namespace fcmd.ftps
                            .Replace("AM", "")
                            .Replace("PM", "")
                            .TrimEnd().Replace("  ", " ");
-                    DateTime.TryParseExact(date, 
-                        new string[] {"MM-dd-yy hh:mm PM"}, 
+                    DateTime.TryParseExact(date,
+                        new string[] { "MM-dd-yy hh:mm PM" },
                         new System.Globalization.CultureInfo("en-US"),
                         System.Globalization.DateTimeStyles.None,
                         out di.Date);
@@ -174,7 +181,7 @@ namespace fcmd.ftps
                         //    di.IconSmall = Utilities.GetIconForMIME(di.MIMEType);
                     }
                     di.Date = DateTime.Parse(
-                        m.Groups["month"].Value + " " + m.Groups["day"].Value + " " + 
+                        m.Groups["month"].Value + " " + m.Groups["day"].Value + " " +
                         m.Groups["yearTime"].Value);
                 }
                 // ReSharper disable once EmptyGeneralCatchClause
@@ -187,12 +194,6 @@ namespace fcmd.ftps
                 if (!string.IsNullOrWhiteSpace(di.TextToShow))
                     dirContent.Add(di);
             }
-
-            //ftp.ReadResponse();
-            this.dirContent = dirContent;
-            req.Dispose();
-            directoryListResponse.Dispose();
-            success = true;
         }
 
         public void Connect(string url)
@@ -216,17 +217,9 @@ namespace fcmd.ftps
             _CheckProtocol(url);
 
             // FtpWebRequest.DefaultWebProxy 
-
             ServicePointManager.ServerCertificateValidationCallback = ServerCertificateValidationCallback;
             ftp = (FtpWebRequest)FtpWebRequest.CreateDefault(adr);
             ftp.UsePassive = true;
-
-            //new FTPClient(
-            //    adr.Host,
-            //    adr.Port,
-            //    "anonymous",
-            //    @"test@test.org" // ru"
-            //);
             hostname = adr.Host;
         }
 
@@ -276,6 +269,10 @@ namespace fcmd.ftps
             }
         }
 
+        #endregion
+
+        #region Directory content
+
         public IEnumerable<DirItem> DirectoryContent
         {
             get { return dirContent; }
@@ -314,6 +311,10 @@ namespace fcmd.ftps
             return dirContent.Any(di => di.URL == URL);
         }
 
+        #endregion
+
+        #region Read, Move, Delete
+
         public bool CanBeRead(string URL)
         {
             throw new NotImplementedException();
@@ -321,7 +322,6 @@ namespace fcmd.ftps
 
         public FSEntryMetadata GetMetadata(string URL)
         {
-            //throw new NotImplementedException();
             return new FSEntryMetadata();
         }
 
@@ -398,6 +398,14 @@ namespace fcmd.ftps
             get { return "/"; }
         }
 
+        #endregion
+
+        public string Name { get { return "File Transfer Protocol"; } }
+        public string Version { get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
+        public string Author { get { return "akrisiun"; } }
+
+        #region Not implemented
+
 #pragma warning disable 0649, 0414  // is assigned but never used
         public event TypedEvent<string> StatusChanged = null;
         public event TypedEvent<double> ProgressChanged = null;
@@ -407,15 +415,10 @@ namespace fcmd.ftps
             throw new NotImplementedException();
         }
 
+#pragma warning disable 067
         public event TypedEvent<string> CLIstdoutDataReceived;
-
         public event TypedEvent<string> CLIstderrDataReceived;
-
         public event TypedEvent<string> CLIpromptChanged;
-
-        public string Name { get { return "File Transfer Protocol"; } }
-        public string Version { get { return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(); } }
-        public string Author { get { return "A.T."; } }
 
         public int[] APICompatibility
         {
@@ -437,5 +440,7 @@ namespace fcmd.ftps
         {
             set { /*not used because the plugin is internal*/ }
         }
+
+        #endregion
     }
 }

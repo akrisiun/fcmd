@@ -5,9 +5,33 @@ using pluginner.Widgets;
 using System.Windows.Threading;
 using System.Windows.Input;
 using fcmd.Platform;
+using System.Windows.Media;
 
 namespace fcmd.View.ctrl
 {
+    public static class VisibleSet
+    {
+        public static bool? Value(UIElement element, bool? value)
+        {
+            if (value == null)
+                element.Visibility = Visibility.Hidden;
+            else if (value ?? false)
+                element.Visibility = Visibility.Visible;
+            else
+                element.Visibility = Visibility.Collapsed;
+
+            return value;
+        }
+    }
+
+    public static class HtmlMedia
+    {
+        public static Color ConvertFromString(this string htmlColor)
+        {
+            return (Color)ColorConverter.ConvertFromString(htmlColor);
+        }
+    }
+
     public class ButtonWidget : Button, IButton
     {
         public ButtonWidget() : this(null, null) { }
@@ -25,6 +49,7 @@ namespace fcmd.View.ctrl
 
         object IUIDispacher.Dispacher { get { return this.Dispatcher as Dispatcher; } }
         bool IUIDispacher.CheckAccess() { return (this as DispatcherObject).CheckAccess(); }
+        public bool? Visible { get { return Visibility == Visibility.Visible; } set { VisibleSet.Value(this, value); } }
 
         public string Text
         {

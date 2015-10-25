@@ -10,9 +10,10 @@ using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation; 
-#if !VS13
-[assembly: NeutralResourcesLanguageAttribute("en", UltimateResourceFallbackLocation.MainAssembly)]
-#endif
+
+//#if !VS13
+//[assembly: NeutralResourcesLanguageAttribute("en", UltimateResourceFallbackLocation.MainAssembly)]
+//#endif
 
 namespace fcmd
 {

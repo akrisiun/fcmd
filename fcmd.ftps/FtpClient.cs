@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace fcmd.ftps
+namespace fcmd.http
 {
     /// <summary>
     /// A client for File Transfer Protocol

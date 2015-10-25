@@ -129,6 +129,7 @@
     <Compile Include="View.Xaml\Bind.cs" />
     <Compile Include="View.Xaml\ctrl\InputBox.cs" />
     <Compile Include="View.Xaml\ctrl\ListView2DataGrid.cs" />
+    <Compile Include="View.Xaml\ctrl\ListView2WebBrowser.cs" />
     <Compile Include="View.Xaml\ListPanel\ListFiltered2Xaml.cs" />
     <Compile Include="View.Xaml\ListPanel\ListObservable.cs" />
     <Compile Include="View.Xaml\ListPanel\ListItemXaml.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="View.Xaml\ListPanel\PanelWpf.xaml.cs">
       <DependentUpon>PanelWpf.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View.Xaml\WpfContent.cs" />
     <Compile Include="View.Xaml\WpfMenu.cs" />
     <Compile Include="View.Xaml\XamlBackend.cs" />
     <Page Include="MainWindow.xaml">

@@ -21,6 +21,8 @@ namespace fcmd.View.Xaml
 
     public class FileListPanelWpf : FileListPanel<ListItemXaml>
     {
+        #region Data
+
         public PanelWpf Parent { get; set; }
         public WindowDataWpf WindowData {[DebuggerStepThrough] get; set; }
 
@@ -38,6 +40,8 @@ namespace fcmd.View.Xaml
 
         public override event EventHandler GotFocus { add { onFocusSet = true; onFocus += value; } remove { onFocus += value; } }
 
+        #endregion
+
         // original constructor
         //public FileListPanelXaml(string BookmarkXML = null, string CSS = null,
         //    string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
@@ -47,6 +51,8 @@ namespace fcmd.View.Xaml
             Parent = parent;
         }
 
+        #region Properties
+
         public ListView2DataGrid ListingWidget { get { return ListingViewWpf; } }
         private ListView2DataGrid ListingViewWpf;
 
@@ -54,14 +60,18 @@ namespace fcmd.View.Xaml
 
         public override void Initialize(PanelSide side)
         {
-            onFocus = new EventHandler(Focused);
-
-            df = DataFieldNumbers.Default();
-
-            GoUp = Parent.cdUp;
-            GoRoot = Parent.cdRoot;
+            if (df == null)
+            {
+                df = DataFieldNumbers.Default();
+                onFocus = new EventHandler(Focused);
+                GoUp = Parent.cdUp;
+                GoRoot = Parent.cdRoot;
+            }
 
             ListingViewWpf = Parent.data;
+            if (ListingViewWpf == null)
+                return;
+
             ListingViewWpf.Panel = Parent as Xaml.PanelWpf;
             ListingViewWpf.FileList = this;
 
@@ -87,6 +97,7 @@ namespace fcmd.View.Xaml
         {
             return (string)ListingView.PointedItem.Data[Field];
         }
+        #endregion
 
         public void BuildUI(string BookmarkXML = null) { }
 
@@ -171,6 +182,35 @@ namespace fcmd.View.Xaml
             var finalURL = FS.CurrentDirectory;
             if (checkAccess)
                 UrlBox.Text = finalURL;
+        }
+
+        public void LoadPluginFs(IFSPlugin plugin, string URL, Action then = null)
+        {
+            FS = plugin;
+            var lv = ListingView as ListFiltered2Xaml;
+            if (lv == null || plugin.DirectoryContent == null)
+                return;
+
+            var num = plugin.DirectoryContent.GetEnumerator();
+            do
+            {
+                DirItem di = num.Current;
+                object[] data = new object[idxCOUNT];
+                FillItem(ref data, di, ShortenPolicies.Empty);
+
+                lv.AddData(data);
+            }
+            while (num.MoveNext());
+
+            lv.Finish();
+
+            var finalURL = FS.CurrentDirectory;
+            if (UrlBox.CheckAccess())
+            {
+                UrlBox.Text = finalURL;
+                if (then != null)
+                    then();
+            }
         }
 
         #region Load
@@ -297,7 +337,9 @@ namespace fcmd.View.Xaml
             }
 
             string dir = FS.NoPrefix(URL);
-            Directory.SetCurrentDirectory(dir);
+            int pos = dir.IndexOf(":");
+            if (pos == 1)
+                Directory.SetCurrentDirectory(dir);
 
             ListingWidget.Sensitive = false;
 
@@ -319,6 +361,17 @@ namespace fcmd.View.Xaml
                 return;
             }
 
+            ListBindThen(URL, then);
+        }
+
+        public virtual void LoadFSThen(string URL, pluginner.IFSPlugin fs, Action then = null)
+        {
+            FS = fs;
+            ListBindThen(URL, then);
+        }
+
+        public void ListBindThen(string URL, Action then = null)
+        { 
             var view = ListingView;
             if (!view.ColumnsSet && (Parent as DispatcherObject).CheckAccess())
             {

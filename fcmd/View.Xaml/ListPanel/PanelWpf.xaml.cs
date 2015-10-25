@@ -6,6 +6,11 @@ using System.Windows.Markup;
 using fcmd.Controller;
 using fcmd.Model;
 using fcmd.View.ctrl;
+using pluginner.Widgets;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Media;
 
 namespace fcmd.View.Xaml
 {
@@ -14,8 +19,10 @@ namespace fcmd.View.Xaml
     /// </summary>
     public partial class PanelWpf : UserControl, IPanel, IComponentConnector
     {
+        #region Properties
+
         public FileListPanel PanelData {[DebuggerStepThrough] get { return PanelDataWpf; } }
-        public PanelSide Side { get; set; }
+        public PanelSide Side {[DebuggerStepThrough] get; set; }
         public WindowDataWpf WindowData {[DebuggerStepThrough] get { return PanelDataWpf.WindowData; } }
 
         public FileListPanelWpf PanelDataWpf {[DebuggerStepThrough] get; private set; }
@@ -31,6 +38,8 @@ namespace fcmd.View.Xaml
                     SetStyle();
             }
         }
+        
+        #endregion
 
         public PanelWpf()
         {
@@ -43,8 +52,12 @@ namespace fcmd.View.Xaml
 
             PanelDataWpf = new FileListPanelWpf(this);
             DataContext = PanelDataWpf;
-        }
 
+            this.Visuals = new Collection<PluginsVisual>();
+
+            data = CreateDataGrid();
+        }
+     
 #if !VS 
 
         internal System.Windows.Controls.DockPanel Panel;
@@ -102,13 +115,14 @@ namespace fcmd.View.Xaml
 
         public void Shown()
         {
-            ListView2DataGrid.DataGridColumnWidths(this.data);
+            if (this.data != null)
+                ListView2DataGrid.DataGridColumnWidths(this.data);
 
             Bind.PanelDirCombo(this.combo, this, this.Side);
 
             GotFocus += (s, e) =>
             {
-                PanelDataWpf.Focused(s,e);
+                PanelDataWpf.Focused(s, e);
                 IsActive = true;
             };
         }
@@ -139,6 +153,102 @@ namespace fcmd.View.Xaml
 
             Bind.PanelDirUpdate(this.combo, this, this.Side);
         }
+
+        public void LoadUrl(string url)
+        {
+            WpfContent.Load(this, url);
+        }
+
+        public ICollection<PluginsVisual> Visuals { get; set; }
+
+        public class PluginsVisual
+        {
+            public IControl Control { get; set; }
+            public string[] Protocols { get; set; }
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            bool isDesign = (bool)this.GetValue(DesignerProperties.IsInDesignModeProperty);
+
+            browser = new ListView2WebBrowser();
+            contentPanel.Content = browser.CreateControl(contentPanel);
+            browser.Visible = false;
+            contentPanel.Content = null;
+
+            if (isDesign)
+                browser.Browser.Navigate("http://referencesource.microsoft.com/#");
+
+            if (data == null)
+            {
+                data = CreateDataGrid();
+                PanelDataWpf.Initialize(this.Side);
+            }
+            if (data != null)
+            {
+                contentPanel.Content = data;
+                WpfContent.AddVisual(this, data, new[] { "file://", "ftp://", "ftps://" });
+            }
+            if (!isDesign)
+                this.BindPanel();
+        }
+
+        public ListView2WebBrowser browser {[DebuggerStepThrough] get; set; }
+        public ListView2DataGrid data {[DebuggerStepThrough] get; set; }
+
+        protected ListView2DataGrid CreateDataGrid()
+        {
+            data = new ListView2DataGrid();
+            contentPanel.Content = data;
+
+            data.IsReadOnly = true;
+            data.RowHeight = 23.0;
+            data.SelectionMode = DataGridSelectionMode.Extended;
+            data.SelectionUnit = DataGridSelectionUnit.FullRow;
+            data.ClipboardCopyMode = DataGridClipboardCopyMode.ExcludeHeader;
+            data.EnableRowVirtualization = true;
+            data.AutoGenerateColumns = false;
+            data.FrozenColumnCount = 1;
+            data.HeadersVisibility = DataGridHeadersVisibility.Column;
+            data.SetValue(VirtualizingPanel.IsVirtualizingProperty, true);
+            data.SetValue(VirtualizingPanel.IsVirtualizingWhenGroupingProperty, true);
+            data.SetValue(VirtualizingPanel.VirtualizationModeProperty, VirtualizationMode.Recycling);
+            // DataGridRowsPresenter: VirtualizingStackPanel
+
+            //VirtualizingPanel.VirtualizationModeProperty.OverrideMetadata(
+            //   typeof(DataGrid), new FrameworkPropertyMetadata(VirtualizationMode.Recycling));
+            data.VerticalGridLinesBrush = new SolidColorBrush(HtmlMedia.ConvertFromString("#F0F0F0"));
+            data.HorizontalGridLinesBrush = data.VerticalGridLinesBrush;
+
+            var columns = data.Columns;
+            if (columns.Count != 3)
+            {
+                columns.Add(new DataGridTextColumn { Header = "Loading..", MinWidth = 120.0 });
+                columns.Add(new DataGridTextColumn { Header = "", MinWidth = 50.0 });
+                columns.Add(new DataGridTextColumn { Header = "", MinWidth = 80.0 });
+            }
+
+            //< local:ListView2DataGrid x:Name="data" x:FieldModifier="public"
+            //           ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+            //           IsReadOnly="True" RowHeight="23"
+            //           VerticalGridLinesBrush="{StaticResource SilverLine}"
+            //           HorizontalGridLinesBrush="{StaticResource SilverLine}" 
+
+            //           SelectionMode="Extended" SelectionUnit="FullRow" 
+            //           ClipboardCopyMode="ExcludeHeader" EnableRowVirtualization="True" 
+            //           VirtualizingPanel.IsVirtualizing="True"
+            //           VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+            //           VirtualizingPanel.VirtualizationMode="Recycling"
+            //           AutoGenerateColumns="False" FrozenColumnCount="1" HeadersVisibility="Column"                               
+            //<DataGrid.Columns>
+            //    <DataGridTextColumn Header="Loading ..."  MinWidth="120" />
+            //    <DataGridTextColumn Header=" " MinWidth="50" />
+            //    <DataGridTextColumn Header=" " MinWidth="50" />
+
+            return data;
+        }
     }
 
 }
+ 

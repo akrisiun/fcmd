@@ -61,8 +61,11 @@ namespace fcmd.View
             var panel1 = main.LeftPanel;
             var panel2 = main.RightPanel;
 
+            if (panel1.data == null)
+                return;
             panel1.data.Columns.Clear();
-            panel2.data.Columns.Clear();
+            if (panel2.data != null)
+                panel2.data.Columns.Clear();
         }
 
         public Task LoaderTask { get; set; }

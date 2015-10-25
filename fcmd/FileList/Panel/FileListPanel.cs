@@ -93,8 +93,7 @@ namespace fcmd
 
         public IStatusBar StatusBar { get; set; }
 
-        public ShortenPolicies ShortenPolicy { get; set; }
-
+        public ShortenPolicies ShortenPolicy {[DebuggerStepThrough] get; set; }
         public IFSPlugin FS {[DebuggerStepThrough] get; set; }
 
         // T GetValue<T>(int Field)

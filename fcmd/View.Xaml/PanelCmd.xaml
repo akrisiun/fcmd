@@ -9,8 +9,8 @@
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="White">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="80" />
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width=".5*" />
+            <ColumnDefinition Width=".3*" MinWidth="120" />
+            <ColumnDefinition Width=".5*" MinWidth="150" />
         </Grid.ColumnDefinitions>
         <Label>Command:</Label>
         <TextBox Name="selected"  x:FieldModifier="public" 

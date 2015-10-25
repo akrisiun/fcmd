@@ -10,8 +10,9 @@ namespace fcmd.Model
 {
     using ICommand = System.Windows.Input.ICommand;
     using fcmd.Platform;
+    using System.Text;
 
-    public abstract class Command : ICommand, IRelayCommand 
+    public abstract class Command : ICommand, IRelayCommand
     {
         public bool Enabled { get; set; }
         public Action Action { get; set; }
@@ -36,35 +37,23 @@ namespace fcmd.Model
             @this.PreviewMouseDoubleClick += PreviewMouseDoubleClick;
 
             var panel = @this.Panel;
-            panel.path.DataContext = @this;
+
             //panel.cdUp.DataContext = @this;
             //panel.cdRoot.DataContext = @this;
-            panel.path.KeyDown += Path_KeyDown;
 
             if (panel.cdUp.Command == null)
-            {
                 panel.cdUp.Command = new ChdirUpCommand { Target = @this, Action = () => CdUp_PreviewMouseDown(@this), Enabled = true };
-                //panel.cdUp.PreviewMouseDown += (s, e) =>
-                //{
-                //    if (@this.Panel.cdUp.Command.CanExecute(null))
-                //    {
-                //        e.Handled = true;
-                //        CdUp_PreviewMouseDown(@this);
-                //    };
-                //};
-            }
             else
                 (panel.cdUp.Command as Command).Enabled = true;
 
             if (panel.cdRoot.Command == null)
-            {
                 panel.cdRoot.Command =
                     new ChRootCommand { Target = @this, Action = () => CdRoot_PreviewMouseLeftButtonDown(@this), Enabled = true };
-
-                //panel.cdRoot.Clicked
-            }
             else
                 (panel.cdRoot.Command as Command).Enabled = true;
+
+            if (panel.data == null)
+                return;
 
             panel.data.Tag = @this;
             panel.data.PreviewKeyDown += Data_PreviewKeyDown;
@@ -76,7 +65,7 @@ namespace fcmd.Model
             @this.PreviewMouseDoubleClick -= PreviewMouseDoubleClick;
 
             var panel = @this.Panel;
-            panel.path.KeyDown -= Path_KeyDown;
+            //panel.path.KeyDown -= Path_KeyDown;
             //@this.Panel.cdUp.PreviewMouseLeftButtonDown -= CdUp_PreviewMouseDown;
             //@this.Panel.cdRoot.PreviewMouseLeftButtonDown -= CdRoot_PreviewMouseLeftButtonDown;
             (panel.cdUp.Command as Command).Enabled = false;
@@ -109,16 +98,6 @@ namespace fcmd.Model
             //  e.Handled = true;
         }
 
-        private static void Path_KeyDown(object sender, KeyEventArgs e)
-        {
-            var @this = (sender as FrameworkElement).DataContext as ListView2DataGrid;
-            if (e.Key == Key.Enter)
-            {
-                var path = (e.Source as TextEntry).Text.Replace(localFileSystem.FilePrefix, "");
-                @this.LoadDir(path);
-                e.Handled = true;
-            }
-        }
 
         static void PreviewMouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
@@ -126,7 +105,6 @@ namespace fcmd.Model
             if (@this.SelectEnter(@this.SelectedItem as ListItemXaml))
                 e.Handled = true;
         }
-
 
         private static void Data_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -149,6 +127,29 @@ namespace fcmd.Model
 
             if (lastItem != null)
                 @this.SelectLast(lastItem);
+        }
+
+    }
+
+    public static class PanelEvents
+    {
+        public static void BindPanel(this PanelWpf panel)
+        {
+            panel.path.DataContext = panel;
+            panel.path.KeyDown += Path_KeyDown;
+        }
+
+        private static void Path_KeyDown(object sender, KeyEventArgs e)
+        {
+            var @this = (sender as FrameworkElement).DataContext as PanelWpf;
+            if (e.Key == Key.Enter && @this != null)
+            {
+                var sb = new StringBuilder((e.Source as TextEntry).Text);
+                sb.Replace(localFileSystem.FilePrefix, "");
+                var url = sb.ToString();
+                @this.LoadUrl(url);
+                e.Handled = true;
+            }
         }
 
     }

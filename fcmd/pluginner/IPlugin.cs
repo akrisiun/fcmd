@@ -5,9 +5,13 @@
  * Contributors should place own signs here.
  * 2015, Andrius Krisiunas (akrisiun@gmail.com)
  */
+
 using System;
 using System.Configuration;
+using System.Resources;
 using System.Runtime.Serialization;
+
+[assembly: NeutralResourcesLanguageAttribute("en-US", UltimateResourceFallbackLocation.MainAssembly)]
 
 namespace pluginner
 {

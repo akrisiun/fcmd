@@ -16,10 +16,13 @@ using System.Windows.Threading;
 using System.Windows;
 using System.Collections;
 using System.Diagnostics.Contracts;
+using System.ComponentModel;
 
 namespace fcmd.View.ctrl
 {
-
+    /// <summary>
+    /// File system visual data content, Xaml backend DataGrid control
+    /// </summary>
     public class ListView2DataGrid : DataGrid, IListingContainer<ListItemXaml>, IAddChild, IContainItemStorage, IControl, IUIDispacher
     {
         #region ctor
@@ -36,8 +39,12 @@ namespace fcmd.View.ctrl
             DataContext = DataObj;
         }
 
+        public bool? Visible { get { return Visibility == Visibility.Visible; } set { VisibleSet.Value(this, value); } }
         object IUIDispacher.Dispacher { get { return this.Dispatcher as Dispatcher; } }
         bool IUIDispacher.CheckAccess() { return (this as DispatcherObject).CheckAccess(); }
+
+        //public override void OnApplyTemplate()
+        //    base.OnApplyTemplate();
 
         #endregion
 
@@ -119,11 +126,9 @@ namespace fcmd.View.ctrl
 
         #endregion
 
-        public void Clear()
-        {
-            // ItemsSource = null;
-            // if (DataObj != null && DataObj.Count > 0)
-        }
+        #region Base methods, Focus
+
+        public void Clear() { }
 
         public void Dispose()
         {
@@ -154,7 +159,16 @@ namespace fcmd.View.ctrl
             }
         }
 
-        string fileProcol { get { return base_plugins.fs.localFileSystem.FilePrefix; } } // => "file://"
+        #endregion
+
+        string fileProcol { [DebuggerStepThrough] get { return base_plugins.fs.localFileSystem.FilePrefix; } } // => "file://"
+
+        public void LoadDir(string path)
+        {
+            UnBind();
+
+            WpfContent.Load(this.Panel, path, this.fileProcol);
+        }
 
         #region Select, LoadDir, Columns
 
@@ -196,32 +210,6 @@ namespace fcmd.View.ctrl
                 return true;
             }
             return false;
-        }
-
-        public void LoadDir(string path)
-        {
-            UnBind();
-            string fullpath = null;
-            try
-            {
-                fullpath = path.StartsWith(fileProcol)
-                        ? Path.GetFullPath(path.Substring(fileProcol.Length)) : Path.GetFullPath(path);
-                Directory.SetCurrentDirectory(fullpath);
-            }
-            catch (Exception ex) { MessageDialog.ShowError(ex.Message); }
-
-            if (string.IsNullOrWhiteSpace(fullpath))
-                return;
-
-            App.ConsoleWriteLine("Widget:LoadDir " + fullpath);
-
-            this.ItemsSource = null;
-
-            var PanelDataWpf = (this.Panel as PanelWpf).PanelDataWpf as FileListPanelWpf;
-            PanelDataWpf.UrlBox.Text = this.FileList.FS.Prefix + fullpath;
-
-            this.FileList.LoadDirThen(fileProcol + fullpath, null,
-                () => Bind());
         }
 
         public bool ColumnsSet { get; private set; } //  return this.Columns.Count > 1; } }

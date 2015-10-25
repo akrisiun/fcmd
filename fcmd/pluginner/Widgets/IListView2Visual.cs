@@ -69,6 +69,7 @@ namespace pluginner.Widgets
     public interface IControl : IUIDispacher
     {
         object Content { get; set; }
+        bool? Visible { get; set; }
     }
 #endif
 

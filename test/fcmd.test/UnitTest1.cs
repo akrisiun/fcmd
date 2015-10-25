@@ -9,7 +9,7 @@ using fcmd.View.Xaml;
 #if !__MonoCS__
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using fcmd.ftps;
+using fcmd.http;
 using pluginner.Toolkit;
 
 namespace fcmd.test

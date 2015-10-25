@@ -39,7 +39,7 @@
 
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
           Style="{StaticResource PanelBG}">
-        
+
         <Grid.RowDefinitions>
             <RowDefinition Height="24" />
             <RowDefinition Height="*" />
@@ -52,7 +52,7 @@
         <DockPanel x:Name="Panel" x:FieldModifier="public"
                    Style="{StaticResource ActiveStyle}"
                    HorizontalAlignment="Stretch" Grid.ColumnSpan="2">
-                   <!--Style="{StaticResource ActiveStyle}"-->
+            <!--Style="{StaticResource ActiveStyle}"-->
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="60" />
@@ -87,34 +87,35 @@
             </Grid>
         </DockPanel>
 
-        <local:ListView2DataGrid x:Name="data" x:FieldModifier="public"
-                               Grid.Row="1" Grid.ColumnSpan="2"
-               ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto" 
-               IsReadOnly="True" 
-               RowHeight="23"
-               VerticalGridLinesBrush="{StaticResource SilverLine}"
-               HorizontalGridLinesBrush="{StaticResource SilverLine}" 
+        <ContentControl x:Name="contentPanel" x:FieldModifier="public"
+                Grid.Row="1" Grid.ColumnSpan="2">
+            <!--<ContentControl.Content>
+                <WebBrowser x:Name="browser" />-->
+            -->
+                <!--<local:ListView2DataGrid x:Name="data" x:FieldModifier="public"
+                       ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                       IsReadOnly="True" 
+                       RowHeight="23"
+                       VerticalGridLinesBrush="{StaticResource SilverLine}"
+                       HorizontalGridLinesBrush="{StaticResource SilverLine}" 
                
-               SelectionMode="Extended" SelectionUnit="FullRow" 
-               ClipboardCopyMode="ExcludeHeader"
-               EnableRowVirtualization="True" 
-               VirtualizingPanel.IsVirtualizing="True"
-               VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-               VirtualizingPanel.VirtualizationMode="Recycling"
-               AutoGenerateColumns="False" 
-               FrozenColumnCount="1" HeadersVisibility="Column"                               
-            >
-            <!--
-                        EnableColumnVirtualization="True" 
-            
-            EnableColumnVirtualization="True" EnableRowVirtualization="True" 
-               VirtualizingPanel.IsVirtualizing="True"
-               VirtualizingPanel.IsVirtualizingWhenGrouping="True"-->
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Loading ..."  MinWidth="120" />
-                <DataGridTextColumn Header=" " MinWidth="50" />
-                <DataGridTextColumn Header=" " MinWidth="50" />
-            </DataGrid.Columns>
-        </local:ListView2DataGrid>
+                       SelectionMode="Extended" SelectionUnit="FullRow" 
+                       ClipboardCopyMode="ExcludeHeader"
+                       EnableRowVirtualization="True" 
+                       VirtualizingPanel.IsVirtualizing="True"
+                       VirtualizingPanel.IsVirtualizingWhenGrouping="True"
+                       VirtualizingPanel.VirtualizationMode="Recycling"
+                       AutoGenerateColumns="False" 
+                       FrozenColumnCount="1" HeadersVisibility="Column"                               
+                    >
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Loading ..."  MinWidth="120" />
+                                <DataGridTextColumn Header=" " MinWidth="50" />
+                                <DataGridTextColumn Header=" " MinWidth="50" />
+                            </DataGrid.Columns>
+                </local:ListView2DataGrid>-->
+            <!--</ContentControl.Content>-->
+        </ContentControl>
+
     </Grid>
 </UserControl>

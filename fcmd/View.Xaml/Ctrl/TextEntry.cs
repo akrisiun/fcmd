@@ -19,6 +19,7 @@ namespace fcmd.View.ctrl
             set { throw new NotImplementedException("no Background for TextEntry"); }
         }
 
+        public bool? Visible { get { return Visibility == Visibility.Visible; } set { VisibleSet.Value(this, value); } }
         object IControl.Content { get { return this.DataContext; } set { this.DataContext = value; } }
         object IUIDispacher.Dispacher { get { return this.Dispatcher as Dispatcher; } }
         bool IUIDispacher.CheckAccess() { return (this as DispatcherObject).CheckAccess(); }
@@ -36,6 +37,7 @@ namespace fcmd.View.ctrl
             set { throw new NotImplementedException("no Background for TextEntry"); }
         }
 
+        public bool? Visible { get { return Visibility == Visibility.Visible; } set { VisibleSet.Value(this, value); } }
         object IControl.Content { get { return this.DataContext; } set { this.DataContext = value; } }
         object IUIDispacher.Dispacher { get { return this.Dispatcher as Dispatcher; } }
         bool IUIDispacher.CheckAccess() { return (this as DispatcherObject).CheckAccess(); }
