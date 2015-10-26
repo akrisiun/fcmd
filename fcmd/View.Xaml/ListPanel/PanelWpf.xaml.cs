@@ -58,7 +58,7 @@ namespace fcmd.View.Xaml
             data = CreateDataGrid();
         }
      
-#if !VS 
+#if !VS || __MonoCS__
 
         internal System.Windows.Controls.DockPanel Panel;
         internal fcmd.View.ctrl.ComboWidget combo;
@@ -66,7 +66,9 @@ namespace fcmd.View.Xaml
         internal fcmd.View.ctrl.ButtonWidget cdRoot;
         internal fcmd.View.ctrl.ButtonWidget cdUp;
         internal fcmd.View.ctrl.ButtonWidget cdFavorites;
-        internal fcmd.View.ctrl.ListView2Widget data;
+
+		// #line 90 "..\..\..\..\View.Xaml\ListPanel\PanelWpf.xaml"
+		internal System.Windows.Controls.ContentControl contentPanel;
 
         private bool _contentLoaded;
         public void InitializeComponent()
@@ -83,7 +85,7 @@ namespace fcmd.View.Xaml
             return System.Delegate.CreateDelegate(delegateType, this, handler);
         }
 
-        void System.Windows.Markup.IComponentConnector.Connect(int connectionId, object target)
+        void IComponentConnector.Connect(int connectionId, object target)
         {
             switch (connectionId)
             {
@@ -105,9 +107,9 @@ namespace fcmd.View.Xaml
                 case 6:
                     this.cdFavorites = ((fcmd.View.ctrl.ButtonWidget)(target));
                     return;
-                case 7:
-                    this.data = ((fcmd.View.ctrl.ListView2Widget)(target));
-                    return;
+				case 7:
+					this.contentPanel = ((System.Windows.Controls.ContentControl)(target));
+					return;
             }
             this._contentLoaded = true;
         }

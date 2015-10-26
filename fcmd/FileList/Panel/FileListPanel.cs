@@ -30,6 +30,7 @@ namespace fcmd
     using Xwt.Drawing;
     using ColorDrawing = Xwt.Drawing;
     using fcmd.View.GTK.Ctrl;
+    using fcmd.Model;
 
     public class CommanderStatusBar : Xwt.Label, IContent //  LabelWidget
     {

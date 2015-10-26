@@ -10,6 +10,7 @@ using System.Threading;
 using Xwt;
 using Application = Xwt.Application;
 using System.Collections;
+using fcmd.Model;
 
 namespace fcmd.View.GTK
 {

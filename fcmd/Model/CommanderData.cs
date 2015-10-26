@@ -280,8 +280,9 @@ namespace fcmd.Model
 
         protected void BindMenu()
         {
+#if !GTK
             Menu.MenuWpf.Bind(Window);
-
+#endif
             //this.CloseRequested += MainWindow_CloseRequested;
             //PanelLayout.KeyReleased += PanelLayout_KeyReleased;
             //mnuFileView.Clicked += (o, ea) => { PanelLayout_KeyReleased(o, new KeyEventArgs(Key.F3, Xwt.ModifierKeys.None, false, 0)); };

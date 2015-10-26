@@ -54,7 +54,6 @@
     <Reference Include="System.Configuration" />
     <Reference Include="WindowsBase" />
     <Reference Include="Xwt3">
-      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\xwt\bin\Xwt3.dll</HintPath>
     </Reference>
   </ItemGroup>

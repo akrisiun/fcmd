@@ -26,7 +26,7 @@ namespace fcmd.View.Xaml
     /// <summary>
     /// Interaction logic for MenuWpf.xaml
     /// </summary>
-    public partial class MenuPanelWpf : UserControl, IComponentConnector, IXamlMenu
+	public partial class MenuPanelWpf : UserControl, IXamlMenu, IComponentConnector
     {
         MenuItem IXamlMenu.mnuCommands { [DebuggerStepThrough] get { return this.mnuCommands; } }
 
@@ -54,7 +54,15 @@ namespace fcmd.View.Xaml
         internal System.Windows.Controls.MenuItem itemExit;
         internal System.Windows.Controls.MenuItem mnuOptions;
         internal System.Windows.Controls.MenuItem itemAbout;
-        internal System.Windows.Controls.MenuItem mnuRight;
+		internal System.Windows.Controls.MenuItem mnuRight;
+
+		internal System.Windows.Controls.MenuItem mnuCommandsView;
+		internal System.Windows.Controls.MenuItem mnuCommandsEdit;
+		internal System.Windows.Controls.MenuItem mnuCommandsCopy;
+		internal System.Windows.Controls.MenuItem mnuCommandsMove;
+		internal System.Windows.Controls.MenuItem mnuCommandsMkDir;
+		internal System.Windows.Controls.MenuItem mnuCommandsDelete;
+		internal System.Windows.Controls.MenuItem mnuCommandsFindFiles;
 
         private bool _contentLoaded;
 
@@ -71,30 +79,51 @@ namespace fcmd.View.Xaml
 
         void IComponentConnector.Connect(int connectionId, object target)
         {
-            switch (connectionId)
-            {
-                case 1:
-                    this.menuBar = ((System.Windows.Controls.Menu)(target));
-                    return;
-                case 2:
-                    this.mnuLeft = ((System.Windows.Controls.MenuItem)(target));
-                    return;
-                case 3:
-                    this.mnuCommands = ((System.Windows.Controls.MenuItem)(target));
-                    return;
-                case 4:
-                    this.itemExit = ((System.Windows.Controls.MenuItem)(target));
-                    return;
-                case 5:
-                    this.mnuOptions = ((System.Windows.Controls.MenuItem)(target));
-                    return;
-                case 6:
-                    this.itemAbout = ((System.Windows.Controls.MenuItem)(target));
-                    return;
-                case 7:
-                    this.mnuRight = ((System.Windows.Controls.MenuItem)(target));
-                    return;
-            }
+			switch (connectionId)
+			{
+				case 1:
+				this.menuBar = ((System.Windows.Controls.Menu)(target));
+				return;
+				case 2:
+				this.mnuLeft = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 3:
+				this.mnuCommands = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 4:
+				this.mnuCommandsView = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 5:
+				this.mnuCommandsEdit = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 6:
+				this.mnuCommandsCopy = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 7:
+				this.mnuCommandsMove = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 8:
+				this.mnuCommandsMkDir = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 9:
+				this.mnuCommandsDelete = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 10:
+				this.mnuCommandsFindFiles = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 11:
+				this.itemExit = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 12:
+				this.mnuOptions = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 13:
+				this.itemAbout = ((System.Windows.Controls.MenuItem)(target));
+				return;
+				case 14:
+				this.mnuRight = ((System.Windows.Controls.MenuItem)(target));
+				return;
+			}
             this._contentLoaded = true;
         }
 #endif

@@ -143,6 +143,7 @@
     <Compile Include="Model\IDriveCombo.cs" />
     <Compile Include="Model\IPanelLayout.cs" />
     <Compile Include="Model\MainDataContext.cs" />
+    <Compile Include="Model\PanelSide.cs" />
     <Compile Include="Model\View\Control.cs" />
     <Compile Include="Platform\AiLib\IOFile\DirectoryEnum.cs" />
     <Compile Include="Platform\AiLib\IOFile\Iterator.cs" />

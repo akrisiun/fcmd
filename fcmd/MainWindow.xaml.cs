@@ -86,13 +86,7 @@ namespace fcmd
 
             System.Uri resourceLocator = new System.Uri("/fcmdp;component/mainwindow.xaml", System.UriKind.Relative);
             System.Windows.Application.LoadComponent(this, resourceLocator);
-
-         //   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
-         //at System.Resources.ResourceManager.GetObject(String name, CultureInfo culture, Boolean wrapUnmanagedMemStream)
-         //at MS.Internal.AppModel.ResourcePart.EnsureResourceLocationSet()
-         //at MS.Internal.AppModel.ResourcePart.GetContentTypeCore()
-         //at System.IO.Packaging.PackagePart.get_ContentType()
-         //at System.Windows.Application.LoadComponent(Object component, Uri resourceLocator)
+	        //   at System.Resources.ResourceManager.InternalGetResourceSet(CultureInfo culture, Boolean createIfNotExists, Boolean tryParents)
         }
 
         internal System.Delegate _CreateDelegate(System.Type delegateType, string handler)

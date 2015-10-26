@@ -43,7 +43,7 @@ namespace fcmd.View.Xaml
             System.Windows.Application.LoadComponent(this, resourceLocater);
         }
 
-        void System.Windows.Markup.IComponentConnector.Connect(int connectionId, object target)
+        void IComponentConnector.Connect(int connectionId, object target)
         {
             switch (connectionId)
             {
