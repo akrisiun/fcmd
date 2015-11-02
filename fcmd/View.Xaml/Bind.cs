@@ -6,6 +6,7 @@ using fcmd.Controller;
 using System.Collections.ObjectModel;
 using System.IO;
 using fcmd.Model;
+using fcmd.FileList;
 
 namespace fcmd.View.Xaml
 {
@@ -18,6 +19,9 @@ namespace fcmd.View.Xaml
 
         public static void PanelDirCombo(ComboBox combo, PanelWpf filePanel, PanelSide side)
         {
+            // TODO
+            // DiskBox.Populate()
+
             var drives = new Collection<string>();
             drives.Add("C:");
             if (Directory.Exists("D:"))

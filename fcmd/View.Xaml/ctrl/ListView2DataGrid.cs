@@ -156,6 +156,8 @@ namespace fcmd.View.ctrl
                     var item = numerator.Current;
                     item.Width = item.ActualWidth;
                 }
+
+                dataGrid.Columns[0].Width = 200;
             }
         }
 

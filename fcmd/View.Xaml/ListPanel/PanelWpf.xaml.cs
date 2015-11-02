@@ -216,10 +216,7 @@ namespace fcmd.View.Xaml
             data.SetValue(VirtualizingPanel.IsVirtualizingProperty, true);
             data.SetValue(VirtualizingPanel.IsVirtualizingWhenGroupingProperty, true);
             data.SetValue(VirtualizingPanel.VirtualizationModeProperty, VirtualizationMode.Recycling);
-            // DataGridRowsPresenter: VirtualizingStackPanel
 
-            //VirtualizingPanel.VirtualizationModeProperty.OverrideMetadata(
-            //   typeof(DataGrid), new FrameworkPropertyMetadata(VirtualizationMode.Recycling));
             data.VerticalGridLinesBrush = new SolidColorBrush(HtmlMedia.ConvertFromString("#F0F0F0"));
             data.HorizontalGridLinesBrush = data.VerticalGridLinesBrush;
 
@@ -227,26 +224,9 @@ namespace fcmd.View.Xaml
             if (columns.Count != 3)
             {
                 columns.Add(new DataGridTextColumn { Header = "Loading..", MinWidth = 120.0 });
-                columns.Add(new DataGridTextColumn { Header = "", MinWidth = 50.0 });
+                columns.Add(new DataGridTextColumn { Header = "", MinWidth = 60.0 });
                 columns.Add(new DataGridTextColumn { Header = "", MinWidth = 80.0 });
             }
-
-            //< local:ListView2DataGrid x:Name="data" x:FieldModifier="public"
-            //           ScrollViewer.HorizontalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollBarVisibility="Auto" 
-            //           IsReadOnly="True" RowHeight="23"
-            //           VerticalGridLinesBrush="{StaticResource SilverLine}"
-            //           HorizontalGridLinesBrush="{StaticResource SilverLine}" 
-
-            //           SelectionMode="Extended" SelectionUnit="FullRow" 
-            //           ClipboardCopyMode="ExcludeHeader" EnableRowVirtualization="True" 
-            //           VirtualizingPanel.IsVirtualizing="True"
-            //           VirtualizingPanel.IsVirtualizingWhenGrouping="True"
-            //           VirtualizingPanel.VirtualizationMode="Recycling"
-            //           AutoGenerateColumns="False" FrozenColumnCount="1" HeadersVisibility="Column"                               
-            //<DataGrid.Columns>
-            //    <DataGridTextColumn Header="Loading ..."  MinWidth="120" />
-            //    <DataGridTextColumn Header=" " MinWidth="50" />
-            //    <DataGridTextColumn Header=" " MinWidth="50" />
 
             return data;
         }
