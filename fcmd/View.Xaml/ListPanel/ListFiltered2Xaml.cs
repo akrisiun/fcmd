@@ -55,7 +55,7 @@ namespace fcmd.View.ctrl
             BindingOperations.EnableCollectionSynchronization(dataGrid.Items, _syncLock);
             // ViewManager.Current.RegisterCollectionSynchronizationCallback(dataGrid.Items, _syncLock, null);
 
-            dataGrid.Sorting += SortBehavior.EventHandler;
+            // dataGrid.Sorting += SortBehavior.EventHandler;
         }
 
         public void UnBindGrid()
@@ -66,7 +66,7 @@ namespace fcmd.View.ctrl
 
             locked = true;
             BindingOperations.DisableCollectionSynchronization(dataGrid.Items);
-            dataGrid.Sorting -= SortBehavior.EventHandler;
+            // dataGrid.Sorting -= SortBehavior.EventHandler;
 
             if (dataGrid.ItemsSource == null)
                 return;
@@ -158,10 +158,6 @@ namespace fcmd.View.ctrl
                         AddItemDirectory(list, rec, null, tag);
                     else
                         AddItemFile(list, rec, null, tag);
-                }
-
-                if (list.Count == 0)
-                {
                 }
 
                 var parent = list.Parent as ListView2DataGrid;
@@ -287,85 +283,4 @@ namespace fcmd.View.ctrl
         #endregion
 
     }
-
-
-    // http://stackoverflow.com/questions/18122751/wpf-datagrid-customsort-for-each-column/18218963#
-    // http://mikestedman.blogspot.lt/2012/07/wpf-datagrid-custom-column-sorting.html
-    public interface IDirectionComparer : IComparer
-    {
-        ListSortDirection SortDirection { get; set; }
-    }
-
-    public static class SortBehavior
-    {
-        static SortBehavior() { EventHandler = new DataGridSortingEventHandler(Handler); }
-        public static DataGridSortingEventHandler EventHandler { get; private set; }
-
-        private static void Handler(object sender, DataGridSortingEventArgs e)
-        {
-            var dataGrid = sender as DataGrid;
-            if (dataGrid == null) // || !GetAllowCustomSort(dataGrid)) 
-                return;
-
-            //var listColView = dataGrid.ItemsSource as ListCollectionView;
-            //if (listColView == null)
-            //    throw new Exception("The DataGrid's ItemsSource property must be of type, ListCollectionView");
-
-            //use a ListCollectionView to do the sort. 
-            var source = dataGrid.GetValue(ItemsControl.ItemsSourceProperty);
-            ListCollectionView listColView = (ListCollectionView)CollectionViewSource.GetDefaultView(source);
-
-            // Sanity check <ListItemXaml>
-            var path = e.Column.SortMemberPath;
-            int index = path == "fldSize" ? 1 : path == "fldModified" ? 2 : 0;
-            var direction = (e.Column.SortDirection != ListSortDirection.Ascending)
-                                ? ListSortDirection.Ascending
-                                : ListSortDirection.Descending;
-
-            IDirectionComparer sorter = new FilterComparer { SortDirection = direction, Index = index };
-            e.Handled = true;
-
-            e.Column.SortDirection = direction;
-            listColView.CustomSort = sorter;
-        }
-    }
-
-
-    public class FilterComparer : IDirectionComparer
-    {
-        public ListSortDirection SortDirection { get; set; }
-        public int Index { get; set; }
-
-        public int Compare(object a, object b)
-        {
-            var objA = a as ListItemXaml;
-            if (objA.Tag as string == "..")
-                return -1; // SortDirection == ListSortDirection.Ascending ? 1 : -1;
-            var objB = b as ListItemXaml;
-
-            string valueA = objA.Data[Index] as string;
-            string valueB = objB.Data[Index] as string;
-            if (objA.IsDirectory != objB.IsDirectory)
-            {
-                if (objA.IsDirectory)
-                    return SortDirection == ListSortDirection.Ascending ? 1 : -1;
-                return SortDirection == ListSortDirection.Descending ? 1 : -1;
-                // * valueA.CompareTo(valueB);
-            }
-            if (objB.Tag as string == "..")
-                return 1;
-
-
-            if (SortDirection == ListSortDirection.Ascending)
-            {
-                return valueA.CompareTo(valueB);
-            }
-            else
-            {
-                return valueB.CompareTo(valueA);
-            }
-        }
-    }
-
-
 }

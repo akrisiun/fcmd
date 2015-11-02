@@ -85,20 +85,22 @@ namespace fcmd.View.Xaml
             get
             {
                 return // fldFile == ".." ? fldPath :
-                       (IsDirectory) ? fldPath :
-                       Path.Combine(
-                            fldPath.StartsWith(localFileSystem.FilePrefix) ? fldPath.Substring(localFileSystem.FilePrefix.Length) : fldPath,
-                            fldFile);
+                       // (IsDirectory) ? fldPath :
+                       (fldPath.StartsWith(localFileSystem.FilePrefix) ?
+                            fldPath.Substring(localFileSystem.FilePrefix.Length) : fldPath);
+                        //Path.Combine(
+                        //    fldFile);
             }
         }
 
         // Protocol = "file://"; -> localFileSystem.FilePrefix
 
-        public string fldPath { get { return Data[0] as string; } }
+        public string fldPath { get { return Data[FileListPanelWpf.idxUrl] as string; } }
 
-        public string fldFile { get { return Data[1] as string; } }
-        public string fldSize { get { return Data[2].ToString(); } }
-        public string fldModified { get { return Data[3].ToString(); } }
+        public string fldFile { get { return Data[FileListPanelWpf.idxName] as string; } }
+        public string fldSize { get { return Data[FileListPanelWpf.idxSize].ToString(); } }
+        public Int64 SizeBytes { get { return (Int64)Data[FileListPanelWpf.idxSizeBytes]; } }
+        public string fldModified { get { return Data[FileListPanelWpf.idxDatetime].ToString(); } }
 
         public bool IsDirectory { get { return (bool)Data[4]; } }
 

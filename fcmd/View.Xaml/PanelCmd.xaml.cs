@@ -25,7 +25,7 @@ namespace fcmd.View.Xaml
         {
             InitializeComponent();
 
-            Loaded += (s, e) => Bind.PanelCmd(this);
+            Loaded += (s, e) => BindPanel.PanelCmd(this);
         }
 
 #if !VS || __MonoCS__

@@ -8,7 +8,8 @@ namespace pluginner.Widgets.Xaml
     public abstract class ListView2Xaml<T> : ListView3, IListingView<T>, IListView2<T>, ICollection<T>, IDisposable
            where T : class, IListView2Visual
     {
-        public ListView2Xaml(IListingContainer<T> parent) : base()
+        public ListView2Xaml(IListingContainer<T> parent)
+            : base()
         {
             Parent = parent;
         }
@@ -27,13 +28,13 @@ namespace pluginner.Widgets.Xaml
         public object Tag { get; set; }
 
         public IListingContainer<T> Parent { get; protected set; }
-        public int SelectedRow { get { new NotImplementedException("no SelectedRow"); return -1; } set {; } }
+        public int SelectedRow { get { new NotImplementedException("no SelectedRow"); return -1; } set { ; } }
         public bool Sensitive { get; set; }
 
 #if WPF
         public System.Windows.Input.CursorType Cursor { get; set; }
 #endif
-        
+
         #endregion
 
         /// <summary>Add a new item</summary>
@@ -375,7 +376,8 @@ namespace pluginner.Widgets.Xaml
         {
             return new ListView2.ColumnInfo[] {
                 new ListView2.ColumnInfo { Index = 0, Tag = "fldFile", Title= "File", Width=200, Visible=true },
-                new ListView2.ColumnInfo { Index = 1, Tag = "fldSize", Title= "Size", Width=90, Visible=true },
+                new ListView2.ColumnInfo { Index = 1, Tag = "fldSize", Title= "Size", VerticalAlign =1,
+                        Width=90, Visible=true },
                 new ListView2.ColumnInfo { Index = 2, Tag = "fldModified", Title= "Modified", Width=110, Visible=true }
             };
         }

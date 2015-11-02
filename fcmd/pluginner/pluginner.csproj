@@ -52,12 +52,14 @@
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
     <Reference Include="Xwt3">
       <HintPath>..\..\xwt\bin\Xwt3.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EnumExtensions.cs" />
     <Compile Include="ShortenPolicies.cs" />
     <Compile Include="Toolkit\BookmarkTools.cs" />
     <Compile Include="Toolkit\OSAbstraction.cs" />
@@ -72,6 +74,7 @@
     <Compile Include="Widgets\GTK\EditableLabel.cs" />
     <Compile Include="Widgets\GTK\ListView2Canvas.cs" />
     <Compile Include="Widgets\GTK\HeavyScroller.cs" />
+    <Compile Include="Widgets\IControl.cs" />
     <Compile Include="Widgets\IFcmdCommand.cs" />
     <Compile Include="Widgets\IContent.cs" />
     <Compile Include="Widgets\IFileListPanel.cs" />
@@ -79,7 +82,8 @@
     <Compile Include="Widgets\IListView2Visual.cs" />
     <Compile Include="Widgets\IMainMenu.cs" />
     <Compile Include="Widgets\IMenu.cs" />
-    <Compile Include="Widgets\IStatusBar.cs" />
+    <Compile Include="Widgets\Xaml\ICombo.cs" />
+    <Compile Include="Widgets\Xaml\IStatusBar.cs" />
     <Compile Include="Widgets\GTK\IWidget.cs" />
     <Compile Include="Widgets\GTK\LightScroller.cs" />
     <Compile Include="Widgets\GTK\ListView2.cs" />

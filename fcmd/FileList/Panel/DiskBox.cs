@@ -2,6 +2,7 @@
 using pluginner.Widgets;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,12 +15,11 @@ namespace fcmd.FileList
 
         public void Populate()
         {
-            DiskBox.Populate(this);
+            DiskBox.Populate(this.Target as IComboWidget);
         }
 
         public void Init(ICommanderWindow window)
         {
-
         }
 
         public MainWindow Window { get { return MainWindow.ActiveWindow; } }
@@ -53,39 +53,63 @@ namespace fcmd.FileList
     // TODO:
     public static class DiskBox
     {
-        public static void Populate(this IBackend view)
+        public static void Populate(this IComboWidget DiskBox)
         {
+            string[] DiskList = null;
+            DiskBox.ItemsSource = DiskList;
+            // AddSysDrives
 
             //DiskBox.Content = DiskList;
             //DiskBox.CanScrollByY = false;
-
-            //GoRoot.ExpandHorizontal = GoUp.ExpandHorizontal = BookmarksButton.ExpandHorizontal = HistoryButton.ExpandHorizontal = false;
-            //GoRoot.Style = GoUp.Style = BookmarksButton.Style = HistoryButton.Style = ButtonStyle.Flat;
-            // HistoryButton.Menu = new Xwt.Menu();
-            //DefaultColumnSpacing = 0;
-            //DefaultRowSpacing = 0;
-
-            //Add(DiskBox, 0, 0, 1, 1, true, false, WidgetPlacement.Fill);
-            //Add(GoRoot, 1, 0, 1, 1, false, false, WidgetPlacement.Fill);
-            //Add(GoUp, 2, 0, 1, 1, false, false, WidgetPlacement.Fill);
-            //Add(UrlBox, 0, 1, 1, 1, true, false, WidgetPlacement.Fill);
-            //Add(BookmarksButton, 1, 1, 1, 1, false, false, WidgetPlacement.Start);
-            //Add(HistoryButton, 2, 1, 1, 1, false, false, WidgetPlacement.Start);
-            //Add(ListingView, 0, 2, 1, 3, false, true); //hexpand will be = 'true' without seeing to this 'false'
-            //Add(QuickSearchBox, 0, 3, 1, 3);
-            //Add(StatusBar, 0, 4, 1, 3);
-            //Add(StatusProgressbar, 0, 5, 1, 3);
-            //Add(CLIoutput, 0, 6, 1, 3);
-            //Add(CLIprompt, 0, 7, 1, 3);
-
-            //WriteDefaultStatusLabel();
-            //CLIprompt.KeyReleased += CLIprompt_KeyReleased;
-
-            //QuickSearchText.GotFocus += (o, ea) => { OnGotFocus(ea); };
-            //QuickSearchText.KeyPressed += QuickSearchText_KeyPressed;
-            //QuickSearchBox.PackStart(QuickSearchText, true, true);
-            //QuickSearchBox.Visible = false;
         }
+
+        static IEnumerable<Bookmark> AddSysDrives()
+        {
+            // List<Bookmark> bms = new List<Bookmark>();
+            foreach (DriveInfo di in DriveInfo.GetDrives())
+            {
+                Bookmark bm = new Bookmark();
+                bm.title = di.Name;
+                bm.url = "file://" + di.Name;
+                /*if (di.IsReady)
+				{
+					NewBtn.TooltipText = di.VolumeLabel + " (" + di.DriveFormat + ")";
+				}*/
+
+                //switch (di.DriveType)
+                //{
+                //    case DriveType.Fixed:
+                //        bm.Icon = "(internal)drive-harddisk.png";
+                //        break; 
+
+                string d = di.Name;
+                //OS-specific icons
+                //if (d.StartsWith("A:")) bm.Icon = "(internal)media-floppy.png";
+                //if (d.StartsWith("B:")) bm.Icon = "(internal)media-floppy.png";
+                //if (d.StartsWith("/dev")) bm.Icon = "(internal)preferences-desktop-peripherals.png";
+                //if (d.StartsWith("/proc")) bm.Icon = "(internal)emblem-system.png";
+                //if (d == "/") bm.Icon = "(internal)root-folder.png";
+
+                yield return bm;
+            }
+        }
+
     }
 
+    /// <summary>Represents a item in the bookmark DB</summary>
+    public class Bookmark
+    {
+        /// <summary>The URL of the bookmark</summary>
+        public string url { get; set; }
+        /// <summary>The label (caption, title, mark) of the bookmark</summary>
+        public string title { get; set; }
+
+        public ICollection<Bookmark> SubMenu;
+
+        // private Image i = Image.FromResource("pluginner.Resources.folder.png");
+        // private bool imageIsSet;
+
+        /// <summary>Get the icon of the bookmark (or default icon if the bookmark hasn't an icon)</summary>
+        // public Image GetIcon() 
+    }
 }

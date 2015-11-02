@@ -45,34 +45,6 @@ namespace pluginner.Widgets
         IFcmdCommand Command {get; set; }
     }
 
-#if WPF
-    public interface IControl : IInputElement // UIElement, IFrameworkInputElement
-    {
-        bool CanGetFocus { get; set; }  // -> IsEnabled
-        Color BackgroundColor { get; set; }
-    }
-
-    public interface IUIDispacher
-    {
-        object Dispacher { get; }
-    }
-
-
-#else 
-
-    public interface IUIDispacher
-    {
-        object Dispacher { get; }
-        bool CheckAccess();  // check UI thread
-    }
-
-    public interface IControl : IUIDispacher
-    {
-        object Content { get; set; }
-        bool? Visible { get; set; }
-    }
-#endif
-
     public class DataFieldNumbers
     {
         //they aren't const because they may change when the columns are reordered

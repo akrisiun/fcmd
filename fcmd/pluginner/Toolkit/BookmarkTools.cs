@@ -6,22 +6,30 @@
  */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml;
+using System.Xml.Linq;
 using Xwt;
 using Image = Xwt.Drawing.Image;
 
 namespace pluginner.Toolkit
 {
     /// <summary>Bookmark menu tools</summary>
-    public class BookmarkTools
+    public static class BookmarkTools
     {
-        List<Bookmark> bookmarks = new List<Bookmark>();
+        static BookmarkTools()
+        {
+            bookmarks = new Collection<Bookmark>();
+        }
+        public static ICollection<Bookmark> bookmarks { get; private set; }
+
         /// <summary>Initialize bookmark menu toolkit</summary>
         /// <param name="BookmarkXML">The bookmark database (in XML format)</param>
         /// <param name="Category">"QuickAccessBar", "BookmarksMenu" or "UserMenu"</param>
-        public BookmarkTools(string BookmarkXML = null, string Category = "BookmarksMenu")
+        public static void SpeedDial(string BookmarkXML = null, string Category = "BookmarksMenu")
         {
             if (BookmarkXML == null)
             {
@@ -29,61 +37,64 @@ namespace pluginner.Toolkit
                 if (BookmarkXML == null) throw new Exception("Cannot load pluginner.dll::DefaultBookmarks.xml");
             }
 
-            XmlDocument bmDoc = new XmlDocument();
-            bmDoc.LoadXml(BookmarkXML);
-            XmlNodeList items = bmDoc.GetElementsByTagName("SpeedDial");
-            foreach (XmlNode x in items)
-            {//parsing speed dials
-                if (
-                    x.Attributes != null
-                    &&
-                    x.Attributes.GetNamedItem("type") != null
-                    &&
-                    x.Attributes.GetNamedItem("type").Value == Category
+            var bmDoc = XDocument.Load(BookmarkXML);
+            // XmlNodeList items = bmDoc.GetElementsByTagName("SpeedDial");
+            var items = bmDoc.Root.Elements("SpeedDial");
+
+            foreach (XElement x in items)
+            {
+                //parsing speed dials
+                if (x.HasAttributes &&
+                    x.Attribute("type") != null &&
+                    Category.Equals(x.Attribute("type").Value) // x.Attributes.GetNamedItem("type").Value == Category
                 )
                 {
-                    foreach (XmlNode xc in x.ChildNodes)
-                    {//parsing bookmark list
-                        if (xc.Attributes != null)
+                    foreach (XElement xc in x.Elements())
+                    {
+                        //parsing bookmark list
+                        if (xc.HasAttributes)
+                            continue;
+
+                        if (xc.Name == "AutoBookmarks") //автозакладка
                         {
-                            if (xc.Name == "AutoBookmarks") //автозакладка
+                            switch (xc.Attribute("type").Value)
                             {
-                                switch (xc.Attributes.GetNamedItem("type").Value)
-                                {
-                                    case "System.IO.DriveInfo.GetDrives":
-                                        bookmarks.AddRange(AddSysDrives());
-                                        break;
-                                    case "LinuxMounts":
-                                        bookmarks.AddRange(AddLinuxMounts());
-                                        break;
-                                        //todo: LinuxSystemDirs (/), LinuxUserMounts, MacMounts
-                                }
+                                case "System.IO.DriveInfo.GetDrives":
+
+                                    bookmarks.AddRange<Bookmark>(
+                                        AddSysDrives());
+                                    break;
+                                case "LinuxMounts":
+                                    bookmarks.AddRange(
+                                        AddLinuxMounts());
+                                    break;
+                                //  TODO: LinuxSystemDirs (/), LinuxUserMounts, MacMounts
                             }
-                            else if (xc.Name == "Bookmark") //простая закладка
-                            {
-                                ParseBookmarkNode(xc);
-                            }
+                        }
+                        else if (xc.Name == "Bookmark") //простая закладка
+                        {
+                            ParseBookmarkNode(xc);
                         }
                     }
                 }
             }
         }
 
-        private void ParseBookmarkNode(XmlNode XN, Bookmark UpperBookmark = null)
+        static void ParseBookmarkNode(XElement XN, Bookmark UpperBookmark = null)
         {
             try
             {
                 //overall
                 Bookmark bm = new Bookmark();
-                bm.title = XN.Attributes.GetNamedItem("title").Value;
-                if (XN.OuterXml.IndexOf("icon=", StringComparison.Ordinal) > 0)
-                    bm.Icon = XN.Attributes.GetNamedItem("icon").Value;
+                bm.title = XN.Attribute("title").Value;
+                //if (XN.OuterXml.IndexOf("icon=", StringComparison.Ordinal) > 0)
+                //    bm.Icon = XN.Attributes("icon").Value;
 
                 //if the bookmark is container
-                if (XN.HasChildNodes)
+                if (XN.HasElements)
                 {
                     bm.SubMenu = new List<Bookmark>();
-                    foreach (XmlNode SubXN in XN.ChildNodes)
+                    foreach (XElement SubXN in XN.Elements())
                     {
                         ParseBookmarkNode(SubXN, bm);
                     }
@@ -91,7 +102,7 @@ namespace pluginner.Toolkit
                 //if it is not a container
                 else
                 {
-                    bm.url = XN.Attributes.GetNamedItem("url").Value;
+                    bm.url = XN.Attribute("url").Value;
                 }
 
                 if (UpperBookmark == null)
@@ -101,16 +112,17 @@ namespace pluginner.Toolkit
             }
             catch
             {
-                Console.WriteLine("WARNING: Invalid bookmark declaration: " + XN.OuterXml);
+                Console.WriteLine("WARNING: Invalid bookmark declaration: " + XN.ToString());
             }
         }
 
 #if XWT
+     
         /// <summary>Display bookmark list to the XWT Box as an array of Buttons</summary>
         /// <param name="box">The XWT box</param>
         /// <param name="OnClick">What should happen if user clicks the bookmark</param>
         /// <param name="s">The Stylist that should apply usertheme to the button (or null)</param>
-        public void DisplayBookmarks(Box box, Action<string> OnClick) //, Stylist s = null)
+        public static void DisplayBookmarks(Box box, Action<string> OnClick) //, Stylist s = null)
         {
             //if (s == null) s = new Stylist();
             box.Clear();
@@ -121,7 +133,7 @@ namespace pluginner.Toolkit
                 if (b.SubMenu != null)
                 {
                     NewBtn.Type = ButtonType.DropDown;
-                    NewBtn.Menu = GetBookmarkSubmenu(b, OnClick);
+                    //NewBtn.Menu = GetBookmarkSubmenu(b, OnClick);
                 }
                 else
                 { NewBtn.Clicked += (o, ea) => OnClick(url); }
@@ -129,7 +141,7 @@ namespace pluginner.Toolkit
                 NewBtn.Style = ButtonStyle.Flat;
                 NewBtn.Margin = -3;
                 NewBtn.Cursor = CursorType.Hand;
-                NewBtn.Image = b.GetIcon();
+                //NewBtn.Image = b.GetIcon();
                 // s.Stylize(NewBtn);
                 box.PackStart(NewBtn);
             }
@@ -138,7 +150,7 @@ namespace pluginner.Toolkit
         /// <summary>Display bookmark list to the specifed XWT Menu</summary>
         /// <param name="mnu">The XWT menu</param>
         /// <param name="OnClick">What should happen if user clicks the bookmark</param>
-        public void DisplayBookmarks(Menu mnu, Action<string> OnClick)
+        public static void DisplayBookmarks(Menu mnu, Action<string> OnClick)
         {
             if (mnu == null) mnu = new Menu();
             mnu.Items.Clear();
@@ -148,66 +160,46 @@ namespace pluginner.Toolkit
                 MenuItem mi = new MenuItem();
                 mi.Clicked += (o, ea) => OnClick(url);
                 mi.Label = b.title;
-                mi.Image = b.GetIcon();
-                if (b.SubMenu != null) mi.SubMenu = GetBookmarkSubmenu(b, OnClick);
+                //mi.Image = b.GetIcon();
+                //if (b.SubMenu != null) 
+                //    mi.SubMenu = GetBookmarkSubmenu(b, OnClick);
                 mnu.Items.Add(mi);
             }
         }
 #endif
-        private Menu GetBookmarkSubmenu(Bookmark bookmark, Action<string> OnClick)
-        {
-            Menu mnu = new Menu();
-            if (bookmark.SubMenu == null) throw new ArgumentException("The bookmark should have a submenu", "bookmark");
 
-            List<Bookmark> lbm = bookmark.SubMenu;
-            foreach (Bookmark b in lbm)
-            {
-                MenuItem mi = new MenuItem();
-                mi.Label = b.title;
-                mi.Image = b.GetIcon();
-
-                if (b.SubMenu == null)
-                {
-                    string url = b.url;
-                    mi.Clicked += (o, ea) => OnClick(url);
-
-                }
-                else
-                {
-                    mi.SubMenu = GetBookmarkSubmenu(b, OnClick);
-                }
-                mnu.Items.Add(mi);
-            }
-
-            return mnu;
-        }
-
+        //static Menu GetBookmarkSubmenu(Bookmark bookmark, Action<string> OnClick)
+        //{
+        //    Menu mnu = new Menu();
+        //    if (bookmark.SubMenu == null) throw new ArgumentException("The bookmark should have a submenu", "bookmark"); 
 
         /// <summary>Add bookmarks of mounted medias (*nix)</summary>
-        private List<Bookmark> AddLinuxMounts()
+        public static IEnumerable<Bookmark> AddLinuxMounts()
         {
             List<Bookmark> bms = new List<Bookmark>();
 
-            if (Directory.Exists(@"/mnt"))
+            if (OSVersionEx.IsWindows)
+            {
+                foreach (var item in AddSysDrives()) //fallback for Windows
+                    yield return item;
+            }
+            else if (Directory.Exists(@"/mnt"))
             {
                 foreach (string dir in Directory.GetDirectories(@"/mnt/"))
                 {
                     Bookmark bm = new Bookmark();
                     bm.url = "file://" + dir;
                     bm.title = dir.Replace(@"/mnt/", "");
-                    bm.Icon = "(internal)drive-removable-media.png";
-                    bms.Add(bm);
+                    //bm.Icon = "(internal)drive-removable-media.png";
+
+                    yield return bm;
                 }
             }
-            else return AddSysDrives(); //fallback for Windows
-
-            return bms;
         }
 
         /// <summary>Add bookmarks of mounted medias (Windows)</summary>
-        private List<Bookmark> AddSysDrives()
+        public static IEnumerable<Bookmark> AddSysDrives()
         {
-            List<Bookmark> bms = new List<Bookmark>();
             foreach (DriveInfo di in DriveInfo.GetDrives())
             {
                 Bookmark bm = new Bookmark();
@@ -218,46 +210,30 @@ namespace pluginner.Toolkit
 					NewBtn.TooltipText = di.VolumeLabel + " (" + di.DriveFormat + ")";
 				}*/
 
-                switch (di.DriveType)
-                {
-                    case DriveType.Fixed:
-                        bm.Icon = "(internal)drive-harddisk.png";
-                        break;
-                    case DriveType.CDRom:
-                        bm.Icon = "(internal)drive-optical.png";
-                        break;
-                    case DriveType.Removable:
-                        bm.Icon = "(internal)drive-removable-media.png";
-                        break;
-                    case DriveType.Network:
-                        bm.Icon = "(internal)network-server.png";
-                        break;
-                    case DriveType.Ram:
-                        bm.Icon = "(internal)emblem-system.png";
-                        break;
-                    case DriveType.Unknown:
-                        bm.Icon = "(internal)image-missing.png";
-                        break;
-                }
+                //switch (di.DriveType)
+                //{
+                //    case DriveType.Fixed:
+                //        bm.Icon = "(internal)drive-harddisk.png";
+                //        break; 
 
                 string d = di.Name;
                 //OS-specific icons
-                if (d.StartsWith("A:")) bm.Icon = "(internal)media-floppy.png";
-                if (d.StartsWith("B:")) bm.Icon = "(internal)media-floppy.png";
-                if (d.StartsWith("/dev")) bm.Icon = "(internal)preferences-desktop-peripherals.png";
-                if (d.StartsWith("/proc")) bm.Icon = "(internal)emblem-system.png";
-                if (d == "/") bm.Icon = "(internal)root-folder.png";
-                bms.Add(bm);
+                //if (d.StartsWith("A:")) bm.Icon = "(internal)media-floppy.png";
+                //if (d.StartsWith("B:")) bm.Icon = "(internal)media-floppy.png";
+                //if (d.StartsWith("/dev")) bm.Icon = "(internal)preferences-desktop-peripherals.png";
+                //if (d.StartsWith("/proc")) bm.Icon = "(internal)emblem-system.png";
+                //if (d == "/") bm.Icon = "(internal)root-folder.png";
+
+                yield return bm;
             }
-            return bms;
         }
     }
 
     /// <summary>Represents a item in the bookmark DB</summary>
     public class Bookmark
     {
-        private Image i = Image.FromResource("pluginner.Resources.folder.png");
-        private bool imageIsSet;
+        //private Image i = Image.FromResource("pluginner.Resources.folder.png");
+        //private bool imageIsSet;
 
         /// <summary>The URL of the bookmark</summary>
         public string url { get; set; }
@@ -265,46 +241,20 @@ namespace pluginner.Toolkit
         public string title { get; set; }
 
         /// <summary>Get the icon of the bookmark (or default icon if the bookmark hasn't an icon)</summary>
-        public Image GetIcon()
-        {
-            if (!imageIsSet)
-            {
-                try
-                {
-                    return SubMenu == null ?
-                        i : Image.FromResource("pluginner.Resources.bookmarkMenu.png"); //todo: replace the Firefox icon with a free!
-                }
-                catch (Exception) { return null; }
-            }
-            return i;
-        }
+        // public Image GetIcon() 
         /// <summary>Set the icon of the bookmark</summary>
-        public string Icon
-        {
-            set
-            {
-                try
-                {
-                    if (value == null || value == "")
-                        throw new Exception("Please catch me! Catch me! Catch me!"); //to leave 'try' and go to 'catch' block.
+        // public string Icon {get set;}
 
-                    if (value.StartsWith("(internal)"))
-                        i = Image.FromResource(value.Replace("(internal)", "pluginner.Resources."));
-                    else
-                        i = Image.FromFile(value);
+        //    if (value == null || value == "")
+        //        throw new Exception("Please catch me! Catch me! Catch me!"); //to leave 'try' and go to 'catch' block.
 
-                    imageIsSet = true;
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("ERROR: Can't load bookmark image " + value + " because of " + ex.Message);
-                    // i = Image.FromResource("pluginner.Resources.image-missing.png");
-                }
-            }
-        }
+        //    if (value.StartsWith("(internal)"))
+        //        i = Image.FromResource(value.Replace("(internal)", "pluginner.Resources."));
+        //    else
+        //        i = Image.FromFile(value);
 
-        public List<Bookmark> SubMenu;
+        //    imageIsSet = true;
 
-        //todo: public string Description;
+        public ICollection<Bookmark> SubMenu;
     }
 }

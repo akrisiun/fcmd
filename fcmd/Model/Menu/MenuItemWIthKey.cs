@@ -21,5 +21,7 @@ namespace fcmd.Menu
             base.LoadCommandProperties(command);
         }
 #endif
+
+        public IFcmdCommand Command { get { return this.Command as IFcmdCommand; } }
     }
 }

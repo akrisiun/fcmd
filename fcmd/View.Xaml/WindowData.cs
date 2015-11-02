@@ -239,7 +239,10 @@ namespace fcmd.Model
         public override void OnSelectedItem(IPointedItem item)
         {
             var cmdPanel = this.WindowWpf.FooterCmd as PanelCmd;
-            cmdPanel.selected.Text = item.ToString();
+            if (item is PointedItem)
+                cmdPanel.selected.Text = (item as PointedItem).Item.FullPath;
+            else 
+                cmdPanel.selected.Text = item.ToString();
         }
 
         #region LoadDir

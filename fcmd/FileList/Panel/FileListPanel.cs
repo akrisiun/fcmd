@@ -94,8 +94,8 @@ namespace fcmd
 
         public IStatusBar StatusBar { get; set; }
 
-        public ShortenPolicies ShortenPolicy {[DebuggerStepThrough] get; set; }
-        public IFSPlugin FS {[DebuggerStepThrough] get; set; }
+        public ShortenPolicies ShortenPolicy { [DebuggerStepThrough] get; set; }
+        public IFSPlugin FS { [DebuggerStepThrough] get; set; }
 
         // T GetValue<T>(int Field)
         public abstract T GetValue<T>(int field);
@@ -132,12 +132,14 @@ namespace fcmd
         /// <summary>Converts the file size (in bytes) to human-readable string</summary>
         /// <param name="Input">The input value</param>
         /// <returns>Human-readable string (xxx yB)</returns>
-        public static string KiloMegaGigabyteConvert(this long Input, SizeDisplayPolicy ShortenKB, SizeDisplayPolicy ShortenMB, SizeDisplayPolicy ShortenGB)
+        public static string KiloMegaGigabyteConvert(this long Input,
+            SizeDisplayPolicy ShortenKB, SizeDisplayPolicy ShortenMB, SizeDisplayPolicy ShortenGB)
         {
             double ShortenedSize; //here will be writed the decimal value of the hum. readable size
 
             //TeraByte (will be shortened everywhen)
-            if (Input > 1099511627776) return (Input / 1099511627776) + " TB";
+            if (Input > 1099511627776) 
+                return (Input / 1099511627776) + " TB";
 
             //GigaByte
             if (Input > 1073741824)
@@ -159,9 +161,9 @@ namespace fcmd
                 switch (ShortenMB)
                 {
                     case SizeDisplayPolicy.OneNumeral:
-                        return string.Format("{0:0.#} MB", ShortenedSize);
+                        return string.Format("{0:0.#} M", ShortenedSize);
                     case SizeDisplayPolicy.TwoNumeral:
-                        return string.Format("{0:0.##} MB", ShortenedSize);
+                        return string.Format("{0:0.##} M", ShortenedSize);
                 }
             }
 
@@ -172,13 +174,13 @@ namespace fcmd
                 switch (ShortenKB)
                 {
                     case SizeDisplayPolicy.OneNumeral:
-                        return string.Format("{0:0.#} KB", ShortenedSize);
+                        return string.Format("{0:0.#} k", ShortenedSize);
                     case SizeDisplayPolicy.TwoNumeral:
-                        return string.Format("{0:0.##} KB", ShortenedSize);
+                        return string.Format("{0:0.##} k", ShortenedSize);
                 }
             }
 
-            return Input + " B"; //if Input is less than 1k or shortening is disallowed
+            return Input + " b"; //if Input is less than 1k or shortening is disallowed
         }
 
     }

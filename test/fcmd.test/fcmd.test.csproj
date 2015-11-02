@@ -56,7 +56,9 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="UnitDataSortTest.cs" />
+    <Compile Include="TestApp.cs" />
+    <Compile Include="UnitReadDir.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

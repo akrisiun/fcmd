@@ -154,10 +154,19 @@ namespace fcmd.View.ctrl
                 while (numerator.MoveNext())
                 {
                     var item = numerator.Current;
-                    item.Width = item.ActualWidth;
+                    if (item.ActualWidth > item.Width.Value)
+                        item.Width = item.ActualWidth;
+                    if (item.ActualWidth < item.MinWidth)
+                        item.Width = item.MinWidth;
+                    item.MinWidth = item.Width.Value * 0.7;
                 }
 
-                dataGrid.Columns[0].Width = 200;
+                dataGrid.Columns[0].MinWidth = 80;
+                if (dataGrid.ActualWidth > 50 && dataGrid.ActualWidth < 400)
+                {
+                    dataGrid.Columns[0].Width = 160;
+                    dataGrid.Columns[1].Width = 65;
+                }
             }
         }
 
@@ -280,8 +289,12 @@ namespace fcmd.View.ctrl
 
         //public static readonly DependencyProperty CustomSorterProperty =
         //      DependencyProperty.RegisterAttached("CustomSorter", typeof(ICustomSorter), typeof(DataGridColumn));
-        //protected override void OnSorting(DataGridSortingEventArgs eventArgs)
-          //  base.OnSorting(eventArgs);
+        protected override void OnSorting(DataGridSortingEventArgs eventArgs)
+        {
+            SortBehavior.Handle(this, this.ItemsSource, eventArgs);
+            if (!eventArgs.Handled)
+                base.OnSorting(eventArgs);
+        }
 
         // SetCollectionView
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)

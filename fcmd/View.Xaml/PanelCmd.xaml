@@ -4,20 +4,25 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:fcmd.View"
+             xmlns:ctrl="clr-namespace:fcmd.View.ctrl"
              mc:Ignorable="d" 
-             d:DesignHeight="24" d:DesignWidth="600">
+             d:DesignHeight="25" d:DesignWidth="600">
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="White">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="80" />
-            <ColumnDefinition Width=".3*" MinWidth="120" />
-            <ColumnDefinition Width=".5*" MinWidth="150" />
+            <ColumnDefinition Width="40" />
+            <ColumnDefinition Width=".4*" MinWidth="120" />
+            <ColumnDefinition Width="75" />
+            <ColumnDefinition Width=".4*" MinWidth="150" />
         </Grid.ColumnDefinitions>
-        <Label>Command:</Label>
-        <TextBox Name="selected"  x:FieldModifier="public" 
-                 Margin="5 1 5 1"
+        <Label>Item:</Label>
+        <ctrl:TextEntry x:Name="selected"  x:FieldModifier="public" 
+                 Margin="5 1 5 1" Padding="0 2 0 1"
                  HorizontalAlignment="Stretch" Grid.Column="1" />
-        <ComboBox Name="cmd" x:FieldModifier="public"
-                 Margin="5 1 24 1" IsEditable="True" 
-                 HorizontalAlignment="Stretch" Grid.Column="2" />
+        <Label Grid.Column="2"
+            >Command:</Label>
+        <ctrl:ComboWidget x:Name="cmd" x:FieldModifier="public"
+                 Margin="5 1 24 1"  Padding="0 2 0 1"
+                 IsEditable="True" 
+                 HorizontalAlignment="Stretch" Grid.Column="3" />
     </Grid>
 </UserControl>

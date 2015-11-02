@@ -76,6 +76,7 @@ namespace pluginner.Widgets
             public double Width;
             public bool Visible;
             public int Index;
+            public int VerticalAlign;
         }
 
         #endregion

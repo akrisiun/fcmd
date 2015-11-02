@@ -5,7 +5,7 @@ using System.Text;
 
 namespace pluginner.Widgets
 {
-    public interface IMainMenu
+    public interface IMainMenu : IMenu
     {
 
     }
@@ -13,6 +13,7 @@ namespace pluginner.Widgets
     public interface IMenuItem
     {
         string Key { get; set; }
+        IFcmdCommand Command { get; }
     }
 
 }

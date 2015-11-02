@@ -15,13 +15,13 @@ using fs = fcmd.base_plugins.fs;
 using System.Collections;
 
 namespace fcmd.View.Xaml
-{ 
+{
     public class FileListPanelWpf : FileListPanel<ListItemXaml>
     {
         #region Data
 
         public PanelWpf Parent { get; set; }
-        public WindowDataWpf WindowData {[DebuggerStepThrough] get; set; }
+        public WindowDataWpf WindowData { [DebuggerStepThrough] get; set; }
 
         public override IButton GoRoot { get; protected set; }
         public override IButton GoUp { get; protected set; }
@@ -127,7 +127,7 @@ namespace fcmd.View.Xaml
         }
 
         #endregion
-        
+
         #region Load
 
         public override void LoadFs(string URL, ShortenPolicies Shorten)
@@ -144,7 +144,7 @@ namespace fcmd.View.Xaml
             var lv = ListingView as ListFiltered2Xaml;
 
             Thread DirLoadingThread =
-                new Thread(delegate ()
+                new Thread(delegate()
                 {
                     IEnumerable<DirItem> dis;
                     if (FS is fs.localFileSystem)
@@ -231,29 +231,35 @@ namespace fcmd.View.Xaml
                 Data[idxSize] = "<↑ UP>";
                 Data[idxDatetime] = FS.GetMetadata(di.URL).LastWriteTimeUTC.ToLocalTime();
                 Data[idxIsDirectory] = true;
+                Data[idxSizeBytes] = (Int64)0;
             }
             else if (di.IsDirectory)
             {//dir
                 Data[idxSize] = "<DIR>";
                 Data[idxDatetime] = di.Date;
                 Data[idxIsDirectory] = true;
+                Data[idxSizeBytes] = (Int64)0;
             }
             else
             {
                 Data[idxSize] = di.Size.KiloMegaGigabyteConvert(ShortenKB, ShortenMB, ShortenGB);
                 Data[idxDatetime] = di.Date;
                 Data[idxIsDirectory] = false;
+                Data[idxSizeBytes] = (Int64)di.Size;
             }
         }
 
         public const int idxUrl = 0;
         public const int idxName = 1;
         public const int idxSize = 2;
+        public const int idxDirLabel = 2;
+
         public const int idxDatetime = 3;
         public const int idxIsDirectory = 4;
+        public const int idxSizeBytes = 5;
 
         // public const int idxDI = 5;
-        public const int idxCOUNT = 5; // 6;
+        public const int idxCOUNT = 6;
 
         Tuple<string, object[], IEnumerable<bool>> AddItem(DirItem di, ShortenPolicies Shorten)
         {
@@ -261,20 +267,23 @@ namespace fcmd.View.Xaml
             SizeDisplayPolicy ShortenMB = Shorten.MB;
             SizeDisplayPolicy ShortenGB = Shorten.GB;
 
-            ICollection<object> Data = new Collection<Object>();
+            // ICollection<object> Data = new Collection<Object>();
+            object[] Data = new object[idxCOUNT];
+
             List<Boolean> EditableFields = new List<bool>();
             //Data.Add(di.IconSmall ?? Image.FromResource("fcmd.Resources.image-missing.png"));
 
             EditableFields.Add(false);
-            Data.Add(di.URL); EditableFields.Add(false);
-            Data.Add(di.TextToShow); EditableFields.Add(true);
+            Data[idxUrl] = (di.URL); EditableFields.Add(false);
+            Data[idxName] = (di.TextToShow); EditableFields.Add(true);
 
             if (di.TextToShow == "..")
             {//parent dir
-                Data.Add("<↑ UP>"); EditableFields.Add(false);
+
+                Data[idxDirLabel] = ("<↑ UP>"); EditableFields.Add(false);
                 EditableFields[2] = false;
-                Data.Add(
-                    FS.GetMetadata(di.URL).LastWriteTimeUTC.ToLocalTime());
+                Data[idxDatetime] = FS.GetMetadata(di.URL).LastWriteTimeUTC.ToLocalTime();
+                Data[idxSizeBytes] = (Int64)0;
 
                 EditableFields.Add(false);
                 // updir = di.URL;
@@ -282,23 +291,27 @@ namespace fcmd.View.Xaml
             }
             else if (di.IsDirectory)
             {//dir
-                Data.Add("<DIR>"); EditableFields.Add(false);
-                Data.Add(di.Date); EditableFields.Add(false);
+                Data[idxDirLabel] = ("<DIR>"); EditableFields.Add(false);
+                Data[idxSizeBytes] = (Int64)0;
+                Data[idxDatetime] = (di.Date); EditableFields.Add(false);
             }
             else
             {//file
-                Data.Add(
-                    di.Size.KiloMegaGigabyteConvert(
-                        ShortenKB, ShortenMB, ShortenGB));
+                var size = di.Size.KiloMegaGigabyteConvert(
+                        ShortenKB, ShortenMB, ShortenGB);
+                Data[idxSize] = (size);
+                Data[idxSizeBytes] = (Int64)di.Size;
 
                 EditableFields.Add(false);
-                Data.Add(di.Date); EditableFields.Add(false);
+                Data[idxDatetime] = (di.Date); EditableFields.Add(false);
             }
 
-            Data.Add(di.IsDirectory);
-            Data.Add(di);
+            Data[idxIsDirectory] = (di.IsDirectory);
+            // Data[idxSize] = (di);
 
-            object[] array = new object[Data.Count]; Data.CopyTo(array, 0);
+            object[] array = Data;
+            //new object[Data.Count]; 
+            //Data.CopyTo(array, 0);
             return new Tuple<string, object[], IEnumerable<bool>>(di.TextToShow, array, EditableFields);
         }
 
@@ -372,7 +385,7 @@ namespace fcmd.View.Xaml
         }
 
         public void ListBindThen(string URL, Action then = null)
-        { 
+        {
             var view = ListingView;
             if (!view.ColumnsSet && (Parent as DispatcherObject).CheckAccess())
             {

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Media;
+using fcmd.View.Xaml.cmd;
 
 namespace fcmd.View.Xaml
 {
@@ -120,7 +121,7 @@ namespace fcmd.View.Xaml
             if (this.data != null)
                 ListView2DataGrid.DataGridColumnWidths(this.data);
 
-            Bind.PanelDirCombo(this.combo, this, this.Side);
+            DiskBoxCombo.PanelDirCombo(this.combo, this, this.Side);
 
             GotFocus += (s, e) =>
             {
@@ -153,7 +154,7 @@ namespace fcmd.View.Xaml
         {
             PanelDataWpf.UrlBox.Text = PanelDataWpf.FS.CurrentDirectory;
 
-            Bind.PanelDirUpdate(this.combo, this, this.Side);
+            BindPanel.PanelDirUpdate(this.combo, this, this.Side);
         }
 
         public void LoadUrl(string url)
@@ -211,7 +212,7 @@ namespace fcmd.View.Xaml
             data.ClipboardCopyMode = DataGridClipboardCopyMode.ExcludeHeader;
             data.EnableRowVirtualization = true;
             data.AutoGenerateColumns = false;
-            data.FrozenColumnCount = 1;
+            data.FrozenColumnCount = 0;
             data.HeadersVisibility = DataGridHeadersVisibility.Column;
             data.SetValue(VirtualizingPanel.IsVirtualizingProperty, true);
             data.SetValue(VirtualizingPanel.IsVirtualizingWhenGroupingProperty, true);
@@ -223,9 +224,9 @@ namespace fcmd.View.Xaml
             var columns = data.Columns;
             if (columns.Count != 3)
             {
-                columns.Add(new DataGridTextColumn { Header = "Loading..", MinWidth = 120.0 });
-                columns.Add(new DataGridTextColumn { Header = "", MinWidth = 60.0 });
-                columns.Add(new DataGridTextColumn { Header = "", MinWidth = 80.0 });
+                columns.Add(new DataGridTextColumn { Header = "Loading..", MinWidth = 80, Width = 120.0 });
+                columns.Add(new DataGridTextColumn { Header = "", MinWidth = 50, Width = 60.0 });
+                columns.Add(new DataGridTextColumn { Header = "", MinWidth = 70, Width = 80.0 });
             }
 
             return data;
