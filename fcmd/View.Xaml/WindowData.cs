@@ -12,13 +12,13 @@ using fcmd.View;
 using fcmd.View.ctrl;
 using Directory = System.IO.Directory;
 using fcmd.base_plugins.fs;
+using fcmd.Platform;
 
 namespace fcmd.Model
 {
     public class WindowDataWpf : CommanderData
     {
-
-        #region Properties 
+        #region Properties
 
         public override PanelSide? ActiveSide
         {
@@ -28,9 +28,12 @@ namespace fcmd.Model
                      : PanelLayout.Panel1.IsActive.Value ? PanelSide.Left : PanelSide.Right;
             }
         }
-
         public MainWindow WindowWpf { get { return Window as MainWindow; } }
-        public WpfBackend BackendWpf {[DebuggerStepThrough] get { return CommanderBackend.Current as WpfBackend; } }
+        public WpfBackend BackendWpf
+        {
+            [DebuggerStepThrough]
+            get { return CommanderBackend.Current as WpfBackend; }
+        }
         public MenuPanelWpf MainMenu { get { return (Window as MainWindow).Menu; } }
 
         public FileListPanelWpf ActivePanel { get { return WindowWpf.ActivePanelWpf as FileListPanelWpf; } }
@@ -40,21 +43,25 @@ namespace fcmd.Model
         public override IPanelLayout PanelLayout { get { return _panelLayout; } }     // was: Xwt.HPaned();
 
         // public Xwt.HBox KeyBoardHelp = new Xwt.HBox();
-        public override object KeybHelpButtons { get { return null; } }
+        // public override object KeybHelpButtons { get { return null; } }
         // KeyboardHelpButton[] KeybHelpButtons = new KeyboardHelpButton[11];//одна лишняя, которая нумбер [0]
 
         // public override object Layout { get { return Window.Content; } }    // was: Xwt.VBox 
 
         public CommanderStatusBar StatusBar { get; protected set; }
+        protected CommandList commands;
+        public override ICollection<IFcmdCommand> CommandList { get { return commands; } }
+
+        public string BookmarksStore { get; set; }
 
         #endregion
 
-        #region Init, Show 
+        #region Init, Show
 
         public class PanelLayoutClass : IPanelLayout
         {
-            public IPanel Panel1 {[DebuggerStepThrough] get { return wpfPanel1; } }
-            public IPanel Panel2 {[DebuggerStepThrough] get { return wpfPanel2; } }
+            public IPanel Panel1 { [DebuggerStepThrough] get { return wpfPanel1; } }
+            public IPanel Panel2 { [DebuggerStepThrough] get { return wpfPanel2; } }
 
             public PanelWpf wpfPanel1 { get; protected set; }
             public PanelWpf wpfPanel2 { get; protected set; }
@@ -145,6 +152,9 @@ namespace fcmd.Model
             _panelLayout = PanelLayoutClass.Create(window);
 
             TranslateMenu(MainMenu);
+            // Commands
+            commands = new CommandList();
+
             BindMenu();
             MainMenu.itemAbout.Click += (s, e)
                      => this.mnuHelpAbout_Clicked(s, e);
@@ -156,6 +166,12 @@ namespace fcmd.Model
                 => Localize();
             if (Backend != null)
                 Localize();
+
+            ////load bookmarks
+            //if (fcmd.Properties.Settings.Default.BookmarksFile != null && fcmd.Properties.Settings.Default.BookmarksFile.Length > 0)
+            //{
+            //    BookmarksStore = File.ReadAllText(fcmd.Properties.Settings.Default.BookmarksFile, Encoding.UTF8);
+            //}
 
             //apply user's settings
             //window size

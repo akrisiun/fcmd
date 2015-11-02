@@ -57,7 +57,7 @@ namespace fcmd.FileList
         /// <summary>What button user clicked</summary>
         public Xwt.Command Command
         {
-            get { return this.Command; }
+            get { return null; }
         }
 
     }

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>fcmd</RootNamespace>
     <AssemblyName>fcmdp</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -74,6 +74,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="FileList\InputBox.cs" />
+    <Compile Include="FileList\Panel\DiskBox.cs" />
     <Compile Include="Model\IDriveCombo.cs" />
     <Compile Include="Model\IPanelLayout.cs" />
     <Compile Include="Model\PanelSide.cs" />
@@ -86,7 +87,6 @@
     <Compile Include="Platform\AiLib\Reflection\StringConvert.cs" />
     <Compile Include="Platform\AiLib\Wpf\GridDataSource.cs" />
     <Compile Include="Platform\AiLib\Wpf\WpfTitleHelper.cs" />
-    <Compile Include="base-plugins\fs\FTPFileSystem.cs" />
     <Compile Include="base-plugins\fs\localFileSystem-CLI.cs" />
     <Compile Include="base-plugins\fs\localFileSystem.cs" />
     <Compile Include="base-plugins\ve\PlainText.cs" />
@@ -94,12 +94,10 @@
     <Compile Include="FileList\Actions\AsyncCopy.cs" />
     <Compile Include="FileList\Panel\FileListPanel.cs" />
     <Compile Include="FileList\Actions\FileProcessDialog.cs" />
-    <Compile Include="FileList\FLPDataSource.cs" />
-    <Compile Include="FileList\FTPClient.cs" />
     <Compile Include="FileList\Actions\KeyboardHelpButton.cs" />
     <Compile Include="FileList\Localizator.cs" />
-    <Compile Include="FileList\Actions\MainWindow-Actions.cs" />
-    <Compile Include="FileList\MainWindow-Workers.cs" />
+    <Compile Include="FileList\Actions\MainWindowActions.cs" />
+    <Compile Include="FileList\MainWindowWorkers.cs" />
     <Compile Include="Model\Menu\MenuButton.cs" />
     <Compile Include="FileList\Actions\ReplaceQuestionDialog.cs" />
     <Compile Include="FileList\Settings.cs" />
@@ -109,6 +107,7 @@
     <Compile Include="FileList\XmlDisplay.cs" />
     <Compile Include="Model\IBackend.cs" />
     <Compile Include="Model\CommanderData.cs" />
+    <Compile Include="Platform\Command.cs" />
     <Compile Include="Platform\ICommanderWindow.cs" />
     <Compile Include="Model\Menu\MenuItemWIthKey.cs" />
     <Compile Include="Model\MainDataContext.cs" />
@@ -128,6 +127,7 @@
     <Compile Include="Platform\Commands.cs" />
     <Compile Include="Model\View\Control.cs" />
     <Compile Include="View.Xaml\Bind.cs" />
+    <Compile Include="View.Xaml\CommandList.cs" />
     <Compile Include="View.Xaml\ctrl\InputBox.cs" />
     <Compile Include="View.Xaml\ctrl\ListView2DataGrid.cs" />
     <Compile Include="View.Xaml\ctrl\ListView2WebBrowser.cs" />

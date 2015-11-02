@@ -42,7 +42,7 @@ namespace pluginner.Widgets
         event EventHandler Clicked; // { add; remove; } // ; set; }
 
         bool CanGetFocus { get; set; }
-        ICommand Command {get; set; }
+        IFcmdCommand Command {get; set; }
     }
 
 #if WPF

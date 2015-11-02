@@ -5,7 +5,7 @@ using System.Text;
 
 namespace pluginner.Widgets
 {
-    public interface ICommand
+    public interface IFcmdCommand
     {
         bool CanExecute(object parameter);
         void Execute(object parameter);

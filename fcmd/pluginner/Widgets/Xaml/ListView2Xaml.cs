@@ -235,6 +235,7 @@ namespace pluginner.Widgets.Xaml
         #endregion
         #region PUBLIC EVENTS
 
+#pragma warning disable 0649, 0414
         public event TypedEvent<T> PointerMoved;
         public event TypedEvent<List<T>> SelectionChanged;
         public event TypedEvent<T> PointedItemDoubleClicked;

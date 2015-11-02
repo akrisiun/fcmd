@@ -42,8 +42,8 @@ namespace fcmd.View.ctrl
                 Content = Text;
         }
 
-        pluginner.Widgets.ICommand IButton.Command { 
-            get { return this.Command as pluginner.Widgets.ICommand; } 
+        pluginner.Widgets.IFcmdCommand IButton.Command { 
+            get { return this.Command as pluginner.Widgets.IFcmdCommand; } 
             set { base.Command = value as IRelayCommand; } 
         }
 

@@ -60,7 +60,6 @@ namespace fcmd.Model
                 { Panel1Gtk = panel1Gtk, Panel2Gtk = panel2Gtk };
             }
 
-
             //public int Height { get { return (int)Window.Height; } }
             //public int Width { get { return (int)Window.Width; } }
 

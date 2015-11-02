@@ -9,7 +9,9 @@ using System.Windows.Threading;
 
 namespace fcmd.View.ctrl
 {
-    // FrameworkElement
+    /// <summary>
+    /// .http plugin visual object class
+    /// </summary>
     public class ListView2WebBrowser : UIElement, IControl
     {
         public WebBrowser Browser { [DebuggerStepThrough] get; protected set; }

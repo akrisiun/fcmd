@@ -38,4 +38,32 @@ namespace fcmd.Controller
             ExecuteCmd(parameter);
         }
     }
+
+    public class MkDirCommand : Command
+    {
+        public MkDirCommand()
+        {
+            Target = MainWindow.ActiveWindow; 
+        }
+
+        public override void Execute(object parameter = null)
+        {
+            string url = parameter as string;
+            (Target as MainWindow).MkDir(url);
+        }
+    }
+
+    public class CpCommand : Command
+    {
+        public CpCommand()
+        {
+            Target = App.Current.MainWindow as MainWindow; 
+        }
+        
+        public override void Execute(object parameter = null)
+        {
+            string url = parameter as string;
+            (Target as MainWindow).Cp(); 
+        }
+    }
 }

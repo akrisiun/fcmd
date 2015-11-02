@@ -43,7 +43,7 @@ namespace fcmd
         public FileListPanelWpf p1Wpf {[DebuggerStepThrough] get { return p1 as FileListPanelWpf; } }
         public FileListPanelWpf p2Wpf {[DebuggerStepThrough] get { return p2 as FileListPanelWpf; } }
 
-        public static string ProductVersion { get { return "v 0.1a"; } }
+        public static string ProductVersion { get { return "v 0.1b"; } }
 
         public IList<IColumnInfo> LVCols { get; set; }
 

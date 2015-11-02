@@ -24,6 +24,9 @@ namespace fcmd.View.Xaml
                 drives.Add("D:");
             if (Directory.Exists("E:"))
                 drives.Add("E:");
+            //TODO
+            drives.Add("http://");
+            drives.Add("ftp://");
 
             combo.ItemsSource = drives;
             combo.SelectionChanged += (s, e) => SelectedDrive(combo, e, filePanel, side);
@@ -37,12 +40,19 @@ namespace fcmd.View.Xaml
 
             e.Handled = true;
             var item = e.AddedItems[0];
-            var dir = "file://" + item.ToString();
+            var text = item.ToString();
+            if (text.Contains("//"))
+            {
+                filePanel.path.Text = text;
+            }
+            else  
+            {
+                var dir = "file://" + text;
+                filePanel.path.Text = dir;
 
-            filePanel.path.Text = dir;
-
-            var data = filePanel.PanelDataWpf;
-            data.LoadDir(dir);
+                var data = filePanel.PanelDataWpf;
+                data.LoadDir(dir);
+            }
 
             filePanel.Update();
         }

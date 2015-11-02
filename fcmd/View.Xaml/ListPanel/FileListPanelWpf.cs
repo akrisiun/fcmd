@@ -15,10 +15,7 @@ using fs = fcmd.base_plugins.fs;
 using System.Collections;
 
 namespace fcmd.View.Xaml
-{
-    // pluginner.Widgets.ListView2ItemWpf
-    //   ListView2ItemWpf(int rowNumber, int colNumber, string rowTag, ListView2.ColumnInfo[] columns, List<object> data, Font font) 
-
+{ 
     public class FileListPanelWpf : FileListPanel<ListItemXaml>
     {
         #region Data
@@ -43,7 +40,7 @@ namespace fcmd.View.Xaml
         #endregion
 
         // original constructor
-        //public FileListPanelXaml(string BookmarkXML = null, string CSS = null,
+        // public FileListPanelXaml(string BookmarkXML = null, string CSS = null,
         //    string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
 
         public FileListPanelWpf(PanelWpf parent)
@@ -101,6 +98,8 @@ namespace fcmd.View.Xaml
 
         public void BuildUI(string BookmarkXML = null) { }
 
+        #region StatusBar
+
         protected void WriteDefaultStatusLabel()
         {
             //StatusProgressbar.Visible = false;
@@ -126,6 +125,10 @@ namespace fcmd.View.Xaml
             //return txt;
             return string.Empty;
         }
+
+        #endregion
+        
+        #region Load
 
         public override void LoadFs(string URL, ShortenPolicies Shorten)
         {
@@ -212,8 +215,6 @@ namespace fcmd.View.Xaml
                     then();
             }
         }
-
-        #region Load
 
         void FillItem(ref object[] Data, DirItem di, ShortenPolicies Shorten)
         {

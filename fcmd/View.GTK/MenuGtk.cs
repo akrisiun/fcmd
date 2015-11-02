@@ -145,3 +145,25 @@ namespace fcmd.Menu
     }
 
 }
+
+
+//this.CloseRequested += MainWindow_CloseRequested;
+//PanelLayout.KeyReleased += PanelLayout_KeyReleased;
+//mnuFileView.Clicked += (o, ea) => { PanelLayout_KeyReleased(o, new KeyEventArgs(Key.F3, Xwt.ModifierKeys.None, false, 0)); };
+//mnuFileEdit.Clicked += (o, ea) => { PanelLayout_KeyReleased(o, new KeyEventArgs(Key.F4, Xwt.ModifierKeys.None, false, 0)); };
+//mnuFileCopy.Clicked += (o, ea) => { PanelLayout_KeyReleased(o, new KeyEventArgs(Key.F5, Xwt.ModifierKeys.None, false, 0)); };
+//mnuFileMove.Clicked += (o, ea) => { PanelLayout_KeyReleased(o, new KeyEventArgs(Key.F6, Xwt.ModifierKeys.None, false, 0)); };
+//mnuFileNewDir.Clicked += (o, ea) => { PanelLayout_KeyReleased(o, new KeyEventArgs(Key.F7, Xwt.ModifierKeys.None, false, 0)); };
+//mnuFileRemove.Clicked += (o, ea) => { PanelLayout_KeyReleased(o, new KeyEventArgs(Key.F8, Xwt.ModifierKeys.None, false, 0)); };
+//mnuFileSelectAll.Clicked += (o, ea) => { ActivePanel.ListingView.Select(null); };
+//mnuFileUnselect.Clicked += (o, ea) => { ActivePanel.ListingView.Unselect(); };
+//mnuFileInvertSelection.Clicked += (o, ea) => { ActivePanel.ListingView.InvertSelection(); };
+//mnuFileQuickSelect.Clicked += (o, ea) => { PanelLayout_KeyReleased(o, new KeyEventArgs(Key.NumPadAdd, Xwt.ModifierKeys.None, false, 0)); };
+//mnuFileQuickUnselect.Clicked += (o, ea) => { PanelLayout_KeyReleased(o, new KeyEventArgs(Key.NumPadSubtract, Xwt.ModifierKeys.None, false, 0)); };
+//mnuFileExit.Clicked += (o, ea) => { this.Close(); };
+//mnuViewNoFilter.Clicked += (o, ea) => { ActivePanel.LoadDir(); };
+//mnuViewWithFilter.Clicked += mnuViewWithFilter_Clicked;
+//mnuNavigateReload.Clicked += mnuNavigateReload_Clicked;
+//mnuToolsOptions.Clicked += mnuToolsOptions_Clicked;
+//mnuHelpDebug.Clicked += ShowDebugInfo;
+//mnuHelpAbout.Clicked += mnuHelpAbout_Clicked;

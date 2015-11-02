@@ -12,19 +12,7 @@ namespace fcmd.Model
     using fcmd.Platform;
     using System.Text;
 
-    public abstract class Command : ICommand, IRelayCommand
-    {
-        public bool Enabled { get; set; }
-        public Action Action { get; set; }
-        public FrameworkElement Target { get; set; }
-
-#pragma warning disable 0649, 0067, 0414
-        public event EventHandler CanExecuteChanged;
-
-        public virtual bool CanExecute(object parameter = null) { return Enabled; } //  && Target != null && Target.CheckAccess(); }
-        public virtual void Execute(object parameter = null) { if (Action != null) Action(); }
-    }
-
+  
     public class ChdirUpCommand : Command { }
 
     public class ChRootCommand : Command { }
@@ -37,9 +25,6 @@ namespace fcmd.Model
             @this.PreviewMouseDoubleClick += PreviewMouseDoubleClick;
 
             var panel = @this.Panel;
-
-            //panel.cdUp.DataContext = @this;
-            //panel.cdRoot.DataContext = @this;
 
             if (panel.cdUp.Command == null)
                 panel.cdUp.Command = new ChdirUpCommand { Target = @this, Action = () => CdUp_PreviewMouseDown(@this), Enabled = true };
@@ -65,20 +50,15 @@ namespace fcmd.Model
             @this.PreviewMouseDoubleClick -= PreviewMouseDoubleClick;
 
             var panel = @this.Panel;
-            //panel.path.KeyDown -= Path_KeyDown;
-            //@this.Panel.cdUp.PreviewMouseLeftButtonDown -= CdUp_PreviewMouseDown;
-            //@this.Panel.cdRoot.PreviewMouseLeftButtonDown -= CdRoot_PreviewMouseLeftButtonDown;
             (panel.cdUp.Command as Command).Enabled = false;
             (panel.cdRoot.Command as Command).Enabled = false;
 
             panel.data.PreviewKeyDown -= Data_PreviewKeyDown;
         }
 
-        private static void CdRoot_PreviewMouseLeftButtonDown(ListView2DataGrid @this) // object sender, MouseButtonEventArgs e)
+        private static void CdRoot_PreviewMouseLeftButtonDown(ListView2DataGrid @this)
         {
-            // var @this = (sender as FrameworkElement).DataContext as ListView2Widget;
             var FS = @this.FileList.FS;
-
             var path = FS.NoPrefix(FS.RootDirectory);
             if (path == null || path.Length == 0)
             {
@@ -86,16 +66,13 @@ namespace fcmd.Model
                 return;
             }
             @this.LoadDir(path);
-            // e.Handled = true;
         }
 
-        private static void CdUp_PreviewMouseDown(ListView2DataGrid @this) // object sender, MouseButtonEventArgs e)
+        private static void CdUp_PreviewMouseDown(ListView2DataGrid @this)
         {
-            // var @this = (sender as FrameworkElement).DataContext as ListView2Widget;
             var FS = @this.FileList.FS;
             var path = FS.NoPrefix(FS.CurrentDirectory + FS.DirSeparator + "..");
             @this.LoadDir(path);
-            //  e.Handled = true;
         }
 
 

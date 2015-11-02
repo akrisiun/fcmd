@@ -102,7 +102,7 @@ namespace fcmd.View.Xaml
             }
             else if (dataGrid != null)
             {
-                if (panelContainer.contentPanel.Content != dataGrid) // is System.Windows.Controls.UserControl)
+                if (panelContainer.contentPanel.Content != dataGrid)
                     panelContainer.contentPanel.Content = dataGrid;
                 if (!dataGrid.Visible ?? false)
                     dataGrid.Visibility = Visibility.Visible;
@@ -123,7 +123,6 @@ namespace fcmd.View.Xaml
                 if (fsPanel != null)
                 {
                     if (fs == null)
-                        // fsPanel.LoadDir(dataGrid.FileList.FS.Prefix + fullpath);
                         fsPanel.LoadDirThen(fullpath, null, () => dataGrid.Bind());
                     else
                         fsPanel.LoadPluginFs(fs, fileProcol + fullpath,

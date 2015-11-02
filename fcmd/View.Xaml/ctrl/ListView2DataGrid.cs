@@ -278,14 +278,8 @@ namespace fcmd.View.ctrl
 
         //public static readonly DependencyProperty CustomSorterProperty =
         //      DependencyProperty.RegisterAttached("CustomSorter", typeof(ICustomSorter), typeof(DataGridColumn));
-
-        protected override void OnSorting(DataGridSortingEventArgs eventArgs)
-        {
-            //this.ItemsSource = null;
-            base.OnSorting(eventArgs);
-
-            //DataObj.BindItemsSource(this);
-        }
+        //protected override void OnSorting(DataGridSortingEventArgs eventArgs)
+          //  base.OnSorting(eventArgs);
 
         // SetCollectionView
         protected override void OnItemsSourceChanged(IEnumerable oldValue, IEnumerable newValue)

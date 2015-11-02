@@ -23,11 +23,14 @@ namespace fcmd
     public partial class MainWindow : Window, IComponentConnector
     {
         public static bool AppLoading { get; set; }
+        public static MainWindow ActiveWindow { get; private set; }
 
         static MainWindow() { AppLoading = true; AllowShutdown = true; }
 
         public MainWindow()
         {
+            ActiveWindow = this;
+
             ResourceManager rm = new ResourceManager("Resources", typeof(MainWindow).Assembly);
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 

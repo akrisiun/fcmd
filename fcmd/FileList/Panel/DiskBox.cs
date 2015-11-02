@@ -1,4 +1,6 @@
-﻿using System;
+﻿using fcmd.Model;
+using pluginner.Widgets;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +8,48 @@ using System.Threading.Tasks;
 
 namespace fcmd.FileList
 {
+    public class DiskCombo : IDriveCombo, IBackend
+    {
+        public IControl Target { get; set; }
+
+        public void Populate()
+        {
+            DiskBox.Populate(this);
+        }
+
+        public void Init(ICommanderWindow window)
+        {
+
+        }
+
+        public MainWindow Window { get { return MainWindow.ActiveWindow; } }
+
+        #region Backed
+        public void KeyEvent(object sender, System.Windows.Input.KeyEventArgs key)
+        {
+        }
+
+        public void Localize() { }
+        public void Shown() { }
+
+        public void ShowMessage(string message, params object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ShowError(Exception error, string message, params object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool? ShowConfirm(string message, Xwt.ConfirmationMessage details)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+    }
+
     // TODO:
     public static class DiskBox
     {

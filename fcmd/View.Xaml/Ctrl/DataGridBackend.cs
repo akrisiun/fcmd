@@ -16,6 +16,7 @@ namespace fcmd.View.ctrl
             ObservableCollection<DataGridColumn> columns = grid.Columns;
             if (columns.Count > 0)
                 columns.Clear();
+
             foreach (var c in columnInfo)
             {
                 var item = new DataGridTextColumn()
@@ -42,7 +43,6 @@ namespace fcmd.View.ctrl
             try
             {
                 dataGrid.SetValue(ItemsControl.ItemsSourceProperty, result);
-                // .ItemsSource = result;
             }
             catch (Exception) {; } // Invalid Operation in PresentationFramework.dll
 

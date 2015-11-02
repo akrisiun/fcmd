@@ -23,7 +23,7 @@ using ListView2Canvas = fcmd.View.GTK.ListView2Canvas;
 
 namespace fcmd
 {
-    public partial class MainWindow
+    public static class MainWindowActions
     {
         /* ЗАМЕТКА РАЗРАБОТЧИКУ
 		 * 
@@ -42,7 +42,7 @@ namespace fcmd
         /// Reads the file <paramref name="url"/> and shows in FC Viewer
         /// </summary>
         /// <param name="url"></param>
-        public void FCView(string url)
+        public static void FCView(this MainWindow @this, string url)
         {
             VEd fcv = new VEd();
             //pluginner.IFSPlugin fs = ActivePanel.FS;
@@ -65,9 +65,9 @@ namespace fcmd
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public string Cat(string url)
+        public static string Cat(this MainWindow @this, string url)
         {
-            pluginner.IFSPlugin fs = ActivePanel.FS;
+            pluginner.IFSPlugin fs = @this.ActivePanel.FS;
             if (!fs.FileExists(url)) return "Файл не найден\n";
 
             return Encoding.ASCII.GetString(fs.GetFileContent(url));
@@ -77,7 +77,7 @@ namespace fcmd
         /// Makes a new directory at the specifed <paramref name="url"/>
         /// </summary>
         /// <param name="url"></param>
-        public void MkDir(string url)
+        public static void MkDir(this MainWindow @this, string url)
         {
             FileProcessDialog fpd = new FileProcessDialog();
             fpd.lblStatus.Text = string.Format(Localizator.GetString("DoingMkdir"), "\n" + url, null);
@@ -95,11 +95,11 @@ namespace fcmd
         }
 
         /// <summary>Removes the current selected files</summary>
-        public void Rm()
+        public static void Rm(this MainWindow @this)
         {
             //if (ActivePanel.GetValue(ActivePanel.df.DisplayName) == "..") { return; }
 
-            ListView2Canvas[] chdrws = (ActivePanel.ListingView as IListingView<ListView2Canvas>)
+            ListView2Canvas[] chdrws = (@this.ActivePanel.ListingView as IListingView<ListView2Canvas>)
                 .ChoosedRows.ToArray();
 
             ////because the List may change due the process, we getting the copy of the list (as array, but how else?)
@@ -115,8 +115,10 @@ namespace fcmd
         /// <summary>
         /// Removes the specifed file
         /// </summary>
-        public string Rm(string url)
+        public static string Rm(MainWindow @this, string url)
         {
+            var ActivePanel = @this.ActivePanelWpf;
+
             if (ActivePanel.GetValue<string>(ActivePanel.df.DisplayName) == "..")
             {
                 return "Cannot remove ..";
@@ -138,7 +140,7 @@ namespace fcmd
             if (fsdel.FileExists(curItemDel))
             {
                 fpd.pbrProgress.Fraction = 0.5;
-                Thread RmFileThread = new Thread(delegate () { DoRmFile(curItemDel, fsdel); });
+                Thread RmFileThread = new Thread(delegate() { @this.DoRmFile(curItemDel, fsdel); });
                 RmFileThread.Start();
 
                 do { Xwt.Application.MainLoop.DispatchPendingEvents(); }
@@ -146,13 +148,13 @@ namespace fcmd
 
                 fpd.pbrProgress.Fraction = 1;
                 fpd.Hide();
-                return "Файл удалён.\n";
+                return "File deleted.\n";
             }
             if (fsdel.DirectoryExists(curItemDel))
             {
                 fpd.lblStatus.Text = String.Format(Localizator.GetString("DoingRemove"), "\n" + url, "\n[" + Localizator.GetString("Directory").ToUpper() + "]");
                 fpd.pbrProgress.Fraction = 0.5;
-                Thread RmDirThread = new Thread(delegate () { DoRmDir(curItemDel, fsdel); });
+                Thread RmDirThread = new Thread(delegate() { @this.DoRmDir(curItemDel, fsdel); });
                 RmDirThread.Start();
 
                 do { Xwt.Application.MainLoop.DispatchPendingEvents(); }
@@ -161,9 +163,9 @@ namespace fcmd
                 fpd.pbrProgress.Fraction = 1;
 
                 fpd.Hide();
-                return "Каталог удалён.\n";
+                return "Directory deleted.\n";
             }
-            return "Файл не найден";
+            return "File is not found";
         }
 
         /// <summary>
@@ -171,8 +173,11 @@ namespace fcmd
         /// Includes asking of the destination path.
         /// </summary>
         [STAThread]
-        public void Cp()
+        public static void Cp(this MainWindow @this)
         {
+            var ActivePanel = @this.ActivePanelWpf;
+            var PassivePanel = @this.PassivePanelWpf;
+
             if (ActivePanel.GetValue<string>(ActivePanel.df.DisplayName) == "..") { return; }
 
             // var PassivePanel = PassivePanel;
@@ -194,16 +199,21 @@ namespace fcmd
                         PassivePanel.FS.CurrentDirectory + PassivePanel.FS.DirSeparator + SourceName);
 
                     bool show = false;
-                    show = ibx.ShowDialog(this);
+                    show = ibx.ShowDialog(@this);
                     if (show)
                     {
                         String DestinationFilePath = ibx.Result;
                         string StatusMask = Localizator.GetString("DoingCopy");
 
-                        ReplaceQuestionDialog.ClickedButton dummy = ReplaceQuestionDialog.ClickedButton.Cancel;
+                        ReplaceQuestionDialog.ClickedButton dummy =
+                            ReplaceQuestionDialog.ClickedButton.Cancel;
                         AsyncCopy AC = new AsyncCopy();
 
-                        Thread CpThread = new Thread(delegate () { DoCp(ActivePanel.FS, PassivePanel.FS, SourceURL, DestinationFilePath, ref dummy, AC); });
+                        Thread CpThread = new Thread(delegate()
+                        {
+                            @this.DoCp(ActivePanel.FS, PassivePanel.FS, SourceURL,
+                                DestinationFilePath, ref dummy, AC);
+                        });
 
                         CpThread.TrySetApartmentState(ApartmentState.STA);
                         FileProcessDialog fpd = new FileProcessDialog();
@@ -256,7 +266,7 @@ namespace fcmd
                     {
                         String DestinationDirPath = ibxd.Result;
                         //копирование каталога
-                        Thread CpDirThread = new Thread(delegate () { DoCpDir(SourceURL, DestinationDirPath, ActivePanel.FS, PassivePanel.FS); });
+                        Thread CpDirThread = new Thread(delegate() { @this.DoCpDir(SourceURL, DestinationDirPath, ActivePanel.FS, PassivePanel.FS); });
                         CpDirThread.TrySetApartmentState(ApartmentState.STA);
 
                         FileProcessDialog CpDirProgressDialog = new FileProcessDialog();
@@ -292,20 +302,22 @@ namespace fcmd
         /// <summary>
         /// Move the selected file or directory
         /// </summary>
-        public void Mv()
+        public static void Mv(this MainWindow @this)
         {
-            if (ActivePanel.GetValue<string>(ActivePanel.df.DisplayName) == "..") { return; }
+            var activePanel = @this.ActivePanelWpf;
+            var passivePanel = @this.PassivePanelWpf;
+            if (activePanel.GetValue<string>(activePanel.df.DisplayName) == "..") { return; }
 
-            pluginner.IFSPlugin SourceFS = ActivePanel.FS;
-            pluginner.IFSPlugin DestinationFS = PassivePanel.FS;
+            pluginner.IFSPlugin SourceFS = activePanel.FS;
+            pluginner.IFSPlugin DestinationFS = passivePanel.FS;
 
             foreach (ListView2Canvas selitem in
-                        (ActivePanel.ListingView as IListingView<ListView2Canvas>)
+                        (activePanel.ListingView as IListingView<ListView2Canvas>)
                             .ChoosedRows)
             {
                 //Getting useful URL parts
-                string SourceName = selitem.Data[ActivePanel.df.DisplayName].ToString(); //ActivePanel.GetValue<string>(ActivePanel.df.DisplayName);
-                string SourcePath = selitem.Data[ActivePanel.df.URL].ToString(); //ActivePanel.GetValue<string>(ActivePanel.df.URL);
+                string SourceName = selitem.Data[activePanel.df.DisplayName].ToString(); //ActivePanel.GetValue<string>(ActivePanel.df.DisplayName);
+                string SourcePath = selitem.Data[activePanel.df.URL].ToString(); //ActivePanel.GetValue<string>(ActivePanel.df.URL);
                 string DestinationPath = DestinationFS.CurrentDirectory + DestinationFS.DirSeparator + SourceName;
 
 #if XWT
