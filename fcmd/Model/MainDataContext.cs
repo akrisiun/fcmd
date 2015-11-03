@@ -28,6 +28,7 @@ namespace fcmd
         IFileListPanel ICommanderWindow.p1 { get; set; }
         IFileListPanel ICommanderWindow.p2 { get; set; }
 
+        public static MainWindow ActiveWindow { get; private set; }
 #else 
 
     public partial class MainWindow : Window, ICommanderWindow<ListItemXaml> // ListView2Canvas>

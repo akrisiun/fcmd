@@ -57,7 +57,7 @@ namespace fcmd.Controller
     {
         public CpCommand()
         {
-            Target = App.Current.MainWindow as MainWindow; 
+            Target = MainWindow.ActiveWindow;
         }
         
         public override void Execute(object parameter = null)

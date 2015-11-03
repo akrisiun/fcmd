@@ -117,7 +117,7 @@ namespace fcmd
         /// </summary>
         public static string Rm(MainWindow @this, string url)
         {
-            var ActivePanel = @this.ActivePanelWpf;
+            var ActivePanel = @this.ActivePanel;
 
             if (ActivePanel.GetValue<string>(ActivePanel.df.DisplayName) == "..")
             {
@@ -175,8 +175,8 @@ namespace fcmd
         [STAThread]
         public static void Cp(this MainWindow @this)
         {
-            var ActivePanel = @this.ActivePanelWpf;
-            var PassivePanel = @this.PassivePanelWpf;
+            var ActivePanel = @this.ActivePanel;
+            var PassivePanel = @this.PassivePanel;
 
             if (ActivePanel.GetValue<string>(ActivePanel.df.DisplayName) == "..") { return; }
 
@@ -304,8 +304,8 @@ namespace fcmd
         /// </summary>
         public static void Mv(this MainWindow @this)
         {
-            var activePanel = @this.ActivePanelWpf;
-            var passivePanel = @this.PassivePanelWpf;
+            var activePanel = @this.ActivePanel;
+            var passivePanel = @this.PassivePanel;
             if (activePanel.GetValue<string>(activePanel.df.DisplayName) == "..") { return; }
 
             pluginner.IFSPlugin SourceFS = activePanel.FS;
@@ -337,7 +337,7 @@ namespace fcmd
                 {
                     Xwt.MessageDialog
                         .ShowError("Cannot move between diffrent filesystems!\nНе сделана поддержка перемещения между разными ФС.");
-                    Cp();
+                    @this.Cp();
                     return;
                     //todo
                 }

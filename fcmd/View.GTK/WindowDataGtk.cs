@@ -18,6 +18,8 @@ namespace fcmd.Model
         protected PanelSide? activeSide;
         public override PanelSide? ActiveSide { get { return activeSide; } }
 
+        public override ICollection<IFcmdCommand> CommandList { get { return null; } }
+
         public class PanelLayoutClass : IPanelLayout
         {
             public IPanel Panel1
@@ -144,15 +146,7 @@ namespace fcmd.Model
 
         public CommanderStatusBar StatusBar { get; protected set; }
 
-        // public override object Layout
-
-        public override object KeybHelpButtons
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        // public object KeybHelpButtons
 
         #endregion
 

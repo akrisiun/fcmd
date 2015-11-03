@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -14,6 +14,10 @@
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseMSBuildEngine>False</UseMSBuildEngine>
+    <TargetFrameworkVersion Condition=" '$(OS)' == 'Unix' ">v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,17 +32,13 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <UseMSBuildEngine>False</UseMSBuildEngine>
-    <TargetFrameworkVersion Condition=" '$(OS)' == 'Unix' ">v4.5</TargetFrameworkVersion>
-    <TargetFrameworkProfile />
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>DEBUG;XWT;GTK;GTK3;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;XWT;GTK;GTK3;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -47,11 +47,12 @@
         <Command type="BeforeBuild" />
       </CustomCommands>
     </CustomCommands>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <LangVersion>5</LangVersion>
     <Prefer32Bit>false</Prefer32Bit>
     <PlatformTarget>x86</PlatformTarget>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>x86</PlatformTarget>
@@ -75,7 +76,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>xwt.snk</AssemblyOriginatorKeyFile>
@@ -94,27 +95,12 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Reference Include="CoreGtk3">
-      <HintPath>..\xwt\lib\CoreGtk3.dll</HintPath>
-    </Reference>
-    <Reference Include="glib3-sharp">
-      <HintPath>..\xwt\lib\glib3-sharp.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="Xwt3">
-      <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
-    </Reference>
-    <Reference Include="Xwt3.Gtk3">
-      <HintPath>..\xwt\bin\Xwt3.Gtk3.dll</HintPath>
-    </Reference>
-    <Reference Include="atk3-sharp">
-      <HintPath>..\xwt\lib\atk3-sharp.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="base-plugins\fs\localFileSystem-CLI.cs" />
@@ -123,13 +109,13 @@
     <Compile Include="FileList\Actions\AsyncCopy.cs" />
     <Compile Include="FileList\Actions\FileProcessDialog.cs" />
     <Compile Include="FileList\Actions\KeyboardHelpButton.cs" />
-    <Compile Include="FileList\Actions\MainWindow-Actions.cs" />
+    <Compile Include="FileList\Actions\MainWindowActions.cs" />
     <Compile Include="FileList\Actions\ReplaceQuestionDialog.cs" />
     <Compile Include="FileList\FLPDataSource.cs" />
     <Compile Include="FileList\FTPClient.cs" />
     <Compile Include="FileList\InputBox.cs" />
     <Compile Include="FileList\Localizator.cs" />
-    <Compile Include="FileList\MainWindow-Workers.cs" />
+    <Compile Include="FileList\MainWindowWorkers.cs" />
     <Compile Include="FileList\Panel\DiskBox.cs" />
     <Compile Include="FileList\Panel\FileListPanel.cs" />
     <Compile Include="FileList\Settings.cs" />
@@ -154,6 +140,7 @@
     <Compile Include="Platform\AiLib\Reflection\ExpandoUtils.cs" />
     <Compile Include="Platform\AiLib\Reflection\StringConvert.cs" />
     <Compile Include="Model\Menu\MenuItemWIthKey.cs" />
+    <Compile Include="Platform\Command.cs" />
     <Compile Include="Platform\Commands.cs" />
     <Compile Include="Platform\DebugInfo.cs" />
     <Compile Include="Platform\ICommanderWindow.cs" />
@@ -247,8 +234,28 @@
     <EmbeddedResource Include="Resources\emblem-system.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\xwt\Xwt.CoreGtk3\Base\atk\atk3.csproj">
+      <Project>{42fe871a-d8cf-4b29-9aff-b02454e6c976}</Project>
+      <Name>atk3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xwt\Xwt.CoreGtk3\Base\glib\glib3.csproj">
+      <Project>{3bf1d531-8840-4f15-8066-a9788d8c398b}</Project>
+      <Name>glib3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xwt\Xwt.CoreGtk3\CoreGtk3.csproj">
+      <Project>{9e4b0803-5255-43aa-9c68-0cbdf76db564}</Project>
+      <Name>CoreGtk3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xwt\Xwt.Gtk\Xwt3.Gtk3.csproj">
+      <Project>{3b25fd1f-ceba-4450-8893-dc330fdb56a7}</Project>
+      <Name>Xwt3.Gtk3</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\xwt\Xwt\Xwt3.csproj">
+      <Project>{92494904-35fa-4dc9-bde9-3a3e87ac49d3}</Project>
+      <Name>Xwt3</Name>
+    </ProjectReference>
     <ProjectReference Include="pluginner\pluginner.csproj">
-      <Project>{88785B26-D617-4BE9-B449-F7CE77444794}</Project>
+      <Project>{88785b26-d617-4be9-b449-f7ce77444794}</Project>
       <Name>pluginner</Name>
     </ProjectReference>
   </ItemGroup>
@@ -266,5 +273,21 @@
   <ItemGroup>
     <Content Include="FavIcon.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
 </Project>

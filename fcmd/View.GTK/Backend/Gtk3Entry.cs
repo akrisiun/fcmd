@@ -24,7 +24,7 @@ namespace fcmd.View.GTK.Backend
 
     }
 
-    public class Gtk3EntryBackend : Xwt.GtkBackend.TextEntryBackend, ITextEntryBackend
+    public class Gtk3EntryBackend : Xwt.GtkBackend.TextEntryBackend // , ITextEntryBackend
     {
 
     }

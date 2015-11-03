@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace fcmd.FileList
 {
-    public class DiskCombo : IDriveCombo, IBackend
+    public class DiskCombo : IDriveCombo // , IBackend
     {
         public IControl Target { get; set; }
 
@@ -23,30 +23,6 @@ namespace fcmd.FileList
         }
 
         public MainWindow Window { get { return MainWindow.ActiveWindow; } }
-
-        #region Backed
-        public void KeyEvent(object sender, System.Windows.Input.KeyEventArgs key)
-        {
-        }
-
-        public void Localize() { }
-        public void Shown() { }
-
-        public void ShowMessage(string message, params object[] args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ShowError(Exception error, string message, params object[] args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool? ShowConfirm(string message, Xwt.ConfirmationMessage details)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
 
     }
 

@@ -19,11 +19,12 @@
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>..\bin\</OutputPath>
-    <DefineConstants>DEBUG;PC;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;PC;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
     <Prefer32Bit>false</Prefer32Bit>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -63,15 +63,18 @@ namespace fcmd.test
             var app = TestApp.App;
             var main = MainWindow.ActiveWindow;
 
-            Directory.SetCurrentDirectory(dir);
+            // Directory.SetCurrentDirectory(dir);
             var data = main.WindowDataWpf as WindowDataWpf;
             var backend = data.BackendWpf as WpfBackend;
 
             backend.args = new string[] { dir };
             backend.Shown();
             backend.LoadDirSynchonous();
-            app.MainWindow = main;
-            main.Show();
+            if (app != null)
+            {
+                app.MainWindow = main;
+                main.Show();
+            }
 
             var left = main.p1Wpf;
             var cmdUp = left.GoUp.Command;

@@ -22,11 +22,12 @@ using fcmd.Platform;
 using Xwt;
 using Xwt.Backends;
 using fcmd.View.GTK.Backend;
+using pluginner.Widgets;
 
 namespace fcmd
 {
 
-    partial class MainWindow : Gtk3WindowFrame, ICommanderWindow<ListView2Canvas>
+    partial class MainWindow : Gtk3WindowFrame, ICommanderWindow<ListView2Canvas>, IControl
     {
         public static string ProductVersion
         {
@@ -56,6 +57,11 @@ namespace fcmd
 
         public Gtk.VBox MainBox
         {[DebuggerStepThrough] get { return BackEndGtk.MainBox; } }
+
+        object IControl.Content { get { return this.Content; } set { } }
+        bool? IControl.Visible { get { return this.Visible; } set { this.Visible = value ?? false; } }
+        object IUIDispacher.Dispacher { get { return null; } }
+        public bool CheckAccess() { return true; }  // check UI thread
 
         public class MainGtkVisual
         {

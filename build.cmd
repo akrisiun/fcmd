@@ -1,10 +1,10 @@
 git pull 
 
+call msbuild fcmd-xaml.sln "/v:m"
 call msbuild fcmd.sln "/v:m"
-@REM call msbuild fcmd-xaml.sln "/v:m"
 
 @REM cd xwt\
-@REM call msbuild Xwt-Gtk3.sln "/v:m"
+call msbuild fcmd-Mac.sln "/v:m"
 @REM cd ..\
 
 @PAUSE

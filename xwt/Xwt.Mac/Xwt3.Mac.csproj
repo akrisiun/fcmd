@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MonoMac">
-      <HintPath>..\bin\MonoMac.dll</HintPath>
+      <HintPath>..\..\bin\MonoMac.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />

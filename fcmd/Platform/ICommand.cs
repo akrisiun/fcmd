@@ -3,7 +3,7 @@
 namespace fcmd.Platform
 {
 #if GTK
-    public interface IRelayCommand : System.Windows.Input.ICommand
+    public interface IRelayCommand
     {
 
     }

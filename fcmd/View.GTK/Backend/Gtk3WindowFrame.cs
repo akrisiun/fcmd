@@ -88,7 +88,7 @@ namespace fcmd.View.GTK.Backend
 
     // Backend with fixed MainBox
 
-    public class GtkBackend : Xwt.GtkBackend.WindowBackend, IWindowBackend // IWidgetBackend 
+    public class GtkBackend : WindowBackend //, IWindowBackend // IWidgetBackend 
     {
         public GtkBackend() : base() { }
 
