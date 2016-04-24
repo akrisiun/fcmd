@@ -2,6 +2,7 @@
 
 ```
 git clone https://github.com/akrisiun/fcmd.git fcmd
+git submodule add https://github.com/akrisiun/SharpSSH.git SharpSSH
 cd fcmd
 build
 ```
