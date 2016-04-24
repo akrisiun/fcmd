@@ -13,6 +13,7 @@ using fcmd.View.ctrl;
 using Directory = System.IO.Directory;
 using fcmd.base_plugins.fs;
 using fcmd.Platform;
+using fcmd.Properties;
 
 namespace fcmd.Model
 {
@@ -28,6 +29,9 @@ namespace fcmd.Model
                      : PanelLayout.Panel1.IsActive.Value ? PanelSide.Left : PanelSide.Right;
             }
         }
+
+        public Settings Settings { get { return Settings.Default; } }
+
         public MainWindow WindowWpf { get { return Window as MainWindow; } }
         public WpfBackend BackendWpf
         {
@@ -93,8 +97,8 @@ namespace fcmd.Model
 
             if (NewPanel == Window.ActivePanel && !passiveNow.IsActive.Value) return;
 
-            Window.PassivePanelWpf = isLeft ? Window.p2Wpf : Window.p1Wpf;
-            Window.ActivePanelWpf = NewPanel as FileListPanelWpf;
+            Window.PassivePanel = isLeft ? Window.p2Wpf : Window.p1Wpf;
+            Window.ActivePanel = NewPanel as FileListPanelWpf;
             var passive = Window.PassivePanelWpf.Parent as PanelWpf;
             passive.IsActive = false;
 
@@ -191,9 +195,12 @@ namespace fcmd.Model
             var panel2 = this.PanelLayout.Panel2 as PanelWpf;
             panel2.IsActive = false;
             panel1.IsActive = true;
+            var settings = Settings.Default;
 
             var loaderTask = (Backend as WpfBackend).LoaderTask;
-            if (loaderTask == null || loaderTask.Status == TaskStatus.RanToCompletion)
+            if (loaderTask == null 
+                || loaderTask.Status == TaskStatus.RanToCompletion
+                || loaderTask.Status == TaskStatus.Faulted)
                 FinishShown(this);
             else
                 loaderTask.ContinueWith(
@@ -238,7 +245,7 @@ namespace fcmd.Model
 
         public override void OnSelectedItem(IPointedItem item)
         {
-            var cmdPanel = this.WindowWpf.FooterCmd as PanelCmd;
+            var cmdPanel = this.WindowWpf.PanelCmd as PanelCmd;
             if (item is PointedItem)
                 cmdPanel.selected.Text = (item as PointedItem).Item.FullPath;
             else 
@@ -250,7 +257,6 @@ namespace fcmd.Model
         public void LoadDirAsync(string[] argv, TaskScheduler scheduler)
         {
             LoadDir(argv);
-            // scheduler.D
         }
 
         public override void LoadDir(string[] argv)
@@ -269,17 +275,32 @@ namespace fcmd.Model
                 return;
 
             var p2 = WindowWpf.p2 as FileListPanelWpf;
-
+            bool load = false;
             // load last directory or the current directory if the last directory hasn't remembered
-            if (Properties.Settings.Default.Panel1URL.Length != 0)
-                p1.LoadDir(Properties.Settings.Default.Panel1URL, Shorten);
-            else
-                p1.LoadDir(localFileSystem.FilePrefix + System.IO.Directory.GetCurrentDirectory(), Shorten);
+            try { 
+                var Settings = WindowWpf.WindowDataWpf.Settings;
+                //  calling thread cannot access this object because a different thread owns it.
 
-            if (Properties.Settings.Default.Panel2URL.Length != 0)
-                p2.LoadDir(Properties.Settings.Default.Panel2URL, Shorten);
-            else
+                if (Settings.Panel1URL.Length != 0)
+                    p1.LoadDir(Settings.Panel1URL, Shorten);
+                else
+                    p1.LoadDir(localFileSystem.FilePrefix + System.IO.Directory.GetCurrentDirectory(), Shorten);
+
+                if (Settings.Panel2URL.Length != 0)
+                {    p2.LoadDir(Settings.Panel2URL, Shorten);
+
+                    load = true;
+                }
+            } catch (Exception ex) {
+                App.ConsoleWriteLine(ex.Message);
+            }
+
+            if (!load)
             {
+                if (p1.FS.CurrentDirectory == null)
+                    p1.LoadDir(localFileSystem.FilePrefix + System.IO.Directory.GetCurrentDirectory(), Shorten);
+
+
                 string dir = Directory.GetCurrentDirectory();
                 string url2 = String.Concat(localFileSystem.FilePrefix, dir);
                 if (p1.FS.CurrentDirectory == url2)

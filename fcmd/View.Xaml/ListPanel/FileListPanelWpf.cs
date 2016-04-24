@@ -13,6 +13,8 @@ using System.Collections.ObjectModel;
 using fcmd.Model;
 using fs = fcmd.base_plugins.fs;
 using System.Collections;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace fcmd.View.Xaml
 {
@@ -20,12 +22,18 @@ namespace fcmd.View.Xaml
     {
         #region Data
 
+        public PanelSide Side { get { return ListingViewWpf.Side; } }
         public PanelWpf Parent { get; set; }
         public WindowDataWpf WindowData { [DebuggerStepThrough] get; set; }
 
         public override IButton GoRoot { get; protected set; }
         public override IButton GoUp { get; protected set; }
         public override ITextEntry UrlBox { get { return Parent.path; } }
+
+        public override string ToString()
+        {
+            return String.Format("side {0} Url={1}", Side, Parent.path);
+        }
 
         protected EventHandler onFocus;
         protected bool onFocusSet;
@@ -87,6 +95,9 @@ namespace fcmd.View.Xaml
         // ExpandoObject data
         public override TItem GetValue<TItem>(int Field)
         {
+            if (ListingView.PointedItem.Data == null)
+                return default(TItem);
+
             return (TItem)ListingView.PointedItem.Data[Field];
         }
 
@@ -378,6 +389,46 @@ namespace fcmd.View.Xaml
             ListBindThen(URL, then);
         }
 
+        public virtual void SelectItem(string folder)
+        {
+            if (folder == null || folder.Length == 0)
+                return;
+
+            string itemName = Path.GetFileName(folder);
+            ListItemXaml foundItem = null;
+
+            var view = ListingView;
+            var numData = view.DataItems.GetEnumerator();
+            while (numData.MoveNext())
+            {
+                var item = numData.Current;
+
+                if (item.fldFile == itemName)
+                {
+                    foundItem = item;
+                    break;
+                }
+            }
+
+            if (foundItem == null)
+                return;
+
+#if WPF
+            DataGrid dataGrid = this.ListingViewWpf.DataObj.DataSource;
+            // var item0 = dataGrid.Items[0];
+
+            dataGrid.ScrollIntoView(foundItem);
+            dataGrid.SelectedItem = foundItem;
+            if (dataGrid.SelectedItem == null) return; // error
+
+            DataGridRow row = dataGrid.ItemContainerGenerator.ContainerFromItem(foundItem) as DataGridRow; // .ContainerFromIndex(i);
+            if (row != null)
+                row.MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+
+            return;
+#endif
+        }
+
         public virtual void LoadFSThen(string URL, pluginner.IFSPlugin fs, Action then = null)
         {
             FS = fs;
@@ -404,7 +455,11 @@ namespace fcmd.View.Xaml
                 view.SetFocus();
                 App.ConsoleWriteLine("Dispacher UI Focused " + URL);
             }
-
+            else
+            {
+                if (then != null)
+                    then();
+            }
         }
 
         protected void LoadFsWithPlugin(string URL)

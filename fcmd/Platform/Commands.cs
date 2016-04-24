@@ -29,7 +29,7 @@ namespace fcmd.Controller
 
 #pragma warning disable 0649, 0414  // is assigned but never used
         public event EventHandler CanExecuteChanged;
-#pragma warning restore 0649, 0414  
+#pragma warning restore 0649, 0414
 
         public bool CanExecute(object parameter) { return true; }
 
@@ -43,7 +43,8 @@ namespace fcmd.Controller
     {
         public MkDirCommand()
         {
-            Target = MainWindow.ActiveWindow; 
+            Target = MainWindow.ActiveWindow;
+            this.Enabled = true;
         }
 
         public override void Execute(object parameter = null)
@@ -55,15 +56,55 @@ namespace fcmd.Controller
 
     public class CpCommand : Command
     {
-        public CpCommand()
-        {
-            Target = MainWindow.ActiveWindow;
-        }
-        
+        public CpCommand() { Target = MainWindow.ActiveWindow; }
         public override void Execute(object parameter = null)
         {
             string url = parameter as string;
-            (Target as MainWindow).Cp(); 
+            (Target as MainWindow).Cp();
+        }
+    }
+
+    public class MvCommand : Command
+    {
+        public MvCommand() { Target = MainWindow.ActiveWindow; }
+        public override void Execute(object parameter = null)
+        {
+            string url = parameter as string;
+            (Target as MainWindow).Mv();
+        }
+    }
+
+    public class VwCommand : Command
+    {
+        public VwCommand() { Target = MainWindow.ActiveWindow; this.Enabled = true; }
+        public override void Execute(object parameter = null)
+        {
+            string url = parameter as string;
+            (Target as MainWindow).DoView();
+        }
+    }
+
+    public class EdCommand : Command
+    {
+        public EdCommand() { Target = MainWindow.ActiveWindow; this.Enabled = true; }
+        public override void Execute(object parameter = null)
+        {
+            string url = parameter as string;
+            (Target as MainWindow).DoEdit();
+        }
+    }
+
+    public class RmCommand : Command
+    {
+        public RmCommand()
+        {
+            Target = MainWindow.ActiveWindow;
+        }
+
+        public override void Execute(object parameter = null)
+        {
+            string url = parameter as string;
+            (Target as MainWindow).Rm();
         }
     }
 }

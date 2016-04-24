@@ -19,6 +19,7 @@ namespace fcmd.base_plugins.fs
     public partial class localFileSystem : pluginner.IFSPlugin
     {
         public const string FilePrefix = "file://";
+        #region Properties
 
         /* ЗАМЕТКА РАЗРАБОТЧИКУ				DEVELOPER NOTES
 		 * В данном файле содержится код	This file contanis the local FS
@@ -67,12 +68,13 @@ namespace fcmd.base_plugins.fs
 
         List<pluginner.DirItem> DirContent = new List<pluginner.DirItem>();
 
-        #region dir
+        #endregion
+
+        #region Folder
 
         protected string curDir;
         protected string rootDir;
 
-        // public void GetDirectoryContent(ref List<pluginner.DirItem> output, FileSystemOperationStatus FSOS)
         public IEnumerable<pluginner.DirItem> GetDirectoryContent(FileSystemOperationStatus FSOS)
         {
 #if DEBUG
@@ -96,7 +98,8 @@ namespace fcmd.base_plugins.fs
 
             string[] dirs = null;
             Exception error = null;
-            try {
+            try
+            {
                 dirs = System.IO.Directory.GetDirectories(InternalURL);
             }
             catch (Exception ex) { error = ex; }    // access denied
@@ -216,13 +219,18 @@ namespace fcmd.base_plugins.fs
 #endif
         }
 
+        public string CurrentFolder
+        {
+            get { return this.NoPrefix(curDir); }
+        }
+
         public string CurrentDirectory
         {
             get { return curDir; }
             set
             {
                 if (!string.IsNullOrWhiteSpace(value))
-                    curDir = value.StartsWith(Prefix) ? value : Prefix + value ;
+                    curDir = value.StartsWith(Prefix) ? value : Prefix + value;
             }
         }
 
@@ -233,10 +241,10 @@ namespace fcmd.base_plugins.fs
             get { return rootDir; }
             set { rootDir = value.Contains(Prefix) ? value : Prefix + value; }
         }
-        // return OSVersionEx.IsWindows
 
         private void _CheckProtocol(string url)
-        { //проверка на то, чтобы нечаянно через localfs не попытались зайти в ftp, webdav, реестр и т.п. :-)
+        {
+            //проверка на то, чтобы нечаянно через localfs не попытались зайти в ftp, webdav, реестр и т.п. :-)
             if (!url.StartsWith(Prefix))
                 throw new pluginner.PleaseSwitchPluginException();
         }
@@ -461,7 +469,7 @@ namespace fcmd.base_plugins.fs
                 var dirName = metadatasource.DirectoryName ?? InternalURL;
                 lego.UpperDirectory = localFileSystem.FilePrefix + dirName;
                 lego.RootDirectory = localFileSystem.FilePrefix + Path.GetPathRoot(dirName);
-                                     // + metadatasource.Directory.Root.FullName;
+
                 lego.Attrubutes = metadatasource.Attributes;
                 lego.CreationTimeUTC = metadatasource.CreationTimeUtc;
                 lego.IsReadOnly = metadatasource.IsReadOnly;
@@ -469,7 +477,10 @@ namespace fcmd.base_plugins.fs
                 lego.LastWriteTimeUTC = metadatasource.LastWriteTimeUtc;
                 if (!Directory.Exists(InternalURL)) lego.Lenght = metadatasource.Length;
             }
-            catch (Exception ex) { Console.WriteLine("WARNING: can't build metadata lego for " + url + ": " + ex.Message + ex.StackTrace); }
+            catch (Exception ex)
+            {
+                Console.WriteLine("WARNING: can't build metadata lego for " + url + ": " + ex.Message + ex.StackTrace);
+            }
 
             return lego;
         }
@@ -507,5 +518,7 @@ namespace fcmd.base_plugins.fs
                 RaiseStatusChanged(Status);
             }
         }
+
+        // public void GetDirectoryContent(ref List<pluginner.DirItem> output, FileSystemOperationStatus FSOS)
     }
 }

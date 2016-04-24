@@ -9,6 +9,8 @@ using System;
 using pluginner;
 using pluginner.Toolkit;
 using System.Threading;
+using fcmd.View.Xaml;
+using System.Diagnostics;
 
 namespace fcmd
 {
@@ -137,6 +139,25 @@ namespace fcmd
                     Console.WriteLine("Cannot copy because of {0}({1}) at \n{2}.", ex.GetType(), ex.Message, ex.StackTrace);
                 }
             }
+        }
+
+        public static void DoView(this MainWindow @this)
+        {
+        
+        }
+        
+        public static void DoEdit(this MainWindow @this)
+        {
+            FileListPanelWpf panel = @this.WindowDataWpf.ActivePanel;
+
+            var dataGrid = panel.ListingWidget.DataObj.DataSource;
+            var file = dataGrid.SelectedItem as ListItemXaml;
+            //var cell = dataGrid.CurrentCell;
+            if (file == null)
+                return;
+
+            var fileFull = file.FullPath;
+            MainWindowActions.Edit(@this, fileFull);
         }
 
         /// <summary>

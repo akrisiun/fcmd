@@ -45,10 +45,25 @@ namespace pluginner
         /// </value>
         string CurrentDirectory { get; set; }
 
+        /// <summary>
+        /// Root folder directory
+        /// </summary>
         string RootDirectory { get; set; }
+
+        /// <summary>
+        /// Protocol prefix (file://)
+        /// </summary>
         string Prefix { get; }
 
+        /// <summary>
+        /// returns directory without prefix
+        /// </summary>
         string NoPrefix(string dir);
+
+        /// <summary>
+        /// Current directory without prefix
+        /// </summary>
+        string CurrentFolder { get; }
 
         /// <summary>
         /// Determines whether at the specified URL exists a file

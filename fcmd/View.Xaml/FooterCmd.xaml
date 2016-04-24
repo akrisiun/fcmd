@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="fcmd.View.Xaml.FooterCmd"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:fcmd.View"
+             xmlns:ctrl="clr-namespace:fcmd.View.ctrl"
+             mc:Ignorable="d" 
+             d:DesignHeight="25" d:DesignWidth="600">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style TargetType="{x:Type Button}"
+                    x:Key="btn">
+                <Setter Property="Margin" Value="2 0 0 0" />
+                <Setter Property="Padding" Value="3 1 0 0" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+            </Style>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".1*" />
+            <ColumnDefinition Width=".1*" />
+            <ColumnDefinition Width=".1*" />
+            <ColumnDefinition Width=".1*" />
+            <ColumnDefinition Width=".1*" />
+            <ColumnDefinition Width=".1*" />
+            <ColumnDefinition Width=".1*" />
+            <ColumnDefinition Width=".1*" />
+            <ColumnDefinition Width=".1*" />
+            <ColumnDefinition Width=".1*" />
+            <ColumnDefinition Width=".1*" />
+        </Grid.ColumnDefinitions>
+
+        <Button x:Name="f1" 
+                Style="{StaticResource btn}"
+                >F1 -</Button>
+        <Button x:Name="f2"
+                Grid.Column="1" Style="{StaticResource btn}"
+                >F2 -</Button>
+        <Button x:Name="f3"
+                Grid.Column="2" Style="{StaticResource btn}"
+                >F3 -</Button>
+        <Button x:Name="f4"
+                Grid.Column="3" Style="{StaticResource btn}"
+                >F4 -</Button>
+        <Button x:Name="f5"
+                Grid.Column="4" Style="{StaticResource btn}"
+                >F5 -</Button>
+        <Button x:Name="f6"
+                Grid.Column="5" Style="{StaticResource btn}"
+                >F6 -</Button>
+        <Button x:Name="f7"
+                Grid.Column="6" Style="{StaticResource btn}"
+                >F7 -</Button>
+        <Button x:Name="f8"
+                Grid.Column="7" Style="{StaticResource btn}"
+                >F8 -</Button>
+        <Button x:Name="f9"
+                Grid.Column="8" Style="{StaticResource btn}"
+                >F9 -</Button>
+        <Button x:Name="f10"
+                Grid.Column="8" Style="{StaticResource btn}"
+                >F10 -</Button>
+        <Button x:Name="f11"
+                Grid.Column="9" Style="{StaticResource btn}"
+                >F11 -</Button>
+        <Button x:Name="f12"
+                Grid.Column="11" Style="{StaticResource btn}"
+                Margin="2 0 2 0" 
+                >F12 -</Button>
+    </Grid>
+</UserControl>

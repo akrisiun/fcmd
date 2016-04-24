@@ -6,7 +6,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="ShowDiskList" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ShowHidedFiles" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -36,7 +36,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ExternalEditor" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">c:\System\Notepad++\notepad++.exe</Value>
     </Setting>
     <Setting Name="Panel1URL" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -72,16 +72,16 @@
       <Value Profile="(Default)">(internal)en_US</Value>
     </Setting>
     <Setting Name="VE_ShowToolbar" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="VE_ShowCmdBar" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
+      <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="InfoBarContent2" Description="The text in infobar when &gt;0 files are selected" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Selected: {SelectedItems}</Value>
+      <Value Profile="(Default)">Выделено: {SelectedItems}</Value>
     </Setting>
     <Setting Name="VEWinHeight" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">5</Value>
+      <Value Profile="(Default)">350</Value>
     </Setting>
   </Settings>
 </SettingsFile>

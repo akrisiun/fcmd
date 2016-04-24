@@ -71,7 +71,9 @@ namespace fcmd
         // System.Windows.Markup.IComponentConnector
 
         internal fcmd.View.Xaml.MenuPanelWpf Menu;
-        internal fcmd.View.Xaml.PanelCmd FooterCmd;
+        internal fcmd.View.Xaml.PanelCmd PanelCmd;
+        // internal fcmd.View.Xaml.FooterCmd FooterCmd;
+
         internal fcmd.View.Xaml.PanelWpf LeftPanel;
         internal fcmd.View.Xaml.PanelWpf RightPanel;
         internal System.Windows.Controls.GridSplitter panelSplitter;
@@ -105,7 +107,7 @@ namespace fcmd
                     this.Menu = ((fcmd.View.Xaml.MenuPanelWpf)(target));
                     return;
                 case 2:
-                    this.FooterCmd = ((fcmd.View.Xaml.PanelCmd)(target));
+                    this.PanelCmd = ((fcmd.View.Xaml.PanelCmd)(target));
                     return;
                 case 3:
                     this.LeftPanel = ((fcmd.View.Xaml.PanelWpf)(target));

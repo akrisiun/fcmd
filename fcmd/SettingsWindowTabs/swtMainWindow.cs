@@ -48,9 +48,9 @@ namespace fcmd.SettingsWindowTabs
 			chkKeybHelp.State = CBSfromBool(Settings.Default.ShowKeybrdHelp);
 			txtBookmarks.Text = Settings.Default.BookmarksFile ?? "";
 
-			cbxLanguage.Items.Add("(internal)ru_RU", @"Русский");
-			cbxLanguage.Items.Add("(internal)en_US", @"English");
-			//Here may be some code loading external languages
+			cbxLanguage.Items.Add("(internal)en_US", @"English");   // default
+            cbxLanguage.Items.Add("(internal)ru_RU", @"Русский");
+            //Here may be some code loading external languages
 			cbxLanguage.SelectedItem = Settings.Default.Language;
 
 			fraMainBox.PackStart(chkShowToolBar);

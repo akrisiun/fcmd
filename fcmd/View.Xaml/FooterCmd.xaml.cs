@@ -19,13 +19,15 @@ namespace fcmd.View.Xaml
     /// <summary>
     /// Interaction logic for PanelCmd.xaml
     /// </summary>
-    public partial class PanelCmd : UserControl, IComponentConnector
+    public partial class FooterCmd : UserControl, IComponentConnector
     {
-        public PanelCmd()
+        public CommandList CmdList { get; set; }
+
+        public FooterCmd()
         {
             InitializeComponent();
 
-            // Loaded -> BindPanel.Loaded(this);
+            // CommanderData.cs : Loaded --> BindCommands.Loaded(this);
         }
 
 #if !VS || __MonoCS__

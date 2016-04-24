@@ -290,6 +290,11 @@ namespace fcmd.http
             set { LoadDir(value); }
         }
 
+        public string CurrentFolder
+        {
+            get { return NoPrefix(currentDirectory); }
+        }
+
         public string Prefix { get { return "ftp://"; } }   // TODO
         public string RootDirectory { get; set; }
 

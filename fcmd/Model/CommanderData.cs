@@ -11,6 +11,7 @@ using pluginner;
 using fcmd.FileList;
 using fcmd.base_plugins.fs;
 using fcmd.Platform;
+using fcmd.View.Xaml;
 
 namespace fcmd.Model
 {
@@ -165,8 +166,9 @@ namespace fcmd.Model
             Xwt.RichTextView rtv = new Xwt.RichTextView();
             rtv.LoadText(txt, new Xwt.Formats.PlainTextFormat());
             Xwt.ScrollView sv = new Xwt.ScrollView(rtv);
+
             Fcdbg.Content = sv;
-            Fcdbg.Width = 500;
+            Fcdbg.Width = 700;
             Fcdbg.Run();
         }
 
@@ -284,6 +286,14 @@ namespace fcmd.Model
         {
 #if !GTK
             Menu.MenuWpf.Bind(Window);
+
+            var PanelCmd = Window.PanelCmd;
+            PanelCmd.Loaded += (s, e) => BindPanel.Loaded(Window, PanelCmd);
+
+            var FooterCmd = Window.FooterCmd;
+            FooterCmd.CmdList = Window.WindowDataWpf.CommandList as CommandList;
+            FooterCmd.IsEnabled = false;
+            FooterCmd.Loaded += (s, e) => BindCommands.Loaded(Window, FooterCmd); 
 #endif
         }
 

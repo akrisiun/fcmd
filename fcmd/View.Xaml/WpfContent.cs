@@ -47,6 +47,7 @@ namespace fcmd.View.Xaml
             IFileListPanel panel = panelContainer.PanelDataWpf;
             var dataGrid = panelContainer.data as ListView2DataGrid;
             pluginner.IFSPlugin fs = null;
+            string oldFolder = panel.FS.CurrentFolder;
 
             if (protocol != base_plugins.fs.localFileSystem.FilePrefix)
             {
@@ -123,7 +124,17 @@ namespace fcmd.View.Xaml
                 if (fsPanel != null)
                 {
                     if (fs == null)
-                        fsPanel.LoadDirThen(fullpath, null, () => dataGrid.Bind());
+                    {
+                        fsPanel.LoadDirThen(fullpath, null,
+                            () =>
+                            {
+                                dataGrid.Bind();
+
+                                if (oldFolder != null)
+                                    fsPanel.SelectItem(oldFolder);
+                            }
+                            );
+                    }
                     else
                         fsPanel.LoadPluginFs(fs, fileProcol + fullpath,
                             () => dataGrid.Bind());

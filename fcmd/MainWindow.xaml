@@ -16,7 +16,10 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="21"/>
             <RowDefinition Height="*" />
-            <RowDefinition Height="28"/>
+            <RowDefinition x:Name="row2"
+                Height="27"/>
+            <RowDefinition x:Name="row3"
+                Height="26"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -26,14 +29,17 @@
         <local:MenuPanelWpf x:Name="Menu" Grid.ColumnSpan="2" Height="48"
             />
 
-        <local:PanelCmd x:Name="FooterCmd" Margin="0,2,0,2"
+        <local:PanelCmd x:Name="PanelCmd" Margin="0 2 0 1"
             Grid.Row="2" Grid.ColumnSpan="2" />
 
+        <local:FooterCmd x:Name="FooterCmd" Margin="0 1 0 3"
+            Grid.Row="3" Grid.ColumnSpan="2" />
+
         <local:PanelWpf x:Name="LeftPanel" Side="Left" IsActive="True"
-			Grid.Row="1" Grid.Column="0" Margin="0,0,2,0" />
+			Grid.Row="1" Grid.Column="0" Margin="0 0 2 0" />
 
         <local:PanelWpf x:Name="RightPanel" Side="Right" IsActive="False"
-			Grid.Row="1" Grid.Column="1" Margin="2,0,0,0" />
+			Grid.Row="1" Grid.Column="1" Margin="2 0 0 0" />
 
         <GridSplitter x:Name="panelSplitter"
             Grid.Column="1" Grid.Row="1"

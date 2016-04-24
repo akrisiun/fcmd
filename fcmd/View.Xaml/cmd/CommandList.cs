@@ -10,16 +10,26 @@ namespace fcmd.View.Xaml
 {
     public class CommandList : Collection<pluginner.Widgets.IFcmdCommand>
     {
-        MkDirCommand cmdMkDir;
-        CpCommand cmdCp;
+        public MkDirCommand cmdMkDir;
+        public CpCommand cmdCp;
+        public MvCommand cmdMv;
+
+        public RmCommand cmdRm;
+
+        public EdCommand cmdEdit;
+        public VwCommand cmdView;
 
         public CommandList()
         {
             cmdMkDir = new MkDirCommand() { Target = MainWindow.ActiveWindow };
-            cmdCp = new CpCommand();
-
             Add(cmdMkDir);
-            Add(cmdCp);
+
+            Add((cmdCp = new CpCommand()));
+            Add((cmdMv = new MvCommand()));
+            Add((cmdRm = new RmCommand()));
+
+            Add((cmdEdit = new EdCommand()));
+            Add((cmdView = new VwCommand()));
         }
 
         public void Bind(IXamlMenu menu)

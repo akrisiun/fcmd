@@ -29,7 +29,7 @@ namespace fcmd.View.ctrl
         /// Pointed items
         public IEnumerable<ListItemXaml> Pointed { get; set; }
 
-        public object[] Data { get { return Item.Data; } set { Item.Data = value; } }
+        public object[] Data { get { return Item == null ? null : Item.Data; } set { Item.Data = value; } }
 
         /// <summary>
         ///   returns Full path 

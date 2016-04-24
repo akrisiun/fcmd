@@ -104,7 +104,15 @@ namespace fcmd.View.ctrl
         public IList<ListItemXaml> DataItems { get { return DataObj.DataItems; } }
 
         // Enumerable ItemsSource -> ItemsControl
-        public IEnumerable<ListItemXaml> ChoosedRows { get; set; }
+        public IEnumerable<ListItemXaml> ChoosedRows { get { return Cast<ListItemXaml>(DataObj.DataSource.SelectedItems); } }
+
+        public static IEnumerable<T> Cast<T>(IEnumerable source) where T : class
+        {
+            var num = source.GetEnumerator();
+            while (num.MoveNext())
+                yield return num.Current as T;
+        }
+
         public IPointedItem<ListItemXaml> PointedItem { get; set; }
 
         public PanelSide Side { get; set; }

@@ -12,7 +12,7 @@ namespace fcmd.View.Xaml
 {
     public static class BindPanel
     {
-        public static void PanelCmd(this PanelCmd panel)
+        public static void Loaded(this MainWindow main, PanelCmd panel)
         {
             panel.cmd.KeyDown += Cmd_KeyDown;
         }

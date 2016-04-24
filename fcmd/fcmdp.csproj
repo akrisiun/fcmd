@@ -126,6 +126,7 @@
     <Compile Include="SettingsWindowTabs\swtViewerEditor.cs" />
     <Compile Include="Platform\Commands.cs" />
     <Compile Include="Model\View\Control.cs" />
+    <Compile Include="View.Xaml\cmd\BindCommands.cs" />
     <Compile Include="View.Xaml\cmd\BindPanel.cs" />
     <Compile Include="View.Xaml\cmd\CommandList.cs" />
     <Compile Include="View.Xaml\cmd\DiskBoxCombo.cs" />
@@ -139,6 +140,9 @@
     <Compile Include="View.Xaml\ListPanel\ListItemXaml.cs" />
     <Compile Include="Platform\MessageDialog.cs" />
     <Compile Include="View.Xaml\cmd\MenuWpf.cs" />
+    <Compile Include="View.Xaml\FooterCmd.xaml.cs">
+      <DependentUpon>FooterCmd.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View.Xaml\WindowData.cs" />
     <Compile Include="View.Xaml\ctrl\ButtonWidget.cs" />
     <Compile Include="View.Xaml\ctrl\DataGridBackend.cs" />
@@ -173,6 +177,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View.Xaml\MenuPanelWpf.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View.Xaml\FooterCmd.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

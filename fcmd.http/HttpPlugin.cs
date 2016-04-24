@@ -157,6 +157,11 @@ namespace fcmd.http
             set { LoadDir(value); }
         }
 
+        public string CurrentFolder
+        {
+            get { return NoPrefix(currentDirectory); }
+        }
+
         public string Prefix { get; set; } // { return "http://"; } }   // TODO
         public string RootDirectory { get; set; }
 
