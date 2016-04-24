@@ -125,6 +125,7 @@ namespace fcmd
         public abstract void Initialize(PanelSide side);
 
         public abstract void LoadFs(string URL, ShortenPolicies Shorten);
+        public abstract void LoadDir(string URL);
     }
 
     public static class ShortenText

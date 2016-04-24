@@ -11,7 +11,9 @@ using pluginner;
 using fcmd.FileList;
 using fcmd.base_plugins.fs;
 using fcmd.Platform;
+#if WPF
 using fcmd.View.Xaml;
+#endif
 
 namespace fcmd.Model
 {

@@ -520,10 +520,8 @@ namespace fcmd.View.Xaml
             }
         }
 
-        public override void LoadDir()
-        {
-            LoadDir(null, null);
-        }
+        public override void LoadDir(string URL) { LoadDir(URL, null); }
+        public override void LoadDir() { LoadDir(null, null); }
 
         #endregion
 

@@ -9,8 +9,10 @@ using System;
 using pluginner;
 using pluginner.Toolkit;
 using System.Threading;
-using fcmd.View.Xaml;
 using System.Diagnostics;
+#if WPF
+using fcmd.View.Xaml;
+#endif
 
 namespace fcmd
 {
@@ -148,6 +150,7 @@ namespace fcmd
         
         public static void DoEdit(this MainWindow @this)
         {
+#if WPF
             FileListPanelWpf panel = @this.WindowDataWpf.ActivePanel;
 
             var dataGrid = panel.ListingWidget.DataObj.DataSource;
@@ -158,6 +161,7 @@ namespace fcmd
 
             var fileFull = file.FullPath;
             MainWindowActions.Edit(@this, fileFull);
+#endif
         }
 
         /// <summary>

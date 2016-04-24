@@ -28,7 +28,7 @@ namespace fcmd.View.GTK
         public abstract Xwt.CursorType Cursor { get; set; } //  { return base.Cursor; } set { base.Cursor = value; } } // = CursorType.Wait;
     }
 
-    public class FileListPanelGtk : FileListVisual<ListView2Canvas> // ,   IListingContainer
+    public class FileListPanelGtk : FileListVisual<ListView2Canvas>
     {
         public FileListPanelGtk(string BookmarkXML = null, string CSS = null,
             string InfobarText1 = "{Name}", string InfobarText2 = "F: {FileS}, D: {DirS}")
@@ -172,6 +172,8 @@ namespace fcmd.View.GTK
             GoRoot.Clicked += goRootDelegate;
 
         }
+
+        public override void LoadDir(string URL) { LoadDir(URL, null); }
 
         /// <summary>
         /// Load the specifed directory with specifed content into the panel and set view options

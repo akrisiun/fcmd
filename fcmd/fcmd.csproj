@@ -95,6 +95,14 @@
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Reference Include="atk3-sharp, Version=3.1.5771.1339, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\xwt\lib\atk3-sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="glib3-sharp, Version=3.1.5771.1339, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\xwt\lib\glib3-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Data" />
@@ -234,14 +242,6 @@
     <EmbeddedResource Include="Resources\emblem-system.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\xwt\Xwt.CoreGtk3\Base\atk\atk3.csproj">
-      <Project>{42fe871a-d8cf-4b29-9aff-b02454e6c976}</Project>
-      <Name>atk3</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\xwt\Xwt.CoreGtk3\Base\glib\glib3.csproj">
-      <Project>{3bf1d531-8840-4f15-8066-a9788d8c398b}</Project>
-      <Name>glib3</Name>
-    </ProjectReference>
     <ProjectReference Include="..\xwt\Xwt.CoreGtk3\CoreGtk3.csproj">
       <Project>{9e4b0803-5255-43aa-9c68-0cbdf76db564}</Project>
       <Name>CoreGtk3</Name>

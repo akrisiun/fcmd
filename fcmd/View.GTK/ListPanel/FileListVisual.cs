@@ -407,7 +407,7 @@ namespace fcmd.View.GTK
         /// Load the directory into the panel
         /// </summary>
         /// <param name="URL">Full path of the directory</param>
-        public void LoadDir(string URL)
+        public override void LoadDir(string URL)
         {
             LoadDir(URL, ShortenPolicy);
         }

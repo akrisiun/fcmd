@@ -81,6 +81,7 @@ namespace fcmd
 
         public static void Edit(this MainWindow @this, string url)
         {
+#if WPF
             var Settings = @this.WindowDataWpf.Settings;
             string editor = Settings.ExternalEditor ?? "nodepad.exe";
 
@@ -99,6 +100,7 @@ namespace fcmd
                 ret = Process.Start(info);
             }
             catch (Exception ex) { fcmd.View.MessageDialog.ShowError(ex.Message); }
+#endif
         }
 
         /// <summary>
@@ -124,8 +126,8 @@ namespace fcmd
 
             //do { /*Application.DoEvents();*/ Xwt.Application.MainLoop.DispatchPendingEvents(); }
             //while (MkDirThread.ThreadState == ThreadState.Running);
-
             //fpd.pbrProgress.Fraction = 1;
+
             fpd.Hide();
             ActivePanel.LoadDir(ActivePanel.FS.CurrentDirectory);
         }
@@ -232,9 +234,8 @@ namespace fcmd
 
             if (ActivePanel.GetValue<string>(ActivePanel.df.DisplayName) == "..") { return; }
 
-            // var PassivePanel = PassivePanel;
             // ListView2Canvas 
-
+#if WPF
             var numerator = (ActivePanel.ListingView as IListingView<ListItemXaml>).ChoosedRows.GetEnumerator();
             while (numerator.MoveNext())
             {
@@ -365,10 +366,8 @@ namespace fcmd
                         ActivePanel.df.URL
                     )
                 );
-
-                continue;
-
             }
+#endif
         }
 
         /// <summary>
