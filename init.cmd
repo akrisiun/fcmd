@@ -3,12 +3,13 @@
 @REM cd fcmd
 
 if exist "SharpSSH"  goto next1
-mkdir SharpSSH
-git clone https://github.com/akrisiun/SharpSSH.git SharpSSH
+git submodule init
+git submodule update
 
 :next1
 
 @REM if exist "xwt"  goto next2
 @REM mkdir xwt
 @REM git clone https://github.com/akrisiun/xwt.git xwt
+
 :next2
