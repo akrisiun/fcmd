@@ -38,277 +38,294 @@ using Xwt.Backends;
 
 namespace Xwt.WPFBackend
 {
-	public class WindowBackend : WindowFrameBackend, IWindowBackend
-	{
-		protected Grid rootPanel;
-		public System.Windows.Controls.Menu mainMenu;
-		MenuBackend mainMenuBackend;
-		FrameworkElement widget;
-		DockPanel contentBox;
+    public class WindowBackend : WindowFrameBackend, IWindowBackend
+    {
+        protected Grid rootPanel;
+        public System.Windows.Controls.Menu mainMenu;
+        MenuBackend mainMenuBackend;
+        FrameworkElement widget;
+        DockPanel contentBox;
 
-		public WindowBackend ()
-		{
-			base.Window = new WpfWindow ();
-			Window.UseLayoutRounding = true;
-			rootPanel = CreateMainGrid ();
-			contentBox = new DockPanel ();
+        public WindowBackend()
+        {
+            base.Window = new WpfWindow();
+            WpfWindow.UseLayoutRounding = true;
+            rootPanel = CreateMainGrid();
+            contentBox = new DockPanel();
 
-			Window.Content = rootPanel;
-			Grid.SetColumn (contentBox, 0);
-			Grid.SetRow (contentBox, 1);
-			rootPanel.Children.Add (contentBox);
-		}
+            WpfWindow.Content = rootPanel;
+            Grid.SetColumn(contentBox, 0);
+            Grid.SetRow(contentBox, 1);
+            rootPanel.Children.Add(contentBox);
+        }
 
-		new WpfWindow Window
-		{
-			get { return (WpfWindow)base.Window; }
-		}
+        public new object Window
+        {
+            get { return base.Window; }
+        }
 
-		public override void Initialize ()
-		{
-			base.Initialize ();
-			Window.Frontend = (Window) Frontend;
-		}
+        public WpfWindow WpfWindow
+        {
+            get { return base.Window as WpfWindow; }
+        }
 
-		// A Grid with a single column, and two rows (menu and child control).
-		static Grid CreateMainGrid ()
-		{
-			var grid = new Grid ();
+        public override void Initialize()
+        {
+            base.Initialize();
+            WpfWindow.Frontend = Frontend as Window;
+        }
 
-			grid.ColumnDefinitions.Add (new ColumnDefinition ());
-			
-			var menuRow = new RowDefinition () { Height = GridLength.Auto }; // Only take the menu requested space.
-			var contentRow = new RowDefinition (); // Take all the remaining space (default).
+        // A Grid with a single column, and two rows (menu and child control).
+        static Grid CreateMainGrid()
+        {
+            var grid = new Grid();
 
-			grid.RowDefinitions.Add (menuRow);
-			grid.RowDefinitions.Add (contentRow);
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
 
-			return grid;
-		}
+            var menuRow = new RowDefinition() { Height = GridLength.Auto }; // Only take the menu requested space.
+            var contentRow = new RowDefinition(); // Take all the remaining space (default).
 
-		public override bool HasMenu {
-			get { return mainMenu != null; }
-		}
+            grid.RowDefinitions.Add(menuRow);
+            grid.RowDefinitions.Add(contentRow);
 
-		public override Rectangle Bounds
-		{
-			get
-			{
-				return Window.ClientBounds;
-			}
-			set
-			{
-				Window.ClientBounds = value;
-				Context.InvokeUserCode (delegate
-				{
-					EventSink.OnBoundsChanged (Bounds);
-				});
-			}
-		}
+            return grid;
+        }
 
-		public void SetChild (IWidgetBackend child)
-		{
-			if (widget != null) {
-				contentBox.Children.Remove (widget);
-				widget.SizeChanged -= ChildSizeChanged;
-			}
-			widget = ((IWpfWidgetBackend)child).Widget;
-			contentBox.Children.Add (widget);
+        public override bool HasMenu
+        {
+            get { return mainMenu != null; }
+        }
 
-			// This event is subscribed to ensure that the content of the
-			// widget is reallocated when the widget gets a new size. This
-			// is not a problem when setting the child before showing the
-			// window, but it may be a problem if the window is already visible.
-			widget.SizeChanged += ChildSizeChanged;
+        public override Rectangle Bounds
+        {
+            get
+            {
+                return WpfWindow.ClientBounds;
+            }
+            set
+            {
+                WpfWindow.ClientBounds = value;
+                Context.InvokeUserCode(delegate
+               {
+                   EventSink.OnBoundsChanged(Bounds);
+               });
+            }
+        }
 
-			if (child != null)
-				UpdateChildPlacement (child);
-		}
+        public void SetChild(IWidgetBackend child)
+        {
+            if (widget != null)
+            {
+                contentBox.Children.Remove(widget);
+                widget.SizeChanged -= ChildSizeChanged;
+            }
+            widget = ((IWpfWidgetBackend)child).Widget;
+            contentBox.Children.Add(widget);
 
-		public virtual void UpdateChildPlacement (IWidgetBackend childBackend)
-		{
-			WidgetBackend.SetChildPlacement (childBackend);
-		}
+            // This event is subscribed to ensure that the content of the
+            // widget is reallocated when the widget gets a new size. This
+            // is not a problem when setting the child before showing the
+            // window, but it may be a problem if the window is already visible.
+            widget.SizeChanged += ChildSizeChanged;
 
-		void ChildSizeChanged (object o, SizeChangedEventArgs args)
-		{
-			((Window)Frontend).Content.Surface.Reallocate ();
-		}
+            if (child != null)
+                UpdateChildPlacement(child);
+        }
 
-		public void SetMainMenu (IMenuBackend menu)
-		{
-			if (mainMenu != null) {
-				mainMenuBackend.ParentWindow = null;
-				rootPanel.Children.Remove (mainMenu);
-			}
-		
-			if (menu == null) {
-				mainMenu = null;
-				mainMenuBackend = null;
-				return;
-			}
+        public virtual void UpdateChildPlacement(IWidgetBackend childBackend)
+        {
+            WidgetBackend.SetChildPlacement(childBackend);
+        }
 
-			var menuBackend = (MenuBackend)menu;
+        void ChildSizeChanged(object o, SizeChangedEventArgs args)
+        {
+            ((Window)Frontend).Content.Surface.Reallocate();
+        }
 
-			var m = new System.Windows.Controls.Menu ();
-			foreach (var item in menuBackend.Items)
-				m.Items.Add (item.Item);
+        public void SetMainMenu(IMenuBackend menu)
+        {
+            if (mainMenu != null)
+            {
+                mainMenuBackend.ParentWindow = null;
+                rootPanel.Children.Remove(mainMenu);
+            }
 
-			Grid.SetColumn (m, 0);
-			Grid.SetRow (m, 0);
-			rootPanel.Children.Add (m);
+            if (menu == null)
+            {
+                mainMenu = null;
+                mainMenuBackend = null;
+                return;
+            }
 
-			mainMenu = m;
-			mainMenuBackend = menuBackend;
-			mainMenuBackend.ParentWindow = this;
-		}
+            var menuBackend = (MenuBackend)menu;
 
-		public void SetPadding (double left, double top, double right, double bottom)
-		{
-			contentBox.Margin = new Thickness (left, top, right, bottom);
-		}
+            var m = new System.Windows.Controls.Menu();
+            foreach (var item in menuBackend.Items)
+                m.Items.Add(item.Item);
 
-		public virtual void SetMinSize (Size s)
-		{
-			Window.SetMinSize (s);
-		}
+            Grid.SetColumn(m, 0);
+            Grid.SetRow(m, 0);
+            rootPanel.Children.Add(m);
 
-		public virtual void GetMetrics (out Size minSize, out Size decorationSize)
-		{
-			minSize = decorationSize = Size.Zero;
-			if (mainMenu != null) {
-				mainMenu.InvalidateMeasure ();
-				mainMenu.Measure (new System.Windows.Size (double.PositiveInfinity, double.PositiveInfinity));
-				var h = mainMenu.DesiredSize.Height;
-				decorationSize.Height = h;
-			}
-		}
+            mainMenu = m;
+            mainMenuBackend = menuBackend;
+            mainMenuBackend.ParentWindow = this;
+        }
 
-		protected override void OnResizeModeChanged ()
-		{
-			Window.ResetBorderSize ();
-		}
-	}
+        public void SetPadding(double left, double top, double right, double bottom)
+        {
+            contentBox.Margin = new Thickness(left, top, right, bottom);
+        }
 
-	class WpfWindow : System.Windows.Window
-	{
-		public Window Frontend;
+        public virtual void SetMinSize(Size s)
+        {
+            // WPFBackend.
+            WpfWindow.SetMinSize(s);
+        }
 
-		bool borderCalculated;
-		WidgetSpacing frameBorder;
-		Size minSizeRequested;
-		double initialX, initialY;
+        public virtual void GetMetrics(out Size minSize, out Size decorationSize)
+        {
+            minSize = decorationSize = Size.Zero;
+            if (mainMenu != null)
+            {
+                mainMenu.InvalidateMeasure();
+                mainMenu.Measure(new System.Windows.Size(double.PositiveInfinity, double.PositiveInfinity));
+                var h = mainMenu.DesiredSize.Height;
+                decorationSize.Height = h;
+            }
+        }
 
-		public WpfWindow ()
-		{
-			// We initially use WidthAndHeight mode since we need to calculate the size
-			// of the window borders
-			SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
-		}
+        protected override void OnResizeModeChanged()
+        {
+            // WPFBackend.
+            WpfWindow.ResetBorderSize();
+        }
+    }
 
-		public void ResetBorderSize ()
-		{
-			// Called when the size of the border may have changed
-			if (borderCalculated) {
-				var r = ClientBounds;
-				initialX = Left + frameBorder.Left;
-				initialY = Top + frameBorder.Top;
-				borderCalculated = false;
-				ClientBounds = r;
-			}
-		}
+    public class WpfWindow : System.Windows.Window
+    {
+        public Window Frontend;
 
-		public void SetMinSize (Size size)
-		{
-			if (borderCalculated) {
-				if (size.Width != -1)
-					MinWidth = size.Width + frameBorder.HorizontalSpacing;
-				if (size.Height != -1)
-					MinHeight = size.Height + frameBorder.VerticalSpacing;
-			}
-			else
-				minSizeRequested = size;
-		}
+        bool borderCalculated;
+        WidgetSpacing frameBorder;
+        Size minSizeRequested;
+        double initialX, initialY;
 
-		public Rectangle ClientBounds
-		{
-			get
-			{
-				var c = (FrameworkElement)Content;
-				var w = double.IsNaN (c.Width) ? c.ActualWidth : c.Width;
-				var h = double.IsNaN (c.Height) ? c.ActualHeight : c.Height;
-				if (PresentationSource.FromVisual (c) == null)
-					return new Rectangle (initialX, initialY, w, h);
-				else {
-					var p = c.PointToScreen (new SW.Point (0, 0));
-					return new Rectangle (p.X, p.Y, w, h);
-				}
-			}
-			set
-			{
-				// Don't use WindowFrameBackend.ToNonClientRect to calculate the client area because that method is not reliable (see comment in ToNonClientRect).
-				// Instead, we use our own border size calculation method, which is:
-				// 1) Set the Width and Height of the widget to the desired client rect, and set SizeToContent property to WidthAndHeight
-				// 2) The window will resize itself to fit the content
-				// 3) When the size of the window is set (OnRenderSizeChanged event), calculate the border by comparing the screen position of
-				//    the root content with the screen position of the window.
+        public WpfWindow()
+        {
+            // We initially use WidthAndHeight mode since we need to calculate the size
+            // of the window borders
+            SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
+        }
 
-				if (borderCalculated) {
-					// Border size already calculated. Just do the math.
-					Left = value.Left - frameBorder.Left;
-					Top = value.Top - frameBorder.Top;
-					Width = value.Width + frameBorder.HorizontalSpacing;
-					Height = value.Height + frameBorder.VerticalSpacing;
-				}
-				else {
-					// store the required size and position and enable SizeToContent mode. When the window size is set, we'll calculate the border size.
-					var c = (FrameworkElement)Content;
-					initialX = value.Left;
-					initialY = value.Top;
-					c.Width = value.Width;
-					c.Height = value.Height;
-					SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
-				}
-			}
-		}
+        public void ResetBorderSize()
+        {
+            // Called when the size of the border may have changed
+            if (borderCalculated)
+            {
+                var r = ClientBounds;
+                initialX = Left + frameBorder.Left;
+                initialY = Top + frameBorder.Top;
+                borderCalculated = false;
+                ClientBounds = r;
+            }
+        }
 
-		protected override System.Windows.Size ArrangeOverride (System.Windows.Size arrangeBounds)
-		{
-			var s = base.ArrangeOverride (arrangeBounds);
-			if (Frontend.Content != null)
-				Frontend.Content.Surface.Reallocate ();
-			return s;
-		}
+        public void SetMinSize(Size size)
+        {
+            if (borderCalculated)
+            {
+                if (size.Width != -1)
+                    MinWidth = size.Width + frameBorder.HorizontalSpacing;
+                if (size.Height != -1)
+                    MinHeight = size.Height + frameBorder.VerticalSpacing;
+            }
+            else
+                minSizeRequested = size;
+        }
 
-		protected override void OnRenderSizeChanged (SizeChangedInfo sizeInfo)
-		{
-			// Once the physical size of the window has been set we can calculate
-			// the size of the borders, which will be used for further client/non client
-			// area coordinate conversions
-			CalcBorderSize (sizeInfo.NewSize.Width, sizeInfo.NewSize.Height);
-			base.OnRenderSizeChanged (sizeInfo);
-		}
+        public Rectangle ClientBounds
+        {
+            get
+            {
+                var c = (FrameworkElement)Content;
+                var w = double.IsNaN(c.Width) ? c.ActualWidth : c.Width;
+                var h = double.IsNaN(c.Height) ? c.ActualHeight : c.Height;
+                if (PresentationSource.FromVisual(c) == null)
+                    return new Rectangle(initialX, initialY, w, h);
+                else
+                {
+                    var p = c.PointToScreen(new SW.Point(0, 0));
+                    return new Rectangle(p.X, p.Y, w, h);
+                }
+            }
+            set
+            {
+                // Don't use WindowFrameBackend.ToNonClientRect to calculate the client area because that method is not reliable (see comment in ToNonClientRect).
+                // Instead, we use our own border size calculation method, which is:
+                // 1) Set the Width and Height of the widget to the desired client rect, and set SizeToContent property to WidthAndHeight
+                // 2) The window will resize itself to fit the content
+                // 3) When the size of the window is set (OnRenderSizeChanged event), calculate the border by comparing the screen position of
+                //    the root content with the screen position of the window.
 
-		void CalcBorderSize (double windowWidth, double windowHeight)
-		{
-			if (borderCalculated)
-				return;
+                if (borderCalculated)
+                {
+                    // Border size already calculated. Just do the math.
+                    Left = value.Left - frameBorder.Left;
+                    Top = value.Top - frameBorder.Top;
+                    Width = value.Width + frameBorder.HorizontalSpacing;
+                    Height = value.Height + frameBorder.VerticalSpacing;
+                }
+                else
+                {
+                    // store the required size and position and enable SizeToContent mode. When the window size is set, we'll calculate the border size.
+                    var c = (FrameworkElement)Content;
+                    initialX = value.Left;
+                    initialY = value.Top;
+                    c.Width = value.Width;
+                    c.Height = value.Height;
+                    SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
+                }
+            }
+        }
 
-			var c = (FrameworkElement)Content;
-			var p = c.PointToScreen (new SW.Point (0, 0));
-			var left = p.X - Left;
-			var top = p.Y - Top;
-			frameBorder = new WidgetSpacing (left, top, windowWidth - c.ActualWidth - left, windowHeight - c.ActualHeight - top);
-			borderCalculated = true;
-			Left = initialX - left;
-			Top = initialY - top;
-			SetMinSize (minSizeRequested);
+        protected override System.Windows.Size ArrangeOverride(System.Windows.Size arrangeBounds)
+        {
+            var s = base.ArrangeOverride(arrangeBounds);
+            if (Frontend.Content != null)
+                Frontend.Content.Surface.Reallocate();
+            return s;
+        }
 
-			// Border size calculation done and we can go back to Manual resize mode.
-			// From now on, the content has to adapt to the size of the window.
-			SizeToContent = System.Windows.SizeToContent.Manual;
-			c.Width = double.NaN;
-			c.Height = double.NaN;
-		}
-	}
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            // Once the physical size of the window has been set we can calculate
+            // the size of the borders, which will be used for further client/non client
+            // area coordinate conversions
+            CalcBorderSize(sizeInfo.NewSize.Width, sizeInfo.NewSize.Height);
+            base.OnRenderSizeChanged(sizeInfo);
+        }
+
+        void CalcBorderSize(double windowWidth, double windowHeight)
+        {
+            if (borderCalculated)
+                return;
+
+            var c = (FrameworkElement)Content;
+            var p = c.PointToScreen(new SW.Point(0, 0));
+            var left = p.X - Left;
+            var top = p.Y - Top;
+            frameBorder = new WidgetSpacing(left, top, windowWidth - c.ActualWidth - left, windowHeight - c.ActualHeight - top);
+            borderCalculated = true;
+            Left = initialX - left;
+            Top = initialY - top;
+            SetMinSize(minSizeRequested);
+
+            // Border size calculation done and we can go back to Manual resize mode.
+            // From now on, the content has to adapt to the size of the window.
+            SizeToContent = System.Windows.SizeToContent.Manual;
+            c.Width = double.NaN;
+            c.Height = double.NaN;
+        }
+    }
 }

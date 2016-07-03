@@ -7,9 +7,10 @@ using System.Net.Mime;
 using System.Resources;
 using System.Threading;
 using System.Windows;
+using System.Windows.Interop;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation; 
+using System.Windows.Navigation;
 
 //#if !VS13
 //[assembly: NeutralResourcesLanguageAttribute("en", UltimateResourceFallbackLocation.MainAssembly)]
@@ -20,12 +21,14 @@ namespace fcmd
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IComponentConnector
+    public partial class MainWindow : Window, IComponentConnector, IWin32Window
     {
         public static bool AppLoading { get; set; }
         public static MainWindow ActiveWindow { get; private set; }
 
         static MainWindow() { AppLoading = true; AllowShutdown = true; }
+
+        public IntPtr Handle { get; set; }
 
         public MainWindow()
         {

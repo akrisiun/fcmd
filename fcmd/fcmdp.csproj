@@ -73,6 +73,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="FileList\Actions\FileInputDialog.cs" />
     <Compile Include="FileList\InputBox.cs" />
     <Compile Include="FileList\Panel\DiskBox.cs" />
     <Compile Include="Model\IDriveCombo.cs" />

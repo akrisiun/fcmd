@@ -85,7 +85,7 @@ namespace Xwt
 			return new WindowBackendHost ();
 		}
 		
-		IDialogBackend Backend {
+		public new IDialogBackend Backend {
 			get { return (IDialogBackend) BackendHost.Backend; } 
 		}
 		

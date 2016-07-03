@@ -63,7 +63,7 @@ namespace Xwt
     {
         EventHandler boundsChanged;
         EventHandler shown;
-		EventHandler hidden;
+        EventHandler hidden;
         CloseRequestedHandler closeRequested;
         EventHandler closed;
 
@@ -217,7 +217,7 @@ namespace Xwt
         public double? DesiredHeight
         {
             get { return Backend.Visible ? (double?)BackendBounds.Height : (BackendHost.Backend as IWindowBackend).DesiredSize.Height; }
-                         // . .InitializeBackend  .DesiredSize Backend.DesiredSize.Height; }
+            // . .InitializeBackend  .DesiredSize Backend.DesiredSize.Height; }
         }
 
         /// <summary>
@@ -287,8 +287,16 @@ namespace Xwt
 
         public bool Visible
         {
-            get { return Backend.Visible; }
-            set { Backend.Visible = value; }
+            get
+            {
+                var backend = Backend;
+                return backend.Visible;
+            }
+            set
+            {
+                var backend = Backend;
+                backend.Visible = value;
+            }
         }
 
         [DefaultValue(true)]
@@ -338,9 +346,17 @@ namespace Xwt
             }
         }
 
-        internal virtual void AdjustSize()
+        public virtual bool? ShowModal(object parentWindow)
         {
+            if (Visible)
+                return null;
+
+            AdjustSize();
+            var backend = Backend;
+            return backend.ShowModal(parentWindow);
         }
+
+        internal virtual void AdjustSize() { }
 
         /// <summary>
         /// Presents a window to the user. This may mean raising the window in the stacking order,

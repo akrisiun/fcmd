@@ -55,7 +55,9 @@ namespace Xwt.Backends
         void SetInitialSize(double width, double height);
 
         bool Visible { get; set; }
-		bool Sensitive { get; set; }
+        bool? ShowModal(object parentWindow);
+
+        bool Sensitive { get; set; }
 		string Title { get; set; }		
 		bool Decorated { get; set; }
 		bool ShowInTaskbar { get; set; }

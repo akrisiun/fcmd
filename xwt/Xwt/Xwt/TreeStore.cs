@@ -201,7 +201,7 @@ namespace Xwt
 		public event EventHandler<TreeNodeEventArgs> NodeInserted;
 		public event EventHandler<TreeNodeChildEventArgs> NodeDeleted;
 		public event EventHandler<TreeNodeEventArgs> NodeChanged;
-		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered = null;
+		public event EventHandler<TreeNodeOrderEventArgs> NodesReordered;
 
 		public void InitializeBackend (object frontend, ApplicationContext context)
 		{

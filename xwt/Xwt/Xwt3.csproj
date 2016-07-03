@@ -25,6 +25,7 @@
     <ConsolePause>False</ConsolePause>
     <Prefer32Bit>false</Prefer32Bit>
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+    <NoWarn>649;67;169;</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

@@ -26,6 +26,7 @@
 using System.Windows;
 using System.Windows.Media;
 using System;
+using System.Windows.Interop;
 
 namespace Xwt.WPFBackend
 {
@@ -65,7 +66,22 @@ namespace Xwt.WPFBackend
 			throw new InvalidOperationException("Invalid alignment value: " + alignment);
         }
 
-		public static System.Windows.Window GetParentWindow (this FrameworkElement element)
+        public static IWin32Window GetParentWindowWin32(this FrameworkElement element)
+        {
+            FrameworkElement current = element;
+            while (current != null)
+            {
+                if (current is IWin32Window)
+                    return current as IWin32Window;
+
+                current = VisualTreeHelper.GetParent(current) as FrameworkElement;
+            }
+
+            return null;
+        }
+
+
+        public static System.Windows.Window GetParentWindow (this FrameworkElement element)
 		{
 			FrameworkElement current = element;
 			while (current != null) {

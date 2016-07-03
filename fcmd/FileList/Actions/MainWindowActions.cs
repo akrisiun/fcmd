@@ -14,6 +14,7 @@ using System.Threading;
 using pluginner.Widgets;
 using Xwt;
 using fcmd.FileList;
+using System.Windows.Interop;
 
 #if WPF
 using ListView2Canvas = fcmd.View.Xaml.ListItemXaml;
@@ -107,16 +108,29 @@ namespace fcmd
         /// Makes a new directory at the specifed <paramref name="url"/>
         /// </summary>
         /// <param name="url"></param>
-        public static void MkDir(this MainWindow @this, string url)
+        public static void MkDir(this MainWindow form, string url)
         {
-            FileProcessDialog fpd = new FileProcessDialog();
+            var fpd = new FileInputDialog(form as IWin32Window);
             fpd.lblStatus.Text = string.Format(Localizator.GetString("DoingMkdir"), "\n" + url, null);
-            fpd.Show();
+            fpd.text.Text = url ?? string.Empty;
 
-            var ActivePanel = @this.ActivePanel;
+            var window = fpd.Backend.Window as Xwt.WPFBackend.WpfWindow;
+            fpd.MainWindow = form;
+            fpd.Closed += Fpd_Closed;
 
+            fpd.RunModal(form);  // modal
+        }
+
+        static void Fpd_Closed(object sender, EventArgs e)
+        {
+            var fpd = sender as FileInputDialog;
+            string url = fpd.text.Text;
+            if (string.IsNullOrWhiteSpace(url))
+                return;
+
+            var ActivePanel = fpd.MainWindow.ActivePanel;
             var resetHandle = new AutoResetEvent(false);
-            Thread MkDirThread = new Thread(delegate()
+            Thread MkDirThread = new Thread(delegate ()
             {
                 ActivePanel.FS.CreateDirectory(url);
                 resetHandle.Set();
@@ -260,8 +274,8 @@ namespace fcmd
                         String DestinationFilePath = ibx.Result;
                         string StatusMask = Localizator.GetString("DoingCopy");
 
-                        ReplaceQuestionDialog.ClickedButton dummy =
-                            ReplaceQuestionDialog.ClickedButton.Cancel;
+                        DialogClickedButton dummy =
+                            DialogClickedButton.Cancel;
                         AsyncCopy AC = new AsyncCopy();
 
                         var resetHandle = new AutoResetEvent(false);

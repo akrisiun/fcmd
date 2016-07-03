@@ -31,6 +31,8 @@ namespace Xwt.Backends
 {
 	public interface IWindowBackend: IWindowFrameBackend, IChildPlacementHandler
 	{
+        object Window { get; }
+
 		void SetChild (IWidgetBackend child);
 		void SetMainMenu (IMenuBackend menu);
 		void SetPadding (double left, double top, double right, double bottom);

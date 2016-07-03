@@ -38,8 +38,7 @@ using SWC = System.Windows.Controls;
 
 namespace Xwt.WPFBackend
 {
-	public class DialogBackend
-		: WindowBackend, IDialogBackend
+	public class DialogBackend : WindowBackend, IDialogBackend
 	{
 		static DialogBackend()
 		{
@@ -53,7 +52,10 @@ namespace Xwt.WPFBackend
 			ButtonStyle.Setters.Add (new Setter (FrameworkElement.MinWidthProperty, 80d));
 		}
 
-		private DelegatedCommand cmd;
+        public new object Window { get { return base.WpfWindow; } }
+        public System.Windows.Window Form { get { return base.WpfWindow ; } }
+
+        private DelegatedCommand cmd;
 
 		public DialogBackend()
 		{
@@ -118,7 +120,9 @@ namespace Xwt.WPFBackend
 
 		public void RunLoop (IWindowFrameBackend parent)
 		{
-			if (parent != null)
+            var Window = base.WpfWindow;
+
+            if (parent != null)
 				Window.Owner = ((WindowFrameBackend) parent).Window;
 			Window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
 			Window.ShowDialog ();
@@ -127,7 +131,7 @@ namespace Xwt.WPFBackend
 		public void EndLoop ()
 		{
 			InhibitCloseRequested = true;
-			Window.Close();
+			base.WpfWindow.Close();
 			InhibitCloseRequested = false;
 		}
 

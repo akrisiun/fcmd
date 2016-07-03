@@ -40,7 +40,7 @@ namespace fcmd
         /// <param name="Feedback">If at the destination URL a file exists, a ReplaceQuestionDialog will be shown. This argument is the place, where the user's last choose should be saved.</param>
         /// <param name="AC">The instance of AsyncCopy class that should be used to copy the file.</param>
         public static void DoCp(this MainWindow @this, IFSPlugin SourceFS, IFSPlugin DestinationFS, string SourceURL, string DestinationURL,
-            ref ReplaceQuestionDialog.ClickedButton Feedback, AsyncCopy AC)
+            ref DialogClickedButton Feedback, AsyncCopy AC)
         {
             if (SourceURL == DestinationURL)
             {
@@ -70,7 +70,7 @@ namespace fcmd
                 do { } while (!ready);
                 ready = false;
 
-                var ClickedButton = ReplaceQuestionDialog.ClickedButton.Skip;
+                var ClickedButton = DialogClickedButton.Skip;
                 Xwt.Application.Invoke(
                     delegate
                     {
@@ -84,15 +84,15 @@ namespace fcmd
 
                 switch (ClickedButton)
                 {
-                    case ReplaceQuestionDialog.ClickedButton.Replace:
+                    case DialogClickedButton.Replace:
                         //continue execution
                         Feedback = rpd.ChoosedButton;
                         break;
-                    case ReplaceQuestionDialog.ClickedButton.ReplaceAll:
+                    case DialogClickedButton.ReplaceAll:
                         //continue execution
                         Feedback = rpd.ChoosedButton;
                         break;
-                    case ReplaceQuestionDialog.ClickedButton.ReplaceOld:
+                    case DialogClickedButton.ReplaceOld:
                         Feedback = rpd.ChoosedButton;
                         if (SourceFS.GetMetadata(SourceURL).LastWriteTimeUTC <
                             DestinationFS.GetMetadata(DestinationURL).LastWriteTimeUTC)
@@ -100,10 +100,10 @@ namespace fcmd
                         else
                         { return; }
                         break;
-                    case ReplaceQuestionDialog.ClickedButton.Skip:
+                    case DialogClickedButton.Skip:
                         Feedback = rpd.ChoosedButton;
                         return;
-                    case ReplaceQuestionDialog.ClickedButton.SkipAll:
+                    case DialogClickedButton.SkipAll:
                         Feedback = rpd.ChoosedButton;
                         return;
                 }
@@ -184,7 +184,7 @@ namespace fcmd
                     FSEntryMetadata md1 = fsa.GetMetadata(s1);
                     string s2 = destination + fsb.DirSeparator + md1.Name; //destination url
 
-                    ReplaceQuestionDialog.ClickedButton Placeholder = ReplaceQuestionDialog.ClickedButton.Cancel;
+                    DialogClickedButton Placeholder = DialogClickedButton.Cancel;
                     @this.DoCp(fsa, fsb, s1, s2, ref Placeholder, new AsyncCopy());
                 }
                 else if (di.IsDirectory)
