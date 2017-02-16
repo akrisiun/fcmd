@@ -11,8 +11,8 @@
 				<Bookmark title="Program files (64 bit)" url="file://C:/Program Files" />
 			</Bookmark>
 		</Bookmark>
-		<Bookmark title="Documents and settings (Windows 2000-like only)" url="file://C:/DOCUME~1" />
-		<Bookmark title="User files (Windows Vista-like only)" url="file://C:/Users" />
+		<Bookmark title="Documents and settings" url="file://C:/DOCUME~1" />
+		<Bookmark title="User files" url="file://C:/Users" />
 	</SpeedDial>
 </Bookmarks>
 

@@ -1,0 +1,3 @@
+[submodule "vendor/xwt"]
+	path = vendor/xwt
+	url = https://github.com/akrisiun/xwt

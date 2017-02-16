@@ -200,8 +200,16 @@ namespace fcmd
 			mnuHelpDebug.Clicked += ShowDebugInfo;
 			mnuHelpAbout.Clicked += mnuHelpAbout_Clicked;
 
-			Layout.PackStart(PanelLayout, true, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill,0,0,0,0);
-			Layout.PackStart(KeyBoardHelp, false,Xwt.WidgetPlacement.End,Xwt.WidgetPlacement.Fill,1,3,1,2);
+            // GTK pack problems: 
+            // GtkContainerClass::add not implemented for `__gtksharp_1_Xwt_GtkBackend_CustomContainer'
+            try
+            {
+                Layout.PackStart(PanelLayout, true, Xwt.WidgetPlacement.Fill, Xwt.WidgetPlacement.Fill, 0, 0, 0, 0);
+                Layout.PackStart(KeyBoardHelp, false, Xwt.WidgetPlacement.End, Xwt.WidgetPlacement.Fill, 1, 3, 1, 2);
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
 
 			this.Content = Layout;
 
@@ -328,9 +336,9 @@ namespace fcmd
 			LVCols.Clear();
 			LVCols.Add(new ListView2.ColumnInfo { Title = "", Tag = "Icon", Width = 16, Visible = true });
 			LVCols.Add(new ListView2.ColumnInfo { Title = "URL", Tag = "Path", Width = 0, Visible = false });
-			LVCols.Add(new ListView2.ColumnInfo { Title = Localizator.GetString("FName"), Tag = "FName", Width = 100, Visible = true });
-			LVCols.Add(new ListView2.ColumnInfo { Title = Localizator.GetString("FSize"), Tag = "FSize", Width = 50, Visible = true });
-			LVCols.Add(new ListView2.ColumnInfo { Title = Localizator.GetString("FDate"), Tag = "FDate", Width = 50, Visible = true });
+			LVCols.Add(new ListView2.ColumnInfo { Title = Localizator.GetString("FName"), Tag = "FName", Width = 200, Visible = true });
+			LVCols.Add(new ListView2.ColumnInfo { Title = Localizator.GetString("FSize"), Tag = "FSize", Width = 70, Visible = true });
+			LVCols.Add(new ListView2.ColumnInfo { Title = Localizator.GetString("FDate"), Tag = "FDate", Width = 150, Visible = true });
 			LVCols.Add(new ListView2.ColumnInfo { Title = "Directory item info", Tag = "DirItem", Width = 0, Visible = false });
 			p1.ListingView.SetColumns(LVCols);
 			p2.ListingView.SetColumns(LVCols);

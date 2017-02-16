@@ -4,7 +4,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{7D93F45C-E782-4E8B-ABFF-49C5E92B0E13}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>fcmd</RootNamespace>
     <AssemblyName>fcmd</AssemblyName>
     <CodePage>65001</CodePage>
@@ -30,16 +30,18 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <ProductVersion>12.0.0</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\x86\</OutputPath>
+    <OutputPath>..\bin\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ConsolePause>false</ConsolePause>
     <CustomCommands>
       <CustomCommands>
@@ -47,6 +49,9 @@
       </CustomCommands>
     </CustomCommands>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>none</DebugType>
@@ -58,18 +63,23 @@
     <ConsolePause>false</ConsolePause>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>bin\Debug\</OutputPath>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>bin\Release\</OutputPath>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <OutputPath>bin\Debug\x64\</OutputPath>
@@ -77,12 +87,14 @@
     <DefineConstants>DEBUG;X64</DefineConstants>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
     <PlatformTarget>x64</PlatformTarget>
     <WarningLevel>4</WarningLevel>
     <Optimize>false</Optimize>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
@@ -133,9 +145,6 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Data" />
-    <Reference Include="Xwt">
-      <HintPath>stolen-opensource-libs\Xwt.dll</HintPath>
-    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="mucss">
       <HintPath>stolen-opensource-libs\mucss.dll</HintPath>
@@ -143,7 +152,9 @@
     <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="COPYPASTE.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -202,8 +213,20 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="pluginner\pluginner.csproj">
-      <Project>{88785B26-D617-4BE9-B449-F7CE77444794}</Project>
+      <Project>{88785b26-d617-4be9-b449-f7ce77444794}</Project>
       <Name>pluginner</Name>
+    </ProjectReference>
+    <ProjectReference Include="vendor\xwt\Xwt.CoreGtk3\CoreGtk3.csproj">
+      <Project>{9e4b0803-5255-43aa-9c68-0cbdf76db564}</Project>
+      <Name>CoreGtk3</Name>
+    </ProjectReference>
+    <ProjectReference Include="vendor\xwt\Xwt.Gtk\Xwt3.Gtk3.csproj">
+      <Project>{3b25fd1f-ceba-4450-8893-dc330fdb56a7}</Project>
+      <Name>Xwt3.Gtk3</Name>
+    </ProjectReference>
+    <ProjectReference Include="vendor\xwt\Xwt\Xwt.csproj">
+      <Project>{92494904-35fa-4dc9-bde9-3a3e87ac49d3}</Project>
+      <Name>Xwt</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

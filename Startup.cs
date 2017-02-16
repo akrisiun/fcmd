@@ -9,6 +9,7 @@ using System;
 using Xwt;
 using System.Reflection;
 using pluginner.Toolkit;
+using System.IO;
 
 namespace fcmd
 {
@@ -27,8 +28,20 @@ namespace fcmd
 				switch (OSVersionEx.Platform)
 				{
 					case PlatformID.Win32NT:
-						Application.Initialize(ToolkitType.Wpf);
-						break;
+
+                        var gtk3 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xwt3.Gtk3.dll");
+                        if (!File.Exists(gtk3))
+                        {
+                            Application.Initialize(ToolkitType.Wpf);
+                        }
+                        else
+                        {
+                            Gtk.CoreGtk3.LoadDlls();
+
+                            new Xwt.GtkBackend.GtkEngine().InitializeApplication();
+                            Application.Initialize(ToolkitType.Gtk3);
+                        }
+                        break;
 					case PlatformID.MacOSX:
 						Application.Initialize(ToolkitType.Cocoa);
 						break;

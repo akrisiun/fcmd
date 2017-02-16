@@ -326,7 +326,7 @@ namespace pluginner.Widgets
 				Data,
 				FontForFileNames)
 			{
-				Font = Font.SystemSansSerifFont.WithWeight(FontWeight.Heavy),
+				Font = Font.SystemSansSerifFont?.WithWeight(FontWeight.Heavy),
 				PointerBgColor = PointedBgColor,
 				PointerFgColor = PointedFgColor,
 				SelectionBgColor = SelectedBgColor,
@@ -353,7 +353,8 @@ namespace pluginner.Widgets
 			Items.Add(Item);
 			Grid.Add(Item, LastCol, LastRow,1,1,true);
 			Item.ButtonPressed += Item_ButtonPressed;
-			Item.EditComplete += sender =>
+
+            Item.EditComplete += sender =>
 			{
 				var handler = EditComplete;
 				if (handler != null) {
