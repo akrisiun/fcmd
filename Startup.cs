@@ -30,15 +30,16 @@ namespace fcmd
 					case PlatformID.Win32NT:
 
                         var gtk3 = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xwt3.Gtk3.dll");
-                        if (!File.Exists(gtk3))
+                        var wpf = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Xwt.WPF.dll");
+                        if (File.Exists(wpf))
                         {
-                            Application.Initialize(ToolkitType.Wpf);
+                            //ToolkitType.Wpf, 
+                            Application.Initialize("Xwt.WPFBackend.WPFEngine, Xwt.WPF");
                         }
                         else
                         {
-                            Gtk.CoreGtk3.LoadDlls();
-
-                            new Xwt.GtkBackend.GtkEngine().InitializeApplication();
+                            // Gtk.CoreGtk3.LoadDlls();
+                            // new Xwt.GtkBackend.GtkEngine().InitializeApplication();
                             Application.Initialize(ToolkitType.Gtk3);
                         }
                         break;

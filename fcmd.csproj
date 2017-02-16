@@ -150,6 +150,10 @@
       <HintPath>stolen-opensource-libs\mucss.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
+    <Reference Include="Xwt">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>vendor\xwt\bin\Xwt.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config">
@@ -167,12 +171,12 @@
     </None>
     <None Include="README-DEV.md" />
     <None Include="README.md" />
-    <None Include="stolen-opensource-libs\Xwt.Gtk.dll.config">
+    <!--<None Include="stolen-opensource-libs\Xwt.Gtk.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="stolen-opensource-libs\Xwt.Gtk3.dll.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </None>-->
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -216,17 +220,9 @@
       <Project>{88785b26-d617-4be9-b449-f7ce77444794}</Project>
       <Name>pluginner</Name>
     </ProjectReference>
-    <ProjectReference Include="vendor\xwt\Xwt.CoreGtk3\CoreGtk3.csproj">
-      <Project>{9e4b0803-5255-43aa-9c68-0cbdf76db564}</Project>
-      <Name>CoreGtk3</Name>
-    </ProjectReference>
-    <ProjectReference Include="vendor\xwt\Xwt.Gtk\Xwt3.Gtk3.csproj">
-      <Project>{3b25fd1f-ceba-4450-8893-dc330fdb56a7}</Project>
-      <Name>Xwt3.Gtk3</Name>
-    </ProjectReference>
-    <ProjectReference Include="vendor\xwt\Xwt\Xwt.csproj">
-      <Project>{92494904-35fa-4dc9-bde9-3a3e87ac49d3}</Project>
-      <Name>Xwt</Name>
+    <ProjectReference Include="vendor\xwt\Xwt.WPF\Xwt.WPF.csproj">
+      <Project>{c93d746e-1586-4d4f-b411-bf5a966e6a08}</Project>
+      <Name>Xwt.WPF</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -241,7 +237,7 @@
     <EmbeddedResource Include="Resources\x-fcmd-directory.png" />
     <EmbeddedResource Include="Resources\x-fcmd-up.png" />
     <Content Include="stolen-opensource-libs\readme.txt" />
-    <Content Include="stolen-opensource-libs\Xwt.dll">
+    <!--<Content Include="stolen-opensource-libs\Xwt.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="stolen-opensource-libs\Xwt.Gtk.dll">
@@ -255,6 +251,9 @@
     </Content>
     <Content Include="stolen-opensource-libs\Xwt.WPF.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    </Content>-->
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
 </Project>
