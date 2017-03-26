@@ -10,6 +10,7 @@ using fcmd.View.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using fcmd.http;
 using pluginner.Toolkit;
+using fcmd.base_plugins.fs;
 
 namespace fcmd.test
 {
@@ -45,7 +46,7 @@ namespace fcmd.test
             var backend = data.BackendWpf as WpfBackend;
 
             backend.args = new string[] { dir };
-            Directory.SetCurrentDirectory(dir);
+            DirectorySafe.SetCurrentDirectory(dir);
             backend.Shown();
 
             backend.LoadDirSynchonous();

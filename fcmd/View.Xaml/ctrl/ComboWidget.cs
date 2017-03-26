@@ -7,8 +7,8 @@ using System.Windows.Controls;
 using pluginner.Widgets;
 using System.Windows;
 using System.Drawing;
-using fcmd.View.ctrl;
 using System.Windows.Threading;
+using SharpShell;
 
 namespace fcmd.View.ctrl
 {
@@ -18,6 +18,8 @@ namespace fcmd.View.ctrl
         ITextEntry, IInputElement
     {
         public bool CanGetFocus { get { return IsEnabled; } set { IsEnabled = value; } }
+        public IntPtr Handle { get; set; }
+        public Tuple<int, int> PointToScreen(int X, int Y) { return Win32Control.PointToScreen(this, this.Handle, X, Y); }
 
         public Color BackgroundColor
         {
@@ -35,5 +37,6 @@ namespace fcmd.View.ctrl
             get { throw new NotImplementedException(); }
         }
 
+        public virtual void Dispose() { }
     }
 }

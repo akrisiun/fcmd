@@ -12,7 +12,7 @@ namespace fcmd.Model
     using fcmd.Platform;
     using System.Text;
 
-  
+
     public class ChdirUpCommand : Command { }
 
     public class ChRootCommand : Command { }
@@ -42,6 +42,8 @@ namespace fcmd.Model
 
             panel.data.Tag = @this;
             panel.data.PreviewKeyDown += Data_PreviewKeyDown;
+
+            DataGridMenu.Bind(panel.data);
         }
 
         public static void UnBindGridEvents(this ListView2DataGrid @this)
@@ -122,8 +124,19 @@ namespace fcmd.Model
             if (e.Key == Key.Enter && @this != null)
             {
                 var sb = new StringBuilder((e.Source as TextEntry).Text);
-                sb.Replace(localFileSystem.FilePrefix, "");
-                var url = sb.ToString();
+
+                string url = sb.ToString();
+                if (NetworkFileSystem.IsNetworkPath(url))
+                {
+                    sb.Replace(NetworkFileSystem.NetworkPrefix, "");
+                    sb.Replace(NetworkFileSystem.ShortPrefix, "");  // Symbol: "\\"
+                    url = NetworkFileSystem.ShortPrefix + sb.ToString();
+                }
+                else
+                {
+                    sb.Replace(LocalFileSystem.FilePrefix, "");
+                    url = sb.ToString();
+                }
                 @this.LoadUrl(url);
                 e.Handled = true;
             }

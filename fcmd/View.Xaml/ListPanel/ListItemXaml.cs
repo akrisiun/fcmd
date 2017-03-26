@@ -14,7 +14,6 @@ using System.Linq;
 using System.Drawing;
 using System.Collections;
 using pluginner.Widgets;
-using System.IO;
 using fcmd.base_plugins.fs;
 
 namespace fcmd.View.Xaml
@@ -80,16 +79,14 @@ namespace fcmd.View.Xaml
         /// <summary>Data store</summary>
         protected Object[] _Values;
 
-        public string FullPath
-        {
-            get
-            {
+        public string FullPath {
+            get {
                 return // fldFile == ".." ? fldPath :
                        // (IsDirectory) ? fldPath :
-                       (fldPath.StartsWith(localFileSystem.FilePrefix) ?
-                            fldPath.Substring(localFileSystem.FilePrefix.Length) : fldPath);
-                        //Path.Combine(
-                        //    fldFile);
+                       (fldPath.StartsWith(LocalFileSystem.FilePrefix) ?
+                            fldPath.Substring(LocalFileSystem.FilePrefix.Length) : fldPath);
+                //Path.Combine(
+                //    fldFile);
             }
         }
 
@@ -115,11 +112,9 @@ namespace fcmd.View.Xaml
         #region implement WPF state
 
         public bool CanGetFocus { get { return true; } set {; } }
-        public object Content
-        {
+        public object Content {
             get { return _Values; }
-            set
-            {
+            set {
                 if (value == null)
                 {
                     _Values = null;
@@ -134,14 +129,13 @@ namespace fcmd.View.Xaml
                     _Values = value as Object[];
             }
         }
-        public object[] Data
-        {
+        public object[] Data {
             get { return _Values; }
             set { _Values = value; }
         }
         public int? RowIndex { get; set; }
         public bool Visible { get; set; }
-        public ListView2.ColumnInfo[] ColumnData {[DebuggerStepThrough] get { return _Cols; } set { _Cols = value; } }
+        public ListView2.ColumnInfo[] ColumnData { [DebuggerStepThrough] get { return _Cols; } set { _Cols = value; } }
         // + ListView2.ItemStates State
 
         #endregion
@@ -149,22 +143,18 @@ namespace fcmd.View.Xaml
         #region Properties 
 
         /// <summary>Set column list</summary>
-        public ListView2.ColumnInfo[] Columns
-        {
+        public ListView2.ColumnInfo[] Columns {
             get { return _Cols; }
-            set
-            {
+            set {
                 _Cols = value;
                 // gtk: QueueDraw()
             }
         }
 
         /// <summary>Status of the item selection</summary>
-        public ListView2.ItemStates State
-        {
+        public ListView2.ItemStates State {
             get { return _State; }
-            set
-            {
+            set {
                 _State = value;
                 switch (value)
                 {

@@ -13,10 +13,262 @@ using pluginner;
 using pluginner.Toolkit;
 using Xwt;
 using AiLib.IOFile;
+using System.Runtime.Versioning;
+using System.Security;
+using System.Security.Permissions;
+using System.Runtime.InteropServices;
 
 namespace fcmd.base_plugins.fs
 {
-    public partial class localFileSystem : pluginner.IFSPlugin
+    public partial class NetworkFileSystem : LocalFileSystem, pluginner.IFSPlugin
+    {
+        public const string NetworkPrefix = "file://"; // ???
+        public const string ShortPrefix = @"\\";
+
+        public static bool IsNetworkPath(string path)
+        {
+            if (string.IsNullOrWhiteSpace(path))
+                return false;
+
+            if (path.StartsWith(@"\\"))
+                return true;
+
+            if (path.StartsWith("192.168") && !DirectorySafe.Exists(path))
+                return true;
+
+            return false;
+        }
+    }
+
+    // Directory Safe handler, exception safe
+    public static class DirectorySafe
+    {
+        public static bool SetCurrentDirectory(string path)
+        {
+            bool error = false;
+            try
+            {
+                Directory.SetCurrentDirectory(path);
+            }
+            catch { error = true; }
+            return !error;
+        }
+
+        [SecurityCritical]
+        [ResourceExposure(ResourceScope.Machine)]
+        [ResourceConsumption(ResourceScope.Machine)]
+        public static bool Exists(String path)
+        {
+            try
+            {
+                if (path == null)
+                    return false;
+                if (path.Length == 0)
+                    return false;
+
+                // Get fully qualified file name ending in \* for security check
+
+                String fullPath = NormalizePath(path);
+                // String demandPath = GetDemandDir(fullPath, true);
+                // FileIOPermission.QuickDemand(FileIOPermissionAccess.Read, demandPath, false, false);
+
+                int lastError = 0;
+                bool exist = InternalExists(fullPath, out lastError);
+                if (exist)
+                    return true;
+            }
+            catch (ArgumentException) { }
+            catch (NotSupportedException) { }  // Security can throw this on ":"
+            catch (SecurityException) { }
+            catch (IOException) { }
+            catch (UnauthorizedAccessException)
+            {
+            }
+            return false;
+        }
+
+        [SecuritySafeCritical]  // auto-generated
+        [ResourceExposure(ResourceScope.Machine)]
+        [ResourceConsumption(ResourceScope.Machine)]
+        // internal unsafe 
+        public static string NormalizePath(string path, bool fullCheck = false)
+        {
+            return Path.GetFullPath(path);
+            // NormalizePath(path, fullCheck, AppContextSwitches.BlockLongPaths ? PathInternal.MaxShortPath : PathInternal.MaxLongPath);
+        }
+
+        [SecurityCritical]  // auto-generated
+        [ResourceExposure(ResourceScope.Machine)]
+        [ResourceConsumption(ResourceScope.Machine)]
+        internal static bool InternalExists(String path, out int lastError)
+        {
+            Win32Native.WIN32_FILE_ATTRIBUTE_DATA data = new Win32Native.WIN32_FILE_ATTRIBUTE_DATA();
+            lastError = Win32Native.FillAttributeInfo(path, ref data, false, true);
+
+            return (lastError == Win32Native.ERROR_SUCCESS) && (data.fileAttributes != -1)
+                    && ((data.fileAttributes & Win32Native.FILE_ATTRIBUTE_DIRECTORY) != 0);
+        }
+
+        public class Win32Native
+        {
+            internal static int FillAttributeInfo(String path,
+                ref Win32Native.WIN32_FILE_ATTRIBUTE_DATA data, bool tryagain, bool returnErrorOnNotFound)
+            {
+                int dataInitialised = ERROR_SUCCESS;
+                bool error = false;
+                // if (tryagain) // someone has a handle to the file open, or other error
+
+                Win32Native.WIN32_FIND_DATA findData;
+                findData = new Win32Native.WIN32_FIND_DATA();
+
+                // Remove trialing slash since this can cause grief to FindFirstFile. You will get an invalid argument error
+                String tempPath = path.TrimEnd(new char[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar });
+                // int oldMode = Win32Native.SetErrorMode(Win32Native.SEM_FAILCRITICALERRORS);
+                try
+                {
+                    // SafeFindHandle 
+                    SafeHandle handle = FindFirstFile(tempPath, findData);
+                    try
+                    {
+                        if (handle.IsInvalid)
+                        {
+                            error = true;
+                            dataInitialised = Marshal.GetLastWin32Error();
+
+                            if (dataInitialised == Win32Native.ERROR_FILE_NOT_FOUND ||
+                                dataInitialised == Win32Native.ERROR_PATH_NOT_FOUND ||
+                                dataInitialised == Win32Native.ERROR_NOT_READY)  // floppy device not ready
+                            {
+                                if (!returnErrorOnNotFound)
+                                {
+                                    // Return default value for backward compatibility
+                                    dataInitialised = ERROR_SUCCESS;
+                                    data.fileAttributes = -1;
+                                }
+                            }
+                            return dataInitialised;
+                        }
+                    }
+                    finally
+                    {
+                        // Close the Win32 handle
+                        try
+                        {
+                            handle.Close();
+                        }
+                        catch
+                        {
+                            error = true;
+                            // if we're already returning an error, don't throw another one. 
+                        }
+                    }
+                }
+                finally
+                {
+                    // Win32Native.SetErrorMode(oldMode);
+                }
+
+                if (error)
+                    return ERROR_PATH_NOT_FOUND;
+
+                // Copy the information to data
+                data.PopulateFrom(findData);
+
+                return ERROR_SUCCESS;     // Success 
+            }
+
+
+            [DllImport(KERNEL32, SetLastError = true, CharSet = CharSet.Auto, BestFitMapping = false)]
+            [ResourceExposure(ResourceScope.None)]
+            internal static extern SafeHandle FindFirstFile(String fileName, [In, Out] Win32Native.WIN32_FIND_DATA data);
+
+            [DllImport(KERNEL32, SetLastError = true, CharSet = CharSet.Auto, BestFitMapping = false)]
+            [ResourceExposure(ResourceScope.None)]
+            internal static extern bool FindNextFile(
+                        SafeHandle hndFindFile, [In, Out, MarshalAs(UnmanagedType.LPStruct)]
+                        WIN32_FIND_DATA lpFindFileData);
+
+            internal const String KERNEL32 = "kernel32.dll";
+            internal const String USER32 = "user32.dll";
+            internal const String SHELL32 = "shell32.dll";
+
+            // Constants from WinNT.h
+            internal const int FILE_ATTRIBUTE_READONLY = 0x00000001;
+            internal const int FILE_ATTRIBUTE_DIRECTORY = 0x00000010;
+            // Error codes from WinError.h
+            internal const int ERROR_SUCCESS = 0x0;
+            internal const int ERROR_INVALID_FUNCTION = 0x1;
+            internal const int ERROR_FILE_NOT_FOUND = 0x2;
+            internal const int ERROR_PATH_NOT_FOUND = 0x3;
+            internal const int ERROR_ACCESS_DENIED = 0x5;
+            internal const int ERROR_NOT_READY = 0x15;  // floppy no ready :-)
+
+            [Serializable]
+            [StructLayout(LayoutKind.Sequential)]
+            internal struct WIN32_FILE_ATTRIBUTE_DATA
+            {
+                internal int fileAttributes;
+                internal uint ftCreationTimeLow;
+                internal uint ftCreationTimeHigh;
+                internal uint ftLastAccessTimeLow;
+                internal uint ftLastAccessTimeHigh;
+                internal uint ftLastWriteTimeLow;
+                internal uint ftLastWriteTimeHigh;
+                internal int fileSizeHigh;
+                internal int fileSizeLow;
+
+                [System.Security.SecurityCritical]
+                internal void PopulateFrom(WIN32_FIND_DATA findData)
+                {
+                    // Copy the information to data
+                    fileAttributes = findData.dwFileAttributes;
+                    ftCreationTimeLow = findData.ftCreationTime_dwLowDateTime;
+                    ftCreationTimeHigh = findData.ftCreationTime_dwHighDateTime;
+                    ftLastAccessTimeLow = findData.ftLastAccessTime_dwLowDateTime;
+                    ftLastAccessTimeHigh = findData.ftLastAccessTime_dwHighDateTime;
+                    ftLastWriteTimeLow = findData.ftLastWriteTime_dwLowDateTime;
+                    ftLastWriteTimeHigh = findData.ftLastWriteTime_dwHighDateTime;
+                    fileSizeHigh = findData.nFileSizeHigh;
+                    fileSizeLow = findData.nFileSizeLow;
+                }
+            }
+
+            // Win32 Structs in N/Direct style
+            [Serializable]
+            [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+            [BestFitMapping(false)]
+            internal class WIN32_FIND_DATA
+            {
+                internal int dwFileAttributes = 0;
+                // ftCreationTime was a by-value FILETIME structure
+                internal uint ftCreationTime_dwLowDateTime = 0;
+                internal uint ftCreationTime_dwHighDateTime = 0;
+                // ftLastAccessTime was a by-value FILETIME structure
+                internal uint ftLastAccessTime_dwLowDateTime = 0;
+                internal uint ftLastAccessTime_dwHighDateTime = 0;
+                // ftLastWriteTime was a by-value FILETIME structure
+                internal uint ftLastWriteTime_dwLowDateTime = 0;
+                internal uint ftLastWriteTime_dwHighDateTime = 0;
+                internal int nFileSizeHigh = 0;
+                internal int nFileSizeLow = 0;
+                // If the file attributes' reparse point flag is set, then
+                // dwReserved0 is the file tag (aka reparse tag) for the 
+                // reparse point.  Use this to figure out whether something is
+                // a volume mount point or a symbolic link.
+                internal int dwReserved0 = 0;
+                internal int dwReserved1 = 0;
+                [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
+                internal String cFileName = null;
+                [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
+                internal String cAlternateFileName = null;
+            }
+
+        }
+
+    }
+
+
+    public partial class LocalFileSystem : pluginner.IFSPlugin
     {
         public const string FilePrefix = "file://";
         #region Properties
@@ -82,7 +334,7 @@ namespace fcmd.base_plugins.fs
 #endif
             LastError = null;
             DirContent.Clear();
-            string InternalURL = curDir.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = curDir.Replace(LocalFileSystem.FilePrefix, string.Empty);
             FSOS.StatusMessage = string.Format(Localizator.GetString("DoingListdir"), "", InternalURL);
 
             pluginner.DirItem tmpVar = new pluginner.DirItem();
@@ -113,7 +365,7 @@ namespace fcmd.base_plugins.fs
             DirectoryInfo currentdir = new DirectoryInfo(InternalURL);
             if (currentdir.Parent != null)
             {
-                tmpVar.URL = localFileSystem.FilePrefix + currentdir.Parent.FullName;   //  "file://"
+                tmpVar.URL = LocalFileSystem.FilePrefix + currentdir.Parent.FullName;   //  "file://"
 
                 // if (!MainWindow.AppLoading) { }
 
@@ -142,7 +394,7 @@ namespace fcmd.base_plugins.fs
                 //перебираю каталоги
                 DirectoryInfo di = new DirectoryInfo(directory);
                 tmpVar.IsDirectory = true;
-                tmpVar.URL = localFileSystem.FilePrefix + directory;
+                tmpVar.URL = LocalFileSystem.FilePrefix + directory;
                 tmpVar.TextToShow = di.Name;
                 tmpVar.Date = di.CreationTime;
 
@@ -177,7 +429,7 @@ namespace fcmd.base_plugins.fs
                     tmpVar.IsDirectory = false;
                     var Name = curFile.Name;
 
-                    tmpVar.URL = localFileSystem.FilePrefix + Path.Combine(InternalURL, Name).Replace('\\', '/');
+                    tmpVar.URL = LocalFileSystem.FilePrefix + Path.Combine(InternalURL, Name).Replace('\\', '/');
                     tmpVar.TextToShow = curFile.cFileName; // fi.Name;
                     tmpVar.Date = curFile.LastWriteTime;   // fi.LastWriteTime;
                     tmpVar.Size = curFile.Length;          // fi.Length;
@@ -258,7 +510,7 @@ namespace fcmd.base_plugins.fs
         public bool FileExists(string URL)
         {//проверить наличие файла
             _CheckProtocol(URL);
-            string InternalURL = URL.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = URL.Replace(LocalFileSystem.FilePrefix, string.Empty);
             if (File.Exists(InternalURL)) return true; //файл е?
             return false; //та ничого нэма! [не забываем, что return xxx прекращает выполнение подпрограммы]
         }
@@ -266,7 +518,7 @@ namespace fcmd.base_plugins.fs
         public bool DirectoryExists(string URL)
         {//проверить наличие папки
             _CheckProtocol(URL);
-            string InternalURL = URL.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = URL.Replace(LocalFileSystem.FilePrefix, string.Empty);
             if (Directory.Exists(InternalURL)) return true; //каталох е?
             return false; //та ничого нэма! [не забываем, что return xxx прекращает выполнение подпрограммы]
         }
@@ -274,7 +526,7 @@ namespace fcmd.base_plugins.fs
         public bool CanBeRead(string url)
         { //проверить файл/папку "URL" на читаемость
             _CheckProtocol(url);
-            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = url.Replace(LocalFileSystem.FilePrefix, string.Empty);
 
             try
             {
@@ -300,7 +552,7 @@ namespace fcmd.base_plugins.fs
         {
             string url = Metadata.FullURL;
             _CheckProtocol(url);
-            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = url.Replace(LocalFileSystem.FilePrefix, string.Empty);
 
             if (!Directory.Exists(InternalURL) && !File.Exists(InternalURL))
             {
@@ -324,7 +576,7 @@ namespace fcmd.base_plugins.fs
         public void Touch(string URL)
         {
             _CheckProtocol(URL);
-            string InternalURL = URL.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = URL.Replace(LocalFileSystem.FilePrefix, string.Empty);
 
             pluginner.FSEntryMetadata newmd = new pluginner.FSEntryMetadata();
             newmd.FullURL = InternalURL;
@@ -336,7 +588,7 @@ namespace fcmd.base_plugins.fs
         public System.IO.Stream GetFileStream(string url, bool Lock = false)
         { //запрос потока для файла
             _CheckProtocol(url);
-            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = url.Replace(LocalFileSystem.FilePrefix, string.Empty);
 
             FileAccess fa = (Lock ? FileAccess.ReadWrite : FileAccess.Read);
 
@@ -346,7 +598,7 @@ namespace fcmd.base_plugins.fs
         public byte[] GetFileContent(string url)
         {
             _CheckProtocol(url);
-            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = url.Replace(LocalFileSystem.FilePrefix, string.Empty);
             FileStream fistr = new FileStream(InternalURL, FileMode.Open, FileAccess.Read, FileShare.Read);
             BinaryReader bire = new BinaryReader(fistr);
             int Length = 0;
@@ -360,7 +612,7 @@ namespace fcmd.base_plugins.fs
         public void WriteFileContent(string url, Int32 Start, byte[] Content)
         {
             _CheckProtocol(url);
-            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = url.Replace(LocalFileSystem.FilePrefix, string.Empty);
 
             FileStream fistr = new FileStream(InternalURL, FileMode.OpenOrCreate, FileAccess.ReadWrite);
             BinaryWriter biwr = new BinaryWriter(fistr);
@@ -370,7 +622,7 @@ namespace fcmd.base_plugins.fs
         public void DeleteFile(string url)
         {//удалить файл
             _CheckProtocol(url);
-            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = url.Replace(LocalFileSystem.FilePrefix, string.Empty);
 
             File.Delete(InternalURL);
         }
@@ -378,7 +630,7 @@ namespace fcmd.base_plugins.fs
         public void DeleteDirectory(string url, bool TryFirst)
         {//удалить папку
             _CheckProtocol(url);
-            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = url.Replace(LocalFileSystem.FilePrefix, string.Empty);
             if (TryFirst)
             {
                 if (!CheckForDeletePossiblity(InternalURL)) throw new pluginner.ThisDirCannotBeRemovedException();
@@ -389,7 +641,7 @@ namespace fcmd.base_plugins.fs
         public void CreateDirectory(string url)
         {//создать каталог
             _CheckProtocol(url);
-            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = url.Replace(LocalFileSystem.FilePrefix, string.Empty);
 
             Directory.CreateDirectory(InternalURL);
         }
@@ -435,8 +687,8 @@ namespace fcmd.base_plugins.fs
         public void MoveFile(string source, string destination)
         {
             _CheckProtocol(source);
-            string internalSource = source.Replace(localFileSystem.FilePrefix, string.Empty);
-            string internalDestination = destination.Replace(localFileSystem.FilePrefix, string.Empty);
+            string internalSource = source.Replace(LocalFileSystem.FilePrefix, string.Empty);
+            string internalDestination = destination.Replace(LocalFileSystem.FilePrefix, string.Empty);
 
             File.Move(internalSource, internalDestination);
         }
@@ -444,8 +696,8 @@ namespace fcmd.base_plugins.fs
         public void MoveDirectory(string source, string destination)
         {
             _CheckProtocol(source);
-            string internalSource = source.Replace(localFileSystem.FilePrefix, string.Empty);
-            string internalDestination = destination.Replace(localFileSystem.FilePrefix, string.Empty);
+            string internalSource = source.Replace(LocalFileSystem.FilePrefix, string.Empty);
+            string internalDestination = destination.Replace(LocalFileSystem.FilePrefix, string.Empty);
 
             Directory.Move(internalSource, internalDestination);
         }
@@ -455,7 +707,7 @@ namespace fcmd.base_plugins.fs
         public pluginner.FSEntryMetadata GetMetadata(string url)
         {
             _CheckProtocol(url);
-            string InternalURL = url.Replace(localFileSystem.FilePrefix, string.Empty);
+            string InternalURL = url.Replace(LocalFileSystem.FilePrefix, string.Empty);
             pluginner.FSEntryMetadata lego = new pluginner.FSEntryMetadata();
             FileInfo metadatasource = new FileInfo(InternalURL);
 
@@ -467,8 +719,8 @@ namespace fcmd.base_plugins.fs
                     lego.Name = Path.GetDirectoryName(InternalURL) ?? InternalURL;  // Root dir
 
                 var dirName = metadatasource.DirectoryName ?? InternalURL;
-                lego.UpperDirectory = localFileSystem.FilePrefix + dirName;
-                lego.RootDirectory = localFileSystem.FilePrefix + Path.GetPathRoot(dirName);
+                lego.UpperDirectory = LocalFileSystem.FilePrefix + dirName;
+                lego.RootDirectory = LocalFileSystem.FilePrefix + Path.GetPathRoot(dirName);
 
                 lego.Attrubutes = metadatasource.Attributes;
                 lego.CreationTimeUTC = metadatasource.CreationTimeUtc;

@@ -33,11 +33,9 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.Core" />
     <Reference Include="System.Net" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="WindowsBase" />
@@ -53,6 +51,10 @@
     <Compile Include="MsHtmlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SharpShell\src\SharpShellLib.csproj">
+      <Project>{03e4788d-4c48-4143-8f62-a1dcc1d895dd}</Project>
+      <Name>SharpShellLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SharpSSH\SharpSSH\SharpSSH.csproj">
       <Project>{D27CF69D-4681-492A-BE4D-D3D209104423}</Project>
       <Name>SharpSSH</Name>

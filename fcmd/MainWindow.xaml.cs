@@ -1,16 +1,14 @@
-﻿using System;
-using System.Diagnostics;
+﻿using pluginner.Widgets;
+using System;
 using System.Globalization;
-using System.IO;
-using System.IO.Packaging;
-using System.Net.Mime;
 using System.Resources;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Markup;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
+using System.Windows.Threading;
 
 //#if !VS13
 //[assembly: NeutralResourcesLanguageAttribute("en", UltimateResourceFallbackLocation.MainAssembly)]
@@ -21,10 +19,18 @@ namespace fcmd
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IComponentConnector, IWin32Window
+    public partial class MainWindow : Window, IComponentConnector, IWin32Window, IDisposable, IControl, SharpShell.IWin32Window
     {
         public static bool AppLoading { get; set; }
         public static MainWindow ActiveWindow { get; private set; }
+        public Tuple<int, int> PointToScreen(int X, int Y)
+        {
+            return SharpShell.Win32Control.PointToScreen(this, this.Handle, X, Y);
+        }
+
+        object IUIDispacher.Dispacher { get { return (this as DispatcherObject).Dispatcher; } }
+        bool IUIDispacher.CheckAccess() { return Dispatcher.CheckAccess(); }
+        public bool? Visible { get; set; }
 
         static MainWindow() { AppLoading = true; AllowShutdown = true; }
 
@@ -57,8 +63,17 @@ namespace fcmd
             App.ConsoleWriteLine("MainWindow Init");
             this.Init();    // View.WindowDataStatic.Init(this);
 
-            this.Closed += MainWindow_Closed;
+            Closed += MainWindow_Closed;
+            Loaded += OnLoaded;
         }
+
+        void OnLoaded(object sender, RoutedEventArgs routedEventArgs)
+        {
+            this.Handle = new WindowInteropHelper(this).Handle;
+            //HwndSource source = (HwndSource)HwndSource.FromVisual(lst);
+        }
+
+        public virtual void Dispose() { Handle = IntPtr.Zero; }
 
         public static bool AllowShutdown { get; set; }    // for test unit or multiple MainWindow
 

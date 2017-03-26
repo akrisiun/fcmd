@@ -29,9 +29,17 @@ namespace fcmd.View.Xaml
                     protocol += "://";
                     fullpath = parts[1];
                 }
+                else if (path.StartsWith(NetworkFileSystem.ShortPrefix))
+                {
+                    protocol = NetworkFileSystem.ShortPrefix;
+                    fullpath = path.StartsWith(protocol) ? path : protocol + path;
+                    // ? Path.GetFullPath(path.Substring(fileProcol.Length)) : Path.GetFullPath(path);
+                    protocol = NetworkFileSystem.NetworkPrefix;
+                    Directory.SetCurrentDirectory(fullpath);
+                }
                 else
                 {
-                    protocol = base_plugins.fs.localFileSystem.FilePrefix;
+                    protocol = base_plugins.fs.LocalFileSystem.FilePrefix;
                     fullpath = path.StartsWith(fileProcol)
                             ? Path.GetFullPath(path.Substring(fileProcol.Length)) : Path.GetFullPath(path);
                     Directory.SetCurrentDirectory(fullpath);
@@ -49,7 +57,7 @@ namespace fcmd.View.Xaml
             pluginner.IFSPlugin fs = null;
             string oldFolder = panel.FS.CurrentFolder;
 
-            if (protocol != base_plugins.fs.localFileSystem.FilePrefix)
+            if (protocol != base_plugins.fs.LocalFileSystem.FilePrefix)
             {
                 pluginfinder pf = new pluginfinder();
                 fs = pf.GetFSplugin(url);

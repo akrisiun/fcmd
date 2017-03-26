@@ -1,3 +1,6 @@
 [submodule "SharpSSH"]
 	path = SharpSSH
 	url = https://github.com/akrisiun/SharpSSH.git
+[submodule "SharpShell"]
+	path = SharpShell
+	url = https://github.com/akrisiun/SharpShell

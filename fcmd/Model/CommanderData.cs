@@ -107,12 +107,12 @@ namespace fcmd.Model
 
         protected void Panel_OpenFile(string data)
         {
-            if (data.StartsWith(localFileSystem.FilePrefix) && System.IO.File.Exists(data.Replace(localFileSystem.FilePrefix, string.Empty)))
+            if (data.StartsWith(LocalFileSystem.FilePrefix) && System.IO.File.Exists(data.Replace(LocalFileSystem.FilePrefix, string.Empty)))
             {
                 try
                 {
                     System.Diagnostics.Process proc = new System.Diagnostics.Process();
-                    proc.StartInfo.FileName = data.Replace(localFileSystem.FilePrefix, string.Empty);
+                    proc.StartInfo.FileName = data.Replace(LocalFileSystem.FilePrefix, string.Empty);
                     proc.StartInfo.UseShellExecute = true;
                     proc.Start();
                 }

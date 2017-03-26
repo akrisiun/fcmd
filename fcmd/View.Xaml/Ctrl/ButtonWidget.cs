@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using System.Windows.Input;
 using fcmd.Platform;
 using System.Windows.Media;
+using SharpShell;
 
 namespace fcmd.View.ctrl
 {
@@ -32,8 +33,11 @@ namespace fcmd.View.ctrl
         }
     }
 
-    public class ButtonWidget : Button, IButton
+    public class ButtonWidget : Button, IButton, IWin32Window
     {
+        public IntPtr Handle { get; set; }
+        public Tuple<int, int> PointToScreen(int X, int Y) { return Win32Control.PointToScreen(this, this.Handle, X, Y); }
+
         public ButtonWidget() : this(null, null) { }
 
         public ButtonWidget(object parent = null, string Text = null)
@@ -41,6 +45,7 @@ namespace fcmd.View.ctrl
             if (Text != null)
                 Content = Text;
         }
+        public virtual void Dispose() { }
 
         pluginner.Widgets.IFcmdCommand IButton.Command { 
             get { return this.Command as pluginner.Widgets.IFcmdCommand; } 

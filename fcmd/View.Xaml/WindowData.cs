@@ -137,8 +137,8 @@ namespace fcmd.Model
             //LVCols.Add(new ListView2.ColumnInfo
             //{ Title = "Directory item info", Tag = "DirItem", Width = 0, Visible = false });
 
-            p1.FS = new base_plugins.fs.localFileSystem();
-            p2.FS = new base_plugins.fs.localFileSystem();
+            p1.FS = new base_plugins.fs.LocalFileSystem();
+            p2.FS = new base_plugins.fs.LocalFileSystem();
 
             //p1.GotFocus += (o, ea) => SwitchPanel(p1);
             //p2.GotFocus += (o, ea) => SwitchPanel(p2);
@@ -284,7 +284,7 @@ namespace fcmd.Model
                 if (Settings.Panel1URL.Length != 0)
                     p1.LoadDir(Settings.Panel1URL, Shorten);
                 else
-                    p1.LoadDir(localFileSystem.FilePrefix + System.IO.Directory.GetCurrentDirectory(), Shorten);
+                    p1.LoadDir(LocalFileSystem.FilePrefix + System.IO.Directory.GetCurrentDirectory(), Shorten);
 
                 if (Settings.Panel2URL.Length != 0)
                 {    p2.LoadDir(Settings.Panel2URL, Shorten);
@@ -298,11 +298,11 @@ namespace fcmd.Model
             if (!load)
             {
                 if (p1.FS.CurrentDirectory == null)
-                    p1.LoadDir(localFileSystem.FilePrefix + System.IO.Directory.GetCurrentDirectory(), Shorten);
+                    p1.LoadDir(LocalFileSystem.FilePrefix + System.IO.Directory.GetCurrentDirectory(), Shorten);
 
 
                 string dir = Directory.GetCurrentDirectory();
-                string url2 = String.Concat(localFileSystem.FilePrefix, dir);
+                string url2 = String.Concat(LocalFileSystem.FilePrefix, dir);
                 if (p1.FS.CurrentDirectory == url2)
                 {
                     var source = p1.ListingWidget;

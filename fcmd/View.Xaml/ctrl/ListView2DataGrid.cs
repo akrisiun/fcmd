@@ -7,19 +7,82 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using DrawingColor = System.Drawing.Color;
 using System.IO;
-
 using pluginner.Widgets;
 using fcmd.View.Xaml;
-using fcmd.Controller;
 using fcmd.Model;
 using System.Windows.Threading;
 using System.Windows;
 using System.Collections;
 using System.Diagnostics.Contracts;
-using System.ComponentModel;
+using SharpShell;
+using fcmd.View.Xaml.ctrl;
+using System.Windows.Interop;
+using System.Threading;
 
 namespace fcmd.View.ctrl
 {
+    public class DataGridMenu
+    {
+        public static void Bind(ListView2DataGrid grid)
+        {
+            grid.ContextMenu = new ContextMenuWidget() { Owner = grid };
+
+            grid.ContextMenu.Opened += ContextMenu_Opened;
+
+            //System.Windows.Controls
+            //[DefaultEvent("Opened")]
+            //public class ContextMenu : MenuBase
+        }
+
+        public static void OpenContextMenuWpf(FrameworkElement element)
+        {
+            if (element.ContextMenu != null)
+            {
+                element.ContextMenu.PlacementTarget = element;
+                element.ContextMenu.IsOpen = true;
+            }
+        }
+
+        static void ContextMenu_Opened(object sender, RoutedEventArgs e)
+        {
+            var menu = sender as ContextMenuWidget;
+            var grid = sender as ListView2DataGrid ?? menu?.Owner as ListView2DataGrid;
+            if (menu == null)
+                return;
+
+            HwndSource source = (HwndSource)HwndSource.FromVisual(menu);
+            if (source.Handle != null)
+                menu.Handle = source.Handle;
+            else if (menu.Handle == IntPtr.Zero && grid.Handle == IntPtr.Zero)
+            {
+                menu.Owner = MainWindow.ActiveWindow;
+                menu.Handle = MainWindow.ActiveWindow.Handle;
+
+                //HwndSource source = (HwndSource)HwndSource.FromVisual(lst);
+                //IntPtr hWnd = source.Handle;
+            }
+
+            var item = System.Linq.Enumerable.FirstOrDefault<ListItemXaml>(grid.ChoosedRows);
+            string path = item?.FullPath;
+            if (string.IsNullOrWhiteSpace(path))
+                return;
+
+            //  https://marcozhou.wordpress.com/2007/03/03/application-doevents-in-wpf-revisited/
+            //Action<ThreadStart> loop = (t) =>
+            //        Application.Current.Dispatcher.Invoke(
+            //            DispatcherPriority.Background, th);
+            //    };
+
+            pluginner.Shell.ContextMenu.ShowAsync(menu, path);
+        }
+
+        //<DataGrid.ContextMenu>
+        //   <ContextMenu >
+        //       <MenuItem Header = "Add Divider" Click="MenuItem_Click"  />
+        //   </ContextMenu>
+        //   </DataGrid.ContextMenu>
+    }
+
     /// <summary>
     /// File system visual data content, Xaml backend DataGrid control
     /// </summary>
@@ -28,9 +91,9 @@ namespace fcmd.View.ctrl
         #region ctor
 
         // Non visual data container
-        public ListFiltered2Xaml DataObj {[DebuggerStepThrough] get; protected set; }
-        public PanelWpf Panel {[DebuggerStepThrough] get; set; }
-        public FileListPanelWpf FileList {[DebuggerStepThrough] get; set; }
+        public ListFiltered2Xaml DataObj { [DebuggerStepThrough] get; protected set; }
+        public PanelWpf Panel { [DebuggerStepThrough] get; set; }
+        public FileListPanelWpf FileList { [DebuggerStepThrough] get; set; }
 
         public ListView2DataGrid()
         {
@@ -50,6 +113,9 @@ namespace fcmd.View.ctrl
 
         #region Bind, Properties
 
+        public IntPtr Handle { get; set; }
+        public Tuple<int, int> PointToScreen(int X, int Y) { return Win32Control.PointToScreen(this, this.Handle, X, Y); }
+
         bool bound = false;
         public virtual void Bind()
         {
@@ -64,7 +130,7 @@ namespace fcmd.View.ctrl
             DataObj.BindGrid(this);
 
             // DataGrid bind
-            this.BindGridEvents();
+            GridEvents.BindGridEvents(this);
             bound = true;
         }
 
@@ -93,8 +159,7 @@ namespace fcmd.View.ctrl
         public bool CanGetFocus { get { return IsEnabled; } set { IsEnabled = value; } }
         public bool Sensitive { get { return DataObj.Sensitive; } set { DataObj.Sensitive = value; } }
 
-        public DrawingColor BackgroundColor
-        {
+        public DrawingColor BackgroundColor {
             get { return (Background as SolidColorBrush).Color.To(); }
             set { Background = value.From(); }
         }
@@ -117,10 +182,8 @@ namespace fcmd.View.ctrl
 
         public PanelSide Side { get; set; }
         public string urlFull { get { return FileList.FS.CurrentDirectory; } }
-        public string urlDir
-        {
-            get
-            {
+        public string urlDir {
+            get {
                 var dir = FileList.FS.CurrentDirectory;
                 return (dir.StartsWith(fileProcol)) ? dir.Substring(fileProcol.Length) : null;
             }
@@ -180,7 +243,7 @@ namespace fcmd.View.ctrl
 
         #endregion
 
-        string fileProcol { [DebuggerStepThrough] get { return base_plugins.fs.localFileSystem.FilePrefix; } } // => "file://"
+        string fileProcol { [DebuggerStepThrough] get { return base_plugins.fs.LocalFileSystem.FilePrefix; } } // => "file://"
 
         public void LoadDir(string path)
         {

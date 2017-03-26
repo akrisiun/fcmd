@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpShell;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,7 @@ namespace pluginner.Widgets
         bool CheckAccess();  // check UI thread
     }
 
-    public interface IControl : IUIDispacher
+    public interface IControl : IUIDispacher, IWin32Window, IDisposable
     {
         object Content { get; set; }
         bool? Visible { get; set; }

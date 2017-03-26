@@ -15,7 +15,7 @@ using pluginner.Toolkit;
 
 namespace fcmd.base_plugins.fs
 {
-	partial class localFileSystem
+	partial class LocalFileSystem
     {
 #pragma warning disable 0649, 0414, 0067  // is assigned but never used
 

@@ -15,6 +15,7 @@ using fs = fcmd.base_plugins.fs;
 using System.Collections;
 using System.Windows.Controls;
 using System.Windows.Input;
+using fcmd.base_plugins.fs;
 
 namespace fcmd.View.Xaml
 {
@@ -158,9 +159,9 @@ namespace fcmd.View.Xaml
                 new Thread(delegate()
                 {
                     IEnumerable<DirItem> dis;
-                    if (FS is fs.localFileSystem)
+                    if (FS is fs.LocalFileSystem)
                     {
-                        var fsLoc = FS as fs.localFileSystem;
+                        var fsLoc = FS as fs.LocalFileSystem;
                         dis = fsLoc.GetDirectoryContent(new FileSystemOperationStatus());
                     }
                     else
@@ -357,14 +358,14 @@ namespace fcmd.View.Xaml
 
             if (URL == "." && FS.CurrentDirectory == null)
             {
-                LoadDir(fs.localFileSystem.FilePrefix + Directory.GetCurrentDirectory(), Shorten);
+                LoadDir(fs.LocalFileSystem.FilePrefix + Directory.GetCurrentDirectory(), Shorten);
                 return;
             }
 
             string dir = FS.NoPrefix(URL);
             int pos = dir.IndexOf(":");
             if (pos == 1)
-                Directory.SetCurrentDirectory(dir);
+                DirectorySafe.SetCurrentDirectory(dir);
 
             ListingWidget.Sensitive = false;
 

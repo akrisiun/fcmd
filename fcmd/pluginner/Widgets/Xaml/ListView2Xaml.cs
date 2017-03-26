@@ -67,6 +67,8 @@ namespace pluginner.Widgets.Xaml
             {
                 if (SelectedItems.Count == 0)
                 {
+                    if (PointedItem.Pointed == null) return new List<T>(); // empty
+
                     List<T> list_one = new List<T>(PointedItem.Pointed);
                     return list_one;
                 }

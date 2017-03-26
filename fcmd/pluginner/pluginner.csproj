@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnumExtensions.cs" />
+    <Compile Include="Shell\ContextMenu.cs" />
     <Compile Include="ShortenPolicies.cs" />
     <Compile Include="Toolkit\BookmarkTools.cs" />
     <Compile Include="Toolkit\OSAbstraction.cs" />
@@ -154,6 +155,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="xwt.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\SharpShell\src\SharpShellLib.csproj">
+      <Project>{03e4788d-4c48-4143-8f62-a1dcc1d895dd}</Project>
+      <Name>SharpShellLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
