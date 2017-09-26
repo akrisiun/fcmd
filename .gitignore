@@ -35,3 +35,7 @@ xwt/lib/nunit.framework.xml
 *.psess
 *.vspx
 web/
+*.nupkg
+.vs/
+*.ide
+*.suo

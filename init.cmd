@@ -2,7 +2,9 @@
 @REM git clone https://github.com/akrisiun/fcmd.git fcmd
 @REM cd fcmd
 
-if exist "SharpSSH"  goto next1
+git pull
+
+if exist "SharpSSH\SharpSSH.sln"  goto next1
 git submodule init
 git submodule update
 

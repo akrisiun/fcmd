@@ -219,9 +219,6 @@
     <None Include="xwt.snk" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="FavIcon.ico" />
     <EmbeddedResource Include="Properties\Resources.resx" />
   </ItemGroup>
