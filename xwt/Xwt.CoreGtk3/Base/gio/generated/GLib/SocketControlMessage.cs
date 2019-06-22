@@ -229,7 +229,7 @@ namespace GLib {
 		struct GSocketControlMessageClass {
 			public GetSizeNativeDelegate GetSize;
 			public GetLevelNativeDelegate GetLevel;
-			public new GetTypeNativeDelegate GetType;
+			public GetTypeNativeDelegate GetType;
 			public SerializeNativeDelegate Serialize;
 			IntPtr Deserialize;
 			IntPtr GReserved1;

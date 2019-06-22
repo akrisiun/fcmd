@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -23,7 +23,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <TargetFrameworkProfile />
     <UseMSBuildEngine>False</UseMSBuildEngine>
   </PropertyGroup>
@@ -33,7 +33,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>..\..\bin\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NOWPF;GTK;GTK3;XWT;</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;WPF;GTK;GTK3;XWT;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -47,6 +47,7 @@
     <AssemblyOriginatorKeyFile>xwt.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xaml" />
@@ -60,7 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EnumExtensions.cs" />
-    <Compile Include="Shell\ContextMenu.cs" />
     <Compile Include="ShortenPolicies.cs" />
     <Compile Include="Toolkit\BookmarkTools.cs" />
     <Compile Include="Toolkit\OSAbstraction.cs" />
@@ -155,12 +155,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="xwt.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\SharpShell\src\SharpShellLib.csproj">
-      <Project>{03e4788d-4c48-4143-8f62-a1dcc1d895dd}</Project>
-      <Name>SharpShellLib</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

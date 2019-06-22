@@ -274,15 +274,15 @@ namespace fcmd
                         String DestinationFilePath = ibx.Result;
                         string StatusMask = Localizator.GetString("DoingCopy");
 
-                        DialogClickedButton dummy =
-                            DialogClickedButton.Cancel;
+                        //DialogClickedButton dummy =
+                        //    DialogClickedButton.Cancel;
                         AsyncCopy AC = new AsyncCopy();
 
                         var resetHandle = new AutoResetEvent(false);
                         Thread CpThread = new Thread(delegate()
                         {
-                            @this.DoCp(ActivePanel.FS, PassivePanel.FS, SourceURL,
-                                DestinationFilePath, ref dummy, AC);
+                        @this.DoCp(ActivePanel.FS, PassivePanel.FS, SourceURL,
+                            DestinationFilePath, AC); // ref dummy, AC);
 
                             resetHandle.Set();
                         });

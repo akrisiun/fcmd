@@ -2,13 +2,17 @@
 
 ```
 git clone https://github.com/akrisiun/fcmd.git fcmd
-git submodule add https://github.com/akrisiun/SharpSSH.git SharpSSH
 cd fcmd
-build
+
+git submodule update --init --recursive SharpSSH
+# Submodule 'SharpShell' (https://github.com/akrisiun/SharpShell) registered for path 'SharpShell'
+buildxaml.cmd
 ```
+
 msbuild.cmd
 `
-"c:\Program Files (x86)\MSBuild\12.0\Bin\MSBuild.exe" "%1" "%2" %3 /verbosity:m
+@REM "c:\Program Files (x86)\MSBuild\15.0\Bin\MSBuild.exe" /verbosity:m %* /verbosity:m
+"c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\MSBuild\15.0\Bin\MSBuild.exe" %* /verbosity:m
 `
 
 ### original doc: The File Commander

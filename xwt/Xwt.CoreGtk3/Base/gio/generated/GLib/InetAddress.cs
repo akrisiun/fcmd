@@ -319,7 +319,7 @@ namespace GLib {
 
 		[StructLayout (LayoutKind.Sequential)]
 		struct GInetAddressClass {
-			public new ToStringNativeDelegate ToString;
+			public ToStringNativeDelegate ToString;
 			public ToBytesNativeDelegate ToBytes;
 		}
 

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Markup;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 
@@ -19,18 +20,23 @@ namespace fcmd
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window, IComponentConnector, IWin32Window, IDisposable, IControl, SharpShell.IWin32Window
+    public partial class MainWindow : Window, IComponentConnector, IWin32Window, IDisposable
+        , IControl, IUIDispacher // , SharpShell.IWin32Window
     {
         public static bool AppLoading { get; set; }
         public static MainWindow ActiveWindow { get; private set; }
-        public Tuple<int, int> PointToScreen(int X, int Y)
-        {
-            return SharpShell.Win32Control.PointToScreen(this, this.Handle, X, Y);
-        }
+        //public Tuple<int, int> PointToScreen(int X, int Y)
+        //{
+        //    return SharpShell.Win32Control.PointToScreen(this, this.Handle, X, Y);
+        //}
 
         object IUIDispacher.Dispacher { get { return (this as DispatcherObject).Dispatcher; } }
         bool IUIDispacher.CheckAccess() { return Dispatcher.CheckAccess(); }
+        // object Dispacher { get; }
+
         public bool? Visible { get; set; }
+        public bool CanGetFocus { get; set; } = true;
+        public Color BackgroundColor { get; set; }
 
         static MainWindow() { AppLoading = true; AllowShutdown = true; }
 

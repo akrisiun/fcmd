@@ -12,8 +12,7 @@ namespace fcmd
     {
         // abstact non visual
         public ReplaceVisualXWT Dialog { get; set; }
-        public DialogClickedButton ChoosedButton { get { return Dialog.ChoosedButton; } }
-        public EventHandler Closed;
+        public ClickedButton ChoosedButton { get { return Dialog.ChoosedButton; } }
 
         // WXT visual backend
         public class ReplaceVisualXWT : Xwt.Dialog
@@ -26,8 +25,7 @@ namespace fcmd
             public Xwt.Button cmdSkip = new Xwt.Button();
             public Xwt.Button cmdSkipAll = new Xwt.Button();
             public Xwt.Button cmdCompare = new Xwt.Button { Sensitive = false };
-
-            public DialogClickedButton ChoosedButton;
+            public ClickedButton ChoosedButton;
 
             public void Init(string filename)
             {
@@ -73,34 +71,33 @@ namespace fcmd
 
             Dialog.Init(filename);
 
-            Dialog.cmdReplace.Clicked += (o, ea) => Choose(DialogClickedButton.Replace);
-            Dialog.cmdReplaceAll.Clicked += (o, ea) => Choose(DialogClickedButton.ReplaceAll);
+            Dialog.cmdReplace.Clicked += (o, ea) => Choose(ClickedButton.Replace);
+            Dialog.cmdReplaceAll.Clicked += (o, ea) => Choose(ClickedButton.ReplaceAll);
 
-            Dialog.cmdReplaceOld.Clicked += (o, ea) => Choose(DialogClickedButton.ReplaceOld);
+            Dialog.cmdReplaceOld.Clicked += (o, ea) => Choose(ClickedButton.ReplaceOld);
 
-            Dialog.cmdSkip.Clicked += (o, ea) => Choose(DialogClickedButton.Skip);
-            Dialog.cmdSkipAll.Clicked += (o, ea) => Choose(DialogClickedButton.SkipAll);
-            Dialog.Buttons[0].Clicked += (o, ea) => Choose(DialogClickedButton.Cancel);
+            Dialog.cmdSkip.Clicked += (o, ea) => Choose(ClickedButton.Skip);
+            Dialog.cmdSkipAll.Clicked += (o, ea) => Choose(ClickedButton.SkipAll);
+            Dialog.Buttons[0].Clicked += (o, ea) => Choose(ClickedButton.Cancel);
         }
 
-        public DialogClickedButton Run()
+        public enum ClickedButton
+        {
+            Replace, ReplaceAll, ReplaceOld, Skip, SkipAll, Cancel
+        }
+
+        public ClickedButton Run()
         {
             Dialog.Run();
             return Dialog.ChoosedButton;
         }
 
-        private void Choose(DialogClickedButton cb)
+        private void Choose(ClickedButton cb)
         {
             Dialog.ChoosedButton = cb;
             this.Dialog.DoCommandActivated(Xwt.Command.Ok);
             this.Dialog.Hide();
         }
     }
-
-    public enum DialogClickedButton
-    {
-        Replace, ReplaceAll, ReplaceOld, Skip, SkipAll, Cancel
-    }
-
 }
 

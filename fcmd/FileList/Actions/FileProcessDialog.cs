@@ -10,65 +10,42 @@ using Xwt;
 
 namespace fcmd
 {
-    /// <summary>Operation progress dialog</summary>
-    public class FileProcessDialog : Window
-    {
-        public MainWindow MainWindow { get; set; }
-
-        public Label lblStatus;
-        public ProgressBar pbrProgress;
-
-        public Button cmdCancel;
-        public VBox Layout;
-
-        public FileProcessDialog(IWin32Window window) : this(null, window) { }
-        public FileProcessDialog() : this(null, null) { }
+	/// <summary>Operation progress dialog</summary>
+	public class FileProcessDialog : Window
+	{
+		public Label lblStatus = new Label { TextAlignment = Alignment.Center };
+		public ProgressBar pbrProgress = new ProgressBar();
+		public Button cmdCancel = new Button { Label = "CANSEL" };
+		public VBox Layout = new VBox();
 
         /// <summary>Initialize FileProcessDialog with four-row label</summary>
-        public FileProcessDialog(Component parent, IWin32Window window)
-        {
-            lblStatus = new Label { TextAlignment = Alignment.Center };
-            pbrProgress = new ProgressBar();
+        public FileProcessDialog() : this(null, null) { }
+        public FileProcessDialog(Component com, IWin32Window window)
+		{
+			Title = Localizator.GetString("FileProgressDialogTitle");
+			cmdCancel.Label = Localizator.GetString("Cancel");
+			//this.Decorated = false;
+			Resizable = false;
 
-            cmdCancel = new Button { Label = "Cancel" };
-            Layout = new VBox();
+			Layout.PackStart(lblStatus, true, true);
+			Layout.PackStart(pbrProgress, true, true);
+			Layout.PackStart(cmdCancel,false,false);
+			Content = Layout;
 
-            Title = Localizator.GetString("FileProgressDialogTitle");
-            cmdCancel.Label = Localizator.GetString("Cancel");
-            //this.Decorated = false;
+			InitialLocation = WindowLocation.Manual;
+		}
 
-            Resizable = true;
-            InitialLocation = WindowLocation.CenterParent; // .Manual;
+		/// <summary>Initialize FileProcessDialog with a custom widget inside</summary>
+		/// <param name="ProgressBox">Link to the xwt widget, which should be displayed in the FileProcessDialog.</param>
+		public FileProcessDialog(ref Widget ProgressBox, IWin32Window window)
+		{
+			Title = Localizator.GetString("FileProgressDialogTitle");
+			cmdCancel.Label = Localizator.GetString("Cancel");
+			Decorated = false;
 
-            ContentInit();
-        }
-
-        public virtual void ContentInit()
-        {
-            var layout = this.Layout;
-            layout.PackStart(lblStatus, true, true);
-            layout.PackStart(pbrProgress, true, true);
-            layout.PackStart(cmdCancel, false, false);
-            Content = layout;
-        }
-
-        public bool? RunModal(IWin32Window ownerWindow)
-        {
-            var window = this;
-            return window.ShowModal(ownerWindow);
-        }
-
-        /// <summary>Initialize FileProcessDialog with a custom widget inside</summary>
-        /// <param name="ProgressBox">Link to the xwt widget, which should be displayed in the FileProcessDialog.</param>
-        public FileProcessDialog(ref Widget ProgressBox, IWin32Window parent = null)
-        {
-            Title = Localizator.GetString("FileProgressDialogTitle");
-            cmdCancel.Label = Localizator.GetString("Cancel");
-            Decorated = false;
-
-            Layout.PackStart(ProgressBox, true, true);
-            Layout.PackStart(cmdCancel, false, false);
-            Content = Layout;
-        }
-    }
+			Layout.PackStart(ProgressBox, true, true);
+			Layout.PackStart(cmdCancel, false, false);
+			Content = Layout;
+		}
+	}
 }

@@ -2,6 +2,12 @@
 
 namespace pluginner.Widgets
 {
+#if WPF
+    using System.Windows;
+    using System.Windows.Input;
+    using System.Windows.Media;
+#endif
+
     // Visible FileItem abstraction for WPF or XWT
     public interface IListView2Visual
     {
@@ -42,8 +48,37 @@ namespace pluginner.Widgets
         event EventHandler Clicked; // { add; remove; } // ; set; }
 
         bool CanGetFocus { get; set; }
-        IFcmdCommand Command {get; set; }
+        ICommand Command {get; set; }
     }
+
+#if WPF
+    public interface IControlWpf : IInputElement // UIElement, IFrameworkInputElement
+    {
+        bool CanGetFocus { get; set; }  // -> IsEnabled
+        // Media.Color
+        Color BackgroundColor { get; set; }
+    }
+
+    public interface IUIDispacherWpf
+    {
+        object Dispacher { get; }
+    }
+
+
+#else 
+
+    public interface IUIDispacher
+    {
+        object Dispacher { get; }
+        bool CheckAccess();  // check UI thread
+    }
+
+    public interface IControl : IUIDispacher
+    {
+        object Content { get; set; }
+        bool? Visible { get; set; }
+    }
+#endif
 
     public class DataFieldNumbers
     {

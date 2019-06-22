@@ -9,14 +9,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>fcmd</RootNamespace>
     <AssemblyName>fcmdp</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
     <StartupObject>fcmd.App</StartupObject>
     <CodePage>65001</CodePage>
-    <UseMSBuildEngine>False</UseMSBuildEngine>
+    <UseMSBuildEngine>True</UseMSBuildEngine>
   </PropertyGroup>
   <!--
       <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -70,9 +70,6 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="Xwt3">
       <HintPath>..\xwt\bin\Xwt3.dll</HintPath>
-    </Reference>
-    <Reference Include="Xwt3.WPF">
-      <HintPath>..\xwt\bin\Xwt3.WPF.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

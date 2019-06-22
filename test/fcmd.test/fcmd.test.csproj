@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>fcmd.test</RootNamespace>
     <AssemblyName>fcmd.test</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -56,9 +56,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="UnitDataSortTest.cs" />
-    <Compile Include="TestApp.cs" />
-    <Compile Include="UnitReadDir.cs" />
+    <Compile Include="UnitTest1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -77,14 +75,6 @@
     <ProjectReference Include="..\..\fcmd\pluginner\pluginner.csproj">
       <Project>{88785b26-d617-4be9-b449-f7ce77444794}</Project>
       <Name>pluginner</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\reactive\spat\Splat.Net45.csproj">
-      <Project>{570239ba-1f17-4569-9e9f-fbc6883e2b6b}</Project>
-      <Name>Splat.Net45</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\SharpShell\src\SharpShellLib.csproj">
-      <Project>{03e4788d-4c48-4143-8f62-a1dcc1d895dd}</Project>
-      <Name>SharpShellLib</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\SharpSSH\SharpSSH\SharpSSH.csproj">
       <Project>{d27cf69d-4681-492a-be4d-d3d209104423}</Project>

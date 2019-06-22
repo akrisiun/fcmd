@@ -38,7 +38,9 @@ namespace Xwt.WPFBackend
 		public event EventHandler<ListRowEventArgs> RowInserted;
 		public event EventHandler<ListRowEventArgs> RowDeleted;
 		public event EventHandler<ListRowEventArgs> RowChanged;
+        #pragma warning disable 414 // CS0414
         public event EventHandler<ListRowOrderEventArgs> RowsReordered;
+        #pragma warning restore 414 // CS0414
 
 		public event NotifyCollectionChangedEventHandler CollectionChanged
 		{

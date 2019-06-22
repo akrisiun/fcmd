@@ -65,9 +65,6 @@ namespace Xwt.WPFBackend
 
 		const WidgetEvent dragDropEvents = WidgetEvent.DragDropCheck | WidgetEvent.DragDrop | WidgetEvent.DragOver | WidgetEvent.DragOverCheck;
 
-		// Set to true when measuring a natural size for this widget
-		// bool gettingNaturalSize;
-
 		// Set to true when calculating the default preferred size of the widget
 		bool calculatingPreferredSize;
 
@@ -261,6 +258,8 @@ namespace Xwt.WPFBackend
 		}
 
 		// SW.Size lastNaturalSize;
+    	// Set to true when measuring a natural size for this widget
+		// bool gettingNaturalSize;
 
 		void GetWidgetDesiredSize (double availableWidth, double availableHeight, out SW.Size size)
 		{

@@ -24,7 +24,8 @@ namespace fcmd
             pbrProgress.Visible = false;
         }
 
-        public override void ContentInit()
+        public // override 
+            void ContentInit()
         {
             if (cmdOk == null)
             {
@@ -37,7 +38,7 @@ namespace fcmd
 
             Layout.PackStart(cmdOk, false, false);
 
-            base.ContentInit();
+            // base.ContentInit();
 
             //this.Decorated = false;
             Resizable = true;

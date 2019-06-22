@@ -39,8 +39,10 @@ namespace fcmd
         /// <param name='DestinationURL'>Destination URL.</param>
         /// <param name="Feedback">If at the destination URL a file exists, a ReplaceQuestionDialog will be shown. This argument is the place, where the user's last choose should be saved.</param>
         /// <param name="AC">The instance of AsyncCopy class that should be used to copy the file.</param>
-        public static void DoCp(this MainWindow @this, IFSPlugin SourceFS, IFSPlugin DestinationFS, string SourceURL, string DestinationURL,
-            ref DialogClickedButton Feedback, AsyncCopy AC)
+        public static void DoCp(this MainWindow @this
+            , IFSPlugin SourceFS, IFSPlugin DestinationFS, string SourceURL, string DestinationURL
+            , AsyncCopy AC
+            , Action feedback = null) // ref DialogClickedButton Feedback, 
         {
             if (SourceURL == DestinationURL)
             {
@@ -70,6 +72,7 @@ namespace fcmd
                 do { } while (!ready);
                 ready = false;
 
+                /*
                 var ClickedButton = DialogClickedButton.Skip;
                 Xwt.Application.Invoke(
                     delegate
@@ -95,10 +98,12 @@ namespace fcmd
                     case DialogClickedButton.ReplaceOld:
                         Feedback = rpd.ChoosedButton;
                         if (SourceFS.GetMetadata(SourceURL).LastWriteTimeUTC <
-                            DestinationFS.GetMetadata(DestinationURL).LastWriteTimeUTC)
-                        {/*continue execution*/}
-                        else
-                        { return; }
+                            DestinationFS.GetMetadata(DestinationURL).LastWriteTimeUTC) { 
+                            // continue execution
+                        }
+                        else { 
+                            return; 
+                        }
                         break;
                     case DialogClickedButton.Skip:
                         Feedback = rpd.ChoosedButton;
@@ -107,6 +112,7 @@ namespace fcmd
                         Feedback = rpd.ChoosedButton;
                         return;
                 }
+                */
             }
 
             try
@@ -184,8 +190,9 @@ namespace fcmd
                     FSEntryMetadata md1 = fsa.GetMetadata(s1);
                     string s2 = destination + fsb.DirSeparator + md1.Name; //destination url
 
-                    DialogClickedButton Placeholder = DialogClickedButton.Cancel;
-                    @this.DoCp(fsa, fsb, s1, s2, ref Placeholder, new AsyncCopy());
+                    // DialogClickedButton Placeholder = DialogClickedButton.Cancel;
+                    // Button placeholder= Button.Cancel;
+                    @this.DoCp(fsa, fsb, s1, s2, new AsyncCopy(), null); // ref placeholder, );
                 }
                 else if (di.IsDirectory)
                 {

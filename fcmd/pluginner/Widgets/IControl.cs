@@ -1,21 +1,29 @@
-﻿using SharpShell;
+﻿// using SharpShell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+
 namespace pluginner.Widgets
 {
+#if WPF
+    using System.Windows;
+    using System.Windows.Media;
+#endif
+
 #if WPF
     public interface IControl : IInputElement // UIElement, IFrameworkInputElement
     {
         bool CanGetFocus { get; set; }  // -> IsEnabled
         Color BackgroundColor { get; set; }
+        bool? Visible { get; set; }
     }
 
     public interface IUIDispacher
     {
         object Dispacher { get; }
+        bool CheckAccess();
     }
 
 
